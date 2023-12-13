@@ -51,13 +51,14 @@ export const init = (sequelize) => {
       },
       refferalBy_iduser: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
     },
     {
       sequelize,
       timestamps: false,
       modelName: 'User',
+      tableName: 'user'
     },
   );
 };
