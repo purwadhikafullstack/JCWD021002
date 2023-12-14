@@ -1,20 +1,47 @@
-import { getUserService } from "../services/auth.service";
+import { getUserService, registerService, loginService } from "../services/auth.service";
 
-const getUserController = async (req, res) => {
+export const getUserController = async (req, res) => {
   try {
     const result = await getUserService();
-    console.log(result)
-    // return res.status(200).json({
-    //   meesage: "get User success",
-    //   date: result
-    // })
-    return result
+    return res.status(200).json({
+      message: "get User success",
+      data: result,
+    });
   } catch (err) {
-    // res.status(500).json({ error: "Internal Server Error" })
-    console.log(err)
+    res.status(500).send(err.message);
   }
 }
 
-module.exports = {
-  getUserController
+export const registerController = async (req, res) => {
+  try {
+    const { username, email, password, fullname } = req.body;
+    const result = await registerService(username, email, password, fullname)
+
+    return res.status(200).json({
+      message: "Register Success",
+      data: result,
+    })
+  } catch (err) {
+    res.status(500).send(err.message)
+  }
 }
+
+export const loginController = async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
+    const result = await loginService(username, email, password);
+
+    res.status(200).json({
+      message: "Login Success",
+      data: result,
+    })
+  } catch (err) {
+    res.status(500).send(err.message)
+  }
+}
+
+
+// module.exports = {
+//   getUserController,
+//   registerController
+// };

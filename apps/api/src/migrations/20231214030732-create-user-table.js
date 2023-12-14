@@ -40,13 +40,13 @@ export async function up(queryInterface, Sequelize) {
       type: Sequelize.STRING(45),
       allowNull: false,
     },
-    refferalCode: {
+    referralCode: {
       type: Sequelize.STRING(45),
       allowNull: true,
     },
-    refferalBy_iduser: {
+    referralBy_iduser: {
       type: Sequelize.INTEGER,
-      allowNull: true,
+      allowNull: false,
     },
   });
 }

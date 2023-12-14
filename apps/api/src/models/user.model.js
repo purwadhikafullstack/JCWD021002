@@ -45,11 +45,11 @@ export const init = (sequelize) => {
         type: DataTypes.STRING(45),
         allowNull: false,
       },
-      refferalCode: {
+      referralCode: {
         type: DataTypes.STRING(45),
         allowNull: true,
       },
-      refferalBy_iduser: {
+      referralBy_iduser: {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
