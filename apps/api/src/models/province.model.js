@@ -2,7 +2,7 @@ import { DataTypes, Model } from 'sequelize';
 
 export default class Province extends Model {
   static associate(models) {
-    Province.hasMany(models.City, { foreignKey: 'province_idprovince' });
+    this.hasMany(models.City, { foreignKey: 'province_idprovince' });
   }
 }
 

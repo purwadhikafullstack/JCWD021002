@@ -2,7 +2,7 @@ import { Model, DataTypes } from 'sequelize';
 
 export default class Discount extends Model {
   static associate(models) {
-    Discount.belongsTo(models.ProductStock, { foreignKey: 'productStock_idproductStock' });
+    this.belongsTo(models.ProductStock, { foreignKey: 'productStock_idproductStock' });
   }
 }
 

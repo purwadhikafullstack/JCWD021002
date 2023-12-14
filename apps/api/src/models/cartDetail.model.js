@@ -2,8 +2,8 @@ import { Model, DataTypes } from 'sequelize';
 
 export default class CartDetail extends Model {
   static associate(models) {
-    CartDetail.belongsTo(models.ProductStock, { foreignKey: 'productStock_idproductStock' });
-    CartDetail.belongsTo(models.Cart, { foreignKey: 'cart_idcart' });
+    this.belongsTo(models.ProductStock, { foreignKey: 'productStock_idproductStock' });
+    this.belongsTo(models.Cart, { foreignKey: 'cart_idcart' });
   }
 }
 

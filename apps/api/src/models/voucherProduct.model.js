@@ -2,8 +2,8 @@ import { Model, DataTypes } from 'sequelize';
 
 export default class VoucherProduct extends Model {
   static associate(models) {
-    VoucherProduct.belongsTo(models.Voucher, { foreignKey: "voucher_idvoucher" });
-    VoucherProduct.belongsTo(models.ProductStock, { foreignKey: "productStock_idproductStock" });
+    this.belongsTo(models.Voucher, { foreignKey: "voucher_idvoucher" });
+    this.belongsTo(models.ProductStock, { foreignKey: "productStock_idproductStock" });
   }
 }
 

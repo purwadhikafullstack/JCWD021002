@@ -2,7 +2,7 @@ import { DataTypes, Model } from 'sequelize';
 
 export default class ProductCategory extends Model {
   static associate(models) {
-    ProductCategory.belongsToMany(models.Product, {
+    this.belongsToMany(models.Product, {
       through: 'ProductCategory_has_Product',
       foreignKey: 'productCategory_idproductCategory',
     });
@@ -21,6 +21,7 @@ export const init = (sequelize) => {
       sequelize,
       timestamps: false,
       modelName: 'ProductCategory',
+      tableName: 'productcategory'
     },
   );
 };

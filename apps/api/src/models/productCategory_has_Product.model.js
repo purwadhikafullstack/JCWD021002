@@ -2,10 +2,10 @@ import { DataTypes, Model } from 'sequelize';
 
 export default class ProductCategory_has_Product extends Model {
   static associate(models) {
-    ProductCategory_has_Product.belongsTo(models.ProductCategory, {
+    this.belongsTo(models.ProductCategory, {
       foreignKey: 'productCategory_idproductCategory',
     });
-    ProductCategory_has_Product.belongsTo(models.Product, {
+    this.belongsTo(models.Product, {
       foreignKey: 'product_idproduct',
     });
   }

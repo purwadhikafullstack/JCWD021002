@@ -2,8 +2,8 @@ import { DataTypes, Model } from 'sequelize';
 
 export default class OrderDetail extends Model {
   static associate(models) {
-    OrderDetail.belongsTo(models.Order, { foreignKey: 'order_idorder' });
-    OrderDetail.belongsTo(models.ProductStock, { foreignKey: 'productStock_idproductStock' });
+    this.belongsTo(models.Order, { foreignKey: 'order_idorder' });
+    this.belongsTo(models.ProductStock, { foreignKey: 'productStock_idproductStock' });
   }
 }
 

@@ -2,10 +2,10 @@ import { DataTypes, Model } from 'sequelize';
 
 export default class Store extends Model {
   static associate(models) {
-    Store.belongsTo(models.City, { foreignKey: 'city_idcity' });
-    Store.hasMany(models.ProductStock, { foreignKey: 'store_idstore' });
-    Store.hasMany(models.Order, { foreignKey: 'store_idstore' });
-    Store.hasMany(models.Journal, { foreignKey: 'store_idstore' });
+    this.belongsTo(models.City, { foreignKey: 'city_idcity' });
+    this.hasMany(models.ProductStock, { foreignKey: 'store_idstore' });
+    this.hasMany(models.Order, { foreignKey: 'store_idstore' });
+    this.hasMany(models.Journal, { foreignKey: 'store_idstore' });
   }
 }
 
@@ -33,6 +33,7 @@ export const init = (sequelize) => {
       sequelize,
       timestamps: false,
       modelName: 'Store',
+      tableName: 'store',
     },
   );
 };
