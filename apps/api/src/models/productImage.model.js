@@ -2,7 +2,7 @@ import { DataTypes, Model } from 'sequelize';
 
 export default class ProductImage extends Model {
   static associate(models) {
-    ProductImage.belongsTo(models.Product, { foreignKey: 'product_idproduct' });
+    this.belongsTo(models.Product, { foreignKey: 'product_idproduct' });
   }
 }
 

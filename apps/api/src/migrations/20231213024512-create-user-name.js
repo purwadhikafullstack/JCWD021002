@@ -46,7 +46,7 @@ export async function up(queryInterface, Sequelize) {
     },
     refferalBy_iduser: {
       type: Sequelize.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
   });
 }

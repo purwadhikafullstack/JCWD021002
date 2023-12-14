@@ -2,10 +2,10 @@ import { DataTypes, Model } from 'sequelize';
 
 export default class Product extends Model {
   static associate(models) {
-    Product.belongsTo(models.User, { foreignKey: 'createdBy_iduser' });
-    Product.hasMany(models.ProductStock, { foreignKey: 'product_idproduct' });
-    Product.hasMany(models.ProductImage, { foreignKey: 'product_idproduct' });
-    Product.belongsToMany(models.ProductCategory, {
+    this.belongsTo(models.User, { foreignKey: 'createdBy_iduser' });
+    this.hasMany(models.ProductStock, { foreignKey: 'product_idproduct' });
+    this.hasMany(models.ProductImage, { foreignKey: 'product_idproduct' });
+    this.belongsToMany(models.ProductCategory, {
       through: 'ProductCategory_has_Product',
       foreignKey: 'product_idproduct',
     });
@@ -15,12 +15,6 @@ export default class Product extends Model {
 export const init = (sequelize) => {
   Product.init(
     {
-      idproduct: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-        allowNull: false,
-      },
       name: {
         type: DataTypes.STRING(45),
         allowNull: false,
@@ -54,6 +48,7 @@ export const init = (sequelize) => {
       sequelize,
       timestamps: false,
       modelName: 'Product',
+      tableName: 'product',
     },
   );
 };

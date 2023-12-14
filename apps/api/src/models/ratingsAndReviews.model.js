@@ -2,9 +2,9 @@ import { DataTypes, Model } from 'sequelize';
 
 export default class RatingsAndReviews extends Model {
   static associate(models) {
-    RatingsAndReviews.belongsTo(models.User, { foreignKey: 'user_iduser' });
-    RatingsAndReviews.belongsTo(models.Product, { foreignKey: 'product_idproduct' });
-    RatingsAndReviews.belongsTo(models.Order, { foreignKey: 'order_idorder' });
+    this.belongsTo(models.User, { foreignKey: 'user_iduser' });
+    this.belongsTo(models.Product, { foreignKey: 'product_idproduct' });
+    this.belongsTo(models.Order, { foreignKey: 'order_idorder' });
   }
 }
 

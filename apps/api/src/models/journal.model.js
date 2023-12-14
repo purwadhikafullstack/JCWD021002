@@ -2,9 +2,9 @@ import { Model, DataTypes } from 'sequelize';
 
 export default class Journal extends Model {
   static associate(models) {
-    Journal.belongsTo(models.Store, { foreignKey: 'store_idstore' });
-    Journal.belongsTo(models.User, { foreignKey: 'admin_iduser' });
-    Journal.belongsTo(models.ProductStock, { foreignKey: 'productStock_idproductStock' });
+    this.belongsTo(models.Store, { foreignKey: 'store_idstore' });
+    this.belongsTo(models.User, { foreignKey: 'admin_iduser' });
+    this.belongsTo(models.ProductStock, { foreignKey: 'productStock_idproductStock' });
   }
 }
 
