@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Verification</title>
+  <style>
+    /* Styling for better email readability */
+    body {
+      font-family: 'Arial', sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #3498db;
+      color: #fff;
+      text-align: center;
+      padding: 1rem;
+    }
+    section {
+      padding: 2rem;
+    }
+    footer {
+      background-color: #f2f2f2;
+      padding: 1rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Email Verification</h1>
+  </header>
+
+  <section>
+    <p>Hello {{email}},</p>
+    <p>Thank you for registering. To complete your registration, please click the link below:</p>
+    <p><a href="{{verificationLink}}" target="_blank">Verify Your Email</a></p>
+    <p>If you did not register on our site, you can safely ignore this email.</p>
+  </section>
+
+  <footer>
+    <p>&copy; 2023 Your Company. All rights reserved.</p>
+  </footer>
+</body>
+</html>

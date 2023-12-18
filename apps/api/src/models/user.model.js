@@ -2,7 +2,7 @@ import { DataTypes, Model } from 'sequelize';
 
 export default class User extends Model {
   static associate(models) {
-    this.belongsTo(models.role, { foreignKey: 'role_idrole' });
+    this.belongsTo(models.Role, { foreignKey: 'role_idrole' });
     this.hasMany(models.Order, { foreignKey: 'user_iduser' });
     this.hasMany(models.Address, { foreignKey: 'user_iduser' });
     this.hasMany(models.DiscountUsage, { foreignKey: 'user_iduser' });
@@ -45,11 +45,11 @@ export const init = (sequelize) => {
         type: DataTypes.STRING(45),
         allowNull: false,
       },
-      refferalCode: {
+      referralCode: {
         type: DataTypes.STRING(45),
         allowNull: true,
       },
-      refferalBy_iduser: {
+      referralBy_iduser: {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
