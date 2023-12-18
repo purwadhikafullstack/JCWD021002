@@ -2,9 +2,9 @@ import { Model, DataTypes } from 'sequelize';
 
 export default class City extends Model {
   static associate(models) {
-    City.belongsTo(models.Province, { foreignKey: 'province_idprovince' });
-    City.hasMany(models.Store, { foreignKey: 'city_idcity' });
-    City.hasMany(models.Address, { foreignKey: 'city_idcity' });
+    this.belongsTo(models.Province, { foreignKey: 'province_idprovince' });
+    this.hasMany(models.Store, { foreignKey: 'city_idcity' });
+    this.hasMany(models.Address, { foreignKey: 'city_idcity' });
   }
 }
 
@@ -24,6 +24,7 @@ export const init = (sequelize) => {
       sequelize,
       timestamps: false,
       modelName: 'City',
+      tableName: 'city',
     },
   );
 };

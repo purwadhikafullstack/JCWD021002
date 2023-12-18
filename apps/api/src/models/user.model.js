@@ -2,11 +2,11 @@ import { DataTypes, Model } from 'sequelize';
 
 export default class User extends Model {
   static associate(models) {
-    User.belongsTo(models.Role, { foreignKey: 'role_idrole' });
-    User.hasMany(models.Order, { foreignKey: 'user_iduser' });
-    User.hasMany(models.Address, { foreignKey: 'user_iduser' });
-    User.hasMany(models.DiscountUsage, { foreignKey: 'user_iduser' });
-    User.hasMany(models.RatingsAndReviews, { foreignKey: 'user_iduser' });
+    this.belongsTo(models.Role, { foreignKey: 'role_idrole' });
+    this.hasMany(models.Order, { foreignKey: 'user_iduser' });
+    this.hasMany(models.Address, { foreignKey: 'user_iduser' });
+    this.hasMany(models.DiscountUsage, { foreignKey: 'user_iduser' });
+    this.hasMany(models.RatingsAndReviews, { foreignKey: 'user_iduser' });
   }
 }
 
@@ -58,7 +58,7 @@ export const init = (sequelize) => {
       sequelize,
       timestamps: false,
       modelName: 'User',
-      tableName: 'user'
+      tableName: 'user',
     },
   );
 };

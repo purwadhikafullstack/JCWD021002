@@ -1,10 +1,12 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import reactLogo from '../../assets/react.svg';
 import viteLogo from '/vite.svg';
-import './Home.css';
+import { Flex } from '@chakra-ui/react';
+// import './Home.css';
 
-function Home() {
+function Home({ size }) {
   const [sampleData, setSampleData] = useState([]);
 
   useEffect(() => {
@@ -17,7 +19,7 @@ function Home() {
   }, []);
 
   return (
-    <>
+    <Flex w={size}>
       <div>
         <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
           <img src={viteLogo} className="logo" alt="Vite logo" />
@@ -31,7 +33,7 @@ function Home() {
       {sampleData.map((data, idx) => (
         <div key={idx.toString()}>{data.name}</div>
       ))}
-    </>
+    </Flex>
   );
 }
 

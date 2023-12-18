@@ -2,8 +2,8 @@ import { Model, DataTypes } from 'sequelize';
 
 export default class DiscountUsage extends Model {
   static associate(models) {
-    DiscountUsage.belongsTo(models.User, { foreignKey: 'user_iduser' });
-    DiscountUsage.belongsTo(models.Discount, { foreignKey: 'discount_iddiscount' });
+    this.belongsTo(models.User, { foreignKey: 'user_iduser' });
+    this.belongsTo(models.Discount, { foreignKey: 'discount_iddiscount' });
   }
 }
 

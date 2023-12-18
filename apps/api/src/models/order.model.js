@@ -2,9 +2,9 @@ import { Model, DataTypes } from 'sequelize';
 
 export default class Order extends Model {
   static associate(models) {
-    Order.belongsTo(models.User, { foreignKey: 'user_iduser' });
-    Order.belongsTo(models.Store, { foreignKey: 'store_idstore' });
-    Order.hasMany(models.OrderDetail, { foreignKey: 'order_idorder' });
+    this.belongsTo(models.User, { foreignKey: 'user_iduser' });
+    this.belongsTo(models.Store, { foreignKey: 'store_idstore' });
+    this.hasMany(models.OrderDetail, { foreignKey: 'order_idorder' });
   }
 }
 

@@ -20,13 +20,5 @@ export const registerQuery = async (username, email, password, fullname, generat
   }
 };
 
-export const loginQuery = async (email) => {
-  try {
-    const res = await User.findOne(email)
-    return res
-  } catch (err) {
-    throw err
-  }
-}
 
 // module.exports = { registerQuery, loginQuery };

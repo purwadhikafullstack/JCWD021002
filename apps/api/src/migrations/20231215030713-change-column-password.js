@@ -1,9 +1,9 @@
 'use strict';
 /** @type {import('sequelize-cli').Migration} */
 export async function up(queryInterface, Sequelize) {
-  await queryInterface.changeColumn('user', 'referralBy_iduser', {
-    type: Sequelize.INTEGER,
-    allowNull: true,
+  await queryInterface.changeColumn('user', 'password', {
+      type: Sequelize.STRING(255),
+      allowNull: false,
   });
 }
 export async function down(queryInterface, Sequelize) {

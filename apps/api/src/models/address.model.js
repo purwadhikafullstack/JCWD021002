@@ -2,8 +2,8 @@ import { Model, DataTypes } from 'sequelize';
 
 export default class Address extends Model {
   static associate(models) {
-    Address.belongsTo(models.User, { foreignKey: 'user_iduser' });
-    Address.belongsTo(models.City, { foreignKey: 'city_idcity' });
+    this.belongsTo(models.User, { foreignKey: 'user_iduser' });
+    this.belongsTo(models.City, { foreignKey: 'city_idcity' });
   }
 }
 
@@ -31,6 +31,7 @@ export const init = (sequelize) => {
       sequelize,
       timestamps: false,
       modelName: 'Address',
+      // tableName: 'user',
     },
   );
 };
