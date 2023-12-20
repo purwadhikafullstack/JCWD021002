@@ -1,35 +1,54 @@
 import {
-  findOrCreateCartQuery,
+  findCartQuery,
+  findCartDetailQuery,
   getProductStockQuery,
-  checkProductQuery,
-  findOrCreateCartDetailQuery,
+  createCartQuery,
+  createCartDetailQuery,
+  updateItemCartQtyQuery,
   updateCartTotalsQuery,
 } from '../queries/cart.query';
 
-export const createCartService = async ({ userId, cartDetails }) => {
+export const createCartService = async (userId, cartDetails) => {
   try {
-    const cart = await findOrCreateCartQuery(userId);
+    let cart = await findCartQuery(userId);
+
+    if (!cart) {
+      cart = await createCartQuery(userId);
+    }
+
     const cartDetailsArray = [];
 
     for (const item of cartDetails) {
       const productStock = await getProductStockQuery(item.productStockId);
 
-      if (!checkProductQuery(productStock)) {
+      if (!productStock) {
         throw new Error(`Invalid Product for id: ${item.productStockId}`);
       }
 
-      const createdDetail = await findOrCreateCartDetailQuery(
-        cart,
-        item,
-        productStock,
+      const checkCartDetail = await findCartDetailQuery(
+        cart.id,
+        item.productStockId,
       );
 
-      cartDetailsArray.push(createdDetail);
-
-      updateCartTotalsQuery(cart, item.quantity, productStock.Product.price);
+      if (!checkCartDetail) {
+        const createdDetail = await createCartDetailQuery(
+          cart,
+          item,
+          productStock,
+        );
+        cartDetailsArray.push(createdDetail);
+      } else {
+        await updateItemCartQtyQuery(
+          cart,
+          item.productStockId,
+          checkCartDetail.quantity + item.quantity,
+        );
+      }
     }
 
-    await cart.save();
+    await updateCartTotalsQuery(cart);
+
+    console.log(`cartId: ${cart.id}, cartDetails: ${cartDetailsArray}`);
 
     return { cart, cartDetails: cartDetailsArray };
   } catch (err) {

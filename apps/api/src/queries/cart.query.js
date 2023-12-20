@@ -3,59 +3,126 @@ import CartDetail from '../models/cartDetail.model';
 import ProductStock from '../models/productStock.model';
 import Product from '../models/product.model';
 
-export const findOrCreateCartQuery = async (userId) => {
-  let cart = await Cart.findOne({ where: { user_iduser: userId } });
+export const findCartQuery = async (userId) => {
+  return Cart.findOne({
+    where: { user_iduser: userId },
+  });
+};
 
-  if (!cart) {
-    cart = await Cart.create({
-      user_iduser: userId,
-      totalQuantity: 0,
-      addedAt: new Date(),
-      totalPrice: 0,
-    });
+export const createCartQuery = async (userId) => {
+  const t = await Cart.sequelize.transaction();
+
+  try {
+    const cart = await Cart.create(
+      {
+        user_iduser: userId,
+        totalQuantity: 0,
+        addedAt: new Date(),
+        totalPrice: 0,
+      },
+      { transaction: t },
+    );
+
+    await t.commit();
+    return cart;
+  } catch (err) {
+    await t.rollback();
+    throw err;
   }
-
-  return cart;
 };
 
 export const getProductStockQuery = async (productStockId) => {
-  return ProductStock.findByPk(productStockId, { include: [Product] });
+  return ProductStock.findOne({
+    where: { product_idproduct: productStockId },
+    include: [Product],
+  });
 };
 
-export const checkProductQuery = (productStock) => {
-  return (
-    productStock && productStock.Product && productStock.Product.price != null
-  );
-};
-
-export const findOrCreateCartDetailQuery = async (cart, item, productStock) => {
-  const { quantity } = item;
-  const productPrice = productStock.Product.price;
-
-  let existingCartDetail = await CartDetail.findOne({
+export const findCartDetailQuery = async (cartId, productStockId) => {
+  return CartDetail.findOne({
     where: {
-      productStock_idproductStock: item.productStockId,
-      cart_idcart: cart.id,
+      productStock_idproductStock: productStockId,
+      cart_idcart: cartId,
     },
   });
-
-  if (existingCartDetail) {
-    existingCartDetail.quantity += quantity;
-    existingCartDetail.price += quantity * productPrice;
-    await existingCartDetail.save();
-  } else {
-    existingCartDetail = await CartDetail.create({
-      productStock_idproductStock: item.productStockId,
-      quantity,
-      price: productPrice,
-      cart_idcart: cart.id,
-    });
-  }
-
-  return existingCartDetail;
 };
 
-export const updateCartTotalsQuery = (cart, quantity, productPrice) => {
-  cart.totalQuantity += quantity;
-  cart.totalPrice += quantity * productPrice;
+export const createCartDetailQuery = async (cart, item, productStockId) => {
+  const { quantity } = item;
+  const productPrice = productStockId.Product.price;
+  const t = await CartDetail.sequelize.transaction();
+
+  try {
+    const cartDetail = await CartDetail.create(
+      {
+        productStock_idproductStock: item.productStockId,
+        quantity,
+        price: productPrice,
+        cart_idcart: cart.id,
+      },
+      { transaction: t },
+    );
+
+    await t.commit();
+    return cartDetail;
+  } catch (err) {
+    await t.rollback();
+    throw err;
+  }
+};
+
+export const updateItemCartQtyQuery = async (cart, productId, newQuantity) => {
+  console.log(
+    `cartId: ${cart.id}, productStockId: ${productId}, quantity: ${newQuantity}`,
+  );
+
+  const result = await CartDetail.update(
+    {
+      quantity: newQuantity,
+    },
+    {
+      where: {
+        productStock_idproductStock: productId,
+        cart_idcart: cart.id,
+      },
+    },
+  );
+
+  return result;
+};
+
+export const updateCartTotalsQuery = async (cart) => {
+  const t = await Cart.sequelize.transaction();
+
+  try {
+    const updateCartDetails = await CartDetail.findAll({
+      where: { cart_idcart: cart.id },
+      attributes: ['quantity', 'price'],
+      transaction: t,
+    });
+
+    const totalQuantity = updateCartDetails.reduce(
+      (total, detail) => total + detail.quantity,
+      0,
+    );
+
+    const totalPrice = updateCartDetails.reduce(
+      (total, detail) => total + detail.quantity * detail.price,
+      0,
+    );
+
+    await cart.update(
+      {
+        totalQuantity,
+        totalPrice,
+      },
+      { transaction: t },
+    );
+
+    await t.commit();
+  } catch (err) {
+    await t.rollback();
+    console.error(err.message);
+    throw err;
+  }
 };
