@@ -126,3 +126,22 @@ export const updateCartTotalsQuery = async (cart) => {
     throw err;
   }
 };
+
+export const deleteCartItemQuery = async (cart, productId) => {
+  const t = await CartDetail.sequelize.transaction();
+
+  try {
+    await CartDetail.destroy({
+      where: {
+        productStock_idproductStock: productId,
+        cart_idcart: cart.id,
+      },
+      transaction: t,
+    });
+
+    await t.commit();
+  } catch (err) {
+    await t.rollback();
+    throw err;
+  }
+};

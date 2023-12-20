@@ -6,6 +6,7 @@ import {
   createCartDetailQuery,
   updateItemCartQtyQuery,
   updateCartTotalsQuery,
+  deleteCartItemQuery,
 } from '../queries/cart.query';
 
 export const createCartService = async (userId, cartDetails) => {
@@ -51,6 +52,49 @@ export const createCartService = async (userId, cartDetails) => {
     console.log(`cartId: ${cart.id}, cartDetails: ${cartDetailsArray}`);
 
     return { cart, cartDetails: cartDetailsArray };
+  } catch (err) {
+    console.error(err.message);
+    throw err;
+  }
+};
+
+export const updateCartItemQtyService = async (
+  userId,
+  productId,
+  newQuantity,
+) => {
+  try {
+    const cart = await findCartQuery(userId);
+
+    const cartDetail = await findCartDetailQuery(cart.id, productId);
+
+    if (!cartDetail) {
+      throw new Error(`Cart item with product id ${productId} not found`);
+    }
+
+    await updateItemCartQtyQuery(cart, productId, newQuantity);
+    await updateCartTotalsQuery(cart);
+
+    return { cart };
+  } catch (err) {
+    console.error(err.message);
+    throw err;
+  }
+};
+
+export const deleteCartItemService = async ({ userId, productId }) => {
+  try {
+    const cart = await findCartQuery(userId);
+    const cartDetail = await findCartDetailQuery(cart.id, productId);
+
+    if (!cartDetail) {
+      throw new Error(`Cart item with product id ${productId} not found`);
+    }
+
+    await deleteCartItemQuery(cart, productId);
+    await updateCartTotalsQuery(cart);
+
+    return { cart };
   } catch (err) {
     console.error(err.message);
     throw err;
