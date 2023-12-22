@@ -1,17 +1,26 @@
 import User from '../models/user.model';
 const { Op } = require('sequelize');
 
-export const registerQuery = async (username, email, password, fullname, generateReferralCode) => {
+export const registerQuery = async (
+  username,
+  email,
+  password,
+  fullname,
+  generateReferralCode,
+  resetToken,
+) => {
   try {
     const res = await User.create({
       username,
       email,
-      password,
       fullname,
-      registrationDate : new Date(),
-      role_idrole : 3,
-      status: "Inactive",
-      referralCode : generateReferralCode,
+      password,
+      registrationDate: new Date(),
+      role_idrole: 3,
+      status: 'Active',
+      referralCode: generateReferralCode,
+      resetToken: resetToken,
+      verification_status: 'Unverified',
     });
 
     return res;
@@ -20,5 +29,19 @@ export const registerQuery = async (username, email, password, fullname, generat
   }
 };
 
+export const setPasswordQuery = async (email, password) => {
+  try {
+    const res = await User.update(
+      { password, verification_status: 'Verified' },
+      {
+        where: {
+          email,
+        },
+      },
+    );
 
-// module.exports = { registerQuery, loginQuery };
+    return res;
+  } catch (err) {
+    throw err;
+  }
+};

@@ -11,13 +11,14 @@ import {
   FormErrorMessage,
 } from '@chakra-ui/react';
 import { MyButton } from '../../components/Button';
-import { CiMail, CiLock } from 'react-icons/ci';
+import { CiLock } from 'react-icons/ci';
 import { BiHide, BiShow } from 'react-icons/bi';
 import { useState } from 'react';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
+import toast from "react-hot-toast"
 
 const loginSchema = Yup.object().shape({
   password: Yup.string().required('password is required')
@@ -27,7 +28,6 @@ export const FormSetPassword = () => {
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
   const handleClickshow = () => setShow(!show);
-
 
   function getQueryParam(param) {
 		const urlParams = new URLSearchParams(window.location.search);
@@ -42,14 +42,14 @@ export const FormSetPassword = () => {
         return alert("Invalid or missing reset token")
       }
       if (password == confirmPassword) {
-        await axios.patch('http://localhost:8000/api/auth/setPassword', {
+        await axios.patch(`http://localhost:8000/api/auth/setPassword?resetToken=${encodeURIComponent(resetToken)}`, {
           password,
         });
-        alert('set password success');
+        toast.success("Set password success")
+        navigate('/login');
       }
     } catch (err) {
-      alert(err.response?.data);
-      console.log(err);
+      toast.error(err.response?.data)
     }
   };
 
@@ -111,7 +111,7 @@ export const FormSetPassword = () => {
                 placeholder="Confirm password"
                 type={show ? 'text' : 'password'}
                 bgColor={'#F3F4F6FF'}
-                name="consfirmPassword"
+                name="confirmPassword"
                 value={formik.values.confirmPassword}
                 onChange={formik.handleChange}
               />

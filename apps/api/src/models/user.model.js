@@ -23,7 +23,7 @@ export const init = (sequelize) => {
       },
       password: {
         type: DataTypes.STRING(45),
-        allowNull: false,
+        allowNull: true,
       },
       fullname: {
         type: DataTypes.STRING(45),
@@ -52,6 +52,14 @@ export const init = (sequelize) => {
       referralBy_iduser: {
         type: DataTypes.INTEGER,
         allowNull: true,
+      },
+      resetToken: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+      },
+      verification_status: {
+        type: DataTypes.STRING(45),
+        allowNull: false,
       },
     },
     {

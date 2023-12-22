@@ -1,40 +1,60 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import reactLogo from '../../assets/react.svg';
-import viteLogo from '/vite.svg';
-import { Flex } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { logout } from '../../config/firebase-config';
+
+import { Button, Flex, Text } from '@chakra-ui/react';
+import { Header } from './header';
+import { MySwiper } from './swiper';
+import { SwiperCategory } from './swiperCategory';
+import { PiGift } from 'react-icons/pi';
+import { IoIosArrowForward } from 'react-icons/io';
 // import './Home.css';
 
-function Home({ size }) {
-  const [sampleData, setSampleData] = useState([]);
+export const Home = ({ handleWebSize, size }) => {
+  const navigate = useNavigate();
+  const onLogout = () => {
+    const result = logout();
+    if (result === 'logout success') {
+      navigate('/login');
+    }
+  };
 
-  useEffect(() => {
-    (async () => {
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_API_URL}/sample`,
-      );
-      setSampleData(data);
-    })();
-  }, []);
+  const user = useSelector((state) => state.authReducer);
+  console.log('user Home', user);
 
   return (
-    <Flex w={size}>
-      <div>
-        <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Purwadhika Final Project Template using Vite + React</h1>
-      <h3>Test Data</h3>
-      {sampleData.map((data, idx) => (
-        <div key={idx.toString()}>{data.name}</div>
-      ))}
+    <Flex
+      w={size}
+      direction={'column'}
+      // mt={"-52px"}
+    >
+      <Header size={size} handleWebSize={handleWebSize} />
+      <Flex>
+        <MySwiper size={size} />
+      </Flex>
+      <SwiperCategory size={size} />
+      <Flex p={'20px'} direction={'column'} gap={5}>
+        <Flex
+          justify={'space-between'}
+          align={'center'}
+          bgColor={'colors.secondary'}
+          color={'colors.primary'}
+          h={'36px'}
+          px={"10px"}
+          borderRadius={"4px"}
+          cursor={"pointer"}
+        >
+          <Flex gap={2}>
+            <PiGift size={'20px'} />
+            <Text fontWeight={400} fontSize={'14px'}>
+              You have 5 voucher here
+            </Text>
+          </Flex>
+          <IoIosArrowForward />
+        </Flex>
+        <Button onClick={onLogout}>Log out</Button>
+      </Flex>
     </Flex>
   );
-}
-
-export default Home;
+};

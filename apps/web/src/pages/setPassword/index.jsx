@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Center, Flex, Text, Image } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import LogoGroceria from '../../assets/Groceria-no-Bg.png';
 import { FormSetPassword } from './formSetPassword';
 

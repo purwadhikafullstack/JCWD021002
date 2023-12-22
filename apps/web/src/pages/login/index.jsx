@@ -2,17 +2,81 @@
 /* eslint-disable react/prop-types */
 import { Center, Flex, Text, Button, Image } from '@chakra-ui/react';
 import { FormLogin } from './formLogin';
-import { FaGoogle, FaFacebook, FaTwitter, FaApple } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { FaGoogle, FaFacebook, FaTwitter } from 'react-icons/fa';
+import { Link, useNavigate } from 'react-router-dom';
 import LogoGroceria from '../../assets/Groceria-no-Bg.png';
+import { signInWithFacebook, signInWithGoogle, signInWithTwitter } from '../../config/firebase-config';
+import { useDispatch } from 'react-redux';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import { ResizeButton } from '../../components/ResizeButton';
 
-export const Login = ({ size }) => {
+export const Login = ({ size, handleWebSize }) => {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  const onLoginWithGoogle = async () => {
+    try {
+      const result = await signInWithGoogle(dispatch);
+      console.log(result.user)
+      const res = await axios.post('http://localhost:8000/api/auth/loginsocial', {
+        email: result.user.email,
+      })
+      if(!res) throw new Error("Email has not been registered")
+      console.log(result.user)
+      toast.success("Sign in Success")
+      if (result.message == 'signin with google success') {
+        navigate("/");
+      }
+    } catch (err) {
+      console.log(err)
+      toast.error(err.response.data);
+    }
+  };
+
+  const onLoginWithFacebook = async () => {
+    try {
+      const result = await signInWithFacebook(dispatch);
+      console.log(result.user)
+      const res = await axios.post('http://localhost:8000/api/auth/loginsocial', {
+        email: result.user.email,
+      })
+      if(!res) throw new Error("Email has not been registered")
+      console.log(result.user)
+      toast.success("Sign in Success")
+      if (result.message == 'signin with facebook success') {
+        navigate("/");
+      }
+    } catch (err) {
+      console.log(err)
+      toast.error(err.response.data);
+    }
+  };
+  const onLoginWithTwitter = async () => {
+    try {
+      const result = await signInWithTwitter(dispatch);
+      console.log(result.user)
+      const res = await axios.post('http://localhost:8000/api/auth/loginsocial', {
+        email: result.user.email,
+      })
+      if(!res) throw new Error("Email has not been registered")
+      console.log(result.user)
+      toast.success("Sign in Success")
+      if (result.message == 'signin with twitter success') {
+        navigate("/");
+      }
+    } catch (err) {
+      console.log(err)
+      toast.error(err.response.data);
+    }
+  };
+
   const socialButtons = [
-    { icon: <FaGoogle />, bgColor: 'red' },
-    { icon: <FaFacebook />, bgColor: '#4267B2FF' },
-    { icon: <FaTwitter />, bgColor: 'blue.200' },
-    { icon: <FaApple />, bgColor: 'black' },
+    { icon: <FaGoogle />, bgColor: 'red', click: onLoginWithGoogle },
+    { icon: <FaFacebook />, bgColor: '#4267B2FF',  click: onLoginWithFacebook },
+    { icon: <FaTwitter />, bgColor: 'blue.200',  click: onLoginWithTwitter },
   ];
+
 
   return (
     <Flex
@@ -24,10 +88,14 @@ export const Login = ({ size }) => {
     >
       <Flex
         position={'relative'}
-        top={{ base: '20px', lg: '-30px' }}
+        // top={{ base: '20px', lg: '-30px' }}
         px={'20px'}
+        h={"10vh"}
+        justify={"space-between"}
+        align={"center"}
       >
         <Image src={LogoGroceria} h={'30px'} />
+        <ResizeButton webSize={size} handleWebSize={handleWebSize} color={"black"}/>
       </Flex>
 
       <Flex flexDirection={size == '500px' ? 'column' : 'row'} h={"full"}>
@@ -37,7 +105,7 @@ export const Login = ({ size }) => {
           p={'20px'}
           direction={'column'}
           transition="width 0.3s ease"
-          mt={{ base: '-20px', lg: '-30px' }}
+          // mt={{ base: '-20px', lg: '-30px' }}
           ml={size == '500px' ? '0' : ''}
         >
           <Center
@@ -82,6 +150,7 @@ export const Login = ({ size }) => {
                       borderRadius={'50%'}
                       bgColor={social.bgColor}
                       fontSize={'20px'}
+                      onClick={social.click}
                     >
                       {social.icon}
                     </Button>
