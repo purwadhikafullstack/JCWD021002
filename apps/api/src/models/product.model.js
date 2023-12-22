@@ -3,6 +3,8 @@ import { DataTypes, Model } from 'sequelize';
 export default class Product extends Model {
   static associate(models) {
     this.belongsTo(models.User, { foreignKey: 'createdBy_iduser' });
+    this.belongsTo(models.Mass, { foreignKey: 'mass_idmass' });
+    this.belongsTo(models.Packaging, { foreignKey: 'packaging_idpackaging' });
     this.hasMany(models.ProductStock, { foreignKey: 'product_idproduct' });
     this.hasMany(models.ProductImage, { foreignKey: 'product_idproduct' });
     this.belongsToMany(models.ProductCategory, {
@@ -27,10 +29,6 @@ export const init = (sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      stock: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
@@ -40,7 +38,19 @@ export const init = (sequelize) => {
         allowNull: false,
       },
       status: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      },
+      massProduct: {
         type: DataTypes.STRING(45),
+        allowNull: false,
+      },
+      mass_idmass: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      packaging_idpackaging: {
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
     },

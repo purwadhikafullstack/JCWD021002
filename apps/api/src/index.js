@@ -1,9 +1,12 @@
 import express, { json, Express } from 'express';
+import bodyParser from "body-parser";
 import cors from 'cors';
 import { join } from 'path';
+const path = require("path");
 import { NODE_ENV, PORT } from './config';
 import router from './router';
 import { DB } from './db';
+
 
 /**
  * Serve "web" project build result (for production only)
@@ -54,8 +57,11 @@ const main = () => {
 
   const app = express();
   app.use(cors());
-  app.use(json());
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: true }));
   app.use('/api', router);
+
+  app.use("/uploads", express.static(path.join(__dirname, "./public/images")));
 
   globalAPIErrorHandler(app);
   serveWebProjectBuildResult(app);
