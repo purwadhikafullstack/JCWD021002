@@ -19,6 +19,10 @@ export const init = (sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      postalCode: {
+        type: DataTypes.CHAR,
+        allowNull: false,
+      },
     },
     {
       sequelize,
