@@ -9,9 +9,12 @@ import { MySwiper } from './swiper';
 import { SwiperCategory } from './swiperCategory';
 import { PiGift } from 'react-icons/pi';
 import { IoIosArrowForward } from 'react-icons/io';
+import { BottomBar } from '../../components/BottomBar';
+import { Collections } from './collections';
+import { ProductList } from './productList';
 // import './Home.css';
 
-export const Home = ({ handleWebSize, size }) => {
+export const Home = ({ handleWebSize, size, city, province }) => {
   const navigate = useNavigate();
   const onLogout = () => {
     const result = logout();
@@ -29,21 +32,27 @@ export const Home = ({ handleWebSize, size }) => {
       direction={'column'}
       // mt={"-52px"}
     >
-      <Header size={size} handleWebSize={handleWebSize} />
+      <Header size={size} handleWebSize={handleWebSize} city={city} province={province} />
       <Flex>
         <MySwiper size={size} />
       </Flex>
       <SwiperCategory size={size} />
-      <Flex p={'20px'} direction={'column'} gap={5}>
+      <Flex
+        p={'20px'}
+        direction={'column'}
+        gap={5}
+        w={size}
+        overflowX={'hidden'}
+      >
         <Flex
           justify={'space-between'}
           align={'center'}
           bgColor={'colors.secondary'}
           color={'colors.primary'}
           h={'36px'}
-          px={"10px"}
-          borderRadius={"4px"}
-          cursor={"pointer"}
+          px={'10px'}
+          borderRadius={'4px'}
+          cursor={'pointer'}
         >
           <Flex gap={2}>
             <PiGift size={'20px'} />
@@ -53,7 +62,14 @@ export const Home = ({ handleWebSize, size }) => {
           </Flex>
           <IoIosArrowForward />
         </Flex>
+
+        <Collections size={size} />
+
+        <ProductList />
         <Button onClick={onLogout}>Log out</Button>
+      </Flex>
+      <Flex position={'fixed'} bottom={0} w={size}>
+        <BottomBar />
       </Flex>
     </Flex>
   );

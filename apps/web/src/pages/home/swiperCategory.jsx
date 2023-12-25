@@ -16,9 +16,8 @@ export const SwiperCategory = ({ size }) => {
     { slide: 'Slide 9' },
     { slide: 'Slide 10' },
   ];
-  console.log(size);
   return (
-    <Flex h={'fit-content'}>
+    <Flex h={'fit-content'} overflow={"hidden"}>
       <Swiper
         slidesPerView={size == '500px' ? 5 : 6}
         spaceBetween={30}

@@ -36,7 +36,6 @@ export const loginController = async (req, res) => {
 
 export const loginWithSocialController = async (req, res) => {
   try {
-    console.log("body controller", req.body)
     const { email } = req.body;
     const result = await loginWithSocialService(email);
 
@@ -51,7 +50,6 @@ export const loginWithSocialController = async (req, res) => {
 
 export const registerWithSocialController = async (req, res) => {
   try {
-    console.log("body controller", req.body)
     const { username, email, fullname  } = req.body;
     const result = await registerWithSocialService(username, email, fullname);
 

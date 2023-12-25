@@ -11,7 +11,7 @@ import { IoIosSearch } from 'react-icons/io';
 import { PiMapPinLine } from 'react-icons/pi';
 import { ResizeButton } from '../../components/ResizeButton';
 
-export const Header = ({ size, handleWebSize }) => {
+export const Header = ({ size, handleWebSize, city, province }) => {
   return (
     <Flex
       bgColor={'colors.primary'}
@@ -23,7 +23,7 @@ export const Header = ({ size, handleWebSize }) => {
       <Flex justify={"space-between"} align={"center"}>
         <Flex color="white" gap={2} align={'center'}>
           <PiMapPinLine size={'20px'} />
-          <Text>Location</Text>
+          <Text>{city ? `${city}, ${province}` : "Location"}</Text>
         </Flex>
         <ResizeButton webSize={size} handleWebSize={handleWebSize} color={"white"}/>
       </Flex>

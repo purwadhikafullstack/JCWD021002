@@ -12,7 +12,6 @@ export const MySwiper = ({ size }) => {
     { slide: 'Slide 4' },
     { slide: 'Slide 5' },
   ];
-  console.log(size)
   return (
     <Flex h={'fit-content'}>
       <Swiper
