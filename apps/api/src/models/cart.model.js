@@ -19,7 +19,7 @@ export const init = (sequelize) => {
         allowNull: false,
       },
       addedAt: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.DATE,
         allowNull: false,
       },
       totalPrice: {
@@ -31,6 +31,7 @@ export const init = (sequelize) => {
       sequelize,
       timestamps: false,
       modelName: 'Cart',
+      tableName: 'cart',
     },
   );
 };
