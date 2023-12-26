@@ -12,7 +12,7 @@ export const init = (sequelize) => {
   City.init(
     {
       city: {
-        type: DataTypes.STRING(45),
+        type: DataTypes.STRING(255),
         allowNull: false,
       },
       province_idprovince: {
@@ -32,3 +32,4 @@ export const init = (sequelize) => {
     },
   );
 };
+

@@ -1,4 +1,4 @@
-import { Flex, useColorModeValue } from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/react';
 import { HiHome, HiShoppingCart } from 'react-icons/hi2';
 import { MdFavorite } from 'react-icons/md';
 import { IoPersonCircleOutline } from 'react-icons/io5';
