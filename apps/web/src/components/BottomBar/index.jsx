@@ -1,4 +1,16 @@
-import { Flex } from '@chakra-ui/react';
+import {
+  Flex,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  Text,
+  Button,
+} from '@chakra-ui/react';
 import {
   HiOutlineHome,
   HiHome,
@@ -10,15 +22,12 @@ import { IoPersonCircleOutline, IoPersonCircleSharp } from 'react-icons/io5';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 export const BottomBar = () => {
   const [active, setActive] = useState('');
   const path = useLocation();
-
-  useEffect(() => {
-    const pathName = path.pathname
-    setActive(pathName)
-  }, [path]);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const bar = [
     {
@@ -63,6 +72,18 @@ export const BottomBar = () => {
     },
   ];
 
+  const isLogin = useSelector((state) => state.AuthReducer.isLogin);
+
+  useEffect(() => {
+    const pathName = path.pathname;
+    setActive(pathName);
+
+    if (isLogin) {
+      onClose;
+    }
+  }, [path, setActive, isLogin, onClose]);
+
+
   return (
     <Flex
       justify={'space-between'}
@@ -74,7 +95,11 @@ export const BottomBar = () => {
     >
       {bar?.map((item, index) => {
         return (
-          <Link to={item.link} key={index}>
+          <Link
+            to={isLogin ? item.link : '#'}
+            onClick={item.link == "/" ? null : isLogin ? null : onOpen}
+            key={index}
+          >
             <Flex
               display={'flex'}
               flexDirection={'column'}
@@ -87,6 +112,24 @@ export const BottomBar = () => {
           </Link>
         );
       })}
+
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Modal Title</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Text>Test</Text>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+            <Button variant="ghost">Secondary Action</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Flex>
   );
 };
