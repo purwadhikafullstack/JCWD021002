@@ -4,7 +4,11 @@ import {
   addUserController,
   getUserController,
   updateUserController,
+  getStoreController,
 } from '../controllers/user.controller';
+import {
+  uploadAvatarFile
+} from '../middlewares/multerConfig';
 
 const userRouter = Router();
 
@@ -15,8 +19,8 @@ userRouter.get('/user-lists', async (req, res) => {
 });
 
 // POST
-userRouter.patch('/update-user', async (req, res) => {
-  const result = await updateUserController();
+userRouter.patch('/update-user', uploadAvatarFile, async (req, res) => {
+  const result = await updateUserController(req, res);
   return result;
 });
 
@@ -27,8 +31,13 @@ userRouter.get('/user-detail/:id', async (req, res) => {
 });
 
 // GET
-userRouter.post('/add-user', async (req, res) => {
+userRouter.post('/add-user', uploadAvatarFile, async (req, res) => {
   const result = await addUserController(req, res);
+  return result;
+});
+
+userRouter.get('/store-lists', async (req, res) => {
+  const result = await getStoreController(req, res);
   return result;
 });
 

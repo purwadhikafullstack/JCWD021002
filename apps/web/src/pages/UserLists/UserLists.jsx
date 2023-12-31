@@ -22,7 +22,13 @@ import {
   Input,
   Tooltip,
   Flex,
-  Image
+  Image,
+  Select,
+  Avatar,
+  Icon,
+  Divider,
+  InputGroup,
+  InputLeftElement
 } from "@chakra-ui/react";
 import {
   IconPlus,
@@ -30,27 +36,34 @@ import {
   IconEditCircle,
   IconTrashX,
   IconInfoCircle,
+  IconChevronLeft,
+  IconChevronRight,
+  IconSearch,
 } from '@tabler/icons-react';
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { ResizeButton } from '../../components/ResizeButton';
 import LogoGroceria from '../../assets/Groceria-no-Bg.png';
+import { FaStar } from "react-icons/fa6";
 
-// pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
-export const UserLists = ({size, handleWebSize}) => {
+const MAX_VISIBLE_PAGES = 3; 
+
+
+ const UserLists = ({size, handleWebSize}) => {
   const [data, setData] = useState([]);
   const [dataUser, setDataUser] = useState([]);
   const [sortOrder, setSortOrder] = useState("asc");
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [page, setPage] = useState();
+  const [pageSize, setPageSize] = useState();
   const [totalPage, setTotalPage] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedUser, setSelectedUser] = useState(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [editModalOpen, setEditModalOpen] = useState(false);
-  const [newUser, setNewUser] = useState("");
-  const [editUser, setEditUser] = useState("");
   const navigate = useNavigate();
+  const [selectedPage, setSelectedPage] = useState(page);
+  const [roleId, setRoleId] = useState('')
+  const [username, setUsername] = useState()
+  const [searchParams, setSearchParams] = useSearchParams({ page, pageSize });
 
 
   const handleSortOrder = (order) => {
@@ -62,66 +75,25 @@ export const UserLists = ({size, handleWebSize}) => {
     setDeleteModalOpen(true);
   };
 
-  const handleEditUser = (user) => {
-    setSelectedUser(user);
-    setEditModalOpen(true);
-  };
-
-  const addNewUser = async () => {
-    // try {
-    //   await axios.post(
-    //     `http://localhost:8000/api/category/add-category`, {
-    //       category: newCategory
-    //     },
-    //   );
-
-    //   alert("Success");
-    //   onClose();
-    //   fetchCategory();
-    // } catch (err) {
-    //   console.log(err);
-    // }
-  };
-
-  const confirmEditCategory = async () => {
-    // try {
-    //   await axios.patch(
-    //     `http://localhost:8000/api/category/change-category`, {
-    //       category_id: selectedCategory?.id,
-    //       categoryNew: editCategory
-    //     });
-
-    //   alert("Edit category successful");
-    //   onClose();
-    //   fetchCategory();
-    //   setEditCategory("")
-    // } catch (err) {
-    //   alert("error");
-    // }
-  };
-
   const confirmDeleteUser = async () => {
-    // try {
-    //   await axios.delete(
-    //     `http://localhost:8000/api/category/remove-category/${selectedCategory.id}`
-    //   );
+    try {
+      const result = await axios.patch(
+        `${import.meta.env.VITE_API_URL}user/update-user`,
+        {
+          id : selectedUser?.id,
+          status : 'Deactive'
+        }
+      );
 
-    //   alert("delete category successful");
-    //   onClose();
-    //   fetchCategory();
-    // } catch (err) {
-    //   alert("category used in another data");
-    // }
-  };
-
-  const handleItemClick = (itemId) => {
-    setSelectedItems((prevSelectedItems) => {
-      if (prevSelectedItems.includes(itemId)) {
-        return prevSelectedItems.filter((id) => id !== itemId);
-      } else {
-        return [...prevSelectedItems, itemId];
+      if(result) {
+        alert("User deactive successful");
+        setDeleteModalOpen(false);
+      fetchUser();
       }
-    });
+    } catch (err) {
+      alert("User used in another data");
+      
+    }
   };
 
   useEffect(() => {
@@ -172,26 +144,69 @@ export const UserLists = ({size, handleWebSize}) => {
   const fetchUser = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/user/user-lists`
+        `http://localhost:8000/api/user/user-lists?page=${page}&pageSize=${pageSize}&roleId=${roleId}&username=${username}`
       );
 
+      console.log('API Request URL:', response.config.url);
       setDataUser(response?.data);
     } catch (err) {
       console.log(err);
     }
   };
 
-  console.log(dataUser);
-  console.log(size);
-  console.log(handleWebSize);
+  useEffect(() => {
+    setSearchParams({ page, pageSize, username, roleId });
+  }, [page, pageSize, username, roleId]);
+  
 
   useEffect(() => {
+    const pageFromUrl = parseInt(searchParams.get('page')) || 1;
+    const pageSizeFromUrl = parseInt(searchParams.get('pageSize')) || 10;
+    const usernameFromUrl = searchParams.get('username') || '';
+    const roleIdFromUrl = searchParams.get('roleId') || '';
+    setPage(pageFromUrl);
+    setPageSize(pageSizeFromUrl);
+    setUsername(usernameFromUrl);
+    setRoleId(roleIdFromUrl);
+    setSelectedPage(pageFromUrl);
+  }, []); // This useEffect runs only once when the component mounts
+  
+  useEffect(() => {
     fetchUser();
-  }, []);
+  }, [page, pageSize, username, roleId]);
+  
+const getPageNumbers = () => {
+  const totalPages = dataUser?.totalPages || 0;
+  const currentPage = selectedPage;
+
+  let startPage = Math.max(currentPage - Math.floor(MAX_VISIBLE_PAGES / 2), 1);
+  let endPage = Math.min(startPage + MAX_VISIBLE_PAGES - 1, totalPages);
+
+  if (totalPages - endPage < Math.floor(MAX_VISIBLE_PAGES / 2)) {
+    startPage = Math.max(endPage - MAX_VISIBLE_PAGES + 1, 1);
+  }
+
+  const pages = [];
+  for (let i = startPage; i <= endPage; i++) {
+    pages.push(i);
+  }
+
+  if (startPage > 1) {
+    pages.unshift("...");
+  }
+
+  if (endPage < totalPages) {
+    pages.push("...");
+  }
+
+  return pages;
+};
+
+
 
   return (
     <>
-      <Box w={{ base: '98.7vw', md: size }} height='100vh' backgroundColor='#fbfaf9' >
+      <Box w={{ base: '98.7vw', md: size }} height='fit-content' backgroundColor='#fbfaf9' >
       <Flex
         position={'relative'}
         // top={{ base: '20px', lg: '-30px' }}
@@ -202,66 +217,143 @@ export const UserLists = ({size, handleWebSize}) => {
       >
         <Image src={LogoGroceria} h={'30px'} />
         <ResizeButton webSize={size} handleWebSize={handleWebSize} color={"black"}/>
-        <Button onClick={handleWebSize}>Klik</Button>
       </Flex>
       <Box p='20px'>
      
         <Box pl={size == '500px' ? '0px' : '150px' }>
+                <Flex dir='row' gap='10px'>
+                <Box w='60%'>
+                <InputGroup mb='20px'>
+            <InputLeftElement pointerEvents='none'>
+              <IconSearch color='black' />
+            </InputLeftElement>
+            <Input type='text' placeholder='Search by username' width='50vw' value={username} borderRadius='full' borderColor='solid grey 1px' onChange={(e) => setUsername(e.target.value)} />
+          </InputGroup>
+                </Box>
+          <Box>
+          <Select
+          border='solid 1px black'
+              width='fit-content'
+              placeholder="Select role"
+              value={roleId}
+              onChange={(e) => setRoleId(e.target.value)}
+            >
+              <option value="">All Roles</option>
+              <option value="1">Super Admin</option>
+              <option value="2">Admin Store</option>
+              <option value="3">User</option>
+            </Select>
+          </Box>
+                </Flex>
           <HStack mb='10px'>
-            <Button leftIcon={<IconPlus />} backgroundColor='#286043' textColor='white' border='solid 1px #286043' onClick={onOpen}>Add User</Button>
-            <Modal isOpen={isOpen} onClose={onClose}>
-              <ModalOverlay />
-              <ModalContent>
-                <ModalHeader>Filter</ModalHeader>
-                <ModalCloseButton />
-                <ModalBody>
-                  <FormLabel>User Name</FormLabel>
-                  <Input border='solid black 1px' name='newUser' value={newUser} onChange={(e) => setNewUser(e.target.value)} type='text'></Input>
-                </ModalBody>
-                <ModalFooter>
-                  <Button colorScheme='blue' mr={3} onClick={onClose}>
-                    Close
-                  </Button>
-                  <Button colorScheme='green' mr={3} onClick={addNewUser}>
-                    Add User
-                  </Button>
-                </ModalFooter>
-              </ModalContent>
-            </Modal>
+            <Button leftIcon={<IconPlus />} backgroundColor='#286043' textColor='white' border='solid 1px #286043' onClick={() => navigate('/add-user')}>Add User</Button>
+            
             <Spacer /> 
             <Button onClick={exportToPDF} borderRadius='full' border='solid 1px black' leftIcon={<IconArrowNarrowDown />}>Download</Button>
           </HStack>
-          <Box p="20px" boxShadow='0px 1px 5px gray'>
-            <HStack mb='5px'>
-              <Text fontWeight='bold'>User Name</Text>
-              <Spacer /> 
-              <Text fontWeight='bold' mr='10px'>Action</Text>
-            </HStack>
-            <Box as='hr' borderTopWidth='3px' borderTopColor='black.200'></Box>
-            {dataUser?.allUsers?.map((item, index) => (
-              <>
-                <HStack m='10px' >
-                <Tooltip label={`Email: ${item?.email} \b Full Name: ${item?.fullname}`} fontSize="md" placement="top">
-                    <Text
-                      width='210px'
-                      isTruncated
-                      textOverflow='ellipsis'
-                      whiteSpace='nowrap'
-                      _hover={{ textDecoration: "underline", cursor: "pointer" }}
-                      onClick={() => navigate(`/detail-user/${item?.id}`)}
+            <Flex
+              alignItems={size == '500px' ? 'center' : "flex-start"}
+              gap={"24px"}
+              flexWrap={"wrap"}
+              h='fit-content'
+            >
+              {dataUser?.allUsers?.map((item, index) => (
+                <Flex
+                  className="admin-container"
+                  alignItems={"center"}
+                  gap={"17px"}
+                  flex={"1 0 calc(25% - 24px)"}
+                  borderRadius={"16px"}
+                  background={"#FFFFFF"}
+                  boxShadow={"base"}
+                  minWidth={size == '500px' ? '155px' : '200px' }
+                  maxWidth={"246px"}
+                  key={index}
+                >
+                  <Box
+                    width={"10px"}
+                    height={"80px"}
+                    backgroundColor={"#9ED6A3"}
+                    borderRadius={"0px 14px 14px 0px"}
+                  ></Box>
+
+                  <Flex
+                    padding={"24px 0px"}
+                    flexDirection={"column"}
+                    justifyContent={"center"}
+                    alignItems={"flex-start"}
+                    width='100%'
+                    gap={"24px"}
+                  >
+                    <Flex
+                      justifyContent={"center"}
+                      alignItems={"center"}
+                      gap={"10px"}
+                      width='100%'
+                      flexDirection={size == '500px' ? 'column' : 'row' }
                     >
-                      {item?.username}
-                    </Text>
-                  </Tooltip>
-                  <Spacer />
-                  <IconButton  icon={<IconInfoCircle />} variant='ghost' colorScheme='blue' onClick={() => navigate(`/detail-user/${item?.id}`)} />
-                  <IconButton  icon={<IconEditCircle />} variant='ghost' colorScheme='blue' onClick={() => handleEditUser(item)} />
-                  <IconButton  icon={<IconTrashX />} variant='ghost' colorScheme='red' onClick={() => handleDeleteUser(item)} />
-                </HStack>
-                <Box as='hr' borderTopWidth='1px' borderTopColor='black.200' />
-              </>
-            ))}
-          </Box>
+                        <Avatar
+                          key={item?.avatar}
+                          boxSize={"64px"}
+                          name={item?.username}
+                          borderRadius={"full"}
+                          src={item?.avatar ? `${
+                            import.meta.env.VITE_API_IMAGE_URL
+                          }/avatar/${item?.avatar}` : "https://bit.ly/broken-link"}
+                          onClick={() => navigate(`/detail-user/${item?.id}`)}
+                          cursor="pointer"
+                          _hover={{
+                            transform: "scale(1.1)",
+                          }}
+                        /> 
+                      <Flex
+                        flexDirection={"column"}
+                        justifyContent={"center"}
+                        alignItems={"flex-start"}
+                        gap={"8px"}
+                      >
+                        <Flex alignItems={"center"} gap={"8px"}>
+                          <Icon
+                            as={FaStar}
+                            color={"#F2C139"}
+                            fontSize={"24px"}
+                          />
+                          <Text fontSize={"14px"} fontWeight={"400"}>
+                            {item?.username}
+                          </Text>
+                        </Flex>
+                        <Flex alignItems={"center"} gap={"2px"}>
+                          <Text
+                            fontSize={"14px"}
+                            fontWeight={"400"}
+                            color={"#949494"}
+                          >
+                            {item?.role_idrole == 1
+                              ?  'Super Admin'
+                              : item?.role_idrole == 2
+                                ? 'Admin Store'
+                                : 'User'}
+                          </Text>
+                          <Text
+                            fontSize={"14px"}
+                            fontWeight={"400"}
+                            color={"#9ED6A3"}
+                          >
+                            | {item?.status}
+                          </Text>
+                        </Flex>
+                        <Flex alignItems={"center"} gap={"8px"}>
+                          {/* <IconButton  icon={<IconInfoCircle />} variant='ghost' colorScheme='blue' onClick={() => navigate(`/detail-user/${item?.id}`)} /> */}
+                    <IconButton  icon={<IconEditCircle />} variant='ghost' colorScheme='blue' onClick={() => navigate(`/edit-user/${item?.id}`)} />
+                    <IconButton  icon={<IconTrashX />} variant='ghost' colorScheme='red' onClick={() => handleDeleteUser(item)} />
+                        </Flex>
+                      </Flex>
+                    </Flex>
+                  </Flex>
+                </Flex>
+              ))}
+            </Flex>
+          
           {deleteModalOpen && (
             <Modal isOpen={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
               <ModalOverlay />
@@ -286,7 +378,46 @@ export const UserLists = ({size, handleWebSize}) => {
               </ModalContent>
             </Modal>
           )}
-          
+          <Flex marginTop='10px' flexWrap='wrap'>
+            <Box mt='20px'>
+            <HStack>
+            <Text>Show per Page</Text>
+            <Select border='solid 1px black' width='fit-content' value={pageSize} onChange={(e) => setPageSize(e.target.value)}>
+              <option value={1}>1</option>
+              <option value={10}>10</option>
+              <option value={15}>15</option>
+              <option value={20}>20</option>
+              <option value={30}>30</option>
+              <option>All</option>
+            </Select>
+            </HStack>
+            </Box>
+            <Spacer />
+            <Box mt='20px'>
+            <Button borderRadius='full' backgroundColor='#286043' textColor='white' border='solid 1px #286043' leftIcon={<IconChevronLeft />} isDisabled={page == 1 ? true : false} onClick={() => {setPage(page - 1); setSelectedPage(selectedPage -1);}} ></Button>
+  {getPageNumbers().map((pageNumber, index) => (
+          <Button
+            key={index}
+            ml='2px'
+            mr='2px'
+            borderRadius='full'
+            backgroundColor={selectedPage === pageNumber ? '#286043' : 'white'}
+            textColor={selectedPage === pageNumber ? 'white' : '#286043'}
+            border={`solid 1px ${selectedPage === pageNumber ? 'white' : '#286043'}`}
+            onClick={() => {
+              // Handle the case where the button is "..." separately
+              if (pageNumber !== "...") {
+                setPage(pageNumber);
+                setSelectedPage(pageNumber);
+              }
+            }}
+          >
+            {pageNumber}
+          </Button>
+        ))}
+  <Button borderRadius='full' backgroundColor='#286043' textColor='white' border='solid 1px #286043' rightIcon={<IconChevronRight />} isDisabled={page == dataUser?.totalPages ? true : false} onClick={() => {setSelectedPage(selectedPage +1); setPage(page+1);}}></Button>
+            </Box>
+  </Flex>
         </Box>
       </Box>
       </Box>
@@ -294,4 +425,4 @@ export const UserLists = ({size, handleWebSize}) => {
   );
           }
 
-// export default UserLists ;
+export default UserLists ;

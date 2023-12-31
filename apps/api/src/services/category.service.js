@@ -5,7 +5,7 @@ const {
     deleteCategoryQuery,
     getCategoryQuery,
     deleteCategoryForProductQuery,
-    getCAtegoryForProductQuery,
+    getCategoryForProductQuery,
 } = require("../queries/category.query")
 
 const getPaginatedAndFilteredCategoryService = async (page, pageSize, sortField, sortOrder, categoryName) => {
@@ -24,6 +24,11 @@ const getPaginatedAndFilteredCategoryService = async (page, pageSize, sortField,
   
   const addCategoryService = async (category) => {
     try {
+
+      if (!category || !category.trim()) {
+        return 'Category name cannot be empty or contain only spaces';
+    }
+
         const check = await getCategoryQuery(category);
         if (check.length > 0) {
             return ('Category name already added')
@@ -50,7 +55,8 @@ const getPaginatedAndFilteredCategoryService = async (page, pageSize, sortField,
 
   const deleteCategoryService = async (category_id) => {
     try {
-      const res1 = await getCAtegoryForProductQuery(category_id)
+      const res1 = await getCategoryForProductQuery(category_id)
+      console.log("ini res1",res1);
       if(res1.length > 1) {
         return "The Category Used in Another Product"
       }

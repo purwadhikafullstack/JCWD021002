@@ -126,13 +126,13 @@ function formatPriceToIDR(price) {
         <Image src={LogoGroceria} h={'30px'} />
         <ResizeButton webSize={size} handleWebSize={handleWebSize} color={"black"}/>
       </Flex>
-    <HStack mb='10px' p={4} position={size == '500px' ? 'relative' : 'sticky'} top={size == '500px' ? '0px' : '0px'}>
+    <HStack mb='10px' p={4} position={size == '500px' ? 'relative' : 'sticky'} top={size == '500px' ? '0px' : '50px'}>
         {/* <IconChevronLeft />
         <Text textAlign='left' fontWeight='bold'>Product Name</Text> */}
         <Button backgroundColor='#f5f5f5' leftIcon={<IconChevronLeft />}>Kembali</Button>
     </HStack>
-    <Flex justifyContent='center' pl={size == '500px' ? '0px' : '20px'} pr={size == '500px' ? '0px' : '20px'}  flexDirection={size == '500px' ? 'column' : 'row'} h={"full"} alignItems={size == '500px' ? 'flex-start' : 'center'}>
-      <VStack width={size == '500px' ? '100%' : '30vw'} position={size == '500px' ? 'relative' : 'sticky'} top={size == '500px' ? '0px' : '110px'} mt={size == '500px' ? '0px' : '-485px'} >
+    <Flex justifyContent='start' pl={size == '500px' ? '0px' : '20px'} pr={size == '500px' ? '0px' : '20px'}  flexDirection={size == '500px' ? 'column' : 'row'} h={"full"} alignItems={size == '500px' ? 'flex-start' : 'center'}>
+      <VStack width={size == '500px' ? '100%' : '30vw'} position={size == '500px' ? 'relative' : 'sticky'} top={size == '500px' ? '0px' : '110px'} mt={size == '500px' ? '0px' : '-785px'} >
     <Box width={size == '500px' ? '80%' : '30vw'} justifyContent='center'>
           <Slider {...mainSliderSettings} asNavFor={thumbnailSlider} ref={(slider) => setMainSlider(slider)}>
             {data?.Product?.ProductImages?.map((image, index) => (
@@ -141,7 +141,7 @@ function formatPriceToIDR(price) {
                 backgroundColor='white'
                 src={`${import.meta.env.VITE_API_IMAGE_URL}/products/${image.imageUrl}`}
                 objectFit='contain'
-                height='35vh'
+                height='40vh'
                 borderRadius='10px'
               />
             ))}
@@ -170,7 +170,7 @@ function formatPriceToIDR(price) {
   </Slider>
   </Box>
   </VStack>
-        <VStack width={size == '500px' ? '100%' : '50vw'}>
+        <VStack>
         <Box mt='20px' mb='20px' width='97%' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
             <Text fontSize='x-large' fontWeight='bold' color='tomato'>{formatPriceToIDR(data?.Product?.price)}</Text>
             <Text fontWeight='bold'>{data?.Product?.name}</Text>

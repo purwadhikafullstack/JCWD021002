@@ -1,16 +1,17 @@
 const {
     getUserQuery,
     updateUserQuery,
-    getUserDetailQuery,
+    getDetailUserQuery,
     addUserQuery,
     findUserQuery,
+    getStoreQuery,
 } = require('../queries/user.query');
 const bcrypt = require("bcrypt");
 
 
-    const getUserService = async (page, pageSize, roleId) => {
+    const getUserService = async (page, pageSize, roleId, username) => {
         try {
-            const res = await getUserQuery(page, pageSize, roleId)
+            const res = await getUserQuery(page, pageSize, roleId, username)
 
             return res;
         } catch (err) {
@@ -18,9 +19,9 @@ const bcrypt = require("bcrypt");
         }
     }
 
-    const updateUserService = async (id, username, email, fullname, avatar, role_idrole, status) => {
+    const updateUserService = async (id, username, email, fullname, avatar, role_idrole, status, store_idstore) => {
         try {
-            await updateUserQuery(id, username, email, fullname, avatar, role_idrole, status)
+            await updateUserQuery(id, username, email, fullname, avatar, role_idrole, status, store_idstore)
         } catch (err) {
             throw err;
         }
@@ -28,7 +29,7 @@ const bcrypt = require("bcrypt");
 
     const getDetailUserService = async (userId) => {
         try {
-            const result = await getUserDetailQuery(userId);
+            const result = await getDetailUserQuery(userId);
 
             return result;
         } catch (err) {
@@ -36,7 +37,7 @@ const bcrypt = require("bcrypt");
         }
     }
 
-    const addUserService = async (username, email, password, fullname, avatar, role_idrole) => {
+    const addUserService = async (username, email, fullname, password, avatar, role_idrole, store_idstore) => {
             try {
                 const check = await findUserQuery({ email, username });
 
@@ -46,8 +47,18 @@ const bcrypt = require("bcrypt");
             
                 const hashPassword = await bcrypt.hash(password, salt);
         
-                const result = await addUserQuery(username, email, hashPassword, fullname, avatar, role_idrole);
+                const result = await addUserQuery(username, email, fullname, hashPassword, avatar, role_idrole, store_idstore);
         
+                return result;
+            } catch (err) {
+                throw err;
+            }
+        }
+
+        const getStoreService = async () => {
+            try {
+                const result = await getStoreQuery();
+
                 return result;
             } catch (err) {
                 throw err;
@@ -59,4 +70,5 @@ const bcrypt = require("bcrypt");
         updateUserService,
         getDetailUserService,
         addUserService,
+        getStoreService,
     }

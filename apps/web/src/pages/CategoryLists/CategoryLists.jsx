@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
-// import pdfMake from 'pdfmake/build/pdfmake';
-// import pdfFonts from 'pdfmake/build/vfs_fonts';
 import {
   Box,
   Button,
@@ -20,6 +18,8 @@ import {
   ModalBody,
   ModalFooter,
   Input,
+  Flex,
+  Image,
 } from "@chakra-ui/react";
 import {
   IconPlus,
@@ -27,10 +27,12 @@ import {
   IconEditCircle,
   IconTrashX,
 } from '@tabler/icons-react';
+import { ResizeButton } from '../../components/ResizeButton';
+import LogoGroceria from '../../assets/Groceria-no-Bg.png';
+import { saveAs } from 'file-saver';
+import { utils, write } from 'xlsx';
 
-// pdfMake.vfs = pdfFonts.pdfMake.vfs;
-
-const CategoryLists = (webSize) => {
+const CategoryLists = ({size, handleWebSize}) => {
   const [data, setData] = useState([]);
   const [dataCategory, setDataCategory] = useState([]);
   const [sortOrder, setSortOrder] = useState("asc");
@@ -60,15 +62,18 @@ const CategoryLists = (webSize) => {
 
   const addNewCategory = async () => {
     try {
-      await axios.post(
+      const result = await axios.post(
         `http://localhost:8000/api/category/add-category`, {
           category: newCategory
         },
       );
 
-      alert("Success");
+      alert(result?.data?.result);
+  console.log("ini result",result);
+
       onClose();
       fetchCategory();
+      setNewCategory()
     } catch (err) {
       console.log(err);
     }
@@ -99,6 +104,7 @@ const CategoryLists = (webSize) => {
 
       alert("delete category successful");
       onClose();
+      setDeleteModalOpen(false);
       fetchCategory();
     } catch (err) {
       alert("category used in another data");
@@ -115,49 +121,21 @@ const CategoryLists = (webSize) => {
     });
   };
 
-  useEffect(() => {
-    if (data) {
-      exportToPDF();
+
+  const exportToExcel = () => {
+    if (dataCategory && dataCategory.categories?.length > 0) {
+      const ws = utils.json_to_sheet(dataCategory?.categories);
+      const wb = write({ Sheets: { 'Categories': ws }, SheetNames: ['Categories'] }, { bookType: 'xlsx', bookSST: true, type: 'binary' });
+
+      const buffer = new ArrayBuffer(wb.length);
+      const view = new Uint8Array(buffer);
+      for (let i = 0; i < wb.length; i++) {
+        view[i] = wb.charCodeAt(i) & 0xFF;
+      }
+
+      const blob = new Blob([buffer], { type: 'application/octet-stream' });
+      saveAs(blob, 'categories.xlsx');
     }
-  }, [data]);
-
-  const exportToPDF = () => {
-    // if (data) {
-    //   const docDefinition = {
-    //     content: [
-    //       { text: 'Product List', style: 'header' },
-    //       '\n',
-    //       {
-    //         table: {
-    //           headerRows: 1,
-    //           widths: ['auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
-    //           body: [
-    //             ['ID', 'Name', 'Price', 'Description', 'Status', 'Quantity', 'Created At', 'Updated At'],
-    //             ...data.products.map((product) => [
-    //               product.id,
-    //               product.name,
-    //               formatPriceToIDR(product.price),
-    //               product.description,
-    //               product.status,
-    //               product.quantity,
-    //               new Date(product.created_at).toLocaleString(),
-    //               new Date(product.updated_at).toLocaleString(),
-    //             ]),
-    //           ],
-    //         },
-    //       },
-    //     ],
-    //     styles: {
-    //       header: {
-    //         fontSize: 18,
-    //         bold: true,
-    //         alignment: 'center',
-    //       },
-    //     },
-    //   };
-
-    //   pdfMake.createPdf(docDefinition).download('product_list.pdf');
-    // }
   };
 
   const fetchCategory = async () => {
@@ -180,8 +158,20 @@ const CategoryLists = (webSize) => {
 
   return (
     <>
-      <Box w={{ base: '98.7vw', md: webSize.webSize }} height='100vh' backgroundColor='#fbfaf9' p='50px'>
-        <Box pl={{ base: '150px', md: webSize.webSize == '500px' ? '0px' : '150px' }}>
+      <Box w={{ base: '98.7vw', md: size }} height='100vh' backgroundColor='#fbfaf9'>
+      <Flex
+        position={'relative'}
+        // top={{ base: '20px', lg: '-30px' }}
+        px={'20px'}
+        h={"10vh"}
+        justify={"space-between"}
+        align={"center"}
+      >
+        <Image src={LogoGroceria} h={'30px'} />
+        <ResizeButton webSize={size} handleWebSize={handleWebSize} color={"black"}/>
+      </Flex>
+      <Box p='50px'>
+        <Box pl={size == '500px' ? '0px' : '150px' } >
           <HStack mb='10px'>
             <Button leftIcon={<IconPlus />} backgroundColor='#286043' textColor='white' border='solid 1px #286043' onClick={onOpen}>Add Category</Button>
             <Modal isOpen={isOpen} onClose={onClose}>
@@ -204,7 +194,7 @@ const CategoryLists = (webSize) => {
               </ModalContent>
             </Modal>
             <Spacer /> 
-            <Button onClick={exportToPDF} borderRadius='full' border='solid 1px black' leftIcon={<IconArrowNarrowDown />}>Download</Button>
+            <Button onClick={exportToExcel} borderRadius='full' border='solid 1px black' leftIcon={<IconArrowNarrowDown />}>Download</Button>
           </HStack>
           <Box p="20px" boxShadow='0px 1px 5px gray'>
             <HStack mb='5px'>
@@ -272,6 +262,7 @@ const CategoryLists = (webSize) => {
               </ModalContent>
             </Modal>
           )}
+        </Box>
         </Box>
       </Box>
     </>

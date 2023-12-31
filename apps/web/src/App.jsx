@@ -4,6 +4,9 @@ import ProductDetail from './pages/ProductDetail/Product'
 import ProductSearch from './pages/ProductSearch/ProductSearch'
 import CategoryLists from './pages/CategoryLists/CategoryLists'
 import UserLists from './pages/UserLists/UserLists'
+import UserDetail from './pages/UserDetail/UserDetail'
+import AddUser from './pages/AddUser/AddUser'
+import EditUser from './pages/EditUser/EditUser'
 import { useState } from 'react';
 import { IoPhonePortraitOutline } from 'react-icons/io5';
 import { IoIosLaptop } from 'react-icons/io';
@@ -32,8 +35,6 @@ function App() {
             bgColor={"white"}
             minH={"100vh"}
           >
-            <Button onClick={handleWebSize}>Klik</Button>
-           
             <Flex>
               <Routes>
                 {/* <Route
@@ -42,11 +43,13 @@ function App() {
                     <Home size={webSize === 'mobile' ? '500px' : '100vw'} />
                   }
                 /> */}
-                <Route path="/product-detail/:id" element={<ProductDetail size={webSize === 'mobile' ? '500px' : '100vw'} handleWebSize={handleWebSize} />} />
-                <Route path="/product-search" element={<ProductSearch size={webSize === 'mobile' ? '500px' : '100vw'} />} handleWebSize={handleWebSize} />
-                <Route path="/category-lists" element={<CategoryLists size={webSize === 'mobile' ? '500px' : '100vw'} />} handleWebSize={handleWebSize} />
-                <Route path="/user-lists" element={<UserLists size={webSize === 'mobile' ? '500px' : '100vw'} />} handleWebSize={handleWebSize} />
-                <Route path="/detail-user/:id" element={<UserLists size={webSize === 'mobile' ? '500px' : '100vw'} />} handleWebSize={handleWebSize} />
+                <Route path="/product-detail/:id" element={<ProductDetail size={webSize === 'mobile' ? '500px' : '100vw'} handleWebSize={handleWebSize}  />} />
+                <Route path="/product-search" element={<ProductSearch size={webSize === 'mobile' ? '500px' : '100vw'} handleWebSize={handleWebSize} />}  />
+                <Route path="/category-lists" element={<CategoryLists size={webSize === 'mobile' ? '500px' : '100vw'} handleWebSize={handleWebSize} />}  />
+                <Route path="/user-lists" element={<UserLists size={webSize === 'mobile' ? '500px' : '100vw'} handleWebSize={handleWebSize}/>}  />
+                <Route path="/detail-user/:id" element={<UserDetail size={webSize === 'mobile' ? '500px' : '100vw'} handleWebSize={handleWebSize} />}  />
+                <Route path="/add-user" element={<AddUser size={webSize === 'mobile' ? '500px' : '100vw'} handleWebSize={handleWebSize} />}  />
+                <Route path="/edit-user/:id" element={<EditUser size={webSize === 'mobile' ? '500px' : '100vw'} handleWebSize={handleWebSize} />}  />
               </Routes>
             </Flex>
           </Box>

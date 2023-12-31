@@ -1,38 +1,60 @@
 import User from "../models/user.model";
+import Store from '../models/store.model'
+import City from "../models/city.model";
+import Province from "../models/province.model";
 const { Op } = require("sequelize");
 
-  const getUserQuery = async (page, pageSize, roleId) => {
+const getUserQuery = async (page, pageSize, roleId, username) => {
   try {
     const offset = (page - 1) * (pageSize || 0);
 
-    const allUsers = await User.findAll(
+    const whereConditions = {};
 
-      {
-        offset: offset,
-        limit: pageSize ? pageSize : undefined,
-        where: roleId ? {role_idrole: roleId} : {}
-      }
-    )
+    if (roleId) {
+      whereConditions.role_idrole = roleId;
+    }
+
+    if (username) {
+      whereConditions.username = { [Op.like]: `%${username}%` };
+    }
+
+    console.log("ini di query", username);
+
+    const allUsers = await User.findAll({
+      offset: offset,
+      limit: pageSize || undefined,
+      where: whereConditions,
+    });
 
     const totalUsers = await User.count({
-      where: roleId ? {role_idrole: roleId} : {}
-    })
+      where: whereConditions,
+    });
 
     const totalPages = Math.ceil(totalUsers / (pageSize || totalUsers));
 
     return {
       allUsers,
-      totalPages
+      totalPages,
     };
   } catch (err) {
-    throw err
+    throw err;
   }
-}
+};
+
 
 const getDetailUserQuery = async (userId) => {
   try {
     const result = await User.findOne({
-      where: {id: userId}
+      where: {id: userId},
+      include: [{
+        model: Store,
+        include: [{
+          model: City,
+          include: [{
+            model: Province,
+          }]
+        }]
+      }]
     })
 
     return result;
@@ -49,6 +71,7 @@ const getDetailUserQuery = async (userId) => {
     avatar,
     role_idrole,
     status,
+    store_idstore,
   ) => {
     try {
       const updatedValue = {
@@ -60,8 +83,11 @@ const getDetailUserQuery = async (userId) => {
         status,
       }
 
+      console.log(username);
+      console.log(email);
+
       Object.keys(updatedValue).forEach((key) => {
-        if (updatedValue[key] == null || updatedValue[key] == undefined) {
+        if (updatedValue[key] == null || updatedValue[key] == undefined || updatedValue[key] == " " || updatedValue[key] == "") {
           delete updatedValue[key];
         }
       });
@@ -79,11 +105,13 @@ const getDetailUserQuery = async (userId) => {
   const addUserQuery = async (
     username,
     email,
-    hashPassword,
     fullname,
+    hashPassword,
     avatar,
     role_idrole,
+    store_idstore
   ) => {
+    console.log('ini di query',store_idstore);
     try {
       const result = await User.create({
         username,
@@ -92,7 +120,9 @@ const getDetailUserQuery = async (userId) => {
         fullname,
         avatar,
         role_idrole,
-        status: 1,
+        status: 'Active',
+        store_idstore: store_idstore ? store_idstore : null,
+        registrationDate: new Date()
       })
 
       return result;
@@ -119,10 +149,21 @@ const findUserQuery = async ({ email = null, username = null }) => {
   }
 };
 
+ const getStoreQuery = async () => {
+   try {
+     const result = await Store.findAll({});
+
+     return result
+   } catch (err) {
+     throw err;
+   }
+ }
+
 module.exports = {
   getUserQuery,
   updateUserQuery,
   getDetailUserQuery,
   addUserQuery,
-  findUserQuery
+  findUserQuery,
+  getStoreQuery,
 }
