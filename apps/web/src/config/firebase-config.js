@@ -50,7 +50,7 @@ const signInWithGoogle = async (dispatch) => {
         email: user.email,
       });
     }
-
+    
     const payload = {
       username: user.displayName,
       email: user.email,

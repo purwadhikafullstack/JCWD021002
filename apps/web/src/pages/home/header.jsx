@@ -7,11 +7,14 @@ import {
   InputLeftElement,
   // Button,
 } from '@chakra-ui/react';
-import { IoIosSearch } from 'react-icons/io';
+import { useSelector } from 'react-redux';
+import { IoIosSearch, IoIosArrowDown } from 'react-icons/io';
 import { PiMapPinLine } from 'react-icons/pi';
 import { ResizeButton } from '../../components/ResizeButton';
 
-export const Header = ({ size, handleWebSize, city, province }) => {
+export const Header = ({ size, handleWebSize }) => {
+  const location = useSelector((state) => state.AuthReducer.location);
+  console.log('loc', location);
   return (
     <Flex
       bgColor={'colors.primary'}
@@ -20,12 +23,32 @@ export const Header = ({ size, handleWebSize, city, province }) => {
       p={'20px'}
       gap={3}
     >
-      <Flex justify={"space-between"} align={"center"}>
-        <Flex color="white" gap={2} align={'center'}>
-          <PiMapPinLine size={'20px'} />
-          <Text>{city ? `${city}, ${province}` : "Location"}</Text>
+      <Flex justify={'space-between'} align={'center'} h={'fit-content'}>
+        <Flex
+          color="white"
+          gap={2}
+          align={'center'}
+          cursor={'pointer'}
+          fontSize={'14px'}
+        >
+          <PiMapPinLine size={'18px'} />
+          <Flex gap={1.5}>
+            Dikirim ke
+            <Text fontWeight={700}>
+              {location?.city
+                ? `${location.city}, ${location.Province?.province}`
+                : location && location.length > 0
+                  ? location.toString()
+                  : '. . .'}
+            </Text>
+          </Flex>
+          <IoIosArrowDown size={'16px'} />
         </Flex>
-        <ResizeButton webSize={size} handleWebSize={handleWebSize} color={"white"}/>
+        <ResizeButton
+          webSize={size}
+          handleWebSize={handleWebSize}
+          color={'white'}
+        />
       </Flex>
 
       <InputGroup alignItems={'center'}>

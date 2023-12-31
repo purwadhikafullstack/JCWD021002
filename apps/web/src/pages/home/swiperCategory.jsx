@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Flex } from '@chakra-ui/react';
+import { Flex, Text } from '@chakra-ui/react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 
@@ -17,7 +17,7 @@ export const SwiperCategory = ({ size }) => {
     { slide: 'Slide 10' },
   ];
   return (
-    <Flex h={'fit-content'} overflow={"hidden"}>
+    <Flex h={'fit-content'} overflow={'hidden'} w={'full'}>
       <Swiper
         slidesPerView={size == '500px' ? 5 : 6}
         spaceBetween={30}
@@ -42,7 +42,7 @@ export const SwiperCategory = ({ size }) => {
                 w={size == '500px' ? '70px' : '100px'}
                 borderRadius={'50%'}
               />
-              {item.slide}
+              <Text fontSize={{ base: '12px', md: '16px' }}>{item.slide}</Text>
             </SwiperSlide>
           );
         })}

@@ -13,7 +13,7 @@ export const MySwiper = ({ size }) => {
     { slide: 'Slide 5' },
   ];
   return (
-    <Flex h={'fit-content'}>
+    <Flex h={'fit-content'} w={"full"}>
       <Swiper
         slidesPerView={1.2}
         autoplay={{

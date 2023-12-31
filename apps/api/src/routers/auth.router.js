@@ -5,9 +5,11 @@ import {
   loginController,
   setPasswordController,
   loginWithSocialController,
-  registerWithSocialController
+  registerWithSocialController,
+  keepLoginController
 } from '../controllers/auth.controller';
 import { registerWithSocialService } from '../services/auth.service';
+import { verifyToken } from '../middleware/auth';
 
 const authRouter = Router();
 
@@ -22,12 +24,16 @@ authRouter.post('/register', async (req, res) => {
 authRouter.post('/login', async (req, res) => {
   await loginController(req, res);
 });
+
 authRouter.post('/loginsocial', async (req, res) => {
   await loginWithSocialController(req, res);
 });
+
 authRouter.post('/registersocial', async (req, res) => {
   await registerWithSocialController(req, res);
 });
+
+authRouter.get('/keepLogin', verifyToken, keepLoginController);
 
 authRouter.patch('/setPassword', async (req, res) => {
   await setPasswordController(req, res);

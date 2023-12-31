@@ -15,10 +15,14 @@ import * as Yup from 'yup';
 // import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { register } from '../../redux/reducer/authReducer';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import Loader from '../../components/Loader';
+import { useState } from 'react';
 
 const registerSchema = Yup.object().shape({
   username: Yup.string()
+    .min(5, 'Username must be at least 5 characters')
     .matches(/^\S{5,}$/, 'username is invalid')
     .required('username is required'),
   email: Yup.string()
@@ -30,8 +34,9 @@ const registerSchema = Yup.object().shape({
 });
 
 export const FormRegister = () => {
-  const dispatch = useDispatch()
-  // const navigate = useNavigate()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [displayLoader, setDisplayLoader] = useState('none');
 
   const formik = useFormik({
     initialValues: {
@@ -41,11 +46,27 @@ export const FormRegister = () => {
     },
     validationSchema: registerSchema,
     onSubmit: async (values) => {
-      dispatch(
-        register(values.username, values.email, values.password)
-        )
-      // console.log(res)
-      // if (res == "register success") navigate("/")
+      setDisplayLoader('flex');
+      const res = await dispatch(
+        register({
+          username: values.username,
+          email: values.email,
+          password: values.password,
+        }),
+      );
+      console.log(res.payload);
+      if (res?.payload == 'Register Success') {
+        setDisplayLoader('none');
+        navigate('/verifysentmail');
+        toast.success(res?.payload);
+      } else if (
+        res?.error?.message == 'Email or username has already existed'
+      ) {
+        setTimeout(() => {
+          setDisplayLoader('none');
+          toast.error(res?.error?.message);
+        }, 1000);
+      }
     },
   });
 
@@ -110,7 +131,9 @@ export const FormRegister = () => {
             )}
           </FormControl>
         </Flex>
-
+        <Flex display={displayLoader} position={'absolute'} top={0} left={0}>
+          <Loader />
+        </Flex>
         <MyButton type="submit" value={<Text>Sign up</Text>} />
       </Flex>
     </form>

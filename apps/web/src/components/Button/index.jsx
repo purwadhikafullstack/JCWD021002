@@ -5,7 +5,7 @@ export const MyButton = ({ value, type }) => {
   return (
     <Button
       w={'full'}
-      bgColor={'#1B4332'}
+      bgColor={'colors.primary'}
       color={'white'}
       p={'0 16px'}
       fontSize={'16px'}

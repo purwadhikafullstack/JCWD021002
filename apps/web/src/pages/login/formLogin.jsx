@@ -20,7 +20,7 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { login } from '../../redux/reducer/authReducer';
-// import axios from 'axios';
+import Loader from '../../components/Loader';
 
 const loginSchema = Yup.object().shape({
   emailOrUsername: Yup.string()
@@ -42,6 +42,7 @@ export const FormLogin = () => {
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [displayLoader, setDisplayLoader] = useState('none');
 
   const handleClickshow = () => setShow(!show);
 
@@ -52,17 +53,29 @@ export const FormLogin = () => {
     },
     validationSchema: loginSchema,
     onSubmit: async (values) => {
-      const user = await dispatch(
-        login(values.emailOrUsername, values.password),
-      );
-      if (user.role_idrole == 3) {
-        navigate('/');
-      } else if (user.role_idrole == 2) {
-        navigate('/admin');
-      } else if (user.role_idrole == 1){
-        navigate('/superadmin');
-      } else {
-        toast.error("login failed")
+      setDisplayLoader('flex');
+      try {
+        let user;
+        setTimeout(async () => {
+          user = await dispatch(login(values.emailOrUsername, values.password));
+          if (user?.role_idrole === 3) {
+            setDisplayLoader('none');
+            navigate('/');
+          } else if (user?.role_idrole === 2) {
+            setDisplayLoader('none');
+            navigate('/');
+          } else if (user?.role_idrole === 1) {
+            setDisplayLoader('none');
+            navigate('/');
+          } else {
+            setDisplayLoader('none');
+          }
+        }, 1500);
+      } catch (error) {
+        setTimeout(() => {
+          setDisplayLoader('none');
+          toast.error("Login Failed");
+        }, 1500)
       }
     },
   });
@@ -128,6 +141,10 @@ export const FormLogin = () => {
               </FormErrorMessage>
             )}
           </FormControl>
+        </Flex>
+
+        <Flex display={displayLoader} position={'absolute'} top={0} left={0}>
+          <Loader />
         </Flex>
 
         <MyButton type="submit" value={<Text>Sign in</Text>} />

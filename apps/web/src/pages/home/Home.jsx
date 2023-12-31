@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../config/firebase-config';
 
 import { Button, Flex, Text } from '@chakra-ui/react';
@@ -12,27 +12,28 @@ import { IoIosArrowForward } from 'react-icons/io';
 import { BottomBar } from '../../components/BottomBar';
 import { Collections } from './collections';
 import { ProductList } from './productList';
+import { logoutSuccess } from '../../redux/reducer/authReducer';
 // import './Home.css';
 
-export const Home = ({ handleWebSize, size, city, province }) => {
+export const Home = ({ handleWebSize, size }) => {
   const navigate = useNavigate();
+  const user = useSelector((state) => state.AuthReducer.user);
+  const dispatch = useDispatch();
   const onLogout = () => {
     const result = logout();
+    dispatch(logoutSuccess());
     if (result === 'logout success') {
       navigate('/login');
     }
   };
 
-  const user = useSelector((state) => state.authReducer);
-  console.log('user Home', user);
 
   return (
     <Flex
-      w={size}
+      w={{ base: '100vw', lg: size }}
       direction={'column'}
-      // mt={"-52px"}
     >
-      <Header size={size} handleWebSize={handleWebSize} city={city} province={province} />
+      <Header size={size} handleWebSize={handleWebSize} />
       <Flex>
         <MySwiper size={size} />
       </Flex>
@@ -41,7 +42,7 @@ export const Home = ({ handleWebSize, size, city, province }) => {
         p={'20px'}
         direction={'column'}
         gap={5}
-        w={size}
+        w={{base: "full", lg: size}}
         overflowX={'hidden'}
       >
         <Flex
@@ -54,7 +55,7 @@ export const Home = ({ handleWebSize, size, city, province }) => {
           borderRadius={'4px'}
           cursor={'pointer'}
         >
-          <Flex gap={2}>
+          <Flex gap={2} >
             <PiGift size={'20px'} />
             <Text fontWeight={400} fontSize={'14px'}>
               You have 5 voucher here
@@ -67,8 +68,13 @@ export const Home = ({ handleWebSize, size, city, province }) => {
 
         <ProductList />
         <Button onClick={onLogout}>Log out</Button>
+        <Flex mb={'100px'} direction={'column'}>
+          <Text>{user.username}</Text>
+          <Text>{user.email}</Text>
+          <Text>{user.fullname}</Text>
+        </Flex>
       </Flex>
-      <Flex position={'fixed'} bottom={0} w={size}>
+      <Flex position={'fixed'} bottom={0} w={{base: "full", md: size}}>
         <BottomBar />
       </Flex>
     </Flex>

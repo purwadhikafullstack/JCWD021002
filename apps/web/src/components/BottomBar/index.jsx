@@ -1,14 +1,66 @@
 import { Flex } from '@chakra-ui/react';
-import { HiHome, HiShoppingCart } from 'react-icons/hi2';
-import { MdFavorite } from 'react-icons/md';
-import { IoPersonCircleOutline } from 'react-icons/io5';
+import {
+  HiOutlineHome,
+  HiHome,
+  HiOutlineShoppingCart,
+  HiShoppingCart,
+} from 'react-icons/hi2';
+import { MdFavorite, MdFavoriteBorder } from 'react-icons/md';
+import { IoPersonCircleOutline, IoPersonCircleSharp } from 'react-icons/io5';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 export const BottomBar = () => {
+  const [active, setActive] = useState('');
+  const path = useLocation();
+
+  useEffect(() => {
+    const pathName = path.pathname
+    setActive(pathName)
+  }, [path]);
+
   const bar = [
-    { text: 'Home', icon: <HiHome size={'26px'} /> },
-    { text: 'Home', icon: <HiShoppingCart size={'26px'} /> },
-    { text: 'Home', icon: <MdFavorite size={'26px'} /> },
-    { text: 'Home', icon: <IoPersonCircleOutline size={'26px'} /> },
+    {
+      text: 'Home',
+      icon:
+        active == '/' ? (
+          <HiHome size={'26px'} />
+        ) : (
+          <HiOutlineHome size={'26px'} />
+        ),
+      link: '/',
+    },
+    {
+      text: 'Cart',
+      icon:
+        active == '/cart' ? (
+          <HiShoppingCart size={'26px'} />
+        ) : (
+          <HiOutlineShoppingCart size={'26px'} />
+        ),
+      link: '/cart',
+    },
+    {
+      text: 'Favorite',
+      icon:
+        active == '/favorite' ? (
+          <MdFavorite size={'26px'} />
+        ) : (
+          <MdFavoriteBorder size={'26px'} />
+        ),
+      link: '/favorite',
+    },
+    {
+      text: 'Profile',
+      icon:
+        active == '/profile' ? (
+          <IoPersonCircleSharp size={'26px'} />
+        ) : (
+          <IoPersonCircleOutline size={'26px'} />
+        ),
+      link: '/profile',
+    },
   ];
 
   return (
@@ -18,14 +70,21 @@ export const BottomBar = () => {
       bgColor={'white'}
       p={'20px'}
       fontSize={'10px'}
-      boxShadow={"0px -8px 8px -14px rgba(0,0,0,1)"}
+      boxShadow={'0px -8px 8px -14px rgba(0,0,0,1)'}
     >
       {bar?.map((item, index) => {
         return (
-          <Flex key={index} direction={'column'} align={"center"} justify={"center"}>
-            {item.icon}
-            {item.text}
-          </Flex>
+          <Link to={item.link} key={index}>
+            <Flex
+              display={'flex'}
+              flexDirection={'column'}
+              alignItems={'center'}
+              justifyContent={'center'}
+            >
+              {item.icon}
+              {item.text}
+            </Flex>
+          </Link>
         );
       })}
     </Flex>

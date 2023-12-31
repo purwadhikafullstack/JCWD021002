@@ -9,7 +9,11 @@ import { Toaster } from 'react-hot-toast';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import Theme from './theme';
-import { useGeolocation } from './hooks/useGeolocation';
+import { Location } from './hooks/geolocation';
+import { Auth } from './pages/auth';
+import { Profile } from './pages/profile';
+import { LoggedInUser, LoginRoute } from './pages/auth/loggedInUser';
+import { VerifySentMail } from './pages/register/verifySentMail';
 
 function App() {
   const [webSize, setWebSize] = useState('mobile');
@@ -19,67 +23,91 @@ function App() {
     );
   };
 
-  const { city, province } = useGeolocation();
-
   return (
     <BrowserRouter>
       <Provider store={store}>
         <ChakraProvider theme={Theme}>
-          <Flex justify={'center'} w={'100vw'} bgColor={'colors.secondary'}>
-            <Box
-              width={{
-                base: '100vw',
-                md: webSize === 'mobile' ? '500px' : '100vw',
-              }}
-              transition="width 0.3s ease"
-              bgColor={'white'}
-              minH={'100vh'}
-            >
-              <Flex>
-                <Routes>
-                  <Route
-                    path="/"
-                    element={
-                      <Home
-                        size={webSize === 'mobile' ? '500px' : '100vw'}
-                        handleWebSize={handleWebSize}
-                        city={city}
-                        province={province}
+          <Auth>
+            <Location>
+              <Flex justify={'center'} w={'100vw'} bgColor={'#DAF1E8FF'}>
+                <Box
+                  width={{
+                    base: '100vw',
+                    md: webSize === 'mobile' ? '500px' : '100vw',
+                  }}
+                  transition="width 0.3s ease"
+                  bgColor={'white'}
+                  minH={'100vh'}
+                >
+                  <Flex>
+                    <Routes>
+                      <Route
+                        path="/"
+                        element={
+                          <Home
+                            size={webSize === 'mobile' ? '500px' : '100vw'}
+                            handleWebSize={handleWebSize}
+                          />
+                        }
                       />
-                    }
-                  />
-                  <Route
-                    path="/login"
-                    element={
-                      <Login
-                        size={webSize === 'mobile' ? '500px' : '100vw'}
-                        handleWebSize={handleWebSize}
+                      <Route
+                        path="/login"
+                        element={
+                          <LoginRoute>
+                            <Login
+                              size={webSize === 'mobile' ? '500px' : '100vw'}
+                              handleWebSize={handleWebSize}
+                            />
+                          </LoginRoute>
+                        }
                       />
-                    }
-                  />
-                  <Route
-                    path="/register"
-                    element={
-                      <Register
-                        size={webSize === 'mobile' ? '500px' : '100vw'}
-                        handleWebSize={handleWebSize}
+                      <Route
+                        path="/register"
+                        element={
+                          <Register
+                            size={webSize === 'mobile' ? '500px' : '100vw'}
+                            handleWebSize={handleWebSize}
+                          />
+                        }
                       />
-                    }
-                  />
-                  <Route
-                    path="/set-password"
-                    element={
-                      <SetPassword
-                        size={webSize === 'mobile' ? '500px' : '100vw'}
-                        handleWebSize={handleWebSize}
+                      <Route
+                        path="/set-password"
+                        element={
+                          <SetPassword
+                            size={webSize === 'mobile' ? '500px' : '100vw'}
+                            handleWebSize={handleWebSize}
+                          />
+                        }
                       />
-                    }
-                  />
-                </Routes>
+                      <Route
+                        path="/profile"
+                        element={
+                          <LoggedInUser>
+                            <Profile
+                              size={webSize === 'mobile' ? '500px' : '100vw'}
+                              handleWebSize={handleWebSize}
+                            />
+                          </LoggedInUser>
+                        }
+                      />
+                      <Route
+                        path="/verifysentmail"
+                        element={
+                          <LoginRoute>
+                            <VerifySentMail
+                              size={webSize === 'mobile' ? '500px' : '100vw'}
+                              handleWebSize={handleWebSize}
+                            />
+                          </LoginRoute>
+                        }
+                      />
+                    </Routes>
+                  </Flex>
+                </Box>
               </Flex>
-            </Box>
-          </Flex>
-          <Toaster position="center-bottom" />
+              <Toaster position="center-bottom" />
+            </Location>
+          </Auth>
         </ChakraProvider>
       </Provider>
     </BrowserRouter>

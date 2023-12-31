@@ -3,7 +3,7 @@ const {
   getUserRegisterQuery,
   getUserLoginQuery,
 } = require('../queries/user.query');
-const { registerQuery, setPasswordQuery } = require('../queries/auth.query');
+const { registerQuery, setPasswordQuery, keepLoginQuery } = require('../queries/auth.query');
 const short = require('short-uuid');
 import bcrypt from 'bcrypt';
 import transporter from '../utils/transporter';
@@ -12,10 +12,51 @@ import fs from 'fs';
 import path from 'path';
 import handlebars from 'handlebars';
 
+const sentMail = async (resetToken, email) => {
+  try {
+    const temp = fs.readFileSync(
+      path.join(__dirname, '../template', 'emailVerification.html'),
+      'utf-8',
+    );
+
+    const setPasswordLink = `${process.env.WEB_BASE_URL}/set-password?resetToken=${resetToken}`;
+    const tempCompile = handlebars.compile(temp);
+    const tempResult = tempCompile({
+      email: email,
+      verificationLink: setPasswordLink,
+    });
+    const emailUser = process.env.EMAIL_USER;
+
+    if (typeof emailUser !== 'string') {
+      throw new Error('GMAIL_USER is not set in the environment');
+    }
+
+    if (typeof email !== 'string') {
+      throw new Error('Recipient email is invalid');
+    }
+
+    await transporter.sendMail({
+      from: emailUser,
+      to: email,
+      subject: 'Email Confirmation',
+      html: tempResult,
+    });
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
+}
+
 export const registerService = async (username, email, password, fullname) => {
   try {
+    console.log("serv email", email )
+    console.log("serv username", username )
+    console.log("serv pass", password )
+    console.log("serv fullname", fullname )
     // Check username and email
     const check = await getUserRegisterQuery({ username, email });
+    // console.log(check.verification_status)
+    // if (check?.verification_status == "Unverified") throw new Error('Email or username has already existed');
     if (check) throw new Error('Email or username has already existed');
 
     // hash Password
@@ -47,33 +88,7 @@ export const registerService = async (username, email, password, fullname) => {
 
     const resetToken = jwt.sign({ email }, secretKey);
 
-    const temp = fs.readFileSync(
-      path.join(__dirname, '../template', 'emailVerification.html'),
-      'utf-8',
-    );
-
-    const setPasswordLink = `${process.env.WEB_BASE_URL}/set-password?resetToken=${resetToken}`;
-    const tempCompile = handlebars.compile(temp);
-    const tempResult = tempCompile({
-      email: email,
-      verificationLink: setPasswordLink,
-    });
-    const emailUser = process.env.EMAIL_USER;
-
-    if (typeof emailUser !== 'string') {
-      throw new Error('GMAIL_USER is not set in the environment');
-    }
-
-    if (typeof email !== 'string') {
-      throw new Error('Recipient email is invalid');
-    }
-
-    await transporter.sendMail({
-      from: emailUser,
-      to: email,
-      subject: 'Email Confirmation',
-      html: tempResult,
-    });
+    sentMail(resetToken, email)
 
     const res = await registerQuery(
       username,
@@ -106,6 +121,7 @@ export const loginService = async (emailOrUsername, password) => {
     if (check.status == 'Inactive') throw new Error('Your email is Inactive.');
 
     const payload = {
+      id: check.id,
       username: check.username,
       email: check.email,
       fullname: check.fullname,
@@ -118,9 +134,9 @@ export const loginService = async (emailOrUsername, password) => {
     const token = jwt.sign(payload, secretKey, {
       expiresIn: '1hr',
     });
-
     return {
       user: {
+        id: check.id,
         username: check.username,
         email: check.email,
         fullname: check.fullname,
@@ -142,6 +158,7 @@ export const loginWithSocialService = async (email) => {
     if (check.status == 'Inactive') throw new Error('Your email is Inactive.');
 
     const payload = {
+      id: check.id,
       username: check.username,
       email: check.email,
       fullname: check.fullname,
@@ -157,6 +174,7 @@ export const loginWithSocialService = async (email) => {
 
     return {
       user: {
+        id: check.id,
         username: check.username,
         email: check.email,
         fullname: check.fullname,
@@ -218,13 +236,25 @@ export const setPasswordService = async (resetToken, password) => {
     if (typeof decoded == 'object' && 'email' in decoded) {
       const salt = await bcrypt.genSalt(10);
       const hashPassword = await bcrypt.hash(password, salt);
-
+      console.log(decoded.email)
       await setPasswordQuery(decoded.email, hashPassword);
     } else {
       throw new Error('Invalid Token');
     }
-    // const
   } catch (err) {
+    console.log(err)
     throw err;
+  }
+};
+
+export const keepLoginService = async (id) => {
+  try {
+      const res = await keepLoginQuery(id);
+
+      if (!res) throw new Error("User doesn't exist");
+
+      return res;
+  } catch (err){
+      throw err;
   }
 };

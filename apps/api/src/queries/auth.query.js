@@ -45,3 +45,16 @@ export const setPasswordQuery = async (email, password) => {
     throw err;
   }
 };
+
+export const keepLoginQuery = async (id) => {
+  try {
+    const res = await User.findByPk(id, {
+      attributes: {
+        exclude: ["password", "resetToken"]
+      }
+    });
+    return res;
+  } catch (err) {
+    throw err;
+  }
+};
