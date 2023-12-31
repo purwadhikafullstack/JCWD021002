@@ -4,6 +4,10 @@ import { authRouter } from './routers/auth.router';
 import{ productRouter } from './routers/product.router';
 import { cartRouter } from './routers/cart.router';
 import { cityRouter } from './routers/city.router';
+import { categoryRouter } from './routers/category.router';
+import { productStockRouter } from './routers/productStock.router';
+import { userRouter } from './routers/user.router';
+
 
 const router = Router();
 
@@ -14,8 +18,11 @@ router.get('/', (req, res) => {
 router.use('/sample', sampleRouter);
 router.use('/auth', authRouter);
 router.use('/city', cityRouter);
-router.use('/products', productRouter);
 router.use('/cart', cartRouter);
+router.use('/user', userRouter);
+router.use('/products', productRouter);
+router.use('/category', categoryRouter);
+router.use('/product-stock', productStockRouter);
 
 // add another router here ...
 

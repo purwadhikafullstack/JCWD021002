@@ -28,6 +28,10 @@ export const init = (sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      status:{
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      }
     },
     {
       sequelize,

@@ -1,111 +1,264 @@
-const { Op } = require('sequelize');
-// const db = require('../models');
-// const product = db.product;
-// const productCategory = db.productCategory;
-// const productStock = db.productStock;
-// const store = db.store;
-import product from '../models/product.model';
-import productCategory from '../models/productCategory.model';
-import productStock from '../models/productStock.model';
-import store from '../models/store.model';
-import city from '../models/city.model';
-import user from '../models/user.model';
+const { Op, col } = require('sequelize');
+import Product from '../models/product.model';
+import ProductCategory from '../models/productCategory.model';
+import ProductStock from '../models/productStock.model';
+import Store from '../models/store.model';
+import City from '../models/city.model';
+import User from '../models/user.model';
+import ProductImage from '../models/productImage.model';
+import Mass from '../models/mass.model';
+import Packaging from '../models/packaging.model';
 
 
 
-// const getPaginatedAndFilteredProductsQuery = async (
-//   page,
-//   pageSize,
-//   sortField,
-//   sortOrder,
-//   categoryId,
-//   productName,
-//   cityId 
-// ) => {
-//   try {
-//     console.log("query", page, pageSize, sortField, sortOrder, categoryId, productName, cityId);
+const getPaginatedAndFilteredProductsQuery = async (
+  page,
+  pageSize,
+  sortField,
+  sortOrder,
+  categoryId,
+  productName,
+  cityId
+) => {
+  try {
+    console.log("query", page, pageSize, sortField, sortOrder, categoryId, productName, cityId);
 
-//     const offset = (page - 1) * (pageSize || 0); // If pageSize is null, offset is set to 0
+    const offset = (page - 1) * (pageSize || 0);
 
-//     const whereCondition = {};
+    const whereCondition = {};
 
-//     if (productName) {
-//       whereCondition.name = {
-//         [Op.like]: `%${productName}%`, // Case-insensitive search for product name
-//       };
-//     }
+    if (productName) {
+      whereCondition.name = {
+        [Op.like]: `%${productName}%`,
+      };
+    }
 
-//     if (categoryId) {
-//       whereCondition['$productCategory.idproductCategory$'] = categoryId;
-//     }
+    const productStockQuery = {
+      include: [
+        {
+          model: Store,
+          include: [
+            {
+              model: City,
+              where: cityId ? { id: cityId } : {},
+            }
+          ]
+        }
+      ],
+      // Add any other conditions for ProductStock here
+    };
 
-//     if (cityId) {
-//       whereCondition['$productStock.store.city.idcity$'] = cityId;
-//     }
+    const productStocks = await ProductStock.findAll(productStockQuery);
 
-//     const products = await product.findAll(
-//       {
-//       offset,
-//       limit: pageSize || undefined, // If pageSize is null, all records will be fetched
-//       order: [[sortField, sortOrder]],
-//       where: whereCondition,
-//       // include: [
-//       //   {
-//       //     model: product,
-//       //     as: 'product',
-//       //   },
-//       // ],
-//         // {
-//         //   model: product, // Assuming you have a model named ProductStock
-//         //   as: 'product',
-//         //   include: [
-//         //     {
-//         //       model: store,
-//         //       include: [
-//         //         {
-//         //           model: city,
-//         //         },
-//         //       ],
-//         //     },
-//         //     // {
-//         //     //   model: db.OrderDetail,
-//         //     // },
-//         //     // Add other associations if needed
-//         //   ],
-//         // },
-//       // ],
-//     }
-//     );
+    const productIds = productStocks.map((stock) => stock.product_idproduct);
 
-//     const totalProducts = await productStock.count({
-//       where: whereCondition,
-//       include: [
-//         {
-//           model: productCategory,
-//           as: 'productCategory',
-//         },
-//       ],
-//     });
+    const products = await Product.findAll({
+      offset: offset,
+      limit: pageSize ? pageSize : undefined,
+      order: [
+        [sortField, sortOrder],
+      ],
+      where: {
+        ...whereCondition,
+        id: productIds, // Filter based on the associated ProductStocks
+      },
+      include: [
+        {
+          model: ProductCategory,
+          through: { attributes: [] },
+          where: categoryId ? { id: categoryId } : {},
+        },
+        {
+          model: ProductImage,
+        },
+        {
+          model: ProductStock,
+        },
+        {
+          model: Mass,
+        },
+        {
+          model: Packaging,
+        }
+      ],
+    });
 
-//     const totalPages = Math.ceil(totalProducts / (pageSize || totalProducts)); // If pageSize is null, totalPages is set to 1
+    const totalProducts = await Product.count({
+      where: {
+        ...whereCondition,
+        id: productIds, // Filter based on the associated ProductStocks
+      },
+      include: [
+        {
+          model: ProductCategory,
+          through: { attributes: [] },
+          where: categoryId ? { id: categoryId } : {},
+        }
+      ],
+    });
 
-//     return {
-//       products,
-//       // totalPages,
-//     };
-//   } catch (err) {
-//     console.error('Error in getPaginatedAndFilteredProductsQuery:', err);
-//     throw err;
-//   }
-// };
+    const totalPages = Math.ceil(totalProducts / (pageSize || totalProducts));
 
-const getPaginatedAndFilteredProductsQuery = async () => {
-  const result = await product.findAll({ include:[productStock],});
+    return {
+      products,
+      totalPages,
+    };
 
-  return result;
+  } catch (err) {
+    console.error('Error in getPaginatedAndFilteredProductsQuery:', err);
+    throw err;
+  }
+};
+
+
+const getDetailProductQuery = async (id) => {
+  try {
+    const result = await ProductStock.findOne({
+      include: [{
+        model: Product,
+        include: [
+          {
+            model: ProductCategory,
+            through: { attributes: [] }, // This removes unnecessary attributes from the join table
+          },
+          {
+            model: ProductImage,
+          },
+          {
+            model: Mass,
+          },
+          {
+            model: Packaging,
+          },
+        ],
+      }],
+      where: {
+        id : id.id,
+      },
+    })
+  
+    return result;
+  } catch(err) {
+    console.log("ini di query",err);
+    throw error;
+  }
 }
 
+
+const addProductQuery = async (name, price, description, createdBy, massProduct, massId, packagingId) => {
+  try {
+
+    console.log("ini di query", name, price, description, createdBy);
+    const res = await Product.create({
+      
+        name,
+        price,
+        description,
+        createdAt: new Date(),
+        createdBy_iduser: createdBy,
+        status: 1,
+        massProduct,
+        mass_idmass: massId,
+        packaging_idpackaging: packagingId,
+    });
+
+    return res;
+  } catch (err) {
+    // console.error('Error in addProductQuery:', err);
+    throw err;
+  } 
+};
+
+
+const addImageProductQuery = async (imageUrl, product_idproduct) => {
+  try {
+
+    console.log("ini di query", imageUrl, product_idproduct);
+    console.log(typeof product_productid);
+    const res = await ProductImage.create({
+        imageUrl,
+        product_idproduct,
+    });
+
+    return res;
+  } catch (err) {
+    // console.error('Error in addProductQuery:', err);
+    throw err;
+  } 
+};
+
+  const softDeleteProductQuery = async (id) => {
+    try {
+      await Product.update(
+        {
+          status: 0,
+        },
+        {
+          where: { id: id.id }
+        }
+      )
+    } catch (err) {
+      throw err;
+    }
+  }
+
+
+  const updateProductQuery = async (
+      id,
+      name,
+      description,
+      price,
+      status,
+      massProduct, mass_idmass, packaging_idpackaging
+   ) => {
+
+    try {
+      // Create an object with non-null values
+      const updatedValue = {
+        name,
+        description,
+        price,
+        status, massProduct, mass_idmass, packaging_idpackaging
+      };
+
+      // Remove properties with null values
+      Object.keys(updatedValue).forEach((key) => {
+        if (updatedValue[key] == null || updatedValue[key] == undefined) {
+          delete updatedValue[key];
+        }
+      });
+      console.log(updatedValue);
+
+      // Ensure that the values are valid before calling the update
+      if (id) {
+        await Product.update(updatedValue, {
+          where: {
+            id: id,
+          },
+        });
+
+        
+      } else {
+        // Handle invalid input values
+       
+      }
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  };
+
+// const getPaginatedAndFilteredProductsQuery = async () => {
+//   const result = await ProductStock.findAll({include: [{model: Product, include: [{model: User}]}]});
+
+//   return result;
+// }
 
 module.exports = {
-    getPaginatedAndFilteredProductsQuery
-}
+  getPaginatedAndFilteredProductsQuery,
+  getDetailProductQuery,
+  addProductQuery,
+  addImageProductQuery,
+  softDeleteProductQuery,
+  updateProductQuery,
+};
