@@ -32,6 +32,7 @@ export const Home = ({ handleWebSize, size }) => {
     <Flex
       w={{ base: '100vw', lg: size }}
       direction={'column'}
+      bgColor={"#F8F9FAFF"}
     >
       <Header size={size} handleWebSize={handleWebSize} />
       <Flex>

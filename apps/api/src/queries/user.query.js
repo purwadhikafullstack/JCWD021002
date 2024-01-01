@@ -5,7 +5,7 @@ import Province from '../models/province.model';
 // import Role from '../models/role.model';
 import { Op } from 'sequelize';
 
-export const getUserRegisterQuery = async ({
+const getUserRegisterQuery = async ({
   username = null,
   email = null,
   referralCode = null,
@@ -163,7 +163,7 @@ const addUserQuery = async (
   }
 };
 
-export const getUserLoginQuery = async ({ emailOrUsername }) => {
+const getUserLoginQuery = async ({ emailOrUsername }) => {
   try {
     const res = await User.findOne({
       where: {
@@ -213,4 +213,6 @@ module.exports = {
   addUserQuery,
   findUserQuery,
   getStoreQuery,
+  getUserRegisterQuery,
+  getUserLoginQuery
 };

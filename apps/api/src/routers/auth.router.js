@@ -9,7 +9,7 @@ import {
   keepLoginController
 } from '../controllers/auth.controller';
 import { registerWithSocialService } from '../services/auth.service';
-import { verifyToken } from '../middleware/auth';
+import { verifyToken } from '../middlewares/auth';
 
 const authRouter = Router();
 

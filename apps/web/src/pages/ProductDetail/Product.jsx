@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Slider from 'react-slick';
@@ -246,7 +247,7 @@ function formatPriceToIDR(price) {
     )}
     </Flex>
     {size == '500px' ? (<Flex dir='column' w={{ base: '100vw', md: size }}>
-        <Box position='fixed' w={{ base: '100vw', md: size }}  p='20px 20px 20px 20px'  bottom={0} height='fit-content' p={2} backgroundColor='#286043'>
+        <Box position='fixed' w={{ base: '100vw', md: size }}  p='20px 20px 20px 20px'  bottom={0} height='fit-content' backgroundColor='#286043'>
         <Flex dir='row' h='40px' ml='50px'>
         <Button h='30px' onClick={handleDecrement} variant='outline' color='white'>
           -
