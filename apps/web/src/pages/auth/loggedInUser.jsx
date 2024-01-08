@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
+// import { toast } from 'react-hot-toast';
 
 export const LoginRoute = ({ children }) => {
   const isLogin = useSelector((state) => state.AuthReducer.isLogin);
@@ -30,6 +30,6 @@ export const LoggedInUser = ({ children }) => {
   if (checkToken) {
     return <>{children}</>;
   } else if (!checkToken) {
-    return toast.error('Please log in to access this page.'), (<>{children}</>);
+    return <Navigate to="/" />;
   }
 };

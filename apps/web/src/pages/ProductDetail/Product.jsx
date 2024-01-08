@@ -222,7 +222,7 @@ function formatPriceToIDR(price) {
         </Box>
         </VStack>
         {size == '500px' ? (<></>) : (
-      <Box top={size == '500px' ? '0px' : '110px'} mt={size == '500px' ? '0px' : '-900px'} position='sticky'  p='20px 20px 20px 20px' height='fit-content' p={2}>
+      <Box top={size == '500px' ? '0px' : '110px'} mt={size == '500px' ? '0px' : '-900px'} position='sticky'  p='20px 20px 20px 20px' height='fit-content'>
         <Box mt='10px' width='20vw' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
             <Flex flexWrap="wrap" gap='20px'>
             <HStack p='5px'>

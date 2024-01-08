@@ -58,3 +58,38 @@ export const keepLoginQuery = async (id) => {
     throw err;
   }
 };
+
+export const changePasswordQuery = async (id, hashPassword) => {
+  try {
+    const res = await User.update({
+      password: hashPassword,
+    },
+      {
+        where: {
+          id: id
+        }
+      })
+    return res
+  } catch (err) {
+    throw err
+  }
+}
+export const updateProfileQuery = async ({ id = null, username = null, fullname = null, avatar = null }) => {
+  try {
+    const res = await User.update({
+      username,
+      fullname,
+      avatar
+    },
+      {
+        where: {
+          id: id
+        }
+      })
+
+      console.log(username, fullname)
+    return res
+  } catch (err) {
+    throw err
+  }
+}

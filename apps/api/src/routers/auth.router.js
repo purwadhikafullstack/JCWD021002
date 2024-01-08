@@ -6,10 +6,14 @@ import {
   setPasswordController,
   loginWithSocialController,
   registerWithSocialController,
-  keepLoginController
+  keepLoginController,
+  changePasswordController,
+  changeEmailController,
+  changeEmailVerifyController,
+  updateProfileController
 } from '../controllers/auth.controller';
-import { registerWithSocialService } from '../services/auth.service';
 import { verifyToken } from '../middlewares/auth';
+import { uploadAvatarFile } from '../middlewares/multerConfig';
 
 const authRouter = Router();
 
@@ -38,5 +42,16 @@ authRouter.get('/keepLogin', verifyToken, keepLoginController);
 authRouter.patch('/setPassword', async (req, res) => {
   await setPasswordController(req, res);
 });
+
+authRouter.patch('/change-password/:id', async (req, res) => {
+  await changePasswordController(req, res);
+});
+authRouter.patch('/change-email/:id', async (req, res) => {
+  await changeEmailController(req, res);
+});
+authRouter.post('/change-email-verification/:id', async (req, res) => {
+  await changeEmailVerifyController(req, res);
+});
+authRouter.patch('/update-profile/:id', uploadAvatarFile, updateProfileController);
 
 export { authRouter };

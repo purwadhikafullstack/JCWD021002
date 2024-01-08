@@ -10,8 +10,7 @@ const initialState = {
     fullname: '',
     avatar: '',
     role_idrole: '',
-    status: '',
-    verification_status: '',
+    referralCode: ''
   },
   location: [],
   isLogin: false,
@@ -22,7 +21,7 @@ const authReducer = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      const { id, username, email, fullname, avatar, role_idrole } =
+      const { id, username, email, fullname, avatar, role_idrole, referralCode } =
         action.payload;
 
       state.user = {
@@ -32,6 +31,7 @@ const authReducer = createSlice({
         fullname,
         role_idrole,
         username,
+        referralCode
       };
     },
     setLocation: (state, action) => {
@@ -53,7 +53,7 @@ const authReducer = createSlice({
 export const login = (emailOrUsername, password) => {
   return async (dispatch) => {
     try {
-      const res = await axios.post('http://localhost:8000/api/auth/login', {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, {
         emailOrUsername,
         password,
       });
@@ -82,7 +82,7 @@ export const login = (emailOrUsername, password) => {
 
 export const register = createAsyncThunk("auth/register", async (userData) => {
   try {
-    const res = await axios.post('http://localhost:8000/api/auth/register', {
+    const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, {
       username: userData.username,
       email: userData.email,
       password: userData.password,
@@ -110,7 +110,7 @@ export const keepLogin = () => {
 
       if (token) {
         const res = await axios.get(
-          'http://localhost:8000/api/auth/keepLogin',
+          `${import.meta.env.VITE_API_URL}/auth/keepLogin`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

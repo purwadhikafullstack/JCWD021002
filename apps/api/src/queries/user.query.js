@@ -6,6 +6,7 @@ import Province from '../models/province.model';
 import { Op } from 'sequelize';
 
 const getUserRegisterQuery = async ({
+  id = null,
   username = null,
   email = null,
   referralCode = null,
@@ -14,6 +15,7 @@ const getUserRegisterQuery = async ({
     const res = await User.findOne({
       where: {
         [Op.or]: {
+          id: id,
           username: username,
           email: email,
           referralCode,

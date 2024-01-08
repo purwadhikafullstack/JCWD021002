@@ -25,7 +25,7 @@ export const Login = ({ size, handleWebSize }) => {
       const result = await signInWithGoogle(dispatch);
       console.log(result.user);
       const res = await axios.post(
-        'http://localhost:8000/api/auth/loginsocial',
+        `${import.meta.env.VITE_API_URL}/auth/loginsocial`,
         {
           email: result.user.email,
         },
@@ -53,7 +53,7 @@ export const Login = ({ size, handleWebSize }) => {
       const result = await signInWithFacebook(dispatch);
       console.log(result.user);
       const res = await axios.post(
-        'http://localhost:8000/api/auth/loginsocial',
+        `${import.meta.env.VITE_API_URL}/auth/loginsocial`,
         {
           email: result.user.email,
         },
@@ -75,7 +75,7 @@ export const Login = ({ size, handleWebSize }) => {
       const result = await signInWithTwitter(dispatch);
       console.log(result.user);
       const res = await axios.post(
-        'http://localhost:8000/api/auth/loginsocial',
+        `${import.meta.env.VITE_API_URL}/auth/loginsocial`,
         {
           email: result.user.email,
         },

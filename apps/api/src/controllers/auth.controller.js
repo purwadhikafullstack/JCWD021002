@@ -4,7 +4,11 @@ import {
   setPasswordService,
   loginWithSocialService,
   registerWithSocialService,
-  keepLoginService
+  keepLoginService,
+  changePasswordService,
+  changeEmailService,
+  changeEmailVerifyService,
+  updateProfileService
 } from '../services/auth.service';
 
 export const registerController = async (req, res) => {
@@ -51,7 +55,7 @@ export const loginWithSocialController = async (req, res) => {
 
 export const registerWithSocialController = async (req, res) => {
   try {
-    const { username, email, fullname  } = req.body;
+    const { username, email, fullname } = req.body;
     const result = await registerWithSocialService(username, email, fullname);
 
     return res.status(200).json({
@@ -79,24 +83,90 @@ export const setPasswordController = async (req, res) => {
 }
 
 export const keepLoginController = async (req, res) => {
-  try{
-      const id = req.user?.id;
+  try {
+    const id = req.user?.id;
 
-      console.log("keeplogin req user", req.user)
 
-      // if (id === undefined) {
-      //     return res.status(401).json({
-      //         message: "Unauthorized",
-      //     });
-      // }
-
-      const result = await keepLoginService(id);
-
-      return res.status(200).json({
-          message: "Success",
-          data: result
+    if (id === undefined) {
+      return res.status(401).json({
+        message: "Unauthorized",
       });
-  } catch (err){
-      return res.status(500).send(err.message)
+    }
+
+    const result = await keepLoginService(id);
+
+    return res.status(200).json({
+      message: "Success",
+      data: result
+    });
+  } catch (err) {
+    return res.status(500).send(err.message)
   }
 };
+
+export const changePasswordController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { password, newPassword } = req.body
+
+    const result = await changePasswordService(id, password, newPassword)
+
+    return res.status(200).json({
+      message: 'Change Password Success',
+      data: result,
+    })
+
+  } catch (err) {
+    return res.status(500).send(err.message)
+  }
+}
+
+export const changeEmailController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { newEmail } = req.body;
+
+    const result = await changeEmailService(id, newEmail)
+
+    return res.status(200).json({
+      message: "Change Email Success",
+      data: result
+    })
+  } catch (err) {
+    return res.status(500).send(err.message)
+  }
+}
+export const changeEmailVerifyController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { password } = req.body;
+
+    const result = await changeEmailVerifyService(id, password)
+    console.log("con", result)
+    return res.status(200).json({
+      message: "Email Terverifikasi",
+      data: result
+    })
+  } catch (err) {
+    return res.status(500).send(err.message)
+  }
+}
+export const updateProfileController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { username, fullname } = req.body;
+
+    const avatar = req.file?.filename;
+    console.log("controller", req.file)
+    console.log("controller", username)
+    console.log("controller", fullname)
+
+    const result = await updateProfileService(id, username, fullname, avatar)
+    return res.status(200).json({
+      message: "Email Terverifikasi",
+      data: result
+    })
+  } catch (err) {
+    return res.status(500).send(err.message)
+  }
+}

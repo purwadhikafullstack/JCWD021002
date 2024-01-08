@@ -25,7 +25,7 @@ export const Location = ({ children }) => {
               city = response.data.results[0].components.city;
 
               const res = await axios.get(
-                `http://localhost:8000/api/city/getCity?cityName=${city}`,
+                `${import.meta.env.VITE_API_URL}/city/getCity?cityName=${city}`,
               );
 
               dispatch(setLocation(res?.data?.data || city));

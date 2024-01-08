@@ -44,12 +44,7 @@ const getPaginatedAndFilteredProductsQuery = async (
       include: [
         {
           model: Store,
-          include: [
-            {
-              model: City,
-              where: cityId ? { id: cityId } : {},
-            },
-          ],
+          where: cityId ? { city_idcity: cityId } : {},
         },
       ],
       // Add any other conditions for ProductStock here

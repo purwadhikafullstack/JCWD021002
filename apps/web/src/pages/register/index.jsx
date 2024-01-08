@@ -94,7 +94,7 @@ export const Register = ({ size, handleWebSize }) => {
     <Flex
       direction={'column'}
       w={{ base: '100vw', md: size }}
-      h={{ base: '100vh', lg: '90vh' }}
+      h={{ base: '100vh', lg: '100vh' }}
       transition="width 0.3s ease"
       bgSize={size == '500px' ? 'contain' : 'cover'}
     >

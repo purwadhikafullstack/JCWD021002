@@ -33,8 +33,7 @@ export const Header = ({ size, handleWebSize }) => {
         >
           <PiMapPinLine size={'18px'} />
           <Flex gap={1.5}>
-            Dikirim ke
-            <Text fontWeight={700}>
+            <Text fontWeight={600}>
               {location?.city
                 ? `${location.city}, ${location.Province?.province}`
                 : location && location.length > 0

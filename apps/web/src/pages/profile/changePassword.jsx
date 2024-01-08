@@ -1,27 +1,29 @@
-import { useState } from 'react';
-import * as Yup from 'yup';
+/* eslint-disable react/prop-types */
+import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { useFormik } from 'formik';
-import { useNavigate } from 'react-router-dom';
+import * as Yup from 'yup';
+import { useState } from 'react';
 
+import { MdArrowBackIos } from 'react-icons/md';
 import {
+  Button,
   Flex,
-  Text,
   Input,
+  Text,
   FormControl,
   FormLabel,
   InputGroup,
   InputLeftElement,
   InputRightElement,
-  Button,
   FormErrorMessage,
 } from '@chakra-ui/react';
-import { MyButton } from '../../components/Button';
+import { Link, useNavigate } from 'react-router-dom';
 import { CiLock } from 'react-icons/ci';
 import { BiHide, BiShow } from 'react-icons/bi';
 import toast from 'react-hot-toast';
 
-const loginSchema = Yup.object().shape({
+const changePasswordSchema = Yup.object().shape({
   password: Yup.string()
     .min(8, 'Password must be at least 8 characters')
     .matches(
@@ -29,82 +31,90 @@ const loginSchema = Yup.object().shape({
       'Password must contain at least one uppercase letter and one number',
     )
     .required('password is required'),
-  confirmPassword: Yup.string()
-    .required('Confirm Password is required')
-    .oneOf([Yup.ref('password'), null], 'Passwords must match'),
 });
 
-export const FormSetPassword = () => {
+export const ChangePassword = ({ size }) => {
+  const navigate = useNavigate();
   const [show, setShow] = useState({
     showP: false,
     showC: false,
   });
   const handleClickshow = (key) =>
-  setShow((prev) => ({ ...prev, [key]: !prev[key] }));
+    setShow((prev) => ({ ...prev, [key]: !prev[key] }));
 
-  const navigate = useNavigate();
+  const userId = useSelector((state) => state.AuthReducer.user.id);
 
-  function getQueryParam(param) {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(param);
-  }
-
-
-  const resetToken = getQueryParam('resetToken');
-
-  const SetPassword = async (password, confirmPassword) => {
+  const changePassword = async (password, newPassword) => {
     try {
-      if (resetToken == null) {
-        return alert('Invalid or missing reset token');
-      }
-      if (password == confirmPassword) {
-        await axios.patch(
-          `${import.meta.env.VITE_API_URL}/auth/setPassword?resetToken=${encodeURIComponent(
-            resetToken,
-          )}`,
-          {
-            password,
-          },
-        );
-        toast.success('Set password success');
-        navigate('/login');
-      } else {
-        toast.success('Passwords must match');
-      }
+      await axios.patch(
+        `${import.meta.env.VITE_API_URL}/auth/change-password/${userId}`,
+        {
+          password,
+          newPassword,
+        },
+      );
+      toast.success('Ganti Password Berhasil');
+      navigate('/profile/personal-information/account');
     } catch (err) {
-      console.log(err);
-      toast.error(err.response?.data);
+      toast.error(err?.response?.data);
     }
   };
 
   const formik = useFormik({
     initialValues: {
       password: '',
-      confirmPassword: '',
+      newPassword: '',
     },
-    validationSchema: loginSchema,
+    validationSchema: changePasswordSchema,
     onSubmit: async (values) => {
-      SetPassword(values.password, values.confirmPassword);
+      await changePassword(values.password, values.newPassword);
     },
   });
 
   return (
-    <form
-      style={{ width: '100%', height: '100%' }}
-      onSubmit={formik.handleSubmit}
-    >
-      <Flex direction={'column'} gap={'50px'}>
-        <Flex direction={'column'} gap={'30px'}>
+    <Flex direction={'column'} w={size}>
+      <form onSubmit={formik.handleSubmit}>
+        <Flex
+          align={'center'}
+          w={'full'}
+          h={'60px'}
+          mb={'40px'}
+          p={'10px 30px'}
+          boxShadow={'base'}
+          justify={'space-between'}
+        >
+          <Flex w={"40px"}>
+            <Link to={'/profile/personal-information/account'}>
+              <MdArrowBackIos />
+            </Link>
+          </Flex>
+          <Text fontWeight={600} fontSize={'16px'}>
+            Ganti Password
+          </Text>
+          <Button
+            type="submit"
+            variant={'unstyled'}
+            isDisabled={
+              formik.values.password === '' || formik.values.newPassword === ''
+                ? true
+                : false
+            }
+          >
+            Simpan
+          </Button>
+        </Flex>
+
+        <Flex direction={'column'} gap={5} px={'30px'}>
           <FormControl
             isInvalid={formik.touched.password && formik.errors.password}
           >
-            <FormLabel>Password</FormLabel>
+            <FormLabel>Password saat ini</FormLabel>
             <InputGroup>
               <InputLeftElement>
                 <CiLock />
               </InputLeftElement>
               <Input
-                placeholder="Enter password"
+                placeholder="Masukkan password saat ini"
                 type={show?.showP ? 'text' : 'password'}
                 bgColor={'#F3F4F6FF'}
                 name="password"
@@ -124,20 +134,21 @@ export const FormSetPassword = () => {
             )}
           </FormControl>
 
+          {/* New Password */}
           <FormControl
-            isInvalid={formik.touched.confirmPassword && formik.errors.confirmPassword}
+            isInvalid={formik.touched.newPassword && formik.errors.newPassword}
           >
-            <FormLabel>Confirm Password</FormLabel>
+            <FormLabel>Password baru</FormLabel>
             <InputGroup>
               <InputLeftElement>
                 <CiLock />
               </InputLeftElement>
               <Input
-                placeholder="Confirm password"
+                placeholder="Masukkan password baru"
                 type={show?.showC ? 'text' : 'password'}
                 bgColor={'#F3F4F6FF'}
-                name="confirmPassword"
-                value={formik.values.confirmPassword}
+                name="newPassword"
+                value={formik.values.newPassword}
                 onChange={formik.handleChange}
               />
               <InputRightElement>
@@ -146,16 +157,14 @@ export const FormSetPassword = () => {
                 </Button>
               </InputRightElement>
             </InputGroup>
-            {formik.touched.confirmPassword && formik.errors.confirmPassword && (
+            {formik.touched.newPassword && formik.errors.newPassword && (
               <FormErrorMessage position={'absolute'}>
-                {formik.errors.confirmPassword}
+                {formik.errors.newPassword}
               </FormErrorMessage>
             )}
           </FormControl>
         </Flex>
-
-        <MyButton type={'submit'} value={<Text>Set password</Text>} />
-      </Flex>
-    </form>
+      </form>
+    </Flex>
   );
 };

@@ -10,6 +10,7 @@ import {
   useDisclosure,
   Text,
   Button,
+  Avatar
 } from '@chakra-ui/react';
 import {
   HiOutlineHome,
@@ -28,6 +29,7 @@ export const BottomBar = () => {
   const [active, setActive] = useState('');
   const path = useLocation();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const user = useSelector((state) => state.AuthReducer.user);
 
   const bar = [
     {
@@ -83,7 +85,6 @@ export const BottomBar = () => {
     }
   }, [path, setActive, isLogin, onClose]);
 
-
   return (
     <Flex
       justify={'space-between'}
@@ -97,7 +98,7 @@ export const BottomBar = () => {
         return (
           <Link
             to={isLogin ? item.link : '#'}
-            onClick={item.link == "/" ? null : isLogin ? null : onOpen}
+            onClick={item.link == '/' ? null : isLogin ? null : onOpen}
             key={index}
           >
             <Flex
@@ -106,8 +107,22 @@ export const BottomBar = () => {
               alignItems={'center'}
               justifyContent={'center'}
             >
-              {item.icon}
-              {item.text}
+              {item.link == '/profile' ? (
+                user.avatar ? (
+                  <Avatar
+                    size={'xs'}
+                    bgColor="#DAF1E8FF"
+                    color={'colors.primary'}
+                    src={`${import.meta.env.VITE_API_IMAGE_URL}/avatar/${
+                      user?.avatar
+                    }`}
+                  />
+                ) : (
+                  item.icon
+                )
+              ) : (
+                item.icon
+              )}
             </Flex>
           </Link>
         );
@@ -115,19 +130,38 @@ export const BottomBar = () => {
 
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
+        <ModalContent alignItems={'center'} w={'80%'}>
+          <ModalHeader></ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
-            <Text>Test</Text>
+          <ModalBody
+            display={'flex'}
+            flexDirection={'column'}
+            alignItems={'center'}
+            justifyContent={'center'}
+            gap={5}
+          >
+            <Text textAlign={'center'}>
+              Hanya satu langkah lagi! Silakan login untuk melanjutkan.
+            </Text>
+            <Link to={'/login'}>
+              <Button
+                variant="ghost"
+                bgColor="colors.primary"
+                color={'white'}
+                _hover={{
+                  transform: 'scale(1.1)',
+                }}
+                _active={{
+                  transform: 'scale(1)',
+                }}
+                borderRadius={'10px'}
+                px={'30px'}
+              >
+                Login
+              </Button>
+            </Link>
           </ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button variant="ghost">Secondary Action</Button>
-          </ModalFooter>
+          <ModalFooter></ModalFooter>
         </ModalContent>
       </Modal>
     </Flex>

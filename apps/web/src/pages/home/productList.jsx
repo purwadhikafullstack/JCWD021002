@@ -12,12 +12,13 @@ export const ProductList = () => {
   }
 
   const cityId = useSelector((state) => state.AuthReducer.location.id);
-  console.log(cityId)
 
+  console.log(cityId)
+  
   const getproductList = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:8000/api/products/product-lists?page=1&pageSize=8&cityId=152`,
+        `${import.meta.env.VITE_API_URL}/products/product-lists?page=1&pageSize=8&cityId=120`,
       );
       setProduct(res?.data?.products);
     } catch (err) {
@@ -48,7 +49,7 @@ export const ProductList = () => {
                   h={'full'}
                   aspectRatio={1 / 1}
                   objectFit={'cover'}
-                  src={`http://localhost:8000/uploads/products/${
+                  src={`${import.meta.env.VITE_API_IMAGE_URL}/products/${
                     item?.ProductImages[0]?.imageUrl ||
                     'Logo-Groceria-no-Bg.png'
                   }`}
