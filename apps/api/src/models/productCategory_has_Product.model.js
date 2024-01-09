@@ -29,6 +29,7 @@ export const init = (sequelize) => {
       sequelize,
       timestamps: false,
       modelName: 'ProductCategory_has_Product',
+      tableName: 'productcategory_has_product'
     },
   );
 };

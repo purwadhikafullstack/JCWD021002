@@ -22,6 +22,7 @@ export const init = (sequelize) => {
       sequelize,
       timestamps: false,
       modelName: 'ProductImage',
+      tableName: 'productimage'
     },
   );
 };

@@ -413,7 +413,7 @@ module.exports = {
     });
 
     await queryInterface.addConstraint('User', {
-      fields: ['refferalBy_iduser'],
+      fields: ['referralBy_iduser'],
       type: 'foreign key',
       name: 'fk_user_referraluser',
       references: {

@@ -11,14 +11,14 @@ export const ProductList = () => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
-  const cityId = useSelector((state) => state.AuthReducer.location.id);
+  const cityId = useSelector((state) => state.AuthReducer.location);
 
-  console.log(cityId)
+  console.log('City Id: ', cityId)
   
   const getproductList = async () => {
     try {
       const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/products/product-lists?page=1&pageSize=8&cityId=120`,
+        `${import.meta.env.VITE_API_URL}/products/product-lists?page=1&pageSize=8&cityId=${cityId}`,
       );
       setProduct(res?.data?.products);
     } catch (err) {

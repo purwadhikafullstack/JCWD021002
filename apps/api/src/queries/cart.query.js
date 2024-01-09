@@ -41,7 +41,7 @@ export const getProductStockQuery = async (productStockId) => {
 export const findCartDetailQuery = async (cartId, productStockId) => {
   return CartDetail.findOne({
     where: {
-      productStock_idproductStock: productStockId,
+      id: productStockId,
       cart_idcart: cartId,
     },
   });
