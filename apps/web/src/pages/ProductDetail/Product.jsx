@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from 'react';
+// import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Slider from 'react-slick';
 import reactLogo from '../../assets/react.svg';
@@ -13,10 +13,10 @@ import LogoGroceria from '../../assets/Groceria-no-Bg.png';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useParams } from 'react-router-dom';
-import { BottomBar } from '../../components/BottomBar';
+import { useEffect, useState } from 'react';
 // import ImageSliderWithThumbnails from './ImageSliderWithThumbnails';
 
-function Product({size, handleWebSize}) {
+const Product = ({size, handleWebSize}) => {
     const {id} = useParams();
   const [sampleData, setSampleData] = useState([]);
   const [data, setData] = useState([]);
@@ -128,13 +128,13 @@ function formatPriceToIDR(price) {
         <Image src={LogoGroceria} h={'30px'} />
         <ResizeButton webSize={size} handleWebSize={handleWebSize} color={"black"}/>
       </Flex>
-    <HStack mb='10px' p={4} position={size == '500px' ? 'relative' : 'sticky'} top={size == '500px' ? '0px' : '0px'}>
+    <HStack mb='10px' p={4} >
         {/* <IconChevronLeft />
         <Text textAlign='left' fontWeight='bold'>Product Name</Text> */}
         <Button backgroundColor='#f5f5f5' leftIcon={<IconChevronLeft />}>Kembali</Button>
     </HStack>
-    <Flex justifyContent='center' pl={size == '500px' ? '0px' : '20px'} pr={size == '500px' ? '0px' : '20px'}  flexDirection={size == '500px' ? 'column' : 'row'} h={"full"} alignItems={size == '500px' ? 'flex-start' : 'center'}>
-      <VStack width={size == '500px' ? '100%' : '30vw'} position={size == '500px' ? 'relative' : 'sticky'} top={size == '500px' ? '0px' : '110px'} mt={size == '500px' ? '0px' : '-485px'} >
+    <Flex alignItems="flex-start" pl={size == '500px' ? '0px' : '20px'} pr={size == '500px' ? '0px' : '20px'}  flexDirection={size == '500px' ? 'column' : 'row'} h={"full"}>
+      <VStack mt='20px' width={size == '500px' ? '100%' : '30vw'} position={size == '500px' ? 'relative' : 'sticky'} top={size == '500px' ? '0px' : '110px'} >
     <Box width={size == '500px' ? '80%' : '30vw'} justifyContent='center'>
           <Slider {...mainSliderSettings} asNavFor={thumbnailSlider} ref={(slider) => setMainSlider(slider)}>
             {data?.Product?.ProductImages?.map((image, index) => (
@@ -167,7 +167,7 @@ function formatPriceToIDR(price) {
           src={`${import.meta.env.VITE_API_IMAGE_URL}/products/${image?.imageUrl}`}
           alt={`Thumbnail ${index + 1}`}
         />
-        </Box>
+        {/* </Box> */}
     ))}
   </Slider>
   </Box>
@@ -197,34 +197,10 @@ function formatPriceToIDR(price) {
             <Text>1000 Ulasan</Text>
             </Flex>
         </Box>
-        <Box mt='20px' mb='20px' width='97%' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
-            <Text fontSize='x-large' fontWeight='bold' color='tomato'>{formatPriceToIDR(data?.Product?.price)}</Text>
-            <Text fontWeight='bold'>{data?.Product?.name}</Text>
-            <Text >{data?.Product?.massProduct} {data?.Product?.Mass?.name} / {data?.Product?.Packaging?.name} </Text>
-        </Box>
-        <Box mt='10px' width='97%' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
-            <Text fontSize='larger' fontWeight='bold'>Deskripsi</Text>
-            <Text >{data?.Product?.description}</Text>
-            <Text fontSize='larger' fontWeight='bold'>Category</Text>
-            <Flex flexWrap="wrap" columnGap='5px'>
-        {data?.Product?.ProductCategories?.map((item) => (
-          <Box key={item?.category?.id} borderRadius="full" mb='5px' pl="10px" pr='10px' pt='5px' pb='5px' border="solid #1B4332FF 1px" bgColor='#F3FBF8FF'>
-              <Text color='green'>{item?.category}</Text>
-          </Box>
-        ))}
-        </Flex>
-        </Box>
-        <Box mt='10px' width='97%' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
-            <Flex flexWrap="wrap" columnGap='5px'>
-            <Image width='30px' src={star} />
-            <Text fontWeight='bold'>5/5</Text>
-            <Text>1000 Ulasan</Text>
-            </Flex>
-        </Box>
         </VStack>
         {size == '500px' ? (<></>) : (
-      <Box top={size == '500px' ? '0px' : '110px'} mt={size == '500px' ? '0px' : '-900px'} position='sticky'  p='20px 20px 20px 20px' height='fit-content'>
-        <Box mt='10px' width='20vw' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
+      <Box top={size == '500px' ? '0px' : '110px'} mt='20px' position='sticky'  p='0px 20px 0px 20px' height='fit-content' >
+        <Box width='20vw' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
             <Flex flexWrap="wrap" gap='20px'>
             <HStack p='5px'>
               <Text fontSize='xs' textAlign='center'>Jumlah Pembelian</Text>
@@ -248,7 +224,7 @@ function formatPriceToIDR(price) {
     )}
     </Flex>
     {size == '500px' ? (<Flex dir='column' w={{ base: '100vw', md: size }}>
-        <Box position='fixed' w={{ base: '100vw', md: size }}  p='20px 20px 20px 20px'  bottom={12} height='fit-content' backgroundColor='#286043'>
+        <Box position='fixed' w={{ base: '100vw', md: size }}  p='20px 20px 20px 20px'  bottom={0} height='fit-content' backgroundColor='#286043'>
         <Flex dir='row' h='40px' ml='50px'>
         <Button h='30px' onClick={handleDecrement} variant='outline' color='white'>
           -
@@ -264,12 +240,10 @@ function formatPriceToIDR(price) {
 
         </Flex>
         <Text ml='40px' color='white'>Total: {formatPriceToIDR(quantity * data?.Product?.price)}</Text>
+
         </Box>
     </Flex>) : (<></>)}
-    
-    <Flex position={'fixed'} bottom={0} w={{ base: 'full', md: size }}>
-        <BottomBar />
-      </Flex>
+     
     </Box>
   );
 }

@@ -8,6 +8,9 @@ import { categoryRouter } from './routers/category.router';
 import { productStockRouter } from './routers/productStock.router';
 import { userRouter } from './routers/user.router';
 import { addressRouter } from './routers/address.router';
+import { massRouter } from './routers/mass.router.js';
+import { packagingRouter } from './routers/packaging.router';
+import { discountRouter } from './routers/discount.router';
 
 
 const router = Router();
@@ -24,7 +27,11 @@ router.use('/cart', cartRouter);
 router.use('/user', userRouter);
 router.use('/products', productRouter);
 router.use('/category', categoryRouter);
-router.use('/product-stock', productStockRouter);
+router.use('/stocks', productStockRouter);
+router.use('/mass', massRouter);
+router.use('/packaging', packagingRouter);
+router.use('/discount', discountRouter);
+
 
 // add another router here ...
 

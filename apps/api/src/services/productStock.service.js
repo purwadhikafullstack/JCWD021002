@@ -33,26 +33,28 @@ const {
     //     }
     // }
 
-    const editStockService = async (stockProduct, productStockId, adminId) => {
+    const editStockService = async (stockProduct, productStockId, adminId, status) => {
         try {
             // Fetch the existing stock information
             const existingStock = await findOneStockQuery(productStockId);
     
             // Update the stock in the database
-            const updatedStock = await editStockQuery(stockProduct, productStockId);
+            const updatedStock = await editStockQuery(stockProduct, productStockId, status);
     
             // Calculate the quantity change for the journal entry
             const quantityChange = stockProduct - existingStock.stock;
     
             // Add a journal entry for the stock change
-            await addJournalQuery(
-                existingStock.store_idstore,
-                Math.abs(quantityChange),
-                existingStock.stock,
-                stockProduct,
-                adminId,
-                productStockId
-            );
+            if (stockProduct > 0) {
+                await addJournalQuery(
+                    existingStock.store_idstore,
+                    Math.abs(quantityChange),
+                    existingStock.stock,
+                    stockProduct,
+                    adminId,
+                    productStockId
+                );
+            }
     
             return updatedStock; // Return the result of updating the stock
         } catch (err) {

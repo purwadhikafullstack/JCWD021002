@@ -1,4 +1,4 @@
-const { Op, col } = require('sequelize');
+const { Op } = require('sequelize');
 import Product from '../models/product.model';
 import ProductCategory from '../models/productCategory.model';
 import ProductStock from '../models/productStock.model';
@@ -17,6 +17,9 @@ const getPaginatedAndFilteredProductsQuery = async (
   categoryId,
   productName,
   cityId,
+  storeId,
+  statusProduct,
+  statusStock,
 ) => {
   try {
     console.log(
@@ -28,6 +31,9 @@ const getPaginatedAndFilteredProductsQuery = async (
       categoryId,
       productName,
       cityId,
+      storeId,
+      statusProduct,
+      statusStock,
     );
 
     const offset = (page - 1) * (pageSize || 0);
@@ -41,10 +47,15 @@ const getPaginatedAndFilteredProductsQuery = async (
     }
 
     const productStockQuery = {
+      where: {
+        status: statusStock ? statusStock : [0, 1],
+        store_idstore: storeId ? storeId : {},
+        // Add other conditions here
+      },
       include: [
         {
           model: Store,
-          where: cityId ? { city_idcity: cityId } : {},
+              where: cityId ? { city_idcity: cityId } : {},
         },
       ],
       // Add any other conditions for ProductStock here
@@ -52,6 +63,7 @@ const getPaginatedAndFilteredProductsQuery = async (
 
     const productStocks = await ProductStock.findAll(productStockQuery);
 
+    const productStockIds = productStocks.map((stock) => stock.id)
     const productIds = productStocks.map((stock) => stock.product_idproduct);
 
     const products = await Product.findAll({
@@ -61,7 +73,112 @@ const getPaginatedAndFilteredProductsQuery = async (
       where: {
         ...whereCondition,
         id: productIds, // Filter based on the associated ProductStocks
+        ...(statusProduct ? { status: statusProduct } : {}),
       },
+      required: true,
+      include: [
+        {
+          model: ProductCategory,
+          through: { attributes: [] },
+          where: categoryId ? { id: categoryId } : {},
+        },
+        {
+          model: ProductImage,
+        },
+        {
+          separate: true,
+          model: ProductStock,
+          where: {
+            id: productStockIds,
+            // Add other conditions for ProductStock here
+          },
+        },
+        {
+          model: Mass,
+        },
+        {
+          model: Packaging,
+        },
+      ],
+    });
+
+    const totalProducts = await Product.count({
+      where: {
+        ...whereCondition,
+        id: productIds, // Filter based on the associated ProductStocks
+        ...(statusProduct ? { status: statusProduct } : {}),
+      },
+      required: true,
+      include: [
+        {
+          model: ProductCategory,
+          through: { attributes: [] },
+          where: categoryId ? { id: categoryId } : {},
+        },
+        {
+          separate: true,
+          model: ProductStock,
+          where: {
+            id: productStockIds,
+            // Add other conditions for ProductStock here
+          },
+        },
+      ],
+    });
+
+    const totalPages = Math.ceil(totalProducts / (pageSize || totalProducts));
+
+    return {
+      products,
+      totalPages,
+    };
+  } catch (err) {
+    console.error('Error in getPaginatedAndFilteredProductsQuery:', err);
+    throw err;
+  }
+};
+
+
+const getPaginatedAndFilteredProductsRealQuery = async (
+  page,
+  pageSize,
+  sortField,
+  sortOrder,
+  categoryId,
+  productName,
+  status
+) => {
+  try {
+    console.log(
+      'query',
+      page,
+      pageSize,
+      sortField,
+      sortOrder,
+      categoryId,
+      productName,
+      status,
+    );
+
+    const offset = (page - 1) * (pageSize || 0);
+
+    const whereCondition = {};
+
+    if (productName) {
+      whereCondition.name = {
+        [Op.like]: `%${productName}%`,
+      };
+    }
+
+    const products = await Product.findAll({
+      offset: offset,
+      limit: pageSize ? pageSize : undefined,
+      order: [[sortField, sortOrder]],
+      where: {
+        ...whereCondition,
+        ...(status ? { status: status } : {}),
+      },
+      required: true,
       include: [
         {
           model: ProductCategory,
@@ -86,8 +203,9 @@ const getPaginatedAndFilteredProductsQuery = async (
     const totalProducts = await Product.count({
       where: {
         ...whereCondition,
-        id: productIds, // Filter based on the associated ProductStocks
+        ...(status ? { status: status } : {}),
       },
+      required: true,
       include: [
         {
           model: ProductCategory,
@@ -108,6 +226,37 @@ const getPaginatedAndFilteredProductsQuery = async (
     throw err;
   }
 };
+
+const getDetailProductRealQuery = async (id) => {
+  try {
+    const result = await Product.findOne({
+      include: [
+          
+            {
+              model: ProductCategory,
+              through: { attributes: [] }, // This removes unnecessary attributes from the join table
+            },
+            {
+              model: ProductImage,
+            },
+            {
+              model: Mass,
+            },
+            {
+              model: Packaging,
+            },
+      ],
+      where: {
+        id: id,
+      },
+    });
+
+    return result;
+  } catch (err) {
+    throw err;
+  }
+}
+
 
 const getDetailProductQuery = async (id) => {
   try {
@@ -133,7 +282,7 @@ const getDetailProductQuery = async (id) => {
         },
       ],
       where: {
-        id: id.id,
+        id: id,
       },
     });
 
@@ -189,6 +338,22 @@ const addImageProductQuery = async (imageUrl, product_idproduct) => {
     throw err;
   }
 };
+
+  const deleteProductImageQuery = async (imageUrl, productId) => {
+    try {
+      const res = await ProductImage.destroy({
+        where: {
+          imageUrl: imageUrl,
+          product_idproduct: productId,
+        }
+      })
+
+      return res;
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  }
 
 const softDeleteProductQuery = async (id) => {
   try {
@@ -259,9 +424,12 @@ const updateProductQuery = async (
 
 module.exports = {
   getPaginatedAndFilteredProductsQuery,
+  getPaginatedAndFilteredProductsRealQuery,
   getDetailProductQuery,
+  getDetailProductRealQuery,
   addProductQuery,
   addImageProductQuery,
   softDeleteProductQuery,
   updateProductQuery,
+  deleteProductImageQuery,
 };

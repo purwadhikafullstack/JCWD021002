@@ -31,6 +31,7 @@ export const init = (sequelize) => {
       sequelize,
       timestamps: false,
       modelName: 'DiscountUsage',
+      tableName: 'discountusage',
     },
   );
 };

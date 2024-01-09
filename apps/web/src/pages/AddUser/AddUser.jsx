@@ -95,6 +95,8 @@ const AddUser = ({size, handleWebSize}) => {
     }
   };
 
+  console.log(fieldImage);
+
   const handleImageChange = (event) => {
     const selectedFile = event.currentTarget.files[0];
 

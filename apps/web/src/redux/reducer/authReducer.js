@@ -10,7 +10,10 @@ const initialState = {
     fullname: '',
     avatar: '',
     role_idrole: '',
-    referralCode: ''
+    referralCode: '',
+    status: '',
+    verification_status: '',
+    store_idstore:'',
   },
   location: [],
   isLogin: false,
@@ -21,7 +24,7 @@ const authReducer = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      const { id, username, email, fullname, avatar, role_idrole, referralCode } =
+      const { id, username, email, fullname, avatar, role_idrole, referralCode, store_idstore } =
         action.payload;
 
       state.user = {
@@ -32,6 +35,7 @@ const authReducer = createSlice({
         role_idrole,
         username,
         referralCode
+        store_idstore,
       };
     },
     setLocation: (state, action) => {

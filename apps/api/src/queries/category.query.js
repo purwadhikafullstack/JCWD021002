@@ -23,7 +23,7 @@ const getPaginatedAndFilteredCategoryQuery = async (
 
     const categories = await ProductCategory.findAll({
       offset,
-      limit: pageSize || undefined,
+      limit: pageSize ? parseInt(pageSize) : undefined,
     //   order: [
     //       sortField,
     //       sortOrder,
@@ -43,7 +43,7 @@ const getPaginatedAndFilteredCategoryQuery = async (
       totalPages,
     };
   } catch (err) {
-    console.error('Error in getPaginatedAndFilteredProductsQuery:', err);
+    console.error('Error in getPaginatedAndFilteredCategoryQuery:', err);
     throw err;
   }
 };
@@ -129,7 +129,7 @@ const addCategoryForProductQuery = async (category_id, product_id) => {
     }
 };
 
-const deleteCategoryForProductQuery = async (product_id, category_id) => {
+const deleteCategoryForProductQuery = async (category_id, product_id) => {
     try {
         await ProductCategory_has_Product.destroy({
             where: {

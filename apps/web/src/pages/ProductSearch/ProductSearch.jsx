@@ -46,11 +46,11 @@ function Product({size, handleWebSize}) {
     try {
       if ((productName.trim() !== '') || (categoryId !== undefined && String(categoryId).trim() !== '')) {
         const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/products/product-lists?page=${page}&pageSize=${pageSize}&sortField=${sortField}&sortOrder=${sortOrder}&categoryId=${categoryId}&productName=${productName}&cityId=${cityId}`
+      
+      `${import.meta.env.VITE_API_URL}/products/product-lists?page=${page}&pageSize=${pageSize}&sortField=${sortField}&sortOrder=${sortOrder}&categoryId=${categoryId}&productName=${productName}&cityId=${cityId}&statusProduct=1&statusStock=1`
         );
         setData(response?.data);
       }
-      
       
   } catch (err) {
       console.log(err);
@@ -221,7 +221,7 @@ function formatPriceToIDR(price) {
       </Modal>
 
       <Stack spacing='4' direction='row' flexWrap='wrap' justifyContent={size == '500px' ? 'center' : 'flex-start'}>
-      {categoryId > 0 ? null : (
+      {categoryId > 0  ? null : (
   <Flex gap='2' flexWrap='wrap'>
     {dataCategory?.categories?.map((item, index) => (
       <Button backgroundColor='white' border='solid 1px black' key={index} onClick={() => item?.id && setCategoryId(item?.id)}>
@@ -243,7 +243,7 @@ function formatPriceToIDR(price) {
                       objectFit='cover'
                       width='100%'
                       height='200px'
-                      borderRadius='6px'
+                      borderRadius='3px 3px 10px 10px'
                       justifySelf='center'
                     />
                   <CardBody>

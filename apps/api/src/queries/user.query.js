@@ -157,10 +157,12 @@ const addUserQuery = async (
       status: 'Active',
       store_idstore: store_idstore ? store_idstore : null,
       registrationDate: new Date(),
+      verification_status: 'Verified',
     });
 
     return result;
   } catch (err) {
+    console.log(err);
     throw err;
   }
 };

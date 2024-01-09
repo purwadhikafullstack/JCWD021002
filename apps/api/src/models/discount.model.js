@@ -5,6 +5,7 @@ export default class Discount extends Model {
     this.belongsTo(models.ProductStock, { foreignKey: 'productStock_idproductStock' });
     this.belongsTo(models.UsageRestriction, { foreignKey: 'usageRestrictionId' });
     this.belongsTo(models.DiscountType, { foreignKey: 'type' });
+    this.belongsTo(models.DiscountDistribution, { foreignKey: 'distributionId' });
   }
 }
 
@@ -59,12 +60,32 @@ export const init = (sequelize) => {
         type: DataTypes.STRING(45),
         allowNull: true,
       },
+      name: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+      },
+      description: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
+      banner: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+      },
+      discountNom: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      distributionId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
     },
     {
       sequelize,
       timestamps: false,
       modelName: 'Discount',
-      tableName: 'discount'
+      tableName: 'discount',
     },
   );
 };

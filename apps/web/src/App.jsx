@@ -1,11 +1,15 @@
 import { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Provider } from 'react-redux';
-
 import { Home } from './pages/home/Home';
+import { Box, ChakraProvider, Flex } from '@chakra-ui/react';
 import { Login } from './pages/login';
 import { Register } from './pages/register';
 import { SetPassword } from './pages/setPassword';
+import { useState } from 'react';
+import { Toaster } from 'react-hot-toast';
+import { Provider } from 'react-redux';
+import { store } from './redux/store';
+import Theme from './theme';
 import { Location } from './hooks/geolocation';
 import { Auth } from './pages/auth';
 import { Profile } from './pages/profile';
@@ -32,6 +36,18 @@ import { ChangeEmailVerfy } from './pages/profile/changeEmailVerify';
 import { MyAddress } from './pages/profile/myAddress';
 import { AddAddress } from './pages/profile/addAddress';
 import { Cart } from './pages/Cart';
+import AddUser from './pages/AddUser/AddUser';
+import EditUser from './pages/EditUser/EditUser';
+import AddProduct from './pages/AddProduct/AddProduct';
+import EditProduct from './pages/EditProduct/EditProduct';
+import ProductLists from './pages/ProductLists/ProductLists';
+import ProductDetailAdmin from './pages/ProductDetailAdmin/ProductDetailAdmin';
+import MassLists from './pages/MassLists/MassLists';
+import PackagingLists from './pages/PackagingLists/PackagingLists';
+import AddProductStock from './pages/AddProductStock/AddProductStock';
+import ProductStockLists from './pages/ProductStockLists/ProductStockLists';
+import DiscountLists from './pages/DiscountLists/DiscountLists';
+import AddDiscount from './pages/AddDiscount/AddDiscount';
 
 function App() {
   const [webSize, setWebSize] = useState('mobile');
@@ -100,7 +116,6 @@ function App() {
                           />
                         }
                       />
-
                       <Route
                         path="/profile"
                         element={
@@ -230,6 +245,15 @@ function App() {
                         }
                       />
                       <Route
+                        path="/product-lists"
+                        element={
+                          <ProductLists
+                            size={webSize === 'mobile' ? '500px' : '100vw'}
+                            handleWebSize={handleWebSize}
+                          />
+                        }
+                      />
+                      <Route
                         path="/category-lists"
                         element={
                           <CategoryLists
@@ -277,12 +301,91 @@ function App() {
                       <Route
                         path="/cart"
                         element={
-                          <Cart
+                          <Cartsize size={webSize === 'mobile' ? '500px' : '100vw'}
+                          handleWebSize={handleWebSize}
+                        />
+                      }
+                    />
+                    <Route
+                        path="/add-product"
+                        element={
+                          <AddProduct
                             size={webSize === 'mobile' ? '500px' : '100vw'}
                             handleWebSize={handleWebSize}
                           />
                         }
                       />
+                      <Route
+                        path="/edit-product/:id"
+                        element={
+                          <EditProduct
+                            size={webSize === 'mobile' ? '500px' : '100vw'}
+                            handleWebSize={handleWebSize}
+                          />
+                        }
+                      />
+                      <Route
+                        path="/product-detail-admin/:id"
+                        element={
+                          <ProductDetailAdmin
+                            size={webSize === 'mobile' ? '500px' : '100vw'}
+                            handleWebSize={handleWebSize}
+                          />
+                        }
+                      />
+                      <Route
+                        path="/mass-lists"
+                        element={
+                          <MassLists
+                            size={webSize === 'mobile' ? '500px' : '100vw'}
+                            handleWebSize={handleWebSize}
+                          />
+                        }
+                      />
+                      <Route
+                        path="/packaging-lists"
+                        element={
+                          <PackagingLists
+                            size={webSize === 'mobile' ? '500px' : '100vw'}
+                            handleWebSize={handleWebSize}
+                          />
+                        }
+                      />
+                      <Route
+                        path="/add-product-stock/:productId"
+                        element={
+                          <AddProductStock
+                            size={webSize === 'mobile' ? '500px' : '100vw'}
+                            handleWebSize={handleWebSize}
+                          />
+                        }
+                      />
+                      <Route
+                        path="/product-stock-lists"
+                        element={
+                          <ProductStockLists
+                            size={webSize === 'mobile' ? '500px' : '100vw'}
+                            handleWebSize={handleWebSize}
+                          />
+                        }
+                      />
+                      <Route
+                        path="/discount-lists"
+                        element={
+                          <DiscountLists
+                            size={webSize === 'mobile' ? '500px' : '100vw'}
+                            handleWebSize={handleWebSize}
+                          />
+                        }
+                      />
+                      <Route
+                        path="/add-discount"
+                        element={
+                          <AddDiscount size={webSize === 'mobile' ? '500px' : '100vw'}
+                          handleWebSize={handleWebSize}
+                          />
+                        }
+                          />  
                     </Routes>
                   </Flex>
                 </Box>

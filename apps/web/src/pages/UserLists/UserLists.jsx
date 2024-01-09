@@ -44,6 +44,9 @@ import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { ResizeButton } from '../../components/ResizeButton';
 import LogoGroceria from '../../assets/Groceria-no-Bg.png';
 import { FaStar } from "react-icons/fa6";
+// import  SidebarWithHeader  from '../../components/SideBar/SideBar'
+import SideBar from '../../components/SideBar/SideBar'
+
 
 
 const MAX_VISIBLE_PAGES = 3; 
@@ -205,19 +208,11 @@ const getPageNumbers = () => {
 
 
   return (
-    <>
-      <Box w={{ base: '98.7vw', md: size }} height='fit-content' backgroundColor='#fbfaf9' >
-      <Flex
-        position={'relative'}
-        // top={{ base: '20px', lg: '-30px' }}
-        px={'20px'}
-        h={"10vh"}
-        justify={"space-between"}
-        align={"center"}
-      >
-        <Image src={LogoGroceria} h={'30px'} />
-        <ResizeButton webSize={size} handleWebSize={handleWebSize} color={"black"}/>
-      </Flex>
+    <Box w={{ base: '100vw', md: size }} overflowX='hidden'>
+          <SideBar size={size} handleWebSize={handleWebSize}/>
+      <Box w={{ base: '100vw', md: size }} height='fit-content' backgroundColor='#fbfaf9' >
+        {/* <SidebarWithHeader /> */}
+      
       <Box p='20px'>
      
         <Box pl={size == '500px' ? '0px' : '150px' }>
@@ -421,7 +416,7 @@ const getPageNumbers = () => {
         </Box>
       </Box>
       </Box>
-    </>
+      </Box>
   );
           }
 
