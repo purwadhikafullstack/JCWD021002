@@ -1,7 +1,8 @@
 /* eslint-disable react/prop-types */
-import { Flex, Text, Button } from '@chakra-ui/react';
+import { Flex, Text } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import { MdArrowBackIos } from 'react-icons/md';
+import { MyButton } from '../../components/Button';
 
 // const address = [
 //   {}
@@ -10,7 +11,7 @@ import { MdArrowBackIos } from 'react-icons/md';
 export const MyAddress = ({ size }) => {
   return (
     <Flex w={size}>
-      <Flex w={'full'} direction={"column"}>
+      <Flex w={'full'} direction={'column'}>
         <Flex
           align={'center'}
           w={'full'}
@@ -31,9 +32,12 @@ export const MyAddress = ({ size }) => {
           </Flex>
         </Flex>
 
-        <Flex>
-          <Link to={"/profile/personal-information/address/addAddress"}>
-            <Button>Tambah alamat</Button>
+        <Flex w={'full'} px={'30px'}>
+          <Link
+            to={'/profile/personal-information/address/addAddress'}
+            style={{ width: '100%' }}
+          >
+            <MyButton value={'Tambah alamat'} />
           </Link>
         </Flex>
       </Flex>

@@ -12,7 +12,6 @@ import { Flex, Text } from '@chakra-ui/react';
 import { PiGift } from 'react-icons/pi';
 import { IoIosArrowForward } from 'react-icons/io';
 
-
 export const Home = ({ handleWebSize, size }) => {
   const user = useSelector((state) => state.AuthReducer.user);
 
@@ -21,6 +20,7 @@ export const Home = ({ handleWebSize, size }) => {
       w={{ base: '100vw', lg: size }}
       direction={'column'}
       bgColor={'#F8F9FAFF'}
+      transition={"all .3s ease-in-out"}
     >
       <Header size={size} handleWebSize={handleWebSize} />
       <Flex>
@@ -33,6 +33,7 @@ export const Home = ({ handleWebSize, size }) => {
         gap={5}
         w={{ base: 'full', lg: size }}
         overflowX={'hidden'}
+        mb={"60px"}
       >
         <Flex
           justify={'space-between'}
@@ -56,11 +57,6 @@ export const Home = ({ handleWebSize, size }) => {
         <Collections size={size} />
 
         <ProductList />
-        <Flex mb={'100px'} direction={'column'}>
-          <Text>{user.username}</Text>
-          <Text>{user.email}</Text>
-          <Text>{user.fullname}</Text>
-        </Flex>
       </Flex>
       <Flex position={'fixed'} bottom={0} w={{ base: 'full', md: size }}>
         <BottomBar />

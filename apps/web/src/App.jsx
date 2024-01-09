@@ -52,9 +52,12 @@ function App() {
                     base: '100vw',
                     md: webSize === 'mobile' ? '500px' : '100vw',
                   }}
-                  transition="width 0.3s ease"
+                  // transition="width 0.3s ease"
+                  transition={"all .3s ease-in-out"}
                   bgColor={'white'}
                   minH={'100vh'}
+                  display={"flex"}
+                  justifyContent={"center"}
                 >
                   <Flex>
                     <Routes>

@@ -32,7 +32,6 @@ export const ProductList = () => {
 
   return (
     <Flex direction={'column'}>
-      <Flex>Product list</Flex>
       <Grid templateColumns={'repeat(2, 1fr)'} w={'fit-content'} gap={5}>
         {product?.map((item, index) => {
           return (

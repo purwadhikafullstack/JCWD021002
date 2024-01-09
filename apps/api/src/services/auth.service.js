@@ -19,13 +19,6 @@ const sentMail = async (email, template, setPasswordLink) => {
       'utf-8',
     );
 
-    const secretKey = process.env.JWT_SECRET_KEY;
-    if (!secretKey) {
-      throw new Error('JWT_SECRET_KEY is not set in the environment');
-    }
-
-    const resetToken = jwt.sign({ email }, secretKey);
-
     const tempCompile = handlebars.compile(temp);
     const tempResult = tempCompile({
       email: email,
@@ -84,11 +77,17 @@ export const registerService = async (username, email, password, fullname) => {
 
     // Pengiriman Email
 
+    const secretKey = process.env.JWT_SECRET_KEY;
+    if (!secretKey) {
+      throw new Error('JWT_SECRET_KEY is not set in the environment');
+    }
+
+    const resetToken = jwt.sign({ email }, secretKey);
     const setPasswordLink = `${process.env.WEB_BASE_URL}/set-password?resetToken=${resetToken}`;
 
     const template = 'emailVerification.html'
 
-    sentMail(email, template, setPasswordLink)
+    sentMail(email, template)
 
     const res = await registerQuery(
       username,

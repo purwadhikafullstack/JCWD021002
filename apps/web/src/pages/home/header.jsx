@@ -14,45 +14,73 @@ import { ResizeButton } from '../../components/ResizeButton';
 
 export const Header = ({ size, handleWebSize }) => {
   const location = useSelector((state) => state.AuthReducer.location);
-  console.log('loc', location);
+
   return (
     <Flex
-      bgColor={'colors.primary'}
-      h={'150px'}
+      bgColor={size == '500px' ? 'colors.primary' : 'transparent'}
+      // h={'150px'}
+      h={'fit-content'}
       direction={'column'}
       p={'20px'}
       gap={3}
+      transition={'width 2s ease-in-out'}
+      boxShadow={'base'}
     >
       <Flex justify={'space-between'} align={'center'} h={'fit-content'}>
-        <Flex
-          color="white"
-          gap={2}
-          align={'center'}
-          cursor={'pointer'}
-          fontSize={'14px'}
-        >
-          <PiMapPinLine size={'18px'} />
-          <Flex gap={1.5}>
-            <Text fontWeight={600}>
-              {location?.city
-                ? `${location.city}, ${location.Province?.province}`
-                : location && location.length > 0
-                  ? location.toString()
-                  : '. . .'}
-            </Text>
+        <Flex>
+          <Flex
+            color={size == '500px' ? 'white' : 'colors.primary'}
+            gap={2}
+            align={'center'}
+            cursor={'pointer'}
+            fontSize={'14px'}
+          >
+            <PiMapPinLine size={'18px'} />
+            <Flex gap={1.5}>
+              <Text fontWeight={600}>
+                {location?.city
+                  ? `${location.city}, ${location.Province?.province}`
+                  : location && location.length > 0
+                    ? location.toString()
+                    : '. . .'}
+              </Text>
+            </Flex>
+            <IoIosArrowDown size={'16px'} />
           </Flex>
-          <IoIosArrowDown size={'16px'} />
+          <Flex>
+            <Text></Text>
+          </Flex>
         </Flex>
-        <ResizeButton
-          webSize={size}
-          handleWebSize={handleWebSize}
-          color={'white'}
-        />
+
+        <Flex gap={5}>
+          <Flex display={size == '500px' ? 'none' : 'flex'} align={'center'}>
+            <InputGroup>
+              <InputLeftElement pointerEvents="none">
+                <IoIosSearch size={'20px'} color="black" />
+              </InputLeftElement>
+              <Input
+                bgColor={'white'}
+                borderRadius={'5px'}
+                placeholder="Search"
+                h={'35px'}
+                w={'318px'}
+              />
+            </InputGroup>
+          </Flex>
+          <ResizeButton
+            webSize={size}
+            handleWebSize={handleWebSize}
+            color={size == '500px' ? 'white' : 'colors.primary'}
+          />
+        </Flex>
       </Flex>
 
-      <InputGroup alignItems={'center'}>
+      <InputGroup
+        alignItems={'center'}
+        display={size == '500px' ? 'flex' : 'none'}
+      >
         <InputLeftElement pointerEvents="none">
-          <IoIosSearch size={'20px'} color="gray.300" />
+          <IoIosSearch size={'20px'} color="black" />
         </InputLeftElement>
         <Input bgColor={'white'} borderRadius={'5px'} placeholder="Search" />
       </InputGroup>

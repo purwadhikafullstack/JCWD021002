@@ -7,6 +7,7 @@ import { cityRouter } from './routers/city.router';
 import { categoryRouter } from './routers/category.router';
 import { productStockRouter } from './routers/productStock.router';
 import { userRouter } from './routers/user.router';
+import { addressRouter } from './routers/address.router';
 
 
 const router = Router();
@@ -18,6 +19,7 @@ router.get('/', (req, res) => {
 router.use('/sample', sampleRouter);
 router.use('/auth', authRouter);
 router.use('/city', cityRouter);
+router.use('/address', addressRouter);
 router.use('/cart', cartRouter);
 router.use('/user', userRouter);
 router.use('/products', productRouter);

@@ -10,7 +10,7 @@ import {
   useDisclosure,
   Text,
   Button,
-  Avatar
+  Avatar,
 } from '@chakra-ui/react';
 import {
   HiOutlineHome,
