@@ -87,7 +87,7 @@ export const registerService = async (username, email, password, fullname) => {
 
     const template = 'emailVerification.html'
 
-    sentMail(email, template)
+    sentMail(email, template, setPasswordLink)
 
     const res = await registerQuery(
       username,

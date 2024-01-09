@@ -16,7 +16,7 @@ export const MySwiper = ({ size }) => {
     { slide: Img2 },
   ];
   return (
-    <Flex h={'fit-content'} w={'full'}>
+    <Flex h={'fit-content'} w={'full'} >
       <Swiper
         slidesPerView={1}
         autoplay={{

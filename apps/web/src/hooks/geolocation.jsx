@@ -22,7 +22,7 @@ export const Location = ({ children }) => {
                 `https://api.opencagedata.com/geocode/v1/json?key=${apiKey}&q=${latitude}+${longitude}`,
               );
 
-              city = response.data.results[0].components.city;
+              city = response.data.results[0].components.city || response.data.results[0].components.county;
 
               const res = await axios.get(
                 `${import.meta.env.VITE_API_URL}/city/getCity?cityName=${city}`,
