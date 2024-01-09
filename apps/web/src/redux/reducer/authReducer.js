@@ -34,7 +34,7 @@ const authReducer = createSlice({
         fullname,
         role_idrole,
         username,
-        referralCode
+        referralCode,
         store_idstore,
       };
     },

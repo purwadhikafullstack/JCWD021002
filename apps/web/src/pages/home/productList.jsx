@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 
 export const ProductList = () => {
   const [product, setProduct] = useState();
+  const [storeId, setStoreId] = useState();
 
   function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
@@ -13,12 +14,21 @@ export const ProductList = () => {
 
   const cityId = useSelector((state) => state.AuthReducer.location?.id);
 
-  console.log(cityId)
   
-  const getproductList = async (cityId) => {
+  const getStoreList = async (cityId) => {
     try {
       const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/products/product-lists?page=1&pageSize=8&cityId=${cityId}`,
+        `${import.meta.env.VITE_API_URL}/user/store-lists?cityId=${cityId}`,
+      );
+      setStoreId(res?.data[0].id);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const getproductList = async (storeId) => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/products/product-lists?page=1&pageSize=18&storeId=${storeId}`,
       );
       setProduct(res?.data?.products);
     } catch (err) {
@@ -27,8 +37,9 @@ export const ProductList = () => {
   };
 
   useEffect(() => {
-    getproductList(cityId);
-  }, [cityId]);
+    getStoreList(cityId)
+    getproductList(storeId);
+  }, [cityId, storeId]);
 
   return (
     <Flex direction={'column'}>

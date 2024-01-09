@@ -55,9 +55,9 @@ const bcrypt = require("bcrypt");
             }
         }
 
-        const getStoreService = async () => {
+        const getStoreService = async (cityId) => {
             try {
-                const result = await getStoreQuery();
+                const result = await getStoreQuery(cityId);
 
                 return result;
             } catch (err) {

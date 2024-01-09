@@ -1,11 +1,9 @@
 import { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Home } from './pages/home/Home';
-import { Box, ChakraProvider, Flex } from '@chakra-ui/react';
 import { Login } from './pages/login';
 import { Register } from './pages/register';
 import { SetPassword } from './pages/setPassword';
-import { useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
@@ -24,10 +22,7 @@ import UserLists from './pages/UserLists/UserLists';
 import UserDetail from './pages/UserDetail/UserDetail';
 
 import { Box, ChakraProvider, Flex } from '@chakra-ui/react';
-import { Toaster } from 'react-hot-toast';
 
-import Theme from './theme';
-import { store } from './redux/store';
 import { MyAccount } from './pages/profile/myAccount';
 import { EditProfile } from './pages/profile/editProfile';
 import { ChangePassword } from './pages/profile/changePassword';
@@ -36,8 +31,6 @@ import { ChangeEmailVerfy } from './pages/profile/changeEmailVerify';
 import { MyAddress } from './pages/profile/myAddress';
 import { AddAddress } from './pages/profile/addAddress';
 import { Cart } from './pages/Cart';
-import AddUser from './pages/AddUser/AddUser';
-import EditUser from './pages/EditUser/EditUser';
 import AddProduct from './pages/AddProduct/AddProduct';
 import EditProduct from './pages/EditProduct/EditProduct';
 import ProductLists from './pages/ProductLists/ProductLists';
@@ -70,11 +63,11 @@ function App() {
                     md: webSize === 'mobile' ? '500px' : '100vw',
                   }}
                   // transition="width 0.3s ease"
-                  transition={"all .3s ease-in-out"}
+                  transition={'all .3s ease-in-out'}
                   bgColor={'white'}
                   minH={'100vh'}
-                  display={"flex"}
-                  justifyContent={"center"}
+                  display={'flex'}
+                  justifyContent={'center'}
                 >
                   <Flex>
                     <Routes>
@@ -301,12 +294,13 @@ function App() {
                       <Route
                         path="/cart"
                         element={
-                          <Cartsize size={webSize === 'mobile' ? '500px' : '100vw'}
-                          handleWebSize={handleWebSize}
-                        />
-                      }
-                    />
-                    <Route
+                          <Cart
+                            size={webSize === 'mobile' ? '500px' : '100vw'}
+                            handleWebSize={handleWebSize}
+                          />
+                        }
+                      />
+                      <Route
                         path="/add-product"
                         element={
                           <AddProduct
@@ -381,11 +375,12 @@ function App() {
                       <Route
                         path="/add-discount"
                         element={
-                          <AddDiscount size={webSize === 'mobile' ? '500px' : '100vw'}
-                          handleWebSize={handleWebSize}
+                          <AddDiscount
+                            size={webSize === 'mobile' ? '500px' : '100vw'}
+                            handleWebSize={handleWebSize}
                           />
                         }
-                          />  
+                      />
                     </Routes>
                   </Flex>
                 </Box>

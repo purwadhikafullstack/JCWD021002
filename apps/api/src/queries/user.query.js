@@ -200,9 +200,13 @@ const findUserQuery = async ({ email = null, username = null }) => {
   }
 };
 
-const getStoreQuery = async () => {
+const getStoreQuery = async (cityId) => {
   try {
-    const result = await Store.findAll({});
+    const result = await Store.findAll({
+      where : {
+        city_idcity: cityId
+      }
+    });
 
     return result;
   } catch (err) {

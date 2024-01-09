@@ -155,9 +155,9 @@ function formatPriceToIDR(price) {
     asNavFor={mainSlider}
     ref={(slider) => setThumbnailSlider(slider)}
   >
-    {data?.Product?.ProductImages?.map((image, index) => (
-      // <Box key={index} p='1px'> {/* Add margin to create gap between thumbnails */}
-        <Box >
+    {data?.Product?.ProductImages?.map((image, index) => {
+      return (
+        <Box key={index} p='1px'> {/* Add margin to create gap between thumbnails */}
           <Image
           backgroundColor='white'
           boxSize='50px'
@@ -166,9 +166,10 @@ function formatPriceToIDR(price) {
           mr='2px'
           src={`${import.meta.env.VITE_API_IMAGE_URL}/products/${image?.imageUrl}`}
           alt={`Thumbnail ${index + 1}`}
-        />
-        {/* </Box> */}
-    ))}
+          />
+        </Box>
+    );
+    })}
   </Slider>
   </Box>
   </VStack>
@@ -249,4 +250,3 @@ function formatPriceToIDR(price) {
 }
 
 export default Product;
-
