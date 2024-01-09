@@ -76,7 +76,6 @@ export const registerService = async (username, email, password, fullname) => {
     }
 
     // Pengiriman Email
-
     const secretKey = process.env.JWT_SECRET_KEY;
     if (!secretKey) {
       throw new Error('JWT_SECRET_KEY is not set in the environment');

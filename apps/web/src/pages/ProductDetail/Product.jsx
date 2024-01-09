@@ -13,6 +13,7 @@ import LogoGroceria from '../../assets/Groceria-no-Bg.png';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useParams } from 'react-router-dom';
+import { BottomBar } from '../../components/BottomBar';
 // import ImageSliderWithThumbnails from './ImageSliderWithThumbnails';
 
 function Product({size, handleWebSize}) {
@@ -247,7 +248,7 @@ function formatPriceToIDR(price) {
     )}
     </Flex>
     {size == '500px' ? (<Flex dir='column' w={{ base: '100vw', md: size }}>
-        <Box position='fixed' w={{ base: '100vw', md: size }}  p='20px 20px 20px 20px'  bottom={0} height='fit-content' backgroundColor='#286043'>
+        <Box position='fixed' w={{ base: '100vw', md: size }}  p='20px 20px 20px 20px'  bottom={12} height='fit-content' backgroundColor='#286043'>
         <Flex dir='row' h='40px' ml='50px'>
         <Button h='30px' onClick={handleDecrement} variant='outline' color='white'>
           -
@@ -263,10 +264,12 @@ function formatPriceToIDR(price) {
 
         </Flex>
         <Text ml='40px' color='white'>Total: {formatPriceToIDR(quantity * data?.Product?.price)}</Text>
-
         </Box>
     </Flex>) : (<></>)}
-     
+    
+    <Flex position={'fixed'} bottom={0} w={{ base: 'full', md: size }}>
+        <BottomBar />
+      </Flex>
     </Box>
   );
 }

@@ -31,6 +31,7 @@ import { ChangeEmail } from './pages/profile/changeEmail';
 import { ChangeEmailVerfy } from './pages/profile/changeEmailVerify';
 import { MyAddress } from './pages/profile/myAddress';
 import { AddAddress } from './pages/profile/addAddress';
+import { Cart } from './pages/Cart';
 
 function App() {
   const [webSize, setWebSize] = useState('mobile');
@@ -268,6 +269,15 @@ function App() {
                         path="/edit-user/:id"
                         element={
                           <EditUser
+                            size={webSize === 'mobile' ? '500px' : '100vw'}
+                            handleWebSize={handleWebSize}
+                          />
+                        }
+                      />
+                      <Route
+                        path="/cart"
+                        element={
+                          <Cart
                             size={webSize === 'mobile' ? '500px' : '100vw'}
                             handleWebSize={handleWebSize}
                           />

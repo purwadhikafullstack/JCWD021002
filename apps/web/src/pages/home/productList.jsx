@@ -15,10 +15,10 @@ export const ProductList = () => {
 
   console.log(cityId)
   
-  const getproductList = async () => {
+  const getproductList = async (cityId) => {
     try {
       const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/products/product-lists?page=1&pageSize=8&cityId`,
+        `${import.meta.env.VITE_API_URL}/products/product-lists?page=1&pageSize=8&cityId=${cityId}`,
       );
       setProduct(res?.data?.products);
     } catch (err) {
@@ -27,8 +27,8 @@ export const ProductList = () => {
   };
 
   useEffect(() => {
-    getproductList();
-  }, []);
+    getproductList(cityId);
+  }, [cityId]);
 
   return (
     <Flex direction={'column'}>
