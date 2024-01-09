@@ -1,38 +1,83 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import reactLogo from '../../assets/react.svg';
-import viteLogo from '/vite.svg';
-import './Home.css';
+/* eslint-disable react/prop-types */
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../../config/firebase-config';
 
-function Home() {
-  const [sampleData, setSampleData] = useState([]);
+import { Button, Flex, Text } from '@chakra-ui/react';
+import { Header } from './header';
+import { MySwiper } from './swiper';
+import { SwiperCategory } from './swiperCategory';
+import { PiGift } from 'react-icons/pi';
+import { IoIosArrowForward } from 'react-icons/io';
+import { BottomBar } from '../../components/BottomBar';
+import { Collections } from './collections';
+import { ProductList } from './productList';
+import { logoutSuccess } from '../../redux/reducer/authReducer';
+// import './Home.css';
 
-  useEffect(() => {
-    (async () => {
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_API_URL}/sample`,
-      );
-      setSampleData(data);
-    })();
-  }, []);
+export const Home = ({ handleWebSize, size }) => {
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.AuthReducer.user);
+  const dispatch = useDispatch();
+  const onLogout = () => {
+    const result = logout();
+    dispatch(logoutSuccess());
+    if (result === 'logout success') {
+      navigate('/login');
+    }
+  };
+
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Purwadhika Final Project Template using Vite + React</h1>
-      <h3>Test Data</h3>
-      {sampleData.map((data, idx) => (
-        <div key={idx.toString()}>{data.name}</div>
-      ))}
-    </>
-  );
-}
+    <Flex
+      w={{ base: '100vw', lg: size }}
+      direction={'column'}
+      bgColor={"#F8F9FAFF"}
+    >
+      <Header size={size} handleWebSize={handleWebSize} />
+      <Flex>
+        <MySwiper size={size} />
+      </Flex>
+      <SwiperCategory size={size} />
+      <Flex
+        p={'20px'}
+        direction={'column'}
+        gap={5}
+        w={{base: "full", lg: size}}
+        overflowX={'hidden'}
+      >
+        <Flex
+          justify={'space-between'}
+          align={'center'}
+          bgColor={'colors.secondary'}
+          color={'colors.primary'}
+          h={'36px'}
+          px={'10px'}
+          borderRadius={'4px'}
+          cursor={'pointer'}
+        >
+          <Flex gap={2} >
+            <PiGift size={'20px'} />
+            <Text fontWeight={400} fontSize={'14px'}>
+              You have 5 voucher here
+            </Text>
+          </Flex>
+          <IoIosArrowForward />
+        </Flex>
 
-export default Home;
+        <Collections size={size} />
+
+        <ProductList />
+        <Button onClick={onLogout}>Log out</Button>
+        <Flex mb={'100px'} direction={'column'}>
+          <Text>{user.username}</Text>
+          <Text>{user.email}</Text>
+          <Text>{user.fullname}</Text>
+        </Flex>
+      </Flex>
+      <Flex position={'fixed'} bottom={0} w={{base: "full", md: size}}>
+        <BottomBar />
+      </Flex>
+    </Flex>
+  );
+};
