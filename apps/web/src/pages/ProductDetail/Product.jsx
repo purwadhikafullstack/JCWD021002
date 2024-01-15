@@ -1,29 +1,56 @@
 /* eslint-disable react/prop-types */
-// import { useEffect, useState } from 'react';
+import React from 'react';
 import axios from 'axios';
 import Slider from 'react-slick';
 import reactLogo from '../../assets/react.svg';
 import viteLogo from '/vite.svg';
-import { Text, Box, HStack, Image, Flex, Button, Spacer, VStack, Stack } from '@chakra-ui/react';
-import { IconChevronLeft } from '@tabler/icons-react';
+import { Text, Box, HStack, Image, Flex, Button, Spacer, VStack, Stack, Textarea, IconButton } from '@chakra-ui/react';
+import { IconChevronLeft, IconLink, IconStarFilled } from '@tabler/icons-react';
 import star from './star-svgrepo-com.svg';
 // import './Home.css';
 import { ResizeButton } from '../../components/ResizeButton';
 import LogoGroceria from '../../assets/Groceria-no-Bg.png';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { ProductRelated } from './ProductRelated';
+import { IoStarOutline, IoStar } from 'react-icons/io5';
+import { ProductRating } from './ProductRating';
 // import ImageSliderWithThumbnails from './ImageSliderWithThumbnails';
+import {
+  EmailShareButton,
+  FacebookShareButton,
+  TwitterShareButton,
+  WhatsappShareButton,
+  EmailIcon,
+  FacebookIcon,
+  TwitterIcon,
+  WhatsappIcon,
+} from 'react-share';
+import { SubmitReview } from './SubmitReview';
+import { useSelector } from 'react-redux';
+import { calculateDiscountPrice } from '../../utils/calculateDiscountPrice';
+
+function truncateDescription(description, maxLength) {
+  if (description?.length <= maxLength) {
+    return description;
+  }
+  return `${description?.slice(0, maxLength)}...`;
+}
 
 const Product = ({size, handleWebSize}) => {
     const {id} = useParams();
+  const { user, isLogin } = useSelector((state) => state.AuthReducer);
+    const [rating, setRating] = useState(0);
+    const [reviewText, setReviewText] = useState('');
   const [sampleData, setSampleData] = useState([]);
   const [data, setData] = useState([]);
-
+  const [showFullDescription, setShowFullDescription] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [mainSlider, setMainSlider] = useState(null);
   const [thumbnailSlider, setThumbnailSlider] = useState(null);
+  const [mainSliderIndex, setMainSliderIndex] = useState();
 
   const mainSliderSettings = {
     dots: false,
@@ -106,7 +133,11 @@ function formatPriceToIDR(price) {
     }).format(price);
   }
 
+  
+  console.log("ini test category", data?.Product?.ProductCategories[0]?.id);
+
   console.log(size);
+  console.log("ini data now", data);
   return (
     <Box backgroundColor='#f5f5f5' p='0'
     pb='110px'
@@ -136,18 +167,23 @@ function formatPriceToIDR(price) {
     <Flex alignItems="flex-start" pl={size == '500px' ? '0px' : '20px'} pr={size == '500px' ? '0px' : '20px'}  flexDirection={size == '500px' ? 'column' : 'row'} h={"full"}>
       <VStack mt='20px' width={size == '500px' ? '100%' : '30vw'} position={size == '500px' ? 'relative' : 'sticky'} top={size == '500px' ? '0px' : '110px'} >
     <Box width={size == '500px' ? '80%' : '30vw'} justifyContent='center'>
-          <Slider {...mainSliderSettings} asNavFor={thumbnailSlider} ref={(slider) => setMainSlider(slider)}>
-            {data?.Product?.ProductImages?.map((image, index) => (
-              <Image
-                key={index.toString()}
-                backgroundColor='white'
-                src={`${import.meta.env.VITE_API_IMAGE_URL}/products/${image.imageUrl}`}
-                objectFit='contain'
-                height='35vh'
-                borderRadius='10px'
-              />
-            ))}
-          </Slider>
+    {data?.result?.Product?.ProductImages && (
+  <>
+    <link rel="preload" as="image" href={`${import.meta.env.VITE_API_IMAGE_URL}/products/${data?.result.Product.ProductImages[0].imageUrl}`} />
+    <Slider {...mainSliderSettings} asNavFor={thumbnailSlider} ref={(slider) => setMainSlider(slider)}>
+      {data?.result.Product.ProductImages.map((image, index) => (
+        <Image
+          key={index.toString()}
+          backgroundColor='white'
+          src={`${import.meta.env.VITE_API_IMAGE_URL}/products/${image.imageUrl}`}
+          objectFit='contain'
+          height='35vh'
+          borderRadius='10px'
+        />
+      ))}
+    </Slider>
+  </>
+)}
         </Box>
           <Box width={size == '500px' ? '80%' : '30vw'}>
   <Slider
@@ -155,15 +191,17 @@ function formatPriceToIDR(price) {
     asNavFor={mainSlider}
     ref={(slider) => setThumbnailSlider(slider)}
   >
-    {data?.Product?.ProductImages?.map((image, index) => {
+    {data?.result?.Product?.ProductImages?.map((image, index) => {
       return (
-        <Box key={index} p='1px'> {/* Add margin to create gap between thumbnails */}
+        <Box key={index} p='1px' borderRadius='10px'> {/* Add margin to create gap between thumbnails */}
           <Image
+          border={`solid 3px ${index === mainSliderIndex ? 'blue' : 'transparent'}`}
           backgroundColor='white'
           boxSize='50px'
           objectFit='cover'
           borderRadius='10px'
           mr='2px'
+          onClick={() => setMainSliderIndex(index)}
           src={`${import.meta.env.VITE_API_IMAGE_URL}/products/${image?.imageUrl}`}
           alt={`Thumbnail ${index + 1}`}
           />
@@ -174,30 +212,95 @@ function formatPriceToIDR(price) {
   </Box>
   </VStack>
         <VStack width={size == '500px' ? '100%' : '50vw'}>
-        <Box mt='20px' mb='20px' width='97%' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
-            <Text fontSize='x-large' fontWeight='bold' color='tomato'>{formatPriceToIDR(data?.Product?.price)}</Text>
-            <Text fontWeight='bold'>{data?.Product?.name}</Text>
-            <Text >{data?.Product?.massProduct} {data?.Product?.Mass?.name} / {data?.Product?.Packaging?.name} </Text>
+        <Box mt='20px' width='97%' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
+            <Text fontSize='x-large' fontWeight='bold' color='tomato'>{formatPriceToIDR(calculateDiscountPrice(data?.result?.Product?.price, data?.result?.Discounts))}</Text>
+            {data?.result?.Discounts && data?.result?.Discounts.length > 0 && (
+    <>
+      <Text color='grey' fontWeight='bold'>
+  <s>{formatPriceToIDR(data?.result?.Product?.price)}</s>
+  {data?.result?.Discounts.map((discount, index) => (
+    <React.Fragment key={index}>
+      {discount.DiscountType?.id === 4 && discount.discountValue && ` (${discount.discountValue}% Off)`}
+      {discount.DiscountType?.id === 4 && discount.discountNom && ` (${formatPriceToIDR(discount.discountNom)} Off)`}
+      {discount.DiscountType?.id === 5 && ` (Minimum Purchase) - ${discount.discountValue}% Off`}
+      {discount.DiscountType?.id === 6 && ` (${discount.buy_quantity} for the price of ${discount.get_quantity}) - ${discount.discountValue}% Off`}
+      {index < data.result.Discounts.length - 1 && ', '}
+    </React.Fragment>
+  ))}
+</Text>
+
+    </>
+  )}
+            <Text fontWeight='bold'>{data?.result?.Product?.name}</Text>
+            <Text >{data?.result?.Product?.massProduct} {data?.result?.Product?.Mass?.name} / {data?.result?.Product?.Packaging?.name} </Text>
         </Box>
         <Box mt='10px' width='97%' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
             <Text fontSize='larger' fontWeight='bold'>Deskripsi</Text>
-            <Text >{data?.Product?.description}</Text>
-            <Text fontSize='larger' fontWeight='bold'>Category</Text>
+            {showFullDescription ? (
+            <Text>{data?.result?.Product?.description}</Text>
+          ) : (
+            <>
+              <Text>{truncateDescription(data?.result?.Product?.description, 200)}</Text>
+              {truncateDescription(data?.result?.Product?.description, 200) != data?.result?.Product?.description  ? 
+              <Text textColor="teal" cursor='pointer' onClick={() => setShowFullDescription(true)}>
+                Baca Selengkapnya
+              </Text> : null}
+            </>
+          )}
+            <Text fontSize='larger' fontWeight='bold'>Kategori</Text>
             <Flex flexWrap="wrap" columnGap='5px'>
-        {data?.Product?.ProductCategories?.map((item) => (
+        {data?.result?.Product?.ProductCategories?.map((item) => (
           <Box key={item?.category?.id} borderRadius="full" mb='5px' pl="10px" pr='10px' pt='5px' pb='5px' border="solid #1B4332FF 1px" bgColor='#F3FBF8FF'>
               <Text color='green'>{item?.category}</Text>
           </Box>
         ))}
         </Flex>
         </Box>
-        <Box mt='10px' width='97%' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
+        
+        
+    
+    <SubmitReview userId={user?.id} productId={data?.result?.Product?.id} />
+    
+    
+    <Box mt='10px' width='97%' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
+            <Text fontSize='larger' fontWeight='bold'>Penilaian & Ulasan</Text>
+            <Flex mb='10px' flexDirection='row' gap='5px'>
+            <Image boxSize='25px' src={star} />
+            <Text fontWeight='bold'>{data?.subquery?.averageRating?.toFixed(1)}/5.0</Text>
+            <Text >({data?.subquery?.totalReviews})</Text>
+            </Flex>
+            {data?.subquery?.totalReviews > 1 ? 
             <Flex flexWrap="wrap" columnGap='5px'>
             <Image width='30px' src={star} />
-            <Text fontWeight='bold'>5/5</Text>
-            <Text>1000 Ulasan</Text>
+            <Text fontWeight='bold'>{data?.subquery?.averageRating?.toFixed(1)}/5.0</Text>
+            <Text>{data?.subquery?.totalReviews} Ulasan</Text>
+            </Flex> : null}
+            <ProductRating productId={data?.result?.Product?.id} />
+        </Box>
+        <Box mt='10px' width='97%' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
+          <Text>Bagikan</Text>
+            <Flex  flexWrap='wrap' flexDirection='row' columnGap='5px'>
+            <EmailShareButton url={window.location.href}>
+        <EmailIcon size={32} round />
+      </EmailShareButton>
+
+      <FacebookShareButton url={window.location.href}>
+        <FacebookIcon size={32} round />
+      </FacebookShareButton>
+
+      <TwitterShareButton url={window.location.href}>
+        <TwitterIcon size={32} round />
+      </TwitterShareButton>
+
+      <WhatsappShareButton url={window.location.href}>
+        <WhatsappIcon size={32} round />
+      </WhatsappShareButton>
+
+      {/* Add your custom copy link button */}
+      <IconButton borderRadius='full' boxSize='32px' icon={<IconLink />} onClick={() => navigator.clipboard.writeText(window.location.href)} />
             </Flex>
         </Box>
+        
         </VStack>
         {size == '500px' ? (<></>) : (
       <Box top={size == '500px' ? '0px' : '110px'} mt='20px' position='sticky'  p='0px 20px 0px 20px' height='fit-content' >
@@ -215,7 +318,7 @@ function formatPriceToIDR(price) {
           +
         </Button>
             </HStack>
-        <Text ml='40px' fontWeight='bold' >Total : {formatPriceToIDR(quantity * data?.Product?.price)}</Text>
+        <Text ml='40px' fontWeight='bold' >Total : {formatPriceToIDR(quantity * data?.result?.Product?.price)}</Text>
 
         <Button width='100%' bgColor='#286043' textColor='white'>+ Keranjang</Button>
             
@@ -225,7 +328,7 @@ function formatPriceToIDR(price) {
     )}
     </Flex>
     {size == '500px' ? (<Flex dir='column' w={{ base: '100vw', md: size }}>
-        <Box position='fixed' w={{ base: '100vw', md: size }}  p='20px 20px 20px 20px'  bottom={0} height='fit-content' backgroundColor='#286043'>
+        <Box position='fixed' zIndex={99} w={{ base: '100vw', md: size }}  p='20px 20px 20px 20px'  bottom={0} height='fit-content' backgroundColor='#286043'>
         <Flex dir='row' h='40px' ml='50px'>
         <Button h='30px' onClick={handleDecrement} variant='outline' color='white'>
           -
@@ -240,12 +343,18 @@ function formatPriceToIDR(price) {
         <Button mr='50px'>+ Keranjang</Button>
 
         </Flex>
-        <Text ml='40px' color='white'>Total: {formatPriceToIDR(quantity * data?.Product?.price)}</Text>
+        <Text ml='40px' color='white'>Total: {formatPriceToIDR(quantity * data?.result?.Product?.price)}</Text>
 
         </Box>
     </Flex>) : (<></>)}
-     
+    <Box mt='10px'>
+    <Text pl='20px' pb='10px' fontWeight='bold' >Produk kategori serupa</Text>
+    <Box w='100%' pt='5px' pb='5px' overflowX='auto'>
+     <ProductRelated store={data?.result?.Product?.ProductCategories[0]?.id} category={data?.result?.Product?.ProductCategories[0]?.id} />
+        </Box>
+        </Box>
     </Box>
+    
   );
 }
 

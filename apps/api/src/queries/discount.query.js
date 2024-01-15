@@ -17,6 +17,7 @@ import UsageRestriction from '../models/usageRestriction.model'
                 usageRestrictionId,
                 productName,
                 status,
+                storeId,
       ) => {
         try {
           console.log(
@@ -30,6 +31,7 @@ import UsageRestriction from '../models/usageRestriction.model'
                 usageRestrictionId,
                 productName,
                 status,
+                storeId,
           );
 
           const offset = (page - 1) * (pageSize || 0);
@@ -54,14 +56,16 @@ import UsageRestriction from '../models/usageRestriction.model'
             order: [[sortField, sortOrder]],
             where: {
               ...whereCondition,
+              ...(storeId ? { store_idstore: storeId } : {}),
             },
-            required: true,
             include: [
               {
+                required: true,
                 model: DiscountType,
                 where: typeId ? { id: typeId } : {},
               },
               {
+                required: true,
                 model: UsageRestriction,
                 where: usageRestrictionId ? { id: usageRestrictionId } : {}
               },
@@ -82,14 +86,16 @@ import UsageRestriction from '../models/usageRestriction.model'
           const totalDiscounts = await Discount.count({
             where: {
               ...whereCondition,
+              ...(storeId ? { store_idstore: storeId } : {}),
             },
-            required: true,
             include: [
               {
+                required: true,
                 model: DiscountType,
                 where: typeId ? { id: typeId } : {},
               },
               {
+                required: true,
                 model: UsageRestriction,
                 where: usageRestrictionId ? { id: usageRestrictionId } : {}
               },
@@ -132,6 +138,8 @@ import UsageRestriction from '../models/usageRestriction.model'
         get_quantity,
         discountAmount,
         usageRestrictionId,
+        name,
+        description,
         referralCode,
         banner,
         discountNom,
@@ -150,6 +158,8 @@ import UsageRestriction from '../models/usageRestriction.model'
                 status : 1,
                 discountAmount,
                 usageRestrictionId,
+                name,
+                description,
                 referralCode,
                 banner,
                 discountNom,
@@ -158,7 +168,7 @@ import UsageRestriction from '../models/usageRestriction.model'
         
               // Remove properties with null values
               Object.keys(addedValue).forEach((key) => {
-                if (addedValue[key] == null || addedValue[key] == undefined) {
+                if (addedValue[key] == null || addedValue[key] == undefined || addedValue[key] == 'undefined' || addedValue[key] == 0) {
                   delete addedValue[key];
                 }
               });
@@ -208,7 +218,7 @@ import UsageRestriction from '../models/usageRestriction.model'
         
               // Remove properties with null values
               Object.keys(updatedValue).forEach((key) => {
-                if (updatedValue[key] == null || updatedValue[key] == undefined) {
+                if (updatedValue[key] == null || updatedValue[key] == undefined || addedValue[key] == undefined) {
                   delete updatedValue[key];
                 }
               });

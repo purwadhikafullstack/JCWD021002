@@ -6,6 +6,7 @@ export default class Product extends Model {
     this.belongsTo(models.Mass, { foreignKey: 'mass_idmass' });
     this.belongsTo(models.Packaging, { foreignKey: 'packaging_idpackaging' });
     this.hasMany(models.ProductStock, { foreignKey: 'product_idproduct' });
+    this.hasMany(models.RatingsAndReviews, { foreignKey: 'product_idproduct' });
     this.hasMany(models.ProductImage, { foreignKey: 'product_idproduct' });
     this.belongsToMany(models.ProductCategory, {
       through: 'ProductCategory_has_Product',

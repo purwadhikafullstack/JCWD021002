@@ -34,13 +34,14 @@ import {
 import {
   IconLayoutDashboard,
   IconPasswordUser,
-  IconCup,
+  IconBox,
   IconReportMoney,
   IconUsers,
   IconHierarchy2,
   IconScaleOutline,
   IconPackage,
   IconDiscount,
+  IconPackages,
 } from "@tabler/icons-react";
 import LogoIcon from "../../assets/Groceria-no-Bg.png";
 // import { useAppSelector } from "../../redux/hook";
@@ -58,7 +59,8 @@ const LinkItems = [
     icon: IconLayoutDashboard,
     to: "/dashboard-admin",
   },
-  { name: "Product", icon: IconCup, to: "/product-lists" },
+  { name: "Product", icon: IconBox, to: "/product-lists" },
+  { name: "Stock", icon: IconPackages, to: "/product-stock-lists" },
   { name: "Report", icon: IconReportMoney, to: "/report" },
   { name: "Category", icon: IconHierarchy2, to: "/category-lists" },
   { name: "Mass", icon: IconScaleOutline, to: "/mass-lists" },

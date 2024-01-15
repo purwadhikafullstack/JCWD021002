@@ -11,7 +11,8 @@ import { addressRouter } from './routers/address.router';
 import { massRouter } from './routers/mass.router.js';
 import { packagingRouter } from './routers/packaging.router';
 import { discountRouter } from './routers/discount.router';
-
+import { ratingRouter } from './routers/ratingAndReview.router';
+import { reportRouter } from './routers/report.router';
 
 const router = Router();
 
@@ -31,6 +32,8 @@ router.use('/stocks', productStockRouter);
 router.use('/mass', massRouter);
 router.use('/packaging', packagingRouter);
 router.use('/discount', discountRouter);
+router.use('/report', reportRouter);
+router.use('/rating', ratingRouter);
 
 
 // add another router here ...

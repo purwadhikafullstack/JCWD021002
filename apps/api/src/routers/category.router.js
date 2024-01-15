@@ -6,6 +6,7 @@ import {
     deleteCategoryController,
     deleteCategoryForProductController,
 } from '../controllers/category.controller';
+import { uploadCategoriesFile } from '../middlewares/multerConfig';
 
 const categoryRouter = Router();
 
@@ -15,12 +16,12 @@ categoryRouter.get('/category-lists', async (req, res) => {
   return result;
 });
 
-categoryRouter.post('/add-category', async (req, res) => {
+categoryRouter.post('/add-category', uploadCategoriesFile, async (req, res) => {
     const result = await addCategoryController(req, res);
     return result;
   });
 
-  categoryRouter.patch('/change-category', async (req, res) => {
+  categoryRouter.patch('/change-category', uploadCategoriesFile, async (req, res) => {
     const result = await editCategoryController(req, res);
     return result;
   });

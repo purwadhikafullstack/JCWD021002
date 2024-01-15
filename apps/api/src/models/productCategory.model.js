@@ -16,6 +16,10 @@ export const init = (sequelize) => {
         type: DataTypes.STRING(45),
         allowNull: false,
       },
+      imageUrl: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+      },
     },
     {
       sequelize,

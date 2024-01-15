@@ -24,7 +24,6 @@ const getPaginatedAndFilteredCategoryController = async (req, res) => {
     );
 
 
-    console.log("controller result:", result);
     return res.status(200).json(result);
   } catch (err) {
     console.error('Error in getPaginatedAndFilteredProductsController:', err);
@@ -37,7 +36,7 @@ const addCategoryController = async (req, res) => {
     try {
       const { category } = req.body;
   
-      const result = await addCategoryService(category);
+      const result = await addCategoryService(category, req.file?.filename,);
   
       res.status(201).json({result})
     } catch (err) {
@@ -47,12 +46,17 @@ const addCategoryController = async (req, res) => {
   
   const editCategoryController = async (req, res) => {
     try {
-      const { category_id, categoryNew } = req.body;
+      const { category_id, category } = req.body;
   
-      const result = await editCategoryService(category_id, categoryNew);
+      console.log("ini di controller", category_id, category, req.file?.filename);
+
+      const result = await editCategoryService(category_id, category, req.file?.filename,);
+
   
       res.status(201).json({result})
     } catch (err) {
+      console.log(err);
+
       res.status(500).json({error: "internal server error"})
     }
   }

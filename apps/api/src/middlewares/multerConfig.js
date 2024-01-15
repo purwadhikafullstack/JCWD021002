@@ -34,6 +34,16 @@ const discountStorage = multer.diskStorage({
   },
 });
 
+const categoriesStorage = multer.diskStorage({
+  destination: (req, res, cb) => {
+    cb(null, path.join(__dirname, "../public/images/categories"));
+  },
+  filename: (req, file, cb) => {
+    const { category } = req.body;
+    cb(null, `categories-${category}-${Date.now()}-${file.originalname}`);
+  },
+});
+
 const fileFilter = (req, file, cb) => {
   const fileType = file.mimetype.split("/")[1];
   if (
@@ -71,8 +81,16 @@ const uploadDiscountFile = multer({
   limits,
 }).single("discount");
 
+const uploadCategoriesFile = multer({
+  storage: categoriesStorage,
+  fileFilter,
+  limits,
+}).single("category");
+
+
 module.exports = {
   uploadProductFile,
   uploadAvatarFile,
   uploadDiscountFile,
+  uploadCategoriesFile,
 };

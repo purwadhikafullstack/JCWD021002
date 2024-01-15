@@ -15,6 +15,7 @@ const {
                 usageRestrictionId,
                 productName,
                 status,
+                storeId,
     ) => {
         try {
             const result = await getPaginatedAndFilteredDiscountQuery(
@@ -27,6 +28,7 @@ const {
                 usageRestrictionId,
                 productName,
                 status,
+                storeId,
                     )
 
                     return result;
@@ -48,6 +50,8 @@ const {
         get_quantity,
         discountAmount,
         usageRestrictionId,
+        name,
+        description,
         referralCode,
         banner,
         discountNom,
@@ -65,6 +69,8 @@ const {
                 get_quantity,
                 discountAmount,
                 usageRestrictionId,
+                name,
+                description,
                 referralCode,
                 banner,
                 discountNom,

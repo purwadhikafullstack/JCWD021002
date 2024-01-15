@@ -41,6 +41,7 @@ import AddProductStock from './pages/AddProductStock/AddProductStock';
 import ProductStockLists from './pages/ProductStockLists/ProductStockLists';
 import DiscountLists from './pages/DiscountLists/DiscountLists';
 import AddDiscount from './pages/AddDiscount/AddDiscount';
+import ProductCatalogue from './pages/ProductCatalogue/ProductCatalogue';
 
 function App() {
   const [webSize, setWebSize] = useState('mobile');
@@ -376,6 +377,15 @@ function App() {
                         path="/add-discount"
                         element={
                           <AddDiscount
+                            size={webSize === 'mobile' ? '500px' : '100vw'}
+                            handleWebSize={handleWebSize}
+                          />
+                        }
+                      />
+                      <Route
+                        path="/product-catalogue"
+                        element={
+                          <ProductCatalogue
                             size={webSize === 'mobile' ? '500px' : '100vw'}
                             handleWebSize={handleWebSize}
                           />

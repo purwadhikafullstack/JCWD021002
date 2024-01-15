@@ -211,10 +211,7 @@ const getPageNumbers = () => {
     <Box w={{ base: '100vw', md: size }} overflowX='hidden'>
           <SideBar size={size} handleWebSize={handleWebSize}/>
       <Box w={{ base: '100vw', md: size }} height='fit-content' backgroundColor='#fbfaf9' >
-        {/* <SidebarWithHeader /> */}
-      
       <Box p='20px'>
-     
         <Box pl={size == '500px' ? '0px' : '150px' }>
                 <Flex dir='row' gap='10px'>
                 <Box w='60%'>
