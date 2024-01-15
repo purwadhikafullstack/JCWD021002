@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useFormik } from 'formik';
 // import * as Yup from 'yup';
 // import { useState } from 'react';
+import { useWebSize } from '../../provider.websize';
 
 import { MdArrowBackIos, MdOutlineEmail } from 'react-icons/md';
 import {
@@ -23,7 +24,8 @@ import toast from 'react-hot-toast';
 import { BiHide, BiShow } from 'react-icons/bi';
 import { useState } from 'react';
 
-export const ChangeEmailVerfy = ({ size }) => {
+export const ChangeEmailVerfy = () => {
+  const {size } = useWebSize()
   const navigate = useNavigate();
   const [show, setShow] = useState({
     showP: false,
@@ -42,7 +44,7 @@ export const ChangeEmailVerfy = ({ size }) => {
           password,
         },
       );
-      navigate('/profile/personal-information/account/change-email');
+      navigate('/profile/detail/account/change-email');
     } catch (err) {
       toast.error(err?.response?.data);
     }
@@ -59,7 +61,7 @@ export const ChangeEmailVerfy = ({ size }) => {
   });
 
   return (
-    <Flex direction={'column'} w={size}>
+    <Flex direction={'column'} w={{base: "100vw",md: size}} bgColor={"white"}>
       <form onSubmit={formik.handleSubmit}>
         <Flex
           align={'center'}
@@ -70,7 +72,7 @@ export const ChangeEmailVerfy = ({ size }) => {
           boxShadow={'base'}
         >
           <Flex position={'absolute'}>
-            <Link to={'/profile/personal-information/account'}>
+            <Link to={'/profile/detail/account'}>
               <MdArrowBackIos />
             </Link>
           </Flex>

@@ -22,6 +22,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { CiLock } from 'react-icons/ci';
 import { BiHide, BiShow } from 'react-icons/bi';
 import toast from 'react-hot-toast';
+import { useWebSize } from '../../provider.websize';
 
 const changePasswordSchema = Yup.object().shape({
   password: Yup.string()
@@ -33,8 +34,9 @@ const changePasswordSchema = Yup.object().shape({
     .required('password is required'),
 });
 
-export const ChangePassword = ({ size }) => {
+export const ChangePassword = () => {
   const navigate = useNavigate();
+  const { size } = useWebSize();
   const [show, setShow] = useState({
     showP: false,
     showC: false,
@@ -54,7 +56,7 @@ export const ChangePassword = ({ size }) => {
         },
       );
       toast.success('Ganti Password Berhasil');
-      navigate('/profile/personal-information/account');
+      navigate('/profile/detail/account');
     } catch (err) {
       toast.error(err?.response?.data);
     }
@@ -72,7 +74,7 @@ export const ChangePassword = ({ size }) => {
   });
 
   return (
-    <Flex direction={'column'} w={size}>
+    <Flex direction={'column'} w={{ base: '100vw', md: size }} bgColor={"white"}>
       <form onSubmit={formik.handleSubmit}>
         <Flex
           align={'center'}
@@ -83,8 +85,8 @@ export const ChangePassword = ({ size }) => {
           boxShadow={'base'}
           justify={'space-between'}
         >
-          <Flex w={"40px"}>
-            <Link to={'/profile/personal-information/account'}>
+          <Flex w={'40px'}>
+            <Link to={'/profile/detail/account'}>
               <MdArrowBackIos />
             </Link>
           </Flex>

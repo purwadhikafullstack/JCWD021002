@@ -1,8 +1,10 @@
-/* eslint-disable react/prop-types */
-import React from 'react';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useWebSize } from '../../provider.websize';
 import { useFormik } from 'formik';
-import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
+
 import {
   Flex,
   FormControl,
@@ -20,20 +22,24 @@ import {
   DrawerCloseButton,
   useDisclosure,
 } from '@chakra-ui/react';
-import { useWebSize } from '../../provider.websize';
-import { useSelector } from 'react-redux';
-import toast from 'react-hot-toast';
 
-export const AddAddress = () => {
+export const EditAddress = () => {
+  const [address, setAddress] = useState();
+  const userId = useSelector((state) => state.AuthReducer?.user?.id);
+  const [update, setUpdate] = useState(false);
   const [province, setProvince] = useState();
   const [cities, setCities] = useState();
   const [provinceId, setProvinceId] = useState();
   const [cityId, setCityId] = useState();
   const [isChecked, setIsChecked] = useState(false);
+  const [selectedItem, setSelectedItem] = useState();
   const { size } = useWebSize();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure({
+    onClose: () => {
+      formik.resetForm();
+    },
+  });
   const btnRef = React.useRef();
-  const userId = useSelector((state) => state.AuthReducer?.user?.id);
 
   const handleProvinceChange = (event) => {
     setProvinceId(event.target.value);
@@ -75,19 +81,19 @@ export const AddAddress = () => {
     }
   }, [provinceId]);
 
-  const addAddress = async (
+  const changeAddress = async (
     addressLine,
+    postalCode,
     recipientNames,
     recipientsMobileNumber,
     addressLabel,
-    postalCode,
     addressDetails,
   ) => {
     try {
-      await axios.post(
-        `http://localhost:8000/api/address/createAddress?userId=${userId}&cityId=${cityId}&isMain=${
+      await axios.patch(
+        `http://localhost:8000/api/address/changeAddress?userId=${userId}&cityId=${cityId}&isMain=${
           isChecked ? 1 : 0
-        }`,
+        }&addressId=${selectedItem?.id}`,
         {
           addressLine,
           postalCode,
@@ -102,6 +108,7 @@ export const AddAddress = () => {
       formik.resetForm();
       setProvinceId();
       toast.success('Alamat berhasil ditambahakan');
+      setUpdate(true);
     } catch (err) {
       console.log(err);
     }
@@ -110,29 +117,118 @@ export const AddAddress = () => {
   const formik = useFormik({
     initialValues: {
       addressLine: '',
+      postalCode: '',
       recipientNames: '',
       recipientsMobileNumber: '',
       addressLabel: '',
-      postalCode: '',
-      addressDetails: ''
+      addressDetails: '',
     },
     onSubmit: (values) => {
-      addAddress(
+      changeAddress(
         values.addressLine,
+        values.postalCode,
         values.recipientNames,
         values.recipientsMobileNumber,
         values.addressLabel,
-        values.postalCode,
-        values.addressDetails
+        values.addressDetails,
       );
     },
   });
 
+  useEffect(() => {
+    if (selectedItem) {
+      formik.resetForm();
+      formik.setValues({
+        addressLine: selectedItem.addressLine || '',
+        postalCode: selectedItem.postalCode || '',
+        recipientNames: selectedItem.recipientNames || '',
+        recipientsMobileNumber: selectedItem.recipientsMobileNumber || '',
+        addressLabel: selectedItem.addressLabel || '',
+        addressDetails: selectedItem.addressDetails || '',
+      });
+      setProvinceId(selectedItem?.City?.Province?.id);
+      setCityId(selectedItem?.city_idcity);
+      if (selectedItem.isMain == 1) {
+        setIsChecked(true);
+      } else if (selectedItem.isMain == 0) {
+        setIsChecked(false);
+      }
+    }
+  }, [selectedItem]);
+
+  const getAddress = async (userId) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:8000/api/address/getAddress/${userId}`,
+      );
+      setAddress(res?.data?.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    getAddress(userId);
+  }, [update, userId]);
+
+  const handleClick = (item) => {
+    setSelectedItem(item);
+    onOpen();
+  };
+
   return (
-    <Flex w={'full'}>
-      <Button ref={btnRef} colorScheme="teal" onClick={onOpen} w={'full'}>
-        Tambah Alamat
-      </Button>
+    <Flex>
+      <Flex w={'full'} direction={'column'} gap={5} px={'30px'} mt={'80px'}>
+        {address?.map((item, index) => {
+          return (
+            <Flex
+              key={index}
+              bgColor={'white'}
+              boxShadow={'base'}
+              p={'15px'}
+              borderRadius={'10px'}
+              direction={'column'}
+              gap={2}
+              cursor={'pointer'}
+              onClick={() => handleClick(item)}
+            >
+              <Flex gap={2}>
+                <Text fontWeight={600}>{item?.recipientNames}</Text>
+                <Text
+                  fontSize={'12px'}
+                  fontWeight={300}
+                  display={'flex'}
+                  alignItems={'center'}
+                >
+                  |
+                </Text>
+                <Text>{item?.recipientsMobileNumber}</Text>
+              </Flex>
+              <Flex direction={'column'} gap={1}>
+                <Text fontSize={'14px'}>{item?.addressLine}</Text>
+                <Text>{`${item?.City?.city.toUpperCase()}, ${item?.City?.Province?.province.toUpperCase()}`}</Text>
+              </Flex>
+              {item.isMain == 1 ? (
+                <Flex>
+                  <Text
+                    border={'1px solid'}
+                    borderColor={'colors.quaternary'}
+                    color={'colors.quaternary'}
+                    px={'5px'}
+                    fontSize={'12px'}
+                    fontWeight={600}
+                  >
+                    Utama
+                  </Text>
+                </Flex>
+              ) : (
+                <></>
+              )}
+            </Flex>
+          );
+        })}
+      </Flex>
+
       <Drawer
         isOpen={isOpen}
         placement="bottom"
@@ -145,11 +241,11 @@ export const AddAddress = () => {
           m={'auto'}
           borderRadius={'20px 20px 0 0'}
           p={'30px'}
-          maxH={"90vh"}
+          maxH={'90vh'}
         >
           <DrawerCloseButton />
           <DrawerHeader display={'flex'} justifyContent={'center'}>
-            Alamat Baru
+            Ubah Alamat
           </DrawerHeader>
           <form
             style={{ width: '100%', height: '100%' }}
@@ -161,6 +257,7 @@ export const AddAddress = () => {
                   <Flex w={'full'} direction={'column'} gap={1}>
                     <Flex bgColor={'white'} py={'10px'}>
                       <Input
+                        type="recipientNames"
                         variant={'unstyled'}
                         placeholder="Nama Penerima*"
                         name="recipientNames"
@@ -180,7 +277,7 @@ export const AddAddress = () => {
                     <Flex py={'10px'}>
                       <Select
                         variant="unstyled"
-                        placeholder="Provinsi"
+                        placeholder={'Provinsi'}
                         value={provinceId}
                         onChange={handleProvinceChange}
                       >
@@ -195,15 +292,15 @@ export const AddAddress = () => {
                     </Flex>
                     <Flex py={'10px'}>
                       <Select
-                        placeholder="Kota"
+                        placeholder={'Kota / Kabupaten'}
+                        value={cityId}
                         onChange={handleCityChange}
-                        borderRadius={0}
                         variant="unstyled"
                       >
                         {cities?.map((item, index) => {
                           return (
                             <option
-                              value={item?.id}
+                              value={item.id}
                               key={index}
                               style={{ backgroundColor: 'transparent' }}
                             >
@@ -226,7 +323,7 @@ export const AddAddress = () => {
                       <Input
                         variant={'unstyled'}
                         placeholder="Detail Alamat (Cth: Blok / Unit No., Patokan)"
-                        name='addressDetails'
+                        name="addressDetails"
                         value={formik.values.addressDetails}
                         onChange={formik.handleChange}
                       />
@@ -234,8 +331,8 @@ export const AddAddress = () => {
                     <Flex bgColor={'white'} py={'10px'}>
                       <Input
                         variant={'unstyled'}
-                        placeholder="Kode Pos"
-                        name='postalCode'
+                        placeholder="Kode pos"
+                        name="postalCode"
                         value={formik.values.postalCode}
                         onChange={formik.handleChange}
                       />

@@ -51,7 +51,7 @@ export const init = (sequelize) => {
       sequelize,
       timestamps: false,
       modelName: 'Address',
-      // tableName: 'user',
+      tableName: 'address',
     },
   );
 };

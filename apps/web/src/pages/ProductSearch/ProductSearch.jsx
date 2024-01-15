@@ -47,7 +47,7 @@ function Product({size, handleWebSize}) {
       if ((productName.trim() !== '') || (categoryId !== undefined && String(categoryId).trim() !== '')) {
         const response = await axios.get(
       
-      `${import.meta.env.VITE_API_URL}/products/product-lists?page=${page}&pageSize=${pageSize}&sortField=${sortField}&sortOrder=${sortOrder}&categoryId=${categoryId}&productName=${productName}&cityId=${cityId}&statusProduct=1&statusStock=1`
+      `${import.meta.env.VITE_API_URL}/products/product-lists?page=${page}&pageSize=${pageSize}&sortField=${sortField}&sortOrder=${sortOrder}&categoryId=${categoryId}&productName=${productName}&cityId=${cityId}&statusProduct=1&statusStock=1&storeId=2`
         );
         setData(response?.data);
       }

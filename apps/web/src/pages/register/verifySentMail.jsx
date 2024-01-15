@@ -4,8 +4,10 @@ import { Link } from 'react-router-dom';
 import { ResizeButton } from '../../components/ResizeButton';
 import LogoGroceria from '../../assets/Groceria-no-Bg.png';
 import LogoRocket from '../../assets/roket.png';
+import { useWebSize } from '../../provider.websize';
 
-export const VerifySentMail = ({ size, handleWebSize }) => {
+export const VerifySentMail = () => {
+  const { size, handleWebSize } = useWebSize();
   return (
     <Flex
       direction={'column'}

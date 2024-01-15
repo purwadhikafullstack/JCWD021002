@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-import { useSelector } from 'react-redux';
 
 import { Header } from './header';
 import { Collections } from './collections';
@@ -11,9 +10,11 @@ import { SwiperCategory } from './swiperCategory';
 import { Flex, Text } from '@chakra-ui/react';
 import { PiGift } from 'react-icons/pi';
 import { IoIosArrowForward } from 'react-icons/io';
+import { useWebSize } from '../../provider.websize';
 
-export const Home = ({ handleWebSize, size }) => {
-  const user = useSelector((state) => state.AuthReducer.user);
+export const Home = () => {
+
+  const {size, handleWebSize } = useWebSize()
 
   return (
     <Flex

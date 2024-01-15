@@ -1,27 +1,35 @@
 /* eslint-disable react/prop-types */
-import { Flex, Text } from '@chakra-ui/react';
+import {
+  Flex,
+  Text,
+} from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import { MdArrowBackIos } from 'react-icons/md';
-import { MyButton } from '../../components/Button';
+// import { MyButton } from '../../components/Button';
 
-// const address = [
-//   {}
-// ]
+import { useWebSize } from '../../provider.websize';
+import { AddAddress } from './addAddress';
+import { EditAddress } from './editAddress';
 
-export const MyAddress = ({ size }) => {
+
+export const MyAddress = () => {
+  const { size } = useWebSize();
+
   return (
-    <Flex w={size}>
+    <Flex w={size} bgColor={'#F8F9FAFF'}>
       <Flex w={'full'} direction={'column'}>
         <Flex
           align={'center'}
-          w={'full'}
+          w={size}
           mb={'40px'}
           h={'60px'}
           p={'10px 30px'}
           boxShadow={'base'}
+          position={'fixed'}
+          bgColor={'white'}
         >
           <Flex position={'absolute'}>
-            <Link to={'/profile/personal-information'}>
+            <Link to={'/profile/detail'}>
               <MdArrowBackIos />
             </Link>
           </Flex>
@@ -32,13 +40,10 @@ export const MyAddress = ({ size }) => {
           </Flex>
         </Flex>
 
-        <Flex w={'full'} px={'30px'}>
-          <Link
-            to={'/profile/personal-information/address/addAddress'}
-            style={{ width: '100%' }}
-          >
-            <MyButton value={'Tambah alamat'} />
-          </Link>
+        <EditAddress />
+
+        <Flex w={'full'} p={'30px'} justify={'center'}>
+          <AddAddress />
         </Flex>
       </Flex>
     </Flex>
