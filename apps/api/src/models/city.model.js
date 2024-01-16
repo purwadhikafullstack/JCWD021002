@@ -12,11 +12,15 @@ export const init = (sequelize) => {
   City.init(
     {
       city: {
-        type: DataTypes.STRING(45),
+        type: DataTypes.STRING(255),
         allowNull: false,
       },
       province_idprovince: {
         type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      postalCode: {
+        type: DataTypes.CHAR,
         allowNull: false,
       },
     },
@@ -28,3 +32,4 @@ export const init = (sequelize) => {
     },
   );
 };
+

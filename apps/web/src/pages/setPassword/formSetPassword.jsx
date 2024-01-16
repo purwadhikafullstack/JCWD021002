@@ -1,3 +1,9 @@
+import { useState } from 'react';
+import * as Yup from 'yup';
+import axios from 'axios';
+import { useFormik } from 'formik';
+import { useNavigate } from 'react-router-dom';
+
 import {
   Flex,
   Text,
@@ -11,45 +17,63 @@ import {
   FormErrorMessage,
 } from '@chakra-ui/react';
 import { MyButton } from '../../components/Button';
-import { CiMail, CiLock } from 'react-icons/ci';
+import { CiLock } from 'react-icons/ci';
 import { BiHide, BiShow } from 'react-icons/bi';
-import { useState } from 'react';
-import * as Yup from 'yup';
-import axios from 'axios';
-import { useFormik } from 'formik';
-import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const loginSchema = Yup.object().shape({
-  password: Yup.string().required('password is required')
+  password: Yup.string()
+    .min(8, 'Password must be at least 8 characters')
+    .matches(
+      /^(?=.*[A-Z])(?=.*\d)/,
+      'Password must contain at least one uppercase letter and one number',
+    )
+    .required('password is required'),
+  confirmPassword: Yup.string()
+    .required('Confirm Password is required')
+    .oneOf([Yup.ref('password'), null], 'Passwords must match'),
 });
 
 export const FormSetPassword = () => {
-  const [show, setShow] = useState(false);
-  const navigate = useNavigate();
-  const handleClickshow = () => setShow(!show);
+  const [show, setShow] = useState({
+    showP: false,
+    showC: false,
+  });
+  const handleClickshow = (key) =>
+  setShow((prev) => ({ ...prev, [key]: !prev[key] }));
 
+  const navigate = useNavigate();
 
   function getQueryParam(param) {
-		const urlParams = new URLSearchParams(window.location.search);
-		return urlParams.get(param);
-	}
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+  }
 
-  const resetToken = getQueryParam("resetToken")
+
+  const resetToken = getQueryParam('resetToken');
 
   const SetPassword = async (password, confirmPassword) => {
     try {
       if (resetToken == null) {
-        return alert("Invalid or missing reset token")
+        return alert('Invalid or missing reset token');
       }
       if (password == confirmPassword) {
-        await axios.patch('http://localhost:8000/api/auth/setPassword', {
-          password,
-        });
-        alert('set password success');
+        await axios.patch(
+          `${import.meta.env.VITE_API_URL}/auth/setPassword?resetToken=${encodeURIComponent(
+            resetToken,
+          )}`,
+          {
+            password,
+          },
+        );
+        toast.success('Set password success');
+        navigate('/login');
+      } else {
+        toast.success('Passwords must match');
       }
     } catch (err) {
-      alert(err.response?.data);
       console.log(err);
+      toast.error(err.response?.data);
     }
   };
 
@@ -71,7 +95,6 @@ export const FormSetPassword = () => {
     >
       <Flex direction={'column'} gap={'50px'}>
         <Flex direction={'column'} gap={'30px'}>
-
           <FormControl
             isInvalid={formik.touched.password && formik.errors.password}
           >
@@ -82,25 +105,27 @@ export const FormSetPassword = () => {
               </InputLeftElement>
               <Input
                 placeholder="Enter password"
-                type={show ? 'text' : 'password'}
+                type={show?.showP ? 'text' : 'password'}
                 bgColor={'#F3F4F6FF'}
                 name="password"
                 value={formik.values.password}
                 onChange={formik.handleChange}
               />
               <InputRightElement>
-                <Button size={'xm'} onClick={handleClickshow}>
-                  {show ? <BiShow /> : <BiHide />}
+                <Button size={'xm'} onClick={() => handleClickshow('showP')}>
+                  {show?.showP ? <BiShow /> : <BiHide />}
                 </Button>
               </InputRightElement>
             </InputGroup>
             {formik.touched.password && formik.errors.password && (
-              <FormErrorMessage position={"absolute"}>{formik.errors.password}</FormErrorMessage>
+              <FormErrorMessage position={'absolute'}>
+                {formik.errors.password}
+              </FormErrorMessage>
             )}
           </FormControl>
 
           <FormControl
-            isInvalid={formik.touched.password && formik.errors.password}
+            isInvalid={formik.touched.confirmPassword && formik.errors.confirmPassword}
           >
             <FormLabel>Confirm Password</FormLabel>
             <InputGroup>
@@ -109,25 +134,27 @@ export const FormSetPassword = () => {
               </InputLeftElement>
               <Input
                 placeholder="Confirm password"
-                type={show ? 'text' : 'password'}
+                type={show?.showC ? 'text' : 'password'}
                 bgColor={'#F3F4F6FF'}
-                name="consfirmPassword"
+                name="confirmPassword"
                 value={formik.values.confirmPassword}
                 onChange={formik.handleChange}
               />
               <InputRightElement>
-                <Button size={'xm'} onClick={handleClickshow}>
-                  {show ? <BiShow /> : <BiHide />}
+                <Button size={'xm'} onClick={() => handleClickshow('showC')}>
+                  {show?.showC ? <BiShow /> : <BiHide />}
                 </Button>
               </InputRightElement>
             </InputGroup>
-            {formik.touched.confirmPassword && formik.errors.password && (
-              <FormErrorMessage position={"absolute"}>{formik.errors.password}</FormErrorMessage>
+            {formik.touched.confirmPassword && formik.errors.confirmPassword && (
+              <FormErrorMessage position={'absolute'}>
+                {formik.errors.confirmPassword}
+              </FormErrorMessage>
             )}
           </FormControl>
         </Flex>
 
-        <MyButton type="submit" value={<Text>Set password</Text>} />
+        <MyButton type={'submit'} value={<Text>Set password</Text>} />
       </Flex>
     </form>
   );

@@ -20,10 +20,6 @@ export async function up(queryInterface, Sequelize) {
       type: Sequelize.INTEGER,
       allowNull: false,
     },
-    stock: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-    },
     createdAt: {
       type: Sequelize.DATE,
       allowNull: false,

@@ -6,6 +6,7 @@ export default class Store extends Model {
     this.hasMany(models.ProductStock, { foreignKey: 'store_idstore' });
     this.hasMany(models.Order, { foreignKey: 'store_idstore' });
     this.hasMany(models.Journal, { foreignKey: 'store_idstore' });
+    this.hasMany(models.User, { foreignKey: 'store_idstore' });
   }
 }
 

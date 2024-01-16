@@ -1,40 +1,67 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import reactLogo from '../../assets/react.svg';
-import viteLogo from '/vite.svg';
-import { Flex } from '@chakra-ui/react';
-// import './Home.css';
 
-function Home({ size }) {
-  const [sampleData, setSampleData] = useState([]);
+import { Header } from './header';
+import { Collections } from './collections';
+import { MySwiper } from './swiper';
+import { ProductList } from './productList';
+import { BottomBar } from '../../components/BottomBar';
+import { SwiperCategory } from './swiperCategory';
 
-  useEffect(() => {
-    (async () => {
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_API_URL}/sample`,
-      );
-      setSampleData(data);
-    })();
-  }, []);
+import { Flex, Text } from '@chakra-ui/react';
+import { PiGift } from 'react-icons/pi';
+import { IoIosArrowForward } from 'react-icons/io';
+import { useWebSize } from '../../provider.websize';
+
+export const Home = () => {
+
+  const {size, handleWebSize } = useWebSize()
 
   return (
-    <Flex w={size}>
-      <div>
-        <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Purwadhika Final Project Template using Vite + React</h1>
-      <h3>Test Data</h3>
-      {sampleData.map((data, idx) => (
-        <div key={idx.toString()}>{data.name}</div>
-      ))}
+    <Flex
+      w={{ base: '100vw', lg: size }}
+      direction={'column'}
+      bgColor={'#F8F9FAFF'}
+      transition={"all .3s ease-in-out"}
+    >
+      <Header size={size} handleWebSize={handleWebSize} />
+      <Flex>
+        <MySwiper size={size} />
+      </Flex>
+      <SwiperCategory size={size} />
+      <Flex
+        p={'20px'}
+        direction={'column'}
+        gap={5}
+        w={{ base: 'full', lg: size }}
+        overflowX={'hidden'}
+        mb={"60px"}
+      >
+        <Flex
+          justify={'space-between'}
+          align={'center'}
+          bgColor={'colors.secondary'}
+          color={'colors.primary'}
+          h={'36px'}
+          px={'10px'}
+          borderRadius={'4px'}
+          cursor={'pointer'}
+        >
+          <Flex gap={2}>
+            <PiGift size={'20px'} />
+            <Text fontWeight={400} fontSize={'14px'}>
+              You have 5 voucher here
+            </Text>
+          </Flex>
+          <IoIosArrowForward />
+        </Flex>
+
+        <Collections size={size} />
+
+        <ProductList />
+      </Flex>
+      <Flex position={'fixed'} bottom={0} w={{ base: 'full', md: size }}>
+        <BottomBar />
+      </Flex>
     </Flex>
   );
-}
-
-export default Home;
+};

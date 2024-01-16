@@ -15,9 +15,12 @@ import { CiMail, CiLock } from 'react-icons/ci';
 import { BiHide, BiShow } from 'react-icons/bi';
 import { useState } from 'react';
 import * as Yup from 'yup';
-import axios from 'axios';
 import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { useDispatch } from 'react-redux';
+import { login } from '../../redux/reducer/authReducer';
+import Loader from '../../components/Loader';
 
 const loginSchema = Yup.object().shape({
   emailOrUsername: Yup.string()
@@ -32,35 +35,16 @@ const loginSchema = Yup.object().shape({
 
       return true;
     }),
-  password: Yup.string().required('password is required')
+  password: Yup.string().required('password is required'),
 });
 
 export const FormLogin = () => {
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [displayLoader, setDisplayLoader] = useState('none');
 
   const handleClickshow = () => setShow(!show);
-
-  const Login = async (emailOrUsername, password) => {
-    try {
-      const res = await axios.post('http://localhost:8000/api/auth/login', {
-        emailOrUsername,
-        password,
-      });
-      alert('login success');
-      const role = res.data.data.user.role_idrole;
-      if (role == 3) {
-        navigate('/');
-      } else if (role == 2) {
-        navigate('/admin');
-      } else {
-        navigate('/superadmin');
-      }
-    } catch (err) {
-      alert(err.response?.data);
-      console.log(err);
-    }
-  };
 
   const formik = useFormik({
     initialValues: {
@@ -69,7 +53,30 @@ export const FormLogin = () => {
     },
     validationSchema: loginSchema,
     onSubmit: async (values) => {
-      Login(values.emailOrUsername, values.password);
+      setDisplayLoader('flex');
+      try {
+        let user;
+        setTimeout(async () => {
+          user = await dispatch(login(values.emailOrUsername, values.password));
+          if (user?.role_idrole === 3) {
+            setDisplayLoader('none');
+            navigate('/');
+          } else if (user?.role_idrole === 2) {
+            setDisplayLoader('none');
+            navigate('/dashboard-admin');
+          } else if (user?.role_idrole === 1) {
+            setDisplayLoader('none');
+            navigate('/dashboard-admin');
+          } else {
+            setDisplayLoader('none');
+          }
+        }, 1500);
+      } catch (error) {
+        setTimeout(() => {
+          setDisplayLoader('none');
+          toast.error("Login Failed");
+        }, 1500)
+      }
     },
   });
 
@@ -98,9 +105,12 @@ export const FormLogin = () => {
                 onChange={formik.handleChange}
               />
             </InputGroup>
-            {formik.touched.emailOrUsername && formik.errors.emailOrUsername && (
-              <FormErrorMessage position={"absolute"}>{formik.errors.emailOrUsername}</FormErrorMessage>
-            )}
+            {formik.touched.emailOrUsername &&
+              formik.errors.emailOrUsername && (
+                <FormErrorMessage position={'absolute'}>
+                  {formik.errors.emailOrUsername}
+                </FormErrorMessage>
+              )}
           </FormControl>
 
           <FormControl
@@ -126,9 +136,15 @@ export const FormLogin = () => {
               </InputRightElement>
             </InputGroup>
             {formik.touched.password && formik.errors.password && (
-              <FormErrorMessage position={"absolute"}>{formik.errors.password}</FormErrorMessage>
+              <FormErrorMessage position={'absolute'}>
+                {formik.errors.password}
+              </FormErrorMessage>
             )}
           </FormControl>
+        </Flex>
+
+        <Flex display={displayLoader} position={'absolute'} top={0} left={0}>
+          <Loader />
         </Flex>
 
         <MyButton type="submit" value={<Text>Sign in</Text>} />

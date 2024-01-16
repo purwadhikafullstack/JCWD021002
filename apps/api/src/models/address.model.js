@@ -26,12 +26,32 @@ export const init = (sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      recipientNames: {
+        type: DataTypes.STRING(255),
+        allowNull: false,
+      },
+      recipientsMobileNumber: {
+        type: DataTypes.STRING(15),
+        allowNull: false,
+      },
+      addressLabel: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+      },
+      addressDetails: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+      },
+      isMain: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      },
     },
     {
       sequelize,
       timestamps: false,
       modelName: 'Address',
-      // tableName: 'user',
+      tableName: 'address',
     },
   );
 };
