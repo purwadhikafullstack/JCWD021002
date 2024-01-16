@@ -66,7 +66,7 @@ const LinkItems = [
   { name: 'Admin', icon: IconPasswordUser, to: '/user-lists' },
 ];
 const SuperAdminLinkItem = [
-  { name: 'Store', icon: IconPasswordUser, to: '/store-management' },
+  { name: 'Store', icon: IconPasswordUser, to: '/store' },
 ];
 
 const SidebarContent = ({ onClose, size, handleWebSize, ...rest }) => {
@@ -97,7 +97,7 @@ const SidebarContent = ({ onClose, size, handleWebSize, ...rest }) => {
       <Flex h="20" alignItems="center" justifyContent="space-between">
         <Image src={LogoIcon} margin={'auto'} width="130px" />
       </Flex>
-      
+
       {user?.role_idrole == 1 ? (
         <>
           {LinkItems.map((link) => (
