@@ -1,6 +1,7 @@
 import { Box, Flex } from '@chakra-ui/react';
 import { useWebSize } from '../../provider.websize';
 import SideBar from '../../components/SideBar/SideBar';
+import { Outlet } from 'react-router-dom';
 
 const Store = () => {
   const { size, handleWebSize } = useWebSize();
@@ -13,7 +14,7 @@ const Store = () => {
 
       <Box p={"20px"}>
         <Flex pl={size == '500px' ? '0px' : '150px'}>
-          halo
+          <Outlet />
         </Flex>
       </Box>
     </Box>

@@ -231,17 +231,18 @@ export const EditAddress = () => {
 
       <Drawer
         isOpen={isOpen}
-        placement="bottom"
+
+        placement={size == '500px' ? 'bottom' : 'right'}
         onClose={onClose}
         finalFocusRef={btnRef}
       >
         <DrawerOverlay />
         <DrawerContent
-          width={size}
+          sx={size == '500px' ? { w: size } : { maxW: '35vw' }}
+          borderRadius={size == '500px' ? '20px 20px 0 0' : 0}
+          maxH={size == '500px' ? '90vh' : 'full'}
           m={'auto'}
-          borderRadius={'20px 20px 0 0'}
           p={'30px'}
-          maxH={'90vh'}
         >
           <DrawerCloseButton />
           <DrawerHeader display={'flex'} justifyContent={'center'}>

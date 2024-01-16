@@ -65,23 +65,11 @@ const LinkItems = [
   { name: "Mass", icon: IconScaleOutline, to: "/mass-lists" },
   { name: "Packaging", icon: IconPackage, to: "/packaging-lists" },
   { name: "Discount", icon: IconDiscount, to: "/discount-lists" },
-  { name: "Admin", icon: IconPasswordUser, to: "/user-lists" },
 ];
 
 const SuperAdminLinkItems = [
-  {
-    name: 'Dashboard',
-    icon: IconLayoutDashboard,
-    to: '/dashboard-admin',
-  },
-  { name: "Product", icon: IconBox, to: "/product-lists" },
-  { name: "Stock", icon: IconPackages, to: "/product-stock-lists" },
-  { name: "Report", icon: IconReportMoney, to: "/report" },
-  { name: "Category", icon: IconHierarchy2, to: "/category-lists" },
-  { name: "Mass", icon: IconScaleOutline, to: "/mass-lists" },
-  { name: "Packaging", icon: IconPackage, to: "/packaging-lists" },
-  { name: "Discount", icon: IconDiscount, to: "/discount-lists" },
   { name: "Admin", icon: IconPasswordUser, to: "/user-lists" },
+  { name: 'Store', icon: IconPasswordUser, to: '/store' },
 ];
 
 const SidebarContent = ({ onClose, size, handleWebSize, ...rest }) => {

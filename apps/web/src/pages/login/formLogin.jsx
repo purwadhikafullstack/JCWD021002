@@ -63,10 +63,10 @@ export const FormLogin = () => {
             navigate('/');
           } else if (user?.role_idrole === 2) {
             setDisplayLoader('none');
-            navigate('/');
+            navigate('/dashboard-admin');
           } else if (user?.role_idrole === 1) {
             setDisplayLoader('none');
-            navigate('/');
+            navigate('/dashboard-admin');
           } else {
             setDisplayLoader('none');
           }

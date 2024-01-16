@@ -6,6 +6,7 @@ const routeDiscount = [
   {path: '/discount-lists', element: <DiscountLists />},
   {path: '/add-discount', element: <AddDiscount />},
   {path: '/edit-discount/:id', element: <EditDiscount />},
+
 ]
 
 export default routeDiscount

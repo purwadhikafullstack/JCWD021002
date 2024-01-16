@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { sampleRouter } from './routers/sample.router';
 import { authRouter } from './routers/auth.router';
-import{ productRouter } from './routers/product.router';
+import { productRouter } from './routers/product.router';
 import { cartRouter } from './routers/cart.router';
 import { cityRouter } from './routers/city.router';
 import { categoryRouter } from './routers/category.router';
@@ -13,6 +13,7 @@ import { packagingRouter } from './routers/packaging.router';
 import { discountRouter } from './routers/discount.router';
 import { ratingRouter } from './routers/ratingAndReview.router';
 import { reportRouter } from './routers/report.router';
+import { storeRouter } from './routers/store.router.js';
 
 const router = Router();
 
@@ -34,6 +35,7 @@ router.use('/packaging', packagingRouter);
 router.use('/discount', discountRouter);
 router.use('/report', reportRouter);
 router.use('/rating', ratingRouter);
+router.use('/store', storeRouter);
 
 
 // add another router here ...
