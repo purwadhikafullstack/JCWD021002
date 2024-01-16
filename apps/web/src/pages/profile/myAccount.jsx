@@ -6,11 +6,14 @@ import { Flex, Text, Avatar } from '@chakra-ui/react';
 import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 
-export const MyAccount = ({ size }) => {
+import { useWebSize } from '../../provider.websize';
+
+export const MyAccount = () => {
   const user = useSelector((state) => state.AuthReducer.user);
+  const {size } = useWebSize()
 
   const { pathname } = useLocation();
-  if (pathname != '/profile/personal-information/account/edit-profile')
+  if (pathname != '/profile/detail/account/edit-profile')
     localStorage.removeItem('editProfileValues');
 
   const censorEmail = (email) => {
@@ -32,7 +35,7 @@ export const MyAccount = ({ size }) => {
   };
 
   return (
-    <Flex direction={'column'} w={size} align={'center'} gap={'50px'}>
+    <Flex direction={'column'} w={{base: "100vw",md: size}} align={'center'} gap={'50px'} bgColor={"white"}>
       <Flex
         align={'center'}
         w={'full'}
@@ -41,12 +44,12 @@ export const MyAccount = ({ size }) => {
         p={'10px 30px'}
       >
         <Flex position={'absolute'}>
-          <Link to={'/profile/personal-information'}>
+          <Link to={'/profile/detail'}>
             <MdArrowBackIos />
           </Link>
         </Flex>
         <Flex justify={'end'} w={'full'}>
-          <Link to={'/profile/personal-information/account/edit-profile'}>
+          <Link to={'/profile/detail/account/edit-profile'}>
             <Text>Edit</Text>
           </Link>
         </Flex>
@@ -91,7 +94,7 @@ export const MyAccount = ({ size }) => {
           <Text color={'gray'}>{user.username}</Text>
         </Flex>
 
-        <Link to={'/profile/personal-information/account/email-verification'}>
+        <Link to={'/profile/detail/account/email-verification'}>
           <Flex
             w={'full'}
             justify={'space-between'}
@@ -108,7 +111,7 @@ export const MyAccount = ({ size }) => {
           </Flex>
         </Link>
 
-        <Link to={'/profile/personal-information/account/change-password'}>
+        <Link to={'/profile/detail/account/change-password'}>
           <Flex
             w={'full'}
             justify={'space-between'}

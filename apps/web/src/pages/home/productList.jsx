@@ -3,10 +3,12 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import toRupiah from '@develoka/angka-rupiah-js';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 export const ProductList = () => {
   const [product, setProduct] = useState();
   const [storeId, setStoreId] = useState();
+  const navigate = useNavigate()
 
   function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
@@ -53,6 +55,7 @@ export const ProductList = () => {
               bgColor={'white'}
               overflow={'hidden'}
               cursor={'pointer'}
+              onClick={() => navigate(`/product-detail/${item.id}`)}
             >
               <Flex w={'full'} h={'full'}>
                 <Image

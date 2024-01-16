@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import { IoIosSearch, IoIosArrowDown } from 'react-icons/io';
 import { PiMapPinLine } from 'react-icons/pi';
 import { ResizeButton } from '../../components/ResizeButton';
+import { Link } from 'react-router-dom';
 
 export const Header = ({ size, handleWebSize }) => {
   const location = useSelector((state) => state.AuthReducer.location);
@@ -18,7 +19,6 @@ export const Header = ({ size, handleWebSize }) => {
   return (
     <Flex
       bgColor={size == '500px' ? 'colors.primary' : 'transparent'}
-      // h={'150px'}
       h={'fit-content'}
       direction={'column'}
       p={'20px'}
@@ -75,15 +75,24 @@ export const Header = ({ size, handleWebSize }) => {
         </Flex>
       </Flex>
 
-      <InputGroup
-        alignItems={'center'}
-        display={size == '500px' ? 'flex' : 'none'}
-      >
-        <InputLeftElement pointerEvents="none">
-          <IoIosSearch size={'20px'} color="black" />
-        </InputLeftElement>
-        <Input bgColor={'white'} borderRadius={'5px'} placeholder="Search" />
-      </InputGroup>
+      <Link style={{ width: '100%' }} to={"/product-search"}>
+        <InputGroup
+          alignItems={'center'}
+          display={size == '500px' ? 'flex' : 'none'}
+        >
+          <InputLeftElement pointerEvents="none">
+            <IoIosSearch size={'20px'} color="black" />
+          </InputLeftElement>
+          <Input
+            bgColor={'white'}
+            borderRadius={'5px'}
+            placeholder="Search"
+            readOnly
+            // cursor={'pointer'}
+            // onClick={}
+          />
+        </InputGroup>
+      </Link>
     </Flex>
   );
 };

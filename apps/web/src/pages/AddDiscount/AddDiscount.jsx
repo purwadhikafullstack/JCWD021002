@@ -16,6 +16,8 @@ import {
 import AvatarSVG from './icon-default-avatar.svg';
 import SideBar from '../../components/SideBar/SideBar';
 import { useSelector } from "react-redux";
+import { useWebSize } from '../../provider.websize';
+
 
 function formatPriceToIDR(price) {
   return new Intl.NumberFormat('id-ID', {
@@ -24,7 +26,8 @@ function formatPriceToIDR(price) {
   }).format(price);
 }
 
-const AddDiscount = ({size, handleWebSize}) => {
+const AddDiscount = () => {
+  const {size, handleWebSize } = useWebSize();
   const { user, isLogin } = useSelector((state) => state.AuthReducer);
   const [data, setData] = useState([]);
   const [fieldImage, setFieldImage] = useState(null);

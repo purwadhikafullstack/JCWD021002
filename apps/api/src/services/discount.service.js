@@ -2,6 +2,7 @@ const {
     addDiscountQuery,
     getPaginatedAndFilteredDiscountQuery,
     updateDiscountQuery,
+    getDetailDiscountQuery,
 } = require('../queries/discount.query')
 
 
@@ -38,6 +39,16 @@ const {
             throw err;
         }
     } 
+
+    const getDetailDiscountService = async (id) => {
+        try {
+            const result = await getDetailDiscountQuery(id);
+
+            return result;
+        } catch (err) {
+            throw err;
+        }
+    }
 
     const addDiscountService = async (
         type,
@@ -127,4 +138,5 @@ const {
         addDiscountService,
         getPaginatedAndFilteredDiscountService,
         updateDiscountService,
+        getDetailDiscountService,
     }

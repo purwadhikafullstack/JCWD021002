@@ -19,16 +19,19 @@ import axios from 'axios';
 import { keepLogin } from '../../redux/reducer/authReducer';
 import toast from 'react-hot-toast';
 
+import { useWebSize } from '../../provider.websize';
+
 const editProfileSchema = Yup.object().shape({
   username: Yup.string()
     .min(5, 'Username must be at least 5 characters')
     .matches(/^\S{5,}$/, 'username is invalid'),
 });
 
-export const EditProfile = ({ size }) => {
+export const EditProfile = () => {
   const user = useSelector((state) => state.AuthReducer.user);
   const [selectedImage, setSelectedImage] = useState(null);
   const dispatch = useDispatch();
+  const {size } = useWebSize()
 
   const editProfile = async (username, fullname) => {
     try {
@@ -62,7 +65,6 @@ export const EditProfile = ({ size }) => {
     },
   });
 
-  // untuk mengambil data dari localstorage
   useEffect(() => {
     const storedValues = localStorage.getItem('editProfileValues');
 
@@ -78,10 +80,10 @@ export const EditProfile = ({ size }) => {
   }, [formik.values]);
 
   return (
-    <form onSubmit={formik.handleSubmit} style={{ height: '100vh' }}>
+    <form onSubmit={formik.handleSubmit} style={{ height: '100vh',  backgroundColor: "white" }}>
       <Flex
         direction={'column'}
-        w={size}
+        w={{base: "100vw",md: size}}
         h={'full'}
         align={'center'}
         gap={'50px'}
@@ -95,7 +97,7 @@ export const EditProfile = ({ size }) => {
           p={'10px 30px'}
         >
           <Flex>
-            <Link to={'/profile/personal-information/account'}>
+            <Link to={'/profile/detail/account'}>
               <MdArrowBackIos />
             </Link>
           </Flex>

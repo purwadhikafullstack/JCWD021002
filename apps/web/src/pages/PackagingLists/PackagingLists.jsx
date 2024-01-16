@@ -39,10 +39,12 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from 'react-redux';
 import SideBar from '../../components/SideBar/SideBar';
+import { useWebSize } from '../../provider.websize';
 
 const MAX_VISIBLE_PAGES = 3; 
 
-const PackagingLists = ({size, handleWebSize}) => {
+const PackagingLists = () => {
+  const {size, handleWebSize } = useWebSize();
   const { user, isLogin } = useSelector((state) => state.AuthReducer);
   const [data, setData] = useState([]);
   const [dataPackaging, setDataPackaging] = useState([]);

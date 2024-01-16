@@ -4,6 +4,9 @@ import DiscountType from '../models/discountType.model';
 import Product from '../models/product.model';
 import ProductStock from '../models/productStock.model';
 import UsageRestriction from '../models/usageRestriction.model'
+import DiscountDistribution from '../models/discountDistribution.model'
+import Store from '../models/store.model'
+
 
 
     
@@ -125,6 +128,41 @@ import UsageRestriction from '../models/usageRestriction.model'
         }
       };
 
+      const getDetailDiscountQuery = async (id) => {
+        try {
+          const result = await Discount.findOne({
+            where: {
+              id: id
+            },
+            include: [
+              {
+                model: UsageRestriction,
+              },
+              {
+                model: DiscountType,
+              },
+              {
+                model: ProductStock,
+                include: [Product]
+              },
+              {
+                model: UsageRestriction,
+              },
+              {
+                model: DiscountDistribution,
+              },
+              {
+                model: Store,
+              }
+            ]
+          })
+
+          return result;
+        } catch (err) {
+          throw err;
+        }
+      }
+
 
 
     const addDiscountQuery = async (
@@ -235,4 +273,5 @@ import UsageRestriction from '../models/usageRestriction.model'
         addDiscountQuery,
         getPaginatedAndFilteredDiscountQuery,
         updateDiscountQuery,
+        getDetailDiscountQuery,
     }

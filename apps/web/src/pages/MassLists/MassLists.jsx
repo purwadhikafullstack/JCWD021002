@@ -37,10 +37,12 @@ import { utils, write } from 'xlsx';
 import { useSearchParams } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import SideBar from '../../components/SideBar/SideBar';
+import { useWebSize } from '../../provider.websize';
 
 const MAX_VISIBLE_PAGES = 3; 
 
-const MassLists = ({size, handleWebSize}) => {
+const MassLists = () => {
+  const {size, handleWebSize } = useWebSize();
   const { user, isLogin } = useSelector((state) => state.AuthReducer);
   const [data, setData] = useState([]);
   const [dataMass, setDataMass] = useState([]);

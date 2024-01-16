@@ -13,10 +13,12 @@ import Logo from '../../assets/Logo-Groceria-no-Bg.png';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useWebSize } from '../../provider.websize';
 
 const MAX_VISIBLE_PAGES = 3; 
 
-function ProductCatalogue({size, handleWebSize}) {
+function ProductCatalogue() {
+  const {size, handleWebSize } = useWebSize();
   const [sampleData, setSampleData] = useState([]);
   const [data, setData] = useState([]);
   const [dataCategory, setDataCategory] = useState([])

@@ -34,9 +34,10 @@ import { utils, write } from 'xlsx';
 import { useSelector } from 'react-redux';
 import SideBar from '../../components/SideBar/SideBar';
 import { FiUpload } from "react-icons/fi";
+import { useWebSize } from '../../provider.websize';
 
-
-const CategoryLists = ({size, handleWebSize}) => {
+const CategoryLists = () => {
+  const {size, handleWebSize } = useWebSize();
   const { user, isLogin } = useSelector((state) => state.AuthReducer);
   const [data, setData] = useState([]);
   const [dataCategory, setDataCategory] = useState([]);

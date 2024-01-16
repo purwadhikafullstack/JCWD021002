@@ -15,10 +15,12 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import toRupiah from '@develoka/angka-rupiah-js';
 import SideBar from '../../components/SideBar/SideBar'
+import { useWebSize } from '../../provider.websize';
 
 const MAX_VISIBLE_PAGES = 3; 
 
-function DiscountLists({size, handleWebSize}) {
+function DiscountLists() {
+  const {size, handleWebSize } = useWebSize();
   const { user, isLogin } = useSelector((state) => state.AuthReducer);
   const [userStore, setUserStore] = useState(user?.store_idstore);
 

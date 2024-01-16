@@ -1,5 +1,7 @@
 /* eslint-disable react/prop-types */
+import React from 'react';
 import axios from 'axios';
+import { useFormik } from 'formik';
 import { useState, useEffect } from 'react';
 import {
   Flex,
@@ -9,23 +11,38 @@ import {
   Switch,
   Button,
   Select,
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  useDisclosure,
 } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
-import { MdArrowBackIos } from 'react-icons/md';
+import { useWebSize } from '../../provider.websize';
+import { useSelector } from 'react-redux';
+import toast from 'react-hot-toast';
 
-export const AddAddress = ({ size }) => {
+export const AddAddress = () => {
   const [province, setProvince] = useState();
-  const [city, setCity] = useState();
+  const [cities, setCities] = useState();
   const [provinceId, setProvinceId] = useState();
   const [cityId, setCityId] = useState();
+  const [isChecked, setIsChecked] = useState(false);
+  const { size } = useWebSize();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const btnRef = React.useRef();
+  const userId = useSelector((state) => state.AuthReducer?.user?.id);
 
   const handleProvinceChange = (event) => {
-    const selectedProvinceId = event.target.value;
-    setProvinceId(selectedProvinceId);
+    setProvinceId(event.target.value);
   };
   const handleCityChange = (event) => {
-    const selectedCityId = event.target.value;
-    setCityId(selectedCityId);
+    setCityId(event.target.value);
+  };
+  const handleSwitchChange = (event) => {
+    setIsChecked(event.target.checked);
   };
 
   const getProvince = async () => {
@@ -38,117 +55,223 @@ export const AddAddress = ({ size }) => {
       console.log(err);
     }
   };
+  const getCity = async (provinceId) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:8000/api/city/getCity?provinceId=${provinceId}`,
+      );
+      setCities(res?.data?.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
     getProvince();
   }, []);
-
   useEffect(() => {
-    const getCity = async (provinceId) => {
-      try {
-        const res = await axios.get(
-          `http://localhost:8000/api/address/getCity/${provinceId}`,
-        );
-        setCity(res?.data?.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    getCity(provinceId);
+    if (provinceId) {
+      getCity(provinceId);
+    }
   }, [provinceId]);
 
+  const addAddress = async (
+    addressLine,
+    recipientNames,
+    recipientsMobileNumber,
+    addressLabel,
+    postalCode,
+    addressDetails,
+  ) => {
+    try {
+      await axios.post(
+        `http://localhost:8000/api/address/createAddress?userId=${userId}&cityId=${cityId}&isMain=${
+          isChecked ? 1 : 0
+        }`,
+        {
+          addressLine,
+          postalCode,
+          recipientNames,
+          recipientsMobileNumber,
+          addressLabel,
+          addressDetails,
+        },
+      );
+
+      onClose();
+      formik.resetForm();
+      setProvinceId();
+      toast.success('Alamat berhasil ditambahakan');
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      addressLine: '',
+      recipientNames: '',
+      recipientsMobileNumber: '',
+      addressLabel: '',
+      postalCode: '',
+      addressDetails: ''
+    },
+    onSubmit: (values) => {
+      addAddress(
+        values.addressLine,
+        values.recipientNames,
+        values.recipientsMobileNumber,
+        values.addressLabel,
+        values.postalCode,
+        values.addressDetails
+      );
+    },
+  });
+
   return (
-    <Flex w={size} h={'100vh'}>
-      <Flex w={'full'} direction={'column'}>
-        <Flex
-          align={'center'}
-          w={'full'}
-          h={'60px'}
-          p={'10px 30px'}
-          boxShadow={'base'}
+    <Flex w={'full'}>
+      <Button ref={btnRef} colorScheme="teal" onClick={onOpen} w={'full'}>
+        Tambah Alamat
+      </Button>
+      <Drawer
+        isOpen={isOpen}
+        placement="bottom"
+        onClose={onClose}
+        finalFocusRef={btnRef}
+      >
+        <DrawerOverlay />
+        <DrawerContent
+          width={size}
+          m={'auto'}
+          borderRadius={'20px 20px 0 0'}
+          p={'30px'}
+          maxH={"90vh"}
         >
-          <Flex position={'absolute'}>
-            <Link to={'/profile/personal-information'}>
-              <MdArrowBackIos />
-            </Link>
-          </Flex>
-          <Flex w={'full'} justify={'center'}>
-            <Text fontWeight={600} fontSize={'16px'}>
-              Tambah alamat
-            </Text>
-          </Flex>
-        </Flex>
-
-        <form style={{ width: '100%', height: '100%' }}>
-          <FormControl>
-            <Flex w={'full'} p={'30px'} direction={'column'} gap={1}>
-              <Flex bgColor={'white'} py={'10px'}>
-                <Input variant={'unstyled'} placeholder="Nama Penerima*" />
-              </Flex>
-              <Flex bgColor={'white'} py={'10px'}>
-                <Input
-                  variant={'unstyled'}
-                  placeholder="Nomor Handphone Penerima*"
-                />
-              </Flex>
-              <Flex bgColor={'white'} py={'10px'}>
-                <Input variant={'unstyled'} placeholder="Label Alamat" />
-              </Flex>
-              <Flex py={'10px'}>
-                <Select
-                  variant="unstyled"
-                  placeholder="Provinsi"
-                  value={provinceId}
-                  onChange={handleProvinceChange}
-                >
-                  {province?.map((item, index) => {
-                    return (
-                      <option
-                        value={item?.id}
-                        key={index}
+          <DrawerCloseButton />
+          <DrawerHeader display={'flex'} justifyContent={'center'}>
+            Alamat Baru
+          </DrawerHeader>
+          <form
+            style={{ width: '100%', height: '100%' }}
+            onSubmit={formik.handleSubmit}
+          >
+            <DrawerBody>
+              <Flex h={'fit-content'} bgColor={'white'}>
+                <FormControl>
+                  <Flex w={'full'} direction={'column'} gap={1}>
+                    <Flex bgColor={'white'} py={'10px'}>
+                      <Input
+                        variant={'unstyled'}
+                        placeholder="Nama Penerima*"
+                        name="recipientNames"
+                        value={formik.values.recipientNames}
+                        onChange={formik.handleChange}
+                      />
+                    </Flex>
+                    <Flex bgColor={'white'} py={'10px'}>
+                      <Input
+                        variant={'unstyled'}
+                        placeholder="Nomor Handphone Penerima*"
+                        name="recipientsMobileNumber"
+                        value={formik.values.recipientsMobileNumber}
+                        onChange={formik.handleChange}
+                      />
+                    </Flex>
+                    <Flex py={'10px'}>
+                      <Select
+                        variant="unstyled"
+                        placeholder="Provinsi"
+                        value={provinceId}
+                        onChange={handleProvinceChange}
                       >
-                        {item?.province}
-                      </option>
-                    );
-                  })}
-                </Select>
+                        {province?.map((item, index) => {
+                          return (
+                            <option value={item?.id} key={index}>
+                              {item?.province}
+                            </option>
+                          );
+                        })}
+                      </Select>
+                    </Flex>
+                    <Flex py={'10px'}>
+                      <Select
+                        placeholder="Kota"
+                        onChange={handleCityChange}
+                        borderRadius={0}
+                        variant="unstyled"
+                      >
+                        {cities?.map((item, index) => {
+                          return (
+                            <option
+                              value={item?.id}
+                              key={index}
+                              style={{ backgroundColor: 'transparent' }}
+                            >
+                              {item?.city}
+                            </option>
+                          );
+                        })}
+                      </Select>
+                    </Flex>
+                    <Flex bgColor={'white'} py={'10px'}>
+                      <Input
+                        variant={'unstyled'}
+                        placeholder="Alamat"
+                        name="addressLine"
+                        value={formik.values.addressLine}
+                        onChange={formik.handleChange}
+                      />
+                    </Flex>
+                    <Flex bgColor={'white'} py={'10px'}>
+                      <Input
+                        variant={'unstyled'}
+                        placeholder="Detail Alamat (Cth: Blok / Unit No., Patokan)"
+                        name='addressDetails'
+                        value={formik.values.addressDetails}
+                        onChange={formik.handleChange}
+                      />
+                    </Flex>
+                    <Flex bgColor={'white'} py={'10px'}>
+                      <Input
+                        variant={'unstyled'}
+                        placeholder="Kode Pos"
+                        name='postalCode'
+                        value={formik.values.postalCode}
+                        onChange={formik.handleChange}
+                      />
+                    </Flex>
+                    <Flex bgColor={'white'} py={'10px'}>
+                      <Input
+                        variant={'unstyled'}
+                        placeholder="Label Alamat"
+                        name="addressLabel"
+                        value={formik.values.addressLabel}
+                        onChange={formik.handleChange}
+                      />
+                    </Flex>
+                    <Flex justify={'space-between'} py={'10px'}>
+                      <Text>Atur sebagai Alamat Utama</Text>
+                      <Switch
+                        size="lg"
+                        isChecked={isChecked}
+                        onChange={handleSwitchChange}
+                      />
+                    </Flex>
+                  </Flex>
+                </FormControl>
               </Flex>
-              <Flex py={'10px'}>
-                <Select
-                  variant="unstyled"
-                  placeholder="Kota"
-                  value={cityId}
-                  onChange={handleCityChange}
-                >
-                  {city?.map((item, index) => {
-                    return (
-                      <option value={item?.id} key={index}>
-                        {item?.city}
-                      </option>
-                    );
-                  })}
-                </Select>
-              </Flex>
-              <Flex bgColor={'white'} py={'10px'}>
-                <Input variant={'unstyled'} placeholder="Detail Alamat" />
-              </Flex>
-              <Flex bgColor={'white'} py={'10px'}>
-                <Input variant={'unstyled'} placeholder="Catatan Pengiriman" />
-              </Flex>
-              <Flex justify={'space-between'}>
-                <Text>Atur sebagai Alamat Utama</Text>
-                <Switch size="lg" />
-              </Flex>
-            </Flex>
-          </FormControl>
-
-          <Flex px={'30px'}>
-            <Button type="submit" w={'full'}>
-              Simpan
-            </Button>
-          </Flex>
-        </form>
-      </Flex>
+            </DrawerBody>
+            <DrawerFooter>
+              <Button variant="outline" mr={3} onClick={onClose}>
+                Cancel
+              </Button>
+              <Button colorScheme="blue" type="submit">
+                Save
+              </Button>
+            </DrawerFooter>
+          </form>
+        </DrawerContent>
+      </Drawer>
     </Flex>
   );
 };

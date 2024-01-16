@@ -10,17 +10,17 @@ import { MdArrowBackIos } from 'react-icons/md';
 import { logoutSuccess } from '../../redux/reducer/authReducer';
 import { logout } from '../../config/firebase-config';
 
-export const PersonalInformation = ({ setActivePage }) => {
+export const Detail = ({ setActivePage }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const listMenu = [
     {
       text: 'Akun Saya',
-      link: '/profile/personal-information/account',
+      link: '/profile/detail/account',
     },
     {
       text: 'Alamat Saya',
-      link: '/profile/personal-information/address',
+      link: '/profile/detail/address',
     },
   ];
 
@@ -37,7 +37,6 @@ export const PersonalInformation = ({ setActivePage }) => {
       <Flex
         w={'full'}
         onClick={() => {
-          setActivePage('profile');
           navigate('/profile');
         }}
         cursor={'pointer'}

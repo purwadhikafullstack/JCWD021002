@@ -15,10 +15,12 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { ResizeButton } from '../../components/ResizeButton';
 import { loginSuccess } from '../../redux/reducer/authReducer';
+import { useWebSize } from '../../provider.websize';
 
-export const Login = ({ size, handleWebSize }) => {
+export const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const {size, handleWebSize } = useWebSize()
 
   const onLoginWithGoogle = async () => {
     try {
@@ -105,6 +107,7 @@ export const Login = ({ size, handleWebSize }) => {
       h={{ base: '100vh', lg: '100vh' }}
       transition="width 0.3s ease"
       bgSize={size == '500px' ? 'contain' : 'cover'}
+      bgColor={"white"}
     >
       <Flex
         position={'relative'}
@@ -127,7 +130,7 @@ export const Login = ({ size, handleWebSize }) => {
       <Flex flexDirection={size == '500px' ? 'column' : 'row'} h={'full'}>
         <Flex
           w={size == '500px' ? { base: '100vw', md: '500px' } : '50%'}
-          h={{ base: 'full', md: '80%', lg: 'full' }}
+          h={'full'}
           p={'20px'}
           direction={'column'}
           transition="width 0.3s ease"
@@ -135,8 +138,8 @@ export const Login = ({ size, handleWebSize }) => {
           ml={size == '500px' ? '0' : ''}
         >
           <Center
-            h={{ base: '30%', md: '10%', lg: '40%' }}
-            mt={{ base: '10%', md: '30%', lg: '0' }}
+            h={{ base: '30%',md: '40%', lg: '40%' }}
+            mt={{ base: '10%',md: '0' }}
           >
             <Text fontSize={'32px'} fontWeight={700}>
               Sign in

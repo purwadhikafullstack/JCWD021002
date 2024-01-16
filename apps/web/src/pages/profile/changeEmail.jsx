@@ -20,6 +20,8 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
+import { useWebSize } from '../../provider.websize';
+
 const changeEmailSchema = Yup.object().shape({
   newEmail: Yup.string()
     .matches(
@@ -29,9 +31,9 @@ const changeEmailSchema = Yup.object().shape({
     .required('Email is required'),
 });
 
-export const ChangeEmail = ({ size }) => {
+export const ChangeEmail = () => {
   const navigate = useNavigate();
-
+  const {size } = useWebSize()
   const userId = useSelector((state) => state.AuthReducer.user.id);
 
   const changeEmail = async (newEmail) => {
@@ -43,7 +45,7 @@ export const ChangeEmail = ({ size }) => {
         },
       );
       toast.success('Ganti Email Berhasil');
-      navigate('/profile/personal-information/account');
+      navigate('/profile/detail/account');
     } catch (err) {
       toast.error(err?.response?.data);
     }
@@ -60,7 +62,7 @@ export const ChangeEmail = ({ size }) => {
   });
 
   return (
-    <Flex direction={'column'} w={size}>
+    <Flex direction={'column'} w={{base: "100vw",md: size}} bgColor={"white"}>
       <form onSubmit={formik.handleSubmit}>
         <Flex
           align={'center'}
@@ -71,7 +73,7 @@ export const ChangeEmail = ({ size }) => {
           boxShadow={'base'}
         >
           <Flex position={'absolute'}>
-            <Link to={'/profile/personal-information/account'}>
+            <Link to={'/profile/detail/account'}>
               <MdArrowBackIos />
             </Link>
           </Flex>

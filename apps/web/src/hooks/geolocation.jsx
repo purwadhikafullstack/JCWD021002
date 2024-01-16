@@ -28,7 +28,7 @@ export const Location = ({ children }) => {
                 `${import.meta.env.VITE_API_URL}/city/getCity?cityName=${city}`,
               );
 
-              dispatch(setLocation(res?.data?.data || city));
+              dispatch(setLocation(res?.data?.data[0] || city));
             } catch (error) {
               console.error('Error getting city:', error.message);
             }

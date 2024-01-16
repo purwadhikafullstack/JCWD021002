@@ -3,7 +3,7 @@ const Colors = {
       primary : "#1B4332FF",
       secondary : "#F4FBF8FF",
       tertiary: "#A7DDC8FF",
-      quaternary: "#FFD36CFF",
+      quaternary: "#DE3B40",
       quinary: "#DDE5B6",
       senary: "#DE3B40",
   }

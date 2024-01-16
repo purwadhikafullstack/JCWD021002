@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 // import pdfMake from 'pdfmake/build/pdfmake';
 // import pdfFonts from 'pdfmake/build/vfs_fonts';
@@ -28,8 +28,8 @@ import {
   Icon,
   Divider,
   InputGroup,
-  InputLeftElement
-} from "@chakra-ui/react";
+  InputLeftElement,
+} from '@chakra-ui/react';
 import {
   IconPlus,
   IconArrowNarrowDown,
@@ -40,22 +40,19 @@ import {
   IconChevronRight,
   IconSearch,
 } from '@tabler/icons-react';
-import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { ResizeButton } from '../../components/ResizeButton';
 import LogoGroceria from '../../assets/Groceria-no-Bg.png';
-import { FaStar } from "react-icons/fa6";
+import { FaStar } from 'react-icons/fa6';
 // import  SidebarWithHeader  from '../../components/SideBar/SideBar'
-import SideBar from '../../components/SideBar/SideBar'
+import SideBar from '../../components/SideBar/SideBar';
 
+const MAX_VISIBLE_PAGES = 3;
 
-
-const MAX_VISIBLE_PAGES = 3; 
-
-
- const UserLists = ({size, handleWebSize}) => {
+const UserLists = ({ size, handleWebSize }) => {
   const [data, setData] = useState([]);
   const [dataUser, setDataUser] = useState([]);
-  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortOrder, setSortOrder] = useState('asc');
   const [page, setPage] = useState();
   const [pageSize, setPageSize] = useState();
   const [totalPage, setTotalPage] = useState(0);
@@ -64,10 +61,9 @@ const MAX_VISIBLE_PAGES = 3;
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const navigate = useNavigate();
   const [selectedPage, setSelectedPage] = useState(page);
-  const [roleId, setRoleId] = useState('')
-  const [username, setUsername] = useState()
+  const [roleId, setRoleId] = useState('');
+  const [username, setUsername] = useState();
   const [searchParams, setSearchParams] = useSearchParams({ page, pageSize });
-
 
   const handleSortOrder = (order) => {
     setSortOrder(order);
@@ -83,19 +79,18 @@ const MAX_VISIBLE_PAGES = 3;
       const result = await axios.patch(
         `${import.meta.env.VITE_API_URL}user/update-user`,
         {
-          id : selectedUser?.id,
-          status : 'Deactive'
-        }
+          id: selectedUser?.id,
+          status: 'Deactive',
+        },
       );
 
-      if(result) {
-        alert("User deactive successful");
+      if (result) {
+        alert('User deactive successful');
         setDeleteModalOpen(false);
-      fetchUser();
+        fetchUser();
       }
     } catch (err) {
-      alert("User used in another data");
-      
+      alert('User used in another data');
     }
   };
 
@@ -139,7 +134,6 @@ const MAX_VISIBLE_PAGES = 3;
     //       },
     //     },
     //   };
-
     //   pdfMake.createPdf(docDefinition).download('product_list.pdf');
     // }
   };
@@ -147,7 +141,7 @@ const MAX_VISIBLE_PAGES = 3;
   const fetchUser = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/user/user-lists?page=${page}&pageSize=${pageSize}&roleId=${roleId}&username=${username}`
+        `http://localhost:8000/api/user/user-lists?page=${page}&pageSize=${pageSize}&roleId=${roleId}&username=${username}`,
       );
 
       console.log('API Request URL:', response.config.url);
@@ -160,7 +154,6 @@ const MAX_VISIBLE_PAGES = 3;
   useEffect(() => {
     setSearchParams({ page, pageSize, username, roleId });
   }, [page, pageSize, username, roleId]);
-  
 
   useEffect(() => {
     const pageFromUrl = parseInt(searchParams.get('page')) || 1;
@@ -173,39 +166,40 @@ const MAX_VISIBLE_PAGES = 3;
     setRoleId(roleIdFromUrl);
     setSelectedPage(pageFromUrl);
   }, []); // This useEffect runs only once when the component mounts
-  
+
   useEffect(() => {
     fetchUser();
   }, [page, pageSize, username, roleId]);
-  
-const getPageNumbers = () => {
-  const totalPages = dataUser?.totalPages || 0;
-  const currentPage = selectedPage;
 
-  let startPage = Math.max(currentPage - Math.floor(MAX_VISIBLE_PAGES / 2), 1);
-  let endPage = Math.min(startPage + MAX_VISIBLE_PAGES - 1, totalPages);
+  const getPageNumbers = () => {
+    const totalPages = dataUser?.totalPages || 0;
+    const currentPage = selectedPage;
 
-  if (totalPages - endPage < Math.floor(MAX_VISIBLE_PAGES / 2)) {
-    startPage = Math.max(endPage - MAX_VISIBLE_PAGES + 1, 1);
-  }
+    let startPage = Math.max(
+      currentPage - Math.floor(MAX_VISIBLE_PAGES / 2),
+      1,
+    );
+    let endPage = Math.min(startPage + MAX_VISIBLE_PAGES - 1, totalPages);
 
-  const pages = [];
-  for (let i = startPage; i <= endPage; i++) {
-    pages.push(i);
-  }
+    if (totalPages - endPage < Math.floor(MAX_VISIBLE_PAGES / 2)) {
+      startPage = Math.max(endPage - MAX_VISIBLE_PAGES + 1, 1);
+    }
 
-  if (startPage > 1) {
-    pages.unshift("...");
-  }
+    const pages = [];
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
 
-  if (endPage < totalPages) {
-    pages.push("...");
-  }
+    if (startPage > 1) {
+      pages.unshift('...');
+    }
 
-  return pages;
-};
+    if (endPage < totalPages) {
+      pages.push('...');
+    }
 
-
+    return pages;
+  };
 
   return (
     <Box w={{ base: '100vw', md: size }} overflowX='hidden'>
@@ -244,100 +238,114 @@ const getPageNumbers = () => {
             <Button onClick={exportToPDF} borderRadius='full' border='solid 1px black' leftIcon={<IconArrowNarrowDown />}>Download</Button>
           </HStack>
             <Flex
-              alignItems={size == '500px' ? 'center' : "flex-start"}
-              gap={"24px"}
-              flexWrap={"wrap"}
-              h='fit-content'
+              alignItems={size == '500px' ? 'center' : 'flex-start'}
+              gap={'24px'}
+              flexWrap={'wrap'}
+              h="fit-content"
             >
               {dataUser?.allUsers?.map((item, index) => (
                 <Flex
                   className="admin-container"
-                  alignItems={"center"}
-                  gap={"17px"}
-                  flex={"1 0 calc(25% - 24px)"}
-                  borderRadius={"16px"}
-                  background={"#FFFFFF"}
-                  boxShadow={"base"}
-                  minWidth={size == '500px' ? '155px' : '200px' }
-                  maxWidth={"246px"}
+                  alignItems={'center'}
+                  gap={'17px'}
+                  flex={'1 0 calc(25% - 24px)'}
+                  borderRadius={'16px'}
+                  background={'#FFFFFF'}
+                  boxShadow={'base'}
+                  minWidth={size == '500px' ? '155px' : '200px'}
+                  maxWidth={'246px'}
                   key={index}
                 >
                   <Box
-                    width={"10px"}
-                    height={"80px"}
-                    backgroundColor={"#9ED6A3"}
-                    borderRadius={"0px 14px 14px 0px"}
+                    width={'10px'}
+                    height={'80px'}
+                    backgroundColor={'#9ED6A3'}
+                    borderRadius={'0px 14px 14px 0px'}
                   ></Box>
 
                   <Flex
-                    padding={"24px 0px"}
-                    flexDirection={"column"}
-                    justifyContent={"center"}
-                    alignItems={"flex-start"}
-                    width='100%'
-                    gap={"24px"}
+                    padding={'24px 0px'}
+                    flexDirection={'column'}
+                    justifyContent={'center'}
+                    alignItems={'flex-start'}
+                    width="100%"
+                    gap={'24px'}
                   >
                     <Flex
-                      justifyContent={"center"}
-                      alignItems={"center"}
-                      gap={"10px"}
-                      width='100%'
-                      flexDirection={size == '500px' ? 'column' : 'row' }
+                      justifyContent={'center'}
+                      alignItems={'center'}
+                      gap={'10px'}
+                      width="100%"
+                      flexDirection={size == '500px' ? 'column' : 'row'}
                     >
-                        <Avatar
-                          key={item?.avatar}
-                          boxSize={"64px"}
-                          name={item?.username}
-                          borderRadius={"full"}
-                          src={item?.avatar ? `${
-                            import.meta.env.VITE_API_IMAGE_URL
-                          }/avatar/${item?.avatar}` : "https://bit.ly/broken-link"}
-                          onClick={() => navigate(`/detail-user/${item?.id}`)}
-                          cursor="pointer"
-                          _hover={{
-                            transform: "scale(1.1)",
-                          }}
-                        /> 
+                      <Avatar
+                        key={item?.avatar}
+                        boxSize={'64px'}
+                        name={item?.username}
+                        borderRadius={'full'}
+                        src={
+                          item?.avatar
+                            ? `${import.meta.env.VITE_API_IMAGE_URL}/avatar/${
+                                item?.avatar
+                              }`
+                            : 'https://bit.ly/broken-link'
+                        }
+                        onClick={() => navigate(`/detail-user/${item?.id}`)}
+                        cursor="pointer"
+                        _hover={{
+                          transform: 'scale(1.1)',
+                        }}
+                      />
                       <Flex
-                        flexDirection={"column"}
-                        justifyContent={"center"}
-                        alignItems={"flex-start"}
-                        gap={"8px"}
+                        flexDirection={'column'}
+                        justifyContent={'center'}
+                        alignItems={'flex-start'}
+                        gap={'8px'}
                       >
-                        <Flex alignItems={"center"} gap={"8px"}>
+                        <Flex alignItems={'center'} gap={'8px'}>
                           <Icon
                             as={FaStar}
-                            color={"#F2C139"}
-                            fontSize={"24px"}
+                            color={'#F2C139'}
+                            fontSize={'24px'}
                           />
-                          <Text fontSize={"14px"} fontWeight={"400"}>
+                          <Text fontSize={'14px'} fontWeight={'400'}>
                             {item?.username}
                           </Text>
                         </Flex>
-                        <Flex alignItems={"center"} gap={"2px"}>
+                        <Flex alignItems={'center'} gap={'2px'}>
                           <Text
-                            fontSize={"14px"}
-                            fontWeight={"400"}
-                            color={"#949494"}
+                            fontSize={'14px'}
+                            fontWeight={'400'}
+                            color={'#949494'}
                           >
                             {item?.role_idrole == 1
-                              ?  'Super Admin'
+                              ? 'Super Admin'
                               : item?.role_idrole == 2
                                 ? 'Admin Store'
                                 : 'User'}
                           </Text>
                           <Text
-                            fontSize={"14px"}
-                            fontWeight={"400"}
-                            color={"#9ED6A3"}
+                            fontSize={'14px'}
+                            fontWeight={'400'}
+                            color={'#9ED6A3'}
                           >
                             | {item?.status}
                           </Text>
                         </Flex>
-                        <Flex alignItems={"center"} gap={"8px"}>
+                        <Flex alignItems={'center'} gap={'8px'}>
                           {/* <IconButton  icon={<IconInfoCircle />} variant='ghost' colorScheme='blue' onClick={() => navigate(`/detail-user/${item?.id}`)} /> */}
-                    <IconButton  icon={<IconEditCircle />} variant='ghost' colorScheme='blue' onClick={() => navigate(`/edit-user/${item?.id}`)} />
-                    <IconButton  icon={<IconTrashX />} variant='ghost' colorScheme='red' onClick={() => handleDeleteUser(item)} />
+                          <IconButton
+                            icon={<IconEditCircle />}
+                            variant="ghost"
+                            colorScheme="blue"
+                            onClick={() => navigate(`/edit-user/${item?.id}`)}
+                          />
+                          <IconButton
+                            icon={<IconTrashX />}
+                            variant="ghost"
+                            colorScheme="red"
+                            onClick={() => handleDeleteUser(item)}
+                          />
                         </Flex>
                       </Flex>
                     </Flex>
@@ -345,76 +353,116 @@ const getPageNumbers = () => {
                 </Flex>
               ))}
             </Flex>
-          
-          {deleteModalOpen && (
-            <Modal isOpen={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
-              <ModalOverlay />
-              <ModalContent>
-                <ModalHeader>Delete User</ModalHeader>
-                <ModalCloseButton />
-                <ModalBody>
-                  <Text>
-                    Are you sure you want to delete the User "{selectedUser?.username}"?
-                  </Text>
-                  <VStack>
-                  </VStack>
-                </ModalBody>
-                <ModalFooter>
-                  <Button colorScheme='blue' mr={3} onClick={() => setDeleteModalOpen(false)}>
-                    Cancel
+
+            {deleteModalOpen && (
+              <Modal
+                isOpen={deleteModalOpen}
+                onClose={() => setDeleteModalOpen(false)}
+              >
+                <ModalOverlay />
+                <ModalContent>
+                  <ModalHeader>Delete User</ModalHeader>
+                  <ModalCloseButton />
+                  <ModalBody>
+                    <Text>
+                      Are you sure you want to delete the User "
+                      {selectedUser?.username}"?
+                    </Text>
+                    <VStack></VStack>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button
+                      colorScheme="blue"
+                      mr={3}
+                      onClick={() => setDeleteModalOpen(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button colorScheme="red" onClick={confirmDeleteUser}>
+                      Delete
+                    </Button>
+                  </ModalFooter>
+                </ModalContent>
+              </Modal>
+            )}
+            <Flex marginTop="10px" flexWrap="wrap">
+              <Box mt="20px">
+                <HStack>
+                  <Text>Show per Page</Text>
+                  <Select
+                    border="solid 1px black"
+                    width="fit-content"
+                    value={pageSize}
+                    onChange={(e) => setPageSize(e.target.value)}
+                  >
+                    <option value={1}>1</option>
+                    <option value={10}>10</option>
+                    <option value={15}>15</option>
+                    <option value={20}>20</option>
+                    <option value={30}>30</option>
+                    <option>All</option>
+                  </Select>
+                </HStack>
+              </Box>
+              <Spacer />
+              <Box mt="20px">
+                <Button
+                  borderRadius="full"
+                  backgroundColor="#286043"
+                  textColor="white"
+                  border="solid 1px #286043"
+                  leftIcon={<IconChevronLeft />}
+                  isDisabled={page == 1 ? true : false}
+                  onClick={() => {
+                    setPage(page - 1);
+                    setSelectedPage(selectedPage - 1);
+                  }}
+                ></Button>
+                {getPageNumbers().map((pageNumber, index) => (
+                  <Button
+                    key={index}
+                    ml="2px"
+                    mr="2px"
+                    borderRadius="full"
+                    backgroundColor={
+                      selectedPage === pageNumber ? '#286043' : 'white'
+                    }
+                    textColor={
+                      selectedPage === pageNumber ? 'white' : '#286043'
+                    }
+                    border={`solid 1px ${
+                      selectedPage === pageNumber ? 'white' : '#286043'
+                    }`}
+                    onClick={() => {
+                      // Handle the case where the button is "..." separately
+                      if (pageNumber !== '...') {
+                        setPage(pageNumber);
+                        setSelectedPage(pageNumber);
+                      }
+                    }}
+                  >
+                    {pageNumber}
                   </Button>
-                  <Button colorScheme='red' onClick={confirmDeleteUser}>
-                    Delete
-                  </Button>
-                </ModalFooter>
-              </ModalContent>
-            </Modal>
-          )}
-          <Flex marginTop='10px' flexWrap='wrap'>
-            <Box mt='20px'>
-            <HStack>
-            <Text>Show per Page</Text>
-            <Select border='solid 1px black' width='fit-content' value={pageSize} onChange={(e) => setPageSize(e.target.value)}>
-              <option value={1}>1</option>
-              <option value={10}>10</option>
-              <option value={15}>15</option>
-              <option value={20}>20</option>
-              <option value={30}>30</option>
-              <option>All</option>
-            </Select>
-            </HStack>
-            </Box>
-            <Spacer />
-            <Box mt='20px'>
-            <Button borderRadius='full' backgroundColor='#286043' textColor='white' border='solid 1px #286043' leftIcon={<IconChevronLeft />} isDisabled={page == 1 ? true : false} onClick={() => {setPage(page - 1); setSelectedPage(selectedPage -1);}} ></Button>
-  {getPageNumbers().map((pageNumber, index) => (
-          <Button
-            key={index}
-            ml='2px'
-            mr='2px'
-            borderRadius='full'
-            backgroundColor={selectedPage === pageNumber ? '#286043' : 'white'}
-            textColor={selectedPage === pageNumber ? 'white' : '#286043'}
-            border={`solid 1px ${selectedPage === pageNumber ? 'white' : '#286043'}`}
-            onClick={() => {
-              // Handle the case where the button is "..." separately
-              if (pageNumber !== "...") {
-                setPage(pageNumber);
-                setSelectedPage(pageNumber);
-              }
-            }}
-          >
-            {pageNumber}
-          </Button>
-        ))}
-  <Button borderRadius='full' backgroundColor='#286043' textColor='white' border='solid 1px #286043' rightIcon={<IconChevronRight />} isDisabled={page == dataUser?.totalPages ? true : false} onClick={() => {setSelectedPage(selectedPage +1); setPage(page+1);}}></Button>
-            </Box>
-  </Flex>
+                ))}
+                <Button
+                  borderRadius="full"
+                  backgroundColor="#286043"
+                  textColor="white"
+                  border="solid 1px #286043"
+                  rightIcon={<IconChevronRight />}
+                  isDisabled={page == dataUser?.totalPages ? true : false}
+                  onClick={() => {
+                    setSelectedPage(selectedPage + 1);
+                    setPage(page + 1);
+                  }}
+                ></Button>
+              </Box>
+            </Flex>
+          </Box>
         </Box>
       </Box>
-      </Box>
-      </Box>
+    </Box>
   );
-          }
+};
 
-export default UserLists ;
+export default UserLists;

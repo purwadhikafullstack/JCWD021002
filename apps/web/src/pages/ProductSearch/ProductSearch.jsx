@@ -12,10 +12,12 @@ import LogoGroceria from '../../assets/Groceria-no-Bg.png';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useWebSize } from '../../provider.websize';
 
 const MAX_VISIBLE_PAGES = 3; 
 
-function Product({size, handleWebSize}) {
+function Product() {
+  const {size, handleWebSize } = useWebSize();
   const [sampleData, setSampleData] = useState([]);
   const [data, setData] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -47,7 +49,7 @@ function Product({size, handleWebSize}) {
       if ((productName.trim() !== '') || (categoryId !== undefined && String(categoryId).trim() !== '')) {
         const response = await axios.get(
       
-      `${import.meta.env.VITE_API_URL}/products/product-lists?page=${page}&pageSize=${pageSize}&sortField=${sortField}&sortOrder=${sortOrder}&categoryId=${categoryId}&productName=${productName}&cityId=${cityId}&statusProduct=1&statusStock=1`
+      `${import.meta.env.VITE_API_URL}/products/product-lists?page=${page}&pageSize=${pageSize}&sortField=${sortField}&sortOrder=${sortOrder}&categoryId=${categoryId}&productName=${productName}&cityId=${cityId}&statusProduct=1&statusStock=1&storeId=2`
         );
         setData(response?.data);
       }

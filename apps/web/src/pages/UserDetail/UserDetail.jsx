@@ -6,6 +6,7 @@ import { IconArrowLeft, IconArrowRight, IconCircleCheckFilled, IconCircleXFilled
 // import { SidebarWithHeader } from '../../components/SideBar/SideBar';
 import { ResizeButton } from '../../components/ResizeButton';
 import LogoGroceria from '../../assets/Groceria-no-Bg.png';
+import { useWebSize } from '../../provider.websize';
 
 function capitalizeFirstLetter(str) {
   if (str) {
@@ -14,7 +15,8 @@ function capitalizeFirstLetter(str) {
   return str; // return the unchanged string if it's undefined
 }
 
-const UserDetail = ({size, handleWebSize}) => {
+const UserDetail = () => {
+  const {size, handleWebSize } = useWebSize();
   const { id } = useParams();
   const [data, setData] = useState([]);
   const navigate = useNavigate();

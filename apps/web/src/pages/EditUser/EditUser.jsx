@@ -16,9 +16,10 @@ import {
 import AvatarSVG from './icon-default-avatar.svg';
 import { ResizeButton } from '../../components/ResizeButton';
 import LogoGroceria from '../../assets/Groceria-no-Bg.png';
+import { useWebSize } from '../../provider.websize';
 
-
-const EditUser = ({size, handleWebSize}) => {
+const EditUser = () => {
+  const {size, handleWebSize } = useWebSize();
   const { id } = useParams();
   const [data, setData] = useState([]);
   const [fieldImage, setFieldImage] = useState(null);

@@ -17,6 +17,7 @@ import AvatarSVG from './icon-default-avatar.svg';
 import { ResizeButton } from '../../components/ResizeButton';
 import LogoGroceria from '../../assets/Groceria-no-Bg.png';
 import { useSelector } from "react-redux";
+import { useWebSize } from '../../provider.websize';
 
 function formatPriceToIDR(price) {
   return new Intl.NumberFormat('id-ID', {
@@ -25,7 +26,8 @@ function formatPriceToIDR(price) {
   }).format(price);
 }
 
-const AddProductStock = ({size, handleWebSize}) => {
+const AddProductStock = () => {
+  const {size, handleWebSize } = useWebSize();
   const { user, isLogin } = useSelector((state) => state.AuthReducer);
   const { productId } = useParams();
   const [data, setData] = useState([]);

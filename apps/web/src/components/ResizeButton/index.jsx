@@ -15,7 +15,7 @@ export const ResizeButton = ({ color, handleWebSize, webSize }) => {
       _active={{ transform: 'scale(1)' }}
       p={'10px 5px'}
       zIndex={10}
-      display={{ base: 'none', lg: 'block' }}
+      display={{ base: 'none', md: 'block' }}
     >
       {webSize == '500px' ? <IoIosLaptop /> : <IoPhonePortraitOutline />}
     </Button>

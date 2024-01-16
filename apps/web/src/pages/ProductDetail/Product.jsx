@@ -31,6 +31,8 @@ import {
 import { SubmitReview } from './SubmitReview';
 import { useSelector } from 'react-redux';
 import { calculateDiscountPrice } from '../../utils/calculateDiscountPrice';
+import { useWebSize } from '../../provider.websize';
+
 
 function truncateDescription(description, maxLength) {
   if (description?.length <= maxLength) {
@@ -39,7 +41,9 @@ function truncateDescription(description, maxLength) {
   return `${description?.slice(0, maxLength)}...`;
 }
 
-const Product = ({size, handleWebSize}) => {
+const Product = () => {
+  const {size, handleWebSize } = useWebSize();
+
     const {id} = useParams();
   const { user, isLogin } = useSelector((state) => state.AuthReducer);
     const [rating, setRating] = useState(0);
@@ -216,14 +220,14 @@ function formatPriceToIDR(price) {
             <Text fontSize='x-large' fontWeight='bold' color='tomato'>{formatPriceToIDR(calculateDiscountPrice(data?.result?.Product?.price, data?.result?.Discounts))}</Text>
             {data?.result?.Discounts && data?.result?.Discounts.length > 0 && (
     <>
-      <Text color='grey' fontWeight='bold'>
+      <Text color='grey' fontSize='xs' fontWeight='bold'>
   <s>{formatPriceToIDR(data?.result?.Product?.price)}</s>
   {data?.result?.Discounts.map((discount, index) => (
     <React.Fragment key={index}>
       {discount.DiscountType?.id === 4 && discount.discountValue && ` (${discount.discountValue}% Off)`}
       {discount.DiscountType?.id === 4 && discount.discountNom && ` (${formatPriceToIDR(discount.discountNom)} Off)`}
       {discount.DiscountType?.id === 5 && ` (Minimum Purchase) - ${discount.discountValue}% Off`}
-      {discount.DiscountType?.id === 6 && ` (${discount.buy_quantity} for the price of ${discount.get_quantity}) - ${discount.discountValue}% Off`}
+      {discount.DiscountType?.id === 6 && ` ( Beli ${discount.buy_quantity} Gratis ${discount.get_quantity})`}
       {index < data.result.Discounts.length - 1 && ', '}
     </React.Fragment>
   ))}
