@@ -231,6 +231,7 @@ export const EditAddress = () => {
 
       <Drawer
         isOpen={isOpen}
+
         placement={size == '500px' ? 'bottom' : 'right'}
         onClose={onClose}
         finalFocusRef={btnRef}

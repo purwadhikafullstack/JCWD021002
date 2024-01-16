@@ -6,6 +6,7 @@ export default class Discount extends Model {
     this.belongsTo(models.UsageRestriction, { foreignKey: 'usageRestrictionId' });
     this.belongsTo(models.DiscountType, { foreignKey: 'type' });
     this.belongsTo(models.DiscountDistribution, { foreignKey: 'distributionId' });
+    this.belongsTo(models.Store, { foreignKey: 'store_idstore' });
   }
 }
 
@@ -79,6 +80,10 @@ export const init = (sequelize) => {
       distributionId: {
         type: DataTypes.INTEGER,
         allowNull: false,
+      },
+      store_idstore: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
       },
     },
     {

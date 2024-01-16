@@ -16,6 +16,8 @@ import {
 import AvatarSVG from './icon-default-avatar.svg';
 import SideBar from '../../components/SideBar/SideBar';
 import { useSelector } from "react-redux";
+import { useWebSize } from '../../provider.websize';
+
 
 function formatPriceToIDR(price) {
   return new Intl.NumberFormat('id-ID', {
@@ -24,7 +26,8 @@ function formatPriceToIDR(price) {
   }).format(price);
 }
 
-const AddDiscount = ({size, handleWebSize}) => {
+const AddDiscount = () => {
+  const {size, handleWebSize } = useWebSize();
   const { user, isLogin } = useSelector((state) => state.AuthReducer);
   const [data, setData] = useState([]);
   const [fieldImage, setFieldImage] = useState(null);
@@ -98,36 +101,31 @@ const AddDiscount = ({size, handleWebSize}) => {
 
   const addProduct = async () => {
     try {
-        const fields = [
-            { value: fullname.trim(), message: 'full name' },
-            { value: username.trim(), message: 'username' },
-            { value: email.trim(), message: 'email address' },
-            { value: password.trim(), message: 'password' },
-            { value: storeId, message: 'store' },
-          ];
-          
-          for (const field of fields) {
-            if (!field.value) {
-              toast.warn(`Please enter ${field.message}`);
-              return;
-            }
-          }
+        
 
       let formData = new FormData();
-      formData.append("fullname", fullname);
-      formData.append("username", username);
-      formData.append("email", email);
-      formData.append("password", password);
-      formData.append("role_idrole", 2);
-      formData.append("store_idstore", storeId);
-      formData.append("avatar", fieldImage);
+      formData.append("distributionId", distribution);
+      formData.append("type", type);
+      formData.append("minimumPurchase", minNom);
+      formData.append("startDate", startDate);
+      formData.append("endDate", endDate);
+      formData.append("get_quantity", get);
+      formData.append("buy_quantity", buy);
+      formData.append("discountAmount", max);
+      formData.append("usageRestrictionId", usageType);
+      formData.append("referralCode", referral);
+      formData.append("discountNom", nominal);
+      formData.append("name", name);
+      formData.append("description", description);
+      formData.append("productStock_idproductStock", productId);
+      formData.append("discount", fieldImage);
 
       await axios.post(
-        `${import.meta.env.VITE_API_URL}user/add-user`,
+        `${import.meta.env.VITE_API_URL}discount/add-discount`,
         formData
       );
 
-      navigate("/user-lists");
+      navigate("/discount-lists");
       toast.success("Success");
     } catch (err) {
       console.log(err);
@@ -153,6 +151,18 @@ const AddDiscount = ({size, handleWebSize}) => {
     setSelectedImage(objectURL);
   }
   };
+
+  const handleReset = () => {
+  setType(0);
+  setDiscValue(0);
+  setPercent(0);
+  setNominal(0);
+  setMinNom(undefined);
+  setGet(undefined);
+  setBuy(undefined);
+  setMax(undefined);
+  setReferral(undefined);
+  }
 
   console.log(data);
 
@@ -206,47 +216,49 @@ const AddDiscount = ({size, handleWebSize}) => {
 
             </Box>
             <Text fontSize='large' fontWeight='bold' mt='10px'>Distribution Discount</Text>
-            <RadioGroup mb='20px' value={distribution} onChange={(value) => { console.log(value); setDistribution(value); }}>
+            <RadioGroup mb='20px' value={distribution} onChange={(value) => { handleReset(); setDistribution(value); }}>
                 <Stack spacing={4} direction='row' display='flex' flexWrap='wrap'>
                     <Radio value='1'>Regular Discount</Radio>
                     <Radio value='2'>Voucher</Radio>
                 </Stack>
             </RadioGroup>
 
-            <Text fontSize='large' fontWeight='bold' mt='10px'>Discount Type</Text>
-            <RadioGroup mb='20px' value={type} onChange={(value) => { console.log(value); setType(value); }}>
-                <Stack spacing={4} direction='row' display='flex' flexWrap='wrap'>
-                    <Radio value='4'>Direct Discount</Radio>
-                    <Radio value='5'>Minimum Amount Discount</Radio>
-                    <Radio value='6'>B O G O</Radio>
-                </Stack>
-            </RadioGroup>
-
-            <Text fontSize='large' fontWeight='bold'>Discount Value Type</Text>
-            <RadioGroup isDisabled={type == 4  ? false : true} mb='20px' value={discValue} onChange={(value) => { console.log(value); setDiscValue(value); }}>
-                <Stack spacing={4} direction='row' display='flex' flexWrap='wrap'>
-                    <Radio value='1'>Percentage</Radio>
-                    <Radio value='2'>Nominal</Radio>
-                </Stack>
-            </RadioGroup>
-
             <Text fontSize='large' fontWeight='bold'>Usage Restriction Type</Text>
-            <RadioGroup mb='20px' value={usageType} onChange={(value) => { console.log(value); setUsageType(value); }}>
+            <RadioGroup mb='20px' value={usageType} onChange={(value) => { handleReset(); setUsageType(value); }}>
                 <Stack spacing={4} direction='row' display='flex' flexWrap='wrap'>
                     <Radio value='1'>Purchase</Radio>
                     <Radio value='2'>Shipping</Radio>
                 </Stack>
             </RadioGroup>
 
+            <Text fontSize='large' fontWeight='bold' mt='10px'>Discount Type</Text>
+            <RadioGroup mb='20px' value={type} onChange={(value) => { handleReset(); setType(value); }}>
+                <Stack spacing={4} direction='row' display='flex' flexWrap='wrap'>
+                    <Radio value='4'>Direct Discount</Radio>
+                    <Radio value='5'>Minimum Amount Discount</Radio>
+                    <Radio value='6' isDisabled={usageType == 2 ? true : false}>B O G O</Radio>
+                </Stack>
+            </RadioGroup>
+
+            <Text fontSize='large' fontWeight='bold'>Discount Value Type</Text>
+            <RadioGroup isDisabled={type == 4 || type == 5 ? false : true} mb='20px' value={discValue} onChange={(value) => { setPercent(); setNominal(); setDiscValue(value); }}>
+                <Stack spacing={4} direction='row' display='flex' flexWrap='wrap'>
+                    <Radio value='1'>Percentage</Radio>
+                    <Radio value='2'>Nominal</Radio>
+                </Stack>
+            </RadioGroup>
+
+            
+
             <Flex columnGap='10px' mb='20px' flexDir={size == '500px' ? 'column' : 'row'}>
               <Box width='100%'>
                 <Text fontSize='large' fontWeight='bold'>Discount Value</Text>
                 <FormLabel>Discount Percentage</FormLabel>
-                <Input variant='filled' isDisabled={discValue == 1 && type == 4  ? false : true} placeholder= 'Ex. 10' name='percent' value={percent} onChange={(e) => setPercent(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
+                <Input variant='filled' isDisabled={(discValue == 1 && type == 4) || (discValue == 1 && type == 5) ? false : true} placeholder= 'Ex. 10' name='percent' value={percent} onChange={(e) => setPercent(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
               </Box>
               <Box pt='27px' width='100%'>
                 <FormLabel>Discount Nominal</FormLabel>
-                <Input variant='filled' isDisabled={discValue == 2 && type == 4 ? false : true} placeholder= 'Ex. 10000' name='nominal' value={nominal} onChange={(e) => setNominal(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
+                <Input variant='filled' isDisabled={(discValue == 2 && type == 4) || (discValue == 2 && type == 5)  ? false : true} placeholder= 'Ex. 10000' name='nominal' value={nominal} onChange={(e) => setNominal(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
               </Box>
               
             </Flex>

@@ -52,7 +52,7 @@ const getCategoryQuery = async (categoryName) => {
     try {
         const result = await ProductCategory.findAll({
             where: {
-                category: categoryName,
+                category: categoryName
             }
         })
 
@@ -76,27 +76,28 @@ const getCategoryForProductQuery = async (categoryId) => {
     }
 }
 
-const addCategoryQuery = async (category) => {
+const addCategoryQuery = async (category, imageUrl) => {
     try {
-        const res = await ProductCategory.create({ category });
+        console.log('ini di query', imageUrl);
+        const res = await ProductCategory.create({ category, imageUrl });
         return res;
     } catch (err) {
         throw err;
     }
 };
 
-const editCategoryQuery = async (category_id, categoryNew) => {
+const editCategoryQuery = async (category_id, categoryNew, imageUrl) => {
     try {
-        const updatedCategory = await ProductCategory.update(
-            { category: categoryNew },
-            {
-                where: {
-                    id: category_id,
-                },
-            }
-        );
+        const updatedCategory = await ProductCategory.update({
+            category: categoryNew ? categoryNew : {},
+            imageUrl: imageUrl ? imageUrl : {} 
+            },
+            { where: { id: category_id },
+            });
+
         return updatedCategory;
     } catch (err) {
+        console.log(err);
         throw err;
     }
 };

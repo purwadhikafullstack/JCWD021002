@@ -34,15 +34,16 @@ import {
 import {
   IconLayoutDashboard,
   IconPasswordUser,
-  IconCup,
+  IconBox,
   IconReportMoney,
   IconUsers,
   IconHierarchy2,
   IconScaleOutline,
   IconPackage,
   IconDiscount,
-} from '@tabler/icons-react';
-import LogoIcon from '../../assets/Groceria-no-Bg.png';
+  IconPackages,
+} from "@tabler/icons-react";
+import LogoIcon from "../../assets/Groceria-no-Bg.png";
 // import { useAppSelector } from "../../redux/hook";
 // import { useAppDispatch } from "../../redux/hook";
 import { useNavigate } from 'react-router-dom';
@@ -57,15 +58,17 @@ const LinkItems = [
     icon: IconLayoutDashboard,
     to: '/dashboard-admin',
   },
-  { name: 'Product', icon: IconCup, to: '/product-lists' },
-  { name: 'Report', icon: IconReportMoney, to: '/report' },
-  { name: 'Category', icon: IconHierarchy2, to: '/category-lists' },
-  { name: 'Mass', icon: IconScaleOutline, to: '/mass-lists' },
-  { name: 'Packaging', icon: IconPackage, to: '/packaging-lists' },
-  { name: 'Discount', icon: IconDiscount, to: '/discount-lists' },
-  { name: 'Admin', icon: IconPasswordUser, to: '/user-lists' },
+  { name: "Product", icon: IconBox, to: "/product-lists" },
+  { name: "Stock", icon: IconPackages, to: "/product-stock-lists" },
+  { name: "Report", icon: IconReportMoney, to: "/report" },
+  { name: "Category", icon: IconHierarchy2, to: "/category-lists" },
+  { name: "Mass", icon: IconScaleOutline, to: "/mass-lists" },
+  { name: "Packaging", icon: IconPackage, to: "/packaging-lists" },
+  { name: "Discount", icon: IconDiscount, to: "/discount-lists" },
 ];
-const SuperAdminLinkItem = [
+
+const SuperAdminLinkItems = [
+  { name: "Admin", icon: IconPasswordUser, to: "/user-lists" },
   { name: 'Store', icon: IconPasswordUser, to: '/store' },
 ];
 
@@ -97,7 +100,7 @@ const SidebarContent = ({ onClose, size, handleWebSize, ...rest }) => {
       <Flex h="20" alignItems="center" justifyContent="space-between">
         <Image src={LogoIcon} margin={'auto'} width="130px" />
       </Flex>
-
+      
       {user?.role_idrole == 1 ? (
         <>
           {LinkItems.map((link) => (
@@ -105,7 +108,7 @@ const SidebarContent = ({ onClose, size, handleWebSize, ...rest }) => {
               {link.name}
             </NavItem>
           ))}
-          {SuperAdminLinkItem.map((link) => (
+          {SuperAdminLinkItems.map((link) => (
             <NavItem key={link.name} icon={link.icon} to={link.to}>
               {link.name}
             </NavItem>

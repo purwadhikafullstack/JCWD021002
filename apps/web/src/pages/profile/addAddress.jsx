@@ -135,12 +135,14 @@ export const AddAddress = () => {
       </Button>
       <Drawer
         isOpen={isOpen}
+
         placement={size == '500px' ? 'bottom' : 'right'}
         onClose={onClose}
         finalFocusRef={btnRef}
       >
         <DrawerOverlay />
         <DrawerContent
+
           sx={size == '500px' ? { w: size } : { maxW: '35vw' }}
           borderRadius={size == '500px' ? '20px 20px 0 0' : 0}
           maxH={size == '500px' ? '90vh' : 'full'}

@@ -40,6 +40,7 @@ export const init = (sequelize) => {
       sequelize,
       timestamps: false,
       modelName: 'RatingsAndReviews',
+      tableName: 'ratingandreview'
     },
   );
 };

@@ -37,10 +37,15 @@ import { utils, write } from 'xlsx';
 import { useSearchParams } from "react-router-dom";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useSelector } from 'react-redux';
+import SideBar from '../../components/SideBar/SideBar';
+import { useWebSize } from '../../provider.websize';
 
 const MAX_VISIBLE_PAGES = 3; 
 
-const PackagingLists = ({size, handleWebSize}) => {
+const PackagingLists = () => {
+  const {size, handleWebSize } = useWebSize();
+  const { user, isLogin } = useSelector((state) => state.AuthReducer);
   const [data, setData] = useState([]);
   const [dataPackaging, setDataPackaging] = useState([]);
   const [sortOrder, setSortOrder] = useState("asc");
@@ -225,19 +230,10 @@ const getPageNumbers = () => {
 
   return (
     <>
+    <Box w={{ base: '100vw', md: size }} overflowX="hidden">
+      <SideBar size={size} handleWebSize={handleWebSize} />
       <Box w={{ base: '98.7vw', md: size }} height='100vh' backgroundColor='#fbfaf9'>
           <ToastContainer />
-      <Flex
-        position={'relative'}
-        // top={{ base: '20px', lg: '-30px' }}
-        px={'20px'}
-        h={"10vh"}
-        justify={"space-between"}
-        align={"center"}
-      >
-        <Image src={LogoGroceria} h={'30px'} />
-        <ResizeButton webSize={size} handleWebSize={handleWebSize} color={"black"}/>
-      </Flex>
       <Box p='50px'>
         <Box pl={size == '500px' ? '0px' : '150px' } >
           <HStack mb='10px'>
@@ -372,6 +368,7 @@ const getPageNumbers = () => {
   </Flex>
         </Box>
         </Box>
+      </Box>
       </Box>
     </>
   );

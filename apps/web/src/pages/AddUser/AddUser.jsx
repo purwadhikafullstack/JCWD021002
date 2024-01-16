@@ -16,6 +16,7 @@ import {
 import AvatarSVG from './icon-default-avatar.svg';
 import { ResizeButton } from '../../components/ResizeButton';
 import LogoGroceria from '../../assets/Groceria-no-Bg.png';
+import { useWebSize } from '../../provider.websize';
 
 function formatPriceToIDR(price) {
   return new Intl.NumberFormat('id-ID', {
@@ -24,7 +25,8 @@ function formatPriceToIDR(price) {
   }).format(price);
 }
 
-const AddUser = ({size, handleWebSize}) => {
+const AddUser = () => {
+  const {size, handleWebSize } = useWebSize();
   const [data, setData] = useState([]);
   const [fieldImage, setFieldImage] = useState(null);
   const [selectedImage, setSelectedImage] = useState('');

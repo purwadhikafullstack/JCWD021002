@@ -13,10 +13,11 @@ import LogoGroceria from '../../assets/Groceria-no-Bg.png';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useNavigate, useParams } from 'react-router-dom';
-// import ImageSliderWithThumbnails from './ImageSliderWithThumbnails';
+import { useWebSize } from '../../provider.websize';
 
-function ProductDetailAdmin({size, handleWebSize}) {
-    const {id} = useParams();
+function ProductDetailAdmin() {
+  const {size, handleWebSize } = useWebSize();
+  const {id} = useParams();
     const navigate = useNavigate();
   const [sampleData, setSampleData] = useState([]);
   const [data, setData] = useState([]);

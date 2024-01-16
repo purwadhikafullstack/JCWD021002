@@ -2,6 +2,7 @@ const {
     addDiscountService,
      getPaginatedAndFilteredDiscountService,
      updateDiscountService,
+     getDetailDiscountService,
 } = require('../services/discount.service')
 
         const getPaginatedAndFilteredDiscountController = async (req, res) => {
@@ -14,6 +15,7 @@ const {
             const discountName = req.query.discountName || null;
             const usageRestrictionId = req.query.usageRestrictionId || null;
             const productName = req.query.productName || null;
+            const storeId = req.query.storeId || null;
             const status = req.query.status || null;
 
             console.log(
@@ -27,6 +29,7 @@ const {
                     usageRestrictionId,
                     productName,
                     status,
+                    storeId,
               );
         
             const result = await getPaginatedAndFilteredDiscountService(
@@ -39,6 +42,7 @@ const {
                 usageRestrictionId,
                 productName,
                 status,
+                storeId,
                     );
         
         
@@ -49,6 +53,19 @@ const {
             return res.status(500).json({ error: 'Internal Server Error' });
             }
         };
+
+        const getDetailDiscountController = async (req, res) => {
+            try {
+                const { id } = req.params;
+
+                const result = await getDetailDiscountService(id);
+
+            return res.status(200).json(result);
+            } catch (err) {
+                console.log(err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+            }
+        }
 
     const addDiscountController = async (req, res) => {
         try {
@@ -63,10 +80,15 @@ const {
                 get_quantity,
                 discountAmount,
                 usageRestrictionId,
+                name,
+                description,
                 referralCode,
                 discountNom,
                 distributionId,
              } = req.body;
+
+             console.log("ini di controller", usageRestrictionId);
+
 
              const result = await addDiscountService(
                 type,
@@ -79,6 +101,8 @@ const {
                 get_quantity,
                 discountAmount,
                 usageRestrictionId,
+                name,
+                description,
                 referralCode,
                 req.file?.filename,
                 discountNom,
@@ -110,6 +134,7 @@ const {
                 distributionId,
              } = req.body;
 
+
              const result = await updateDiscountService(
                 type,
                 discountValue,
@@ -138,4 +163,5 @@ const {
         addDiscountController,
         getPaginatedAndFilteredDiscountController,
         updatedDiscountController,
+        getDetailDiscountController,
     }

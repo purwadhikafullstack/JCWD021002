@@ -14,10 +14,14 @@ import 'slick-carousel/slick/slick-theme.css';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import SideBar from '../../components/SideBar/SideBar'
+import { useWebSize } from '../../provider.websize';
+
 
 const MAX_VISIBLE_PAGES = 3; 
 
-function ProductLists({size, handleWebSize}) {
+function ProductLists() {
+
+  const {size, handleWebSize } = useWebSize();
   const { user, isLogin } = useSelector((state) => state.AuthReducer);
   const [userStore, setUserStore] = useState(user?.store_idstore);
 
@@ -303,7 +307,7 @@ function formatPriceToIDR(price) {
               data?.products.map((item, index) => (
                 <>
                 
-                <Card key={item.id} maxW={size == '500px' ? '40%' : '17%'} onClick={() => handleItemClick(item.id)} bg={useColorModeValue('white', 'gray.800')}
+                <Card key={item.id} maxW={size == '500px' ? '40%' : '17%'} bg={useColorModeValue('white', 'gray.800')}
             boxShadow='0px 1px 5px gray' border={item?.status == 1 ? 'solid 2px green' : 'solid 2px red'} onClick={() => navigate(`/product-detail-admin/${item?.id}`)} _hover={{ cursor: 'pointer' }}>
               <Image
                       key={item?.ProductImages[0]?.imageUrl}

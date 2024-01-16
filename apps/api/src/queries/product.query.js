@@ -1,4 +1,4 @@
-const { Op } = require('sequelize');
+const { Op, Sequelize } = require('sequelize');
 import Product from '../models/product.model';
 import ProductCategory from '../models/productCategory.model';
 import ProductStock from '../models/productStock.model';
@@ -8,6 +8,13 @@ import User from '../models/user.model';
 import ProductImage from '../models/productImage.model';
 import Mass from '../models/mass.model';
 import Packaging from '../models/packaging.model';
+import RatingsAndReviews from '../models/ratingsAndReviews.model';
+import UsageRestriction from '../models/usageRestriction.model';
+import Discount from '../models/discount.model';
+import DiscountDistribution from '../models/discountDistribution.model';
+import DiscountType from '../models/discountType.model';
+
+
 
 const getPaginatedAndFilteredProductsQuery = async (
   page,
@@ -67,6 +74,12 @@ const getPaginatedAndFilteredProductsQuery = async (
     const productIds = productStocks.map((stock) => stock.product_idproduct);
 
     const products = await Product.findAll({
+      attributes: {
+        include: [
+          [Sequelize.literal('(SELECT AVG(rating) FROM RatingAndReview WHERE RatingAndReview.product_idproduct = Product.id)'), 'averageRating'],
+          [Sequelize.literal('(SELECT COUNT(rating) FROM RatingAndReview WHERE RatingAndReview.product_idproduct = Product.id)'), 'totalReviews'],
+        ],
+      },
       offset: offset,
       limit: pageSize ? pageSize : undefined,
       order: [[sortField, sortOrder]],
@@ -99,6 +112,17 @@ const getPaginatedAndFilteredProductsQuery = async (
         {
           model: Packaging,
         },
+        // {
+        //   separate: true,
+        //   model: RatingsAndReviews,
+        //   where: { product_idproduct: productIds },
+        //   attributes: [
+        //     'product_idproduct',
+        //     [Sequelize.fn('AVG', Sequelize.col('rating')), 'averageRating'],
+        //     [Sequelize.fn('COUNT', Sequelize.col('rating')), 'totalReviews'],
+        //   ],
+        //   group: ['product_idproduct'],
+        // },
       ],
     });
 
@@ -257,7 +281,6 @@ const getDetailProductRealQuery = async (id) => {
   }
 }
 
-
 const getDetailProductQuery = async (id) => {
   try {
     const result = await ProductStock.findOne({
@@ -267,7 +290,7 @@ const getDetailProductQuery = async (id) => {
           include: [
             {
               model: ProductCategory,
-              through: { attributes: [] }, // This removes unnecessary attributes from the join table
+              through: { attributes: [] },
             },
             {
               model: ProductImage,
@@ -278,6 +301,33 @@ const getDetailProductQuery = async (id) => {
             {
               model: Packaging,
             },
+            {
+              model: RatingsAndReviews,
+              attributes: [],
+            },
+          ],
+        },
+        {
+          separate: true,
+          model: Discount,
+          where: {
+            startDate: { [Sequelize.Op.lte]: new Date() }, // Include discounts with start date less than or equal to the current date
+            endDate: { [Sequelize.Op.gte]: new Date() },   // Include discounts with end date greater than or equal to the current date
+            productStock_idproductStock: id, // Additional condition to match productStock_idproductStock with the main query's id
+          },
+          include: [
+            {
+              model: UsageRestriction,
+            },
+            {
+              model: DiscountType,
+            },
+            {
+              model: DiscountDistribution,
+            },
+            {
+              model: Store,
+            },
           ],
         },
       ],
@@ -286,12 +336,28 @@ const getDetailProductQuery = async (id) => {
       },
     });
 
-    return result;
+    // Subquery to calculate average rating and total reviews
+    const subquery = await RatingsAndReviews.findOne({
+      attributes: [
+        [
+          Sequelize.fn('AVG', Sequelize.col('rating')),
+          'averageRating',
+        ],
+        [Sequelize.fn('COUNT', Sequelize.col('rating')), 'totalReviews'],
+      ],
+      where: {
+        product_idproduct: result.Product.id,
+      },
+      raw: true,
+    });
+
+    return {result, subquery};
   } catch (err) {
-    console.log('ini di query', err);
-    throw error;
+    console.log('Error in query:', err);
+    throw err;
   }
 };
+
 
 const addProductQuery = async (
   name,

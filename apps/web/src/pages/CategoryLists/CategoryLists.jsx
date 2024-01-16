@@ -28,11 +28,17 @@ import {
   IconTrashX,
 } from '@tabler/icons-react';
 import { ResizeButton } from '../../components/ResizeButton';
-import LogoGroceria from '../../assets/Groceria-no-Bg.png';
+import LogoGroceria from '../../assets/Logo-Groceria-no-Bg.png';
 import { saveAs } from 'file-saver';
 import { utils, write } from 'xlsx';
+import { useSelector } from 'react-redux';
+import SideBar from '../../components/SideBar/SideBar';
+import { FiUpload } from "react-icons/fi";
+import { useWebSize } from '../../provider.websize';
 
-const CategoryLists = ({size, handleWebSize}) => {
+const CategoryLists = () => {
+  const {size, handleWebSize } = useWebSize();
+  const { user, isLogin } = useSelector((state) => state.AuthReducer);
   const [data, setData] = useState([]);
   const [dataCategory, setDataCategory] = useState([]);
   const [sortOrder, setSortOrder] = useState("asc");
@@ -45,6 +51,8 @@ const CategoryLists = ({size, handleWebSize}) => {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [newCategory, setNewCategory] = useState("");
   const [editCategory, setEditCategory] = useState("");
+  const [fieldImage, setFieldImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState('');
 
   const handleSortOrder = (order) => {
     setSortOrder(order);
@@ -62,18 +70,23 @@ const CategoryLists = ({size, handleWebSize}) => {
 
   const addNewCategory = async () => {
     try {
+      let formData = new FormData();
+      formData.append("category", newCategory);
+      formData.append("category", fieldImage);
+
       const result = await axios.post(
-        `http://localhost:8000/api/category/add-category`, {
-          category: newCategory
-        },
+        `http://localhost:8000/api/category/add-category`, 
+        formData
       );
 
       alert(result?.data?.result);
-  console.log("ini result",result);
+      console.log("ini result",result);
 
       onClose();
       fetchCategory();
-      setNewCategory()
+      setNewCategory();
+      setFieldImage(null);
+      setSelectedImage('');
     } catch (err) {
       console.log(err);
     }
@@ -81,18 +94,26 @@ const CategoryLists = ({size, handleWebSize}) => {
 
   const confirmEditCategory = async () => {
     try {
-      await axios.patch(
-        `http://localhost:8000/api/category/change-category`, {
-          category_id: selectedCategory?.id,
-          categoryNew: editCategory
-        });
+      let formData = new FormData();
+      formData.append("category_id", selectedCategory?.id);
+      formData.append("category", editCategory);
+      formData.append("category", fieldImage);
 
-      alert("Edit category successful");
+      await axios.patch(
+        `http://localhost:8000/api/category/change-category`, 
+        formData
+        );
+
       onClose();
       fetchCategory();
-      setEditCategory("")
+      setEditCategory("");
+      setFieldImage(null);
+      setSelectedImage('');
+      setEditModalOpen(false);
+      alert("Edit category successful");
     } catch (err) {
       alert("error");
+      console.log(err);
     }
   };
 
@@ -156,20 +177,29 @@ const CategoryLists = ({size, handleWebSize}) => {
     fetchCategory();
   }, []);
 
+  const handleImageChange = (event) => {
+    const selectedFile = event.currentTarget.files[0];
+
+  if (selectedFile) {
+    const fileSizeInMB = selectedFile.size / (1024 * 1024); // Convert size to megabytes
+
+    if (fileSizeInMB > 1) {
+      // Display toast message for image size greater than 1 MB
+      toast.warning("Selected image size should be less than 1 MB");
+      return; // Don't proceed with further handling
+    }
+
+    setFieldImage(selectedFile);
+    const objectURL = URL.createObjectURL(selectedFile);
+    setSelectedImage(objectURL);
+  }
+  };
+
   return (
     <>
+    <Box w={{ base: '100vw', md: size }} overflowX="hidden">
+      <SideBar size={size} handleWebSize={handleWebSize} />
       <Box w={{ base: '98.7vw', md: size }} height='100vh' backgroundColor='#fbfaf9'>
-      <Flex
-        position={'relative'}
-        // top={{ base: '20px', lg: '-30px' }}
-        px={'20px'}
-        h={"10vh"}
-        justify={"space-between"}
-        align={"center"}
-      >
-        <Image src={LogoGroceria} h={'30px'} />
-        <ResizeButton webSize={size} handleWebSize={handleWebSize} color={"black"}/>
-      </Flex>
       <Box p='50px'>
         <Box pl={size == '500px' ? '0px' : '150px' } >
           <HStack mb='10px'>
@@ -177,9 +207,37 @@ const CategoryLists = ({size, handleWebSize}) => {
             <Modal isOpen={isOpen} onClose={onClose}>
               <ModalOverlay />
               <ModalContent>
-                <ModalHeader>Filter</ModalHeader>
+                <ModalHeader>Add Category</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
+                <VStack>
+                    {selectedImage ? <Image
+                    src={selectedImage}
+                    alt="Selected Image"
+                    boxSize="150px"
+                    objectFit="cover"
+                    borderRadius="50%"/> : <Image src={LogoGroceria} />}
+                          <Box mt='-50px' mr='-90px'>
+                    <Input display="none" id="fileInput" 
+                            type="file"
+                            name="image"
+                            size="md"
+                            onChange={(event) => {
+                              setFieldImage(event.currentTarget.files[0]);
+                            }, handleImageChange}
+                          />
+                    <IconButton
+                      onClick={() => document.getElementById('fileInput').click()}
+                      icon={<FiUpload color='white' />}
+                      variant='outline'
+                      background='blue'
+                      borderRadius='50%'
+                      colorScheme="white"
+                      border='solid white 2px'
+                    >
+                    </IconButton>
+                  </Box>
+                  </VStack>
                   <FormLabel>Category Name</FormLabel>
                   <Input border='solid black 1px' name='newCategory' value={newCategory} onChange={(e) => setNewCategory(e.target.value)} type='text'></Input>
                 </ModalBody>
@@ -246,6 +304,34 @@ const CategoryLists = ({size, handleWebSize}) => {
                 <ModalHeader>Edit Category {selectedCategory?.category}</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
+                <VStack>
+                    {selectedImage ? <Image
+                    src={selectedImage}
+                    alt="Selected Image"
+                    boxSize="150px"
+                    objectFit="cover"
+                    borderRadius="50%"/> : <Image src={LogoGroceria} />}
+                          <Box mt='-50px' mr='-90px'>
+                    <Input display="none" id="fileInput" 
+                            type="file"
+                            name="image"
+                            size="md"
+                            onChange={(event) => {
+                              setFieldImage(event.currentTarget.files[0]);
+                            }, handleImageChange}
+                          />
+                    <IconButton
+                      onClick={() => document.getElementById('fileInput').click()}
+                      icon={<FiUpload color='white' />}
+                      variant='outline'
+                      background='blue'
+                      borderRadius='50%'
+                      colorScheme="white"
+                      border='solid white 2px'
+                    >
+                    </IconButton>
+                  </Box>
+                  </VStack>
                   <FormLabel>New Category Name</FormLabel>
                   <Input border='solid black 1px' name='editCategory' value={editCategory} onChange={(e) => setEditCategory(e.target.value)} type='text'></Input>
                   <VStack>
@@ -264,6 +350,7 @@ const CategoryLists = ({size, handleWebSize}) => {
           )}
         </Box>
         </Box>
+      </Box>
       </Box>
     </>
   );

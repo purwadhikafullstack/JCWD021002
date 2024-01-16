@@ -12,10 +12,12 @@ import LogoGroceria from '../../assets/Groceria-no-Bg.png';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useWebSize } from '../../provider.websize';
 
 const MAX_VISIBLE_PAGES = 3; 
 
-function Product({size, handleWebSize}) {
+function Product() {
+  const {size, handleWebSize } = useWebSize();
   const [sampleData, setSampleData] = useState([]);
   const [data, setData] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();

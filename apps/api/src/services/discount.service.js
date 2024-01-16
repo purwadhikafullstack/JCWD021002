@@ -2,6 +2,7 @@ const {
     addDiscountQuery,
     getPaginatedAndFilteredDiscountQuery,
     updateDiscountQuery,
+    getDetailDiscountQuery,
 } = require('../queries/discount.query')
 
 
@@ -15,6 +16,7 @@ const {
                 usageRestrictionId,
                 productName,
                 status,
+                storeId,
     ) => {
         try {
             const result = await getPaginatedAndFilteredDiscountQuery(
@@ -27,6 +29,7 @@ const {
                 usageRestrictionId,
                 productName,
                 status,
+                storeId,
                     )
 
                     return result;
@@ -36,6 +39,16 @@ const {
             throw err;
         }
     } 
+
+    const getDetailDiscountService = async (id) => {
+        try {
+            const result = await getDetailDiscountQuery(id);
+
+            return result;
+        } catch (err) {
+            throw err;
+        }
+    }
 
     const addDiscountService = async (
         type,
@@ -48,6 +61,8 @@ const {
         get_quantity,
         discountAmount,
         usageRestrictionId,
+        name,
+        description,
         referralCode,
         banner,
         discountNom,
@@ -65,6 +80,8 @@ const {
                 get_quantity,
                 discountAmount,
                 usageRestrictionId,
+                name,
+                description,
                 referralCode,
                 banner,
                 discountNom,
@@ -121,4 +138,5 @@ const {
         addDiscountService,
         getPaginatedAndFilteredDiscountService,
         updateDiscountService,
+        getDetailDiscountService,
     }
