@@ -7,45 +7,43 @@ import { useNavigate } from 'react-router-dom';
 
 export const ProductList = () => {
   const [product, setProduct] = useState();
-  const [storeId, setStoreId] = useState();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
+  const coordinat = useSelector((state) => state.AuthReducer.location);
 
-  const cityId = useSelector((state) => state.AuthReducer.location?.id);
-
-  
-  const getStoreList = async (cityId) => {
+  const getProductList = async (latitude, longitude) => {
     try {
       const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/user/store-lists?cityId=${cityId}`,
+        `${
+          import.meta.env.VITE_API_URL
+        }/store?&page=1&pageSize=&latitude=${latitude}&longitude=${longitude}&statusStock=1`,
       );
-      setStoreId(res?.data[0].id);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  const getproductList = async (storeId) => {
-    try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/products/product-lists?page=1&pageSize=18&storeId=${storeId}`,
-      );
-      setProduct(res?.data?.products);
+      setProduct(res?.data?.data?.products);
     } catch (err) {
       console.log(err);
     }
   };
 
   useEffect(() => {
-    getStoreList(cityId)
-    getproductList(storeId);
-  }, [cityId, storeId]);
+    getProductList(coordinat.latitude, coordinat.longitude);
+  }, [coordinat]);
 
   return (
-    <Flex direction={'column'}>
-      <Grid templateColumns={'repeat(2, 1fr)'} w={'fit-content'} gap={5}>
+    <Flex direction={'column'} mt={'10px'}>
+      <Flex w={'full'} bgColor={'white'} p={'10px 20px'}>
+        <Text fontSize={'18px'} fontWeight={600} textAlign={'center'}>
+          REKOMENDASI
+        </Text>
+      </Flex>
+      <Grid
+        templateColumns={'repeat(2, 1fr)'}
+        w={'fit-content'}
+        gap={5}
+        m={'5px 20px 20px 20px'}
+      >
         {product?.map((item, index) => {
           return (
             <Card

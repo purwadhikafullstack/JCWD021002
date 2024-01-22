@@ -58,8 +58,6 @@ export const changeAddressQuery = async (
   addressId
 ) => {
   try {
-    console.log(userId)
-    console.log(addressId)
     const res = await Address.update({
       user_iduser: userId,
       addressLine: addressLine,

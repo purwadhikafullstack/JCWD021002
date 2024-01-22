@@ -226,7 +226,7 @@ console.log('category', selectedC);
         align={"center"}
       >
         <Image src={LogoGroceria} h={'30px'} />
-        <ResizeButton webSize={size} handleWebSize={handleWebSize} color={"black"}/>
+        <ResizeButton color={"black"}/>
       </Flex>
       <Box pl={size == '500px' ? '0px' : '150px' } pr={size == '500px' ? '0px' : '20px'} pt='20px' pb='20px'>
         <HStack mb='10px'>

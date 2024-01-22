@@ -13,7 +13,7 @@ import toast from 'react-hot-toast';
 import { Outlet } from 'react-router-dom';
 
 export const Profile = () => {
-  const {size, handleWebSize } = useWebSize()
+  const {size } = useWebSize()
 
   const user = useSelector((state) => state.AuthReducer.user);
 
@@ -40,8 +40,6 @@ export const Profile = () => {
       >
         <Flex w={'full'} justify={'end'}>
           <ResizeButton
-            webSize={size}
-            handleWebSize={handleWebSize}
             color={'colors.primary'}
           />
         </Flex>

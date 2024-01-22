@@ -239,7 +239,7 @@ export const EditAddress = () => {
         <DrawerOverlay />
         <DrawerContent
           sx={size == '500px' ? { w: size } : { maxW: '35vw' }}
-          borderRadius={size == '500px' ? '20px 20px 0 0' : 0}
+          borderRadius={size == '500px' ? '10px 10px 0 0' : 0}
           maxH={size == '500px' ? '90vh' : 'full'}
           m={'auto'}
           p={'30px'}

@@ -13,7 +13,7 @@ export const Collections = () => {
   ];
 
   return (
-    <Flex direction={'column'}>
+    <Flex direction={'column'} p={'0 20px'}>
       <Grid templateColumns={'repeat(2, 1fr)'} gap={5}>
         {collection?.map((item, index) => {
           return (

@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { keepLogin } from '../../redux/reducer/authReducer';
+import { keepLogin } from './redux/reducer/authReducer';
 
 export const Auth = ({ children }) => {
   const dispatch = useDispatch();

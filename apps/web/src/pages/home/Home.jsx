@@ -29,7 +29,6 @@ export const Home = () => {
       </Flex>
       <SwiperCategory size={size} />
       <Flex
-        p={'20px'}
         direction={'column'}
         gap={5}
         w={{ base: 'full', lg: size }}
@@ -39,12 +38,13 @@ export const Home = () => {
         <Flex
           justify={'space-between'}
           align={'center'}
-          bgColor={'colors.secondary'}
+          bgColor={'red'}
           color={'colors.primary'}
           h={'36px'}
-          px={'10px'}
+          p={'10px'}
           borderRadius={'4px'}
           cursor={'pointer'}
+          m={'10px 20px'}
         >
           <Flex gap={2}>
             <PiGift size={'20px'} />

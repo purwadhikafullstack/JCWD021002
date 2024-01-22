@@ -66,7 +66,6 @@ const {
             const {cityId} = req.query;
             const result = await getStoreService(cityId);
 
-            console.log(result);
             return res.status(200).json(result);
         } catch (err) {
             console.log(err);

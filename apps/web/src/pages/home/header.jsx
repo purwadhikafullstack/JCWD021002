@@ -12,9 +12,12 @@ import { IoIosSearch, IoIosArrowDown } from 'react-icons/io';
 import { PiMapPinLine } from 'react-icons/pi';
 import { ResizeButton } from '../../components/ResizeButton';
 import { Link } from 'react-router-dom';
+import { useWebSize } from '../../provider.websize';
 
-export const Header = ({ size, handleWebSize }) => {
-  const location = useSelector((state) => state.AuthReducer.location);
+export const Header = () => {
+  const location = useSelector((state) => state.AuthReducer.location.address);
+
+  const { size } = useWebSize();
 
   return (
     <Flex
@@ -67,15 +70,11 @@ export const Header = ({ size, handleWebSize }) => {
               />
             </InputGroup>
           </Flex>
-          <ResizeButton
-            webSize={size}
-            handleWebSize={handleWebSize}
-            color={size == '500px' ? 'white' : 'colors.primary'}
-          />
+          <ResizeButton color={size == '500px' ? 'white' : 'colors.primary'} />
         </Flex>
       </Flex>
 
-      <Link style={{ width: '100%' }} to={"/product-search"}>
+      <Link style={{ width: '100%' }} to={'/product-search'}>
         <InputGroup
           alignItems={'center'}
           display={size == '500px' ? 'flex' : 'none'}

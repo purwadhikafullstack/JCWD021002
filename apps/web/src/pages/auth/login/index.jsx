@@ -4,47 +4,55 @@ import { Center, Flex, Text, Button, Image } from '@chakra-ui/react';
 import { FormLogin } from './formLogin';
 import { FaGoogle, FaFacebook, FaTwitter } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
-import LogoGroceria from '../../assets/Groceria-no-Bg.png';
+import LogoGroceria from '../../../assets/Groceria-no-Bg.png';
 import {
   signInWithFacebook,
   signInWithGoogle,
   signInWithTwitter,
-} from '../../config/firebase-config';
+} from '../../../config/firebase-config';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { ResizeButton } from '../../components/ResizeButton';
-import { loginSuccess } from '../../redux/reducer/authReducer';
-import { useWebSize } from '../../provider.websize';
+import { ResizeButton } from '../../../components/ResizeButton';
+import {
+  keepLogin,
+  setUser,
+} from '../../../redux/reducer/authReducer';
+import { useWebSize } from '../../../provider.websize';
+import { useState } from 'react';
+import Loader from '../../../components/Loader';
 
 export const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const {size, handleWebSize } = useWebSize()
+  const { size } = useWebSize();
+  const [displayLoader, setDisplayLoader] = useState('none');
 
   const onLoginWithGoogle = async () => {
     try {
       const result = await signInWithGoogle(dispatch);
-      console.log(result.user);
       const res = await axios.post(
         `${import.meta.env.VITE_API_URL}/auth/loginsocial`,
         {
           email: result.user.email,
         },
       );
-
       localStorage.setItem('token', res?.data?.data?.token);
 
-      console.log('res', res);
-
-      // dispatch(loginSuccess());
+      dispatch(setUser(res.data.data));
+      dispatch(keepLogin());
 
       if (!res) throw new Error('Email has not been registered');
       toast.success('Sign in with google Success');
       if (result.message == 'signin with google success') {
-        navigate('/');
+        setDisplayLoader('flex');
+        setTimeout(() => {
+          setDisplayLoader('none');
+          navigate('/');
+        }, 1500);
       }
     } catch (err) {
+      setDisplayLoader('none');
       console.log(err);
       toast.error(err.response.data);
     }
@@ -53,7 +61,6 @@ export const Login = () => {
   const onLoginWithFacebook = async () => {
     try {
       const result = await signInWithFacebook(dispatch);
-      console.log(result.user);
       const res = await axios.post(
         `${import.meta.env.VITE_API_URL}/auth/loginsocial`,
         {
@@ -61,10 +68,9 @@ export const Login = () => {
         },
       );
       if (!res) throw new Error('Email has not been registered');
-      console.log(result.user);
-      dispatch(loginSuccess());
       toast.success('Sign in Success');
       if (result.message == 'signin with facebook success') {
+        setDisplayLoader('none');
         navigate('/');
       }
     } catch (err) {
@@ -75,7 +81,6 @@ export const Login = () => {
   const onLoginWithTwitter = async () => {
     try {
       const result = await signInWithTwitter(dispatch);
-      console.log(result.user);
       const res = await axios.post(
         `${import.meta.env.VITE_API_URL}/auth/loginsocial`,
         {
@@ -83,7 +88,6 @@ export const Login = () => {
         },
       );
       if (!res) throw new Error('Email has not been registered');
-      dispatch(loginSuccess());
       toast.success('Sign in Success');
       if (result.message == 'signin with twitter success') {
         navigate('/');
@@ -94,8 +98,13 @@ export const Login = () => {
     }
   };
 
+  const handleClickLogin = () => {
+    // setDisplayLoader('flex');
+    onLoginWithGoogle();
+  };
+
   const socialButtons = [
-    { icon: <FaGoogle />, bgColor: 'red', click: onLoginWithGoogle },
+    { icon: <FaGoogle />, bgColor: 'red', click: handleClickLogin },
     { icon: <FaFacebook />, bgColor: '#4267B2FF', click: onLoginWithFacebook },
     { icon: <FaTwitter />, bgColor: 'blue.200', click: onLoginWithTwitter },
   ];
@@ -107,39 +116,35 @@ export const Login = () => {
       h={{ base: '100vh', lg: '100vh' }}
       transition="width 0.3s ease"
       bgSize={size == '500px' ? 'contain' : 'cover'}
-      bgColor={"white"}
+      bgColor={'white'}
     >
       <Flex
         position={'relative'}
         // top={{ base: '20px', lg: '-30px' }}
-        px={'20px'}
+        px={'30px'}
         h={'10vh'}
         justify={'space-between'}
         align={'center'}
       >
-        <Link to={"/"}>
+        <Link to={'/'}>
           <Image src={LogoGroceria} h={'30px'} />
         </Link>
-        <ResizeButton
-          webSize={size}
-          handleWebSize={handleWebSize}
-          color={'black'}
-        />
+        <ResizeButton color={'black'} />
       </Flex>
 
       <Flex flexDirection={size == '500px' ? 'column' : 'row'} h={'full'}>
         <Flex
           w={size == '500px' ? { base: '100vw', md: '500px' } : '50%'}
           h={'full'}
-          p={'20px'}
+          p={'20px 30px'}
           direction={'column'}
           transition="width 0.3s ease"
           // mt={{ base: '-20px', lg: '-30px' }}
           ml={size == '500px' ? '0' : ''}
         >
           <Center
-            h={{ base: '30%',md: '40%', lg: '40%' }}
-            mt={{ base: '10%',md: '0' }}
+            h={{ base: '30%', md: '40%', lg: '40%' }}
+            mt={{ base: '10%', md: '0' }}
           >
             <Text fontSize={'32px'} fontWeight={700}>
               Sign in
@@ -185,6 +190,15 @@ export const Login = () => {
                     </Button>
                   );
                 })}
+              </Flex>
+
+              <Flex
+                display={displayLoader}
+                position={'absolute'}
+                top={0}
+                left={0}
+              >
+                <Loader />
               </Flex>
               <Flex gap={1} justify={'center'}>
                 Don't have an account?

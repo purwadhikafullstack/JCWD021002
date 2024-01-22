@@ -127,7 +127,7 @@ function formatPriceToIDR(price) {
         align={"center"}
       >
         <Image src={LogoGroceria} h={'30px'} />
-        <ResizeButton webSize={size} handleWebSize={handleWebSize} color={"black"}/>
+        <ResizeButton color={"black"}/>
       </Flex>
     <HStack mb='10px' p={4} pl={size == '500px' ? '0px' : '150px' }>
         {/* <IconChevronLeft />

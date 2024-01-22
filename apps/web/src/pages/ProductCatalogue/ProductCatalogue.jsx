@@ -178,7 +178,7 @@ function formatPriceToIDR(price) {
                     bgGradient='linear(to-r, #f2ffed, #fcfdde)'
                 >
                     <Image src={LogoGroceria} h={'30px'} />
-                    <ResizeButton webSize={size} handleWebSize={handleWebSize} color={"black"}/>
+                    <ResizeButton color={"black"}/>
                 </Flex>
                     <Box>
                 <Flex bgGradient='linear(to-r, #f2ffed, #fcfdde)' dir='row' gap='10px' pb='10px'>

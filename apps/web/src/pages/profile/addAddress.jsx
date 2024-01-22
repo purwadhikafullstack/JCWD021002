@@ -23,6 +23,7 @@ import {
 import { useWebSize } from '../../provider.websize';
 import { useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
+import HereGeocodingApp from './HereGeocodingApp';
 
 export const AddAddress = () => {
   const [province, setProvince] = useState();
@@ -31,9 +32,14 @@ export const AddAddress = () => {
   const [cityId, setCityId] = useState();
   const [isChecked, setIsChecked] = useState(false);
   const { size } = useWebSize();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure({
+    onClose: () => {
+      formik.resetForm();
+    },
+  });
   const btnRef = React.useRef();
   const userId = useSelector((state) => state.AuthReducer?.user?.id);
+  const [address, setAddress] = useState();
 
   const handleProvinceChange = (event) => {
     setProvinceId(event.target.value);
@@ -109,12 +115,12 @@ export const AddAddress = () => {
 
   const formik = useFormik({
     initialValues: {
-      addressLine: '',
+      addressLine: address || '',
       recipientNames: '',
       recipientsMobileNumber: '',
       addressLabel: '',
       postalCode: '',
-      addressDetails: ''
+      addressDetails: '',
     },
     onSubmit: (values) => {
       addAddress(
@@ -123,10 +129,14 @@ export const AddAddress = () => {
         values.recipientsMobileNumber,
         values.addressLabel,
         values.postalCode,
-        values.addressDetails
+        values.addressDetails,
       );
     },
   });
+
+  // useEffect(() => {
+  //   formik.setFieldValue('addressLine', address);
+  // }, [address]);
 
   return (
     <Flex w={'full'}>
@@ -135,30 +145,26 @@ export const AddAddress = () => {
       </Button>
       <Drawer
         isOpen={isOpen}
-
         placement={size == '500px' ? 'bottom' : 'right'}
         onClose={onClose}
         finalFocusRef={btnRef}
       >
-        <DrawerOverlay />
+        <DrawerOverlay />\
         <DrawerContent
-
           sx={size == '500px' ? { w: size } : { maxW: '35vw' }}
-          borderRadius={size == '500px' ? '20px 20px 0 0' : 0}
-          maxH={size == '500px' ? '90vh' : 'full'}
+          borderRadius={size == '500px' ? '10px 10px 0 0' : 0}
+          h={size == '500px' ? '90vh' : 'full'}
           p={'30px'}
           m={'auto'}
+          position={'static'}
         >
           <DrawerCloseButton />
           <DrawerHeader display={'flex'} justifyContent={'center'}>
             Alamat Baru
           </DrawerHeader>
-          <form
-            style={{ width: '100%', height: '100%' }}
-            onSubmit={formik.handleSubmit}
-          >
-            <DrawerBody>
-              <Flex h={'fit-content'} bgColor={'white'}>
+          <form style={{ width: '100%' }} onSubmit={formik.handleSubmit}>
+            <DrawerBody h={'100vh'} pb={'200px'}>
+              <Flex bgColor={'white'}>
                 <FormControl>
                   <Flex w={'full'} direction={'column'} gap={1}>
                     <Flex bgColor={'white'} py={'10px'}>
@@ -179,12 +185,13 @@ export const AddAddress = () => {
                         onChange={formik.handleChange}
                       />
                     </Flex>
-                    <Flex py={'10px'}>
+                    <Flex py={'10px'} gap={5}>
                       <Select
                         variant="unstyled"
                         placeholder="Provinsi"
                         value={provinceId}
                         onChange={handleProvinceChange}
+                        borderRadius={'0'}
                       >
                         {province?.map((item, index) => {
                           return (
@@ -194,8 +201,6 @@ export const AddAddress = () => {
                           );
                         })}
                       </Select>
-                    </Flex>
-                    <Flex py={'10px'}>
                       <Select
                         placeholder="Kota"
                         onChange={handleCityChange}
@@ -224,11 +229,15 @@ export const AddAddress = () => {
                         onChange={formik.handleChange}
                       />
                     </Flex>
+                    <HereGeocodingApp
+                      setUserAddress={setAddress}
+                      value={formik.values.addressLine}
+                    />
                     <Flex bgColor={'white'} py={'10px'}>
                       <Input
                         variant={'unstyled'}
                         placeholder="Detail Alamat (Cth: Blok / Unit No., Patokan)"
-                        name='addressDetails'
+                        name="addressDetails"
                         value={formik.values.addressDetails}
                         onChange={formik.handleChange}
                       />
@@ -237,7 +246,7 @@ export const AddAddress = () => {
                       <Input
                         variant={'unstyled'}
                         placeholder="Kode Pos"
-                        name='postalCode'
+                        name="postalCode"
                         value={formik.values.postalCode}
                         onChange={formik.handleChange}
                       />

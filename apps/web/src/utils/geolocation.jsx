@@ -13,7 +13,7 @@ export const Location = ({ children }) => {
         navigator.geolocation.getCurrentPosition(
           async (position) => {
             const { latitude, longitude } = position.coords;
-            console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+            // console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
             let city;
             try {
               // Use reverse geocoding to get city
@@ -22,13 +22,21 @@ export const Location = ({ children }) => {
                 `https://api.opencagedata.com/geocode/v1/json?key=${apiKey}&q=${latitude}+${longitude}`,
               );
 
-              city = response.data.results[0].components.city || response.data.results[0].components.county;
+              city =
+                response.data.results[0].components.city ||
+                response.data.results[0].components.county;
 
               const res = await axios.get(
                 `${import.meta.env.VITE_API_URL}/city/getCity?cityName=${city}`,
               );
 
-              dispatch(setLocation(res?.data?.data[0] || city));
+              dispatch(
+                setLocation({
+                  address: res?.data?.data[0] || city,
+                  latitude: latitude,
+                  longitude: longitude,
+                }),
+              );
             } catch (error) {
               console.error('Error getting city:', error.message);
             }

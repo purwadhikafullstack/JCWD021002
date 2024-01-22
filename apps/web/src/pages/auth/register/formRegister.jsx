@@ -7,18 +7,20 @@ import {
   InputGroup,
   InputLeftElement,
   FormErrorMessage,
+  useDisclosure,
 } from '@chakra-ui/react';
-import { MyButton } from '../../components/Button';
+import { MyButton } from '../../../components/Button';
 import { CiMail, CiUser } from 'react-icons/ci';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 // import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
-import { register } from '../../redux/reducer/authReducer';
+import { register } from '../../../redux/reducer/authReducer';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import Loader from '../../components/Loader';
+import Loader from '../../../components/Loader';
 import { useState } from 'react';
+import { ModalReverify } from '../modalReverify';
 
 const registerSchema = Yup.object().shape({
   username: Yup.string()
@@ -37,6 +39,7 @@ export const FormRegister = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [displayLoader, setDisplayLoader] = useState('none');
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const formik = useFormik({
     initialValues: {
@@ -54,10 +57,10 @@ export const FormRegister = () => {
           password: values.password,
         }),
       );
-      console.log(res.payload);
       if (res?.payload == 'Register Success') {
         setDisplayLoader('none');
-        navigate('/verifysentmail');
+        const state = { email: res?.meta?.arg?.email, isNew: false };
+        navigate('/sentMailSuccess', { state });
         toast.success(res?.payload);
       } else if (
         res?.error?.message == 'Email or username has already existed'
@@ -65,6 +68,12 @@ export const FormRegister = () => {
         setTimeout(() => {
           setDisplayLoader('none');
           toast.error(res?.error?.message);
+        }, 1000);
+      } else if (res?.error?.message == 'Email or username is not verified') {
+        setTimeout(() => {
+          setDisplayLoader('none');
+          toast.error(res?.error?.message);
+          onOpen();
         }, 1000);
       }
     },
@@ -136,6 +145,20 @@ export const FormRegister = () => {
         </Flex>
         <MyButton type="submit" value={<Text>Sign up</Text>} />
       </Flex>
+
+      <ModalReverify
+        isOpen={isOpen}
+        onClose={onClose}
+        modalTitle={'Email belum terverifikasi'}
+        modalDescription={
+          'Email Anda sudah terdaftar, namun akun belum terverifikasi. pakah Anda ingin melanjutkan proses verifikasi?'
+        }
+        title={'Verifikasi email'}
+        description={
+          'Masukkan alamat email yang Anda gunakan saat bergabung dan kami akan mengirimkan instruksi untuk memverifikasi akun anda.'
+        }
+        link={'/verify/email'}
+      />
     </form>
   );
 };
