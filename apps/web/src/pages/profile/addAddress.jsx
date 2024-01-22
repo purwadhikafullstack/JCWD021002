@@ -25,7 +25,7 @@ import { useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
 import HereGeocodingApp from './HereGeocodingApp';
 
-export const AddAddress = () => {
+export const AddAddress = ({setUpdate}) => {
   const [province, setProvince] = useState();
   const [cities, setCities] = useState();
   const [provinceId, setProvinceId] = useState();
@@ -107,6 +107,7 @@ export const AddAddress = () => {
       onClose();
       formik.resetForm();
       setProvinceId();
+      setUpdate(true)
       toast.success('Alamat berhasil ditambahakan');
     } catch (err) {
       console.log(err);
@@ -163,7 +164,7 @@ export const AddAddress = () => {
             Alamat Baru
           </DrawerHeader>
           <form style={{ width: '100%' }} onSubmit={formik.handleSubmit}>
-            <DrawerBody h={'100vh'} pb={'200px'}>
+            <DrawerBody>
               <Flex bgColor={'white'}>
                 <FormControl>
                   <Flex w={'full'} direction={'column'} gap={1}>

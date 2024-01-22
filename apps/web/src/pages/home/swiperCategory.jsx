@@ -39,9 +39,9 @@ export const SwiperCategory = ({ size }) => {
   }, []);
 
   return (
-    <Flex h={'fit-content'} overflow={'hidden'} w={'full'}>
+    <Flex h={'fit-content'} overflow={'hidden'} w={'full'} p={size == '500px' ? '0' : '30px 200px'}>
       <Swiper
-        slidesPerView={size == '500px' ? 5 : 6}
+        slidesPerView={size == '500px' ? 5 : 8}
         spaceBetween={30}
         className="mySwiper"
         style={{ height: 'fit-content', width: size, padding: '0 20px' }}

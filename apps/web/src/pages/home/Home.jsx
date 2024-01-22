@@ -20,31 +20,36 @@ export const Home = () => {
     <Flex
       w={{ base: '100vw', lg: size }}
       direction={'column'}
-      bgColor={'#F8F9FAFF'}
+      bgColor={'colors.secondary'}
       transition={"all .3s ease-in-out"}
+      // gap={size == '500px' ? '0' : '100px'}
     >
       <Header size={size} handleWebSize={handleWebSize} />
+
       <Flex>
         <MySwiper size={size} />
       </Flex>
+
       <SwiperCategory size={size} />
+
       <Flex
         direction={'column'}
-        gap={5}
+        gap={2}
         w={{ base: 'full', lg: size }}
         overflowX={'hidden'}
         mb={"60px"}
       >
         <Flex
+          display={size == '500px' ? 'flex' : 'none'}
           justify={'space-between'}
           align={'center'}
-          bgColor={'red'}
+          bgColor={'white'}
           color={'colors.primary'}
           h={'36px'}
           p={'10px'}
           borderRadius={'4px'}
           cursor={'pointer'}
-          m={'10px 20px'}
+          m={size == '500px' ? '0 20px' : '30px 200px'}
         >
           <Flex gap={2}>
             <PiGift size={'20px'} />
@@ -59,7 +64,8 @@ export const Home = () => {
 
         <ProductList />
       </Flex>
-      <Flex position={'fixed'} bottom={0} w={{ base: 'full', md: size }}>
+      
+      <Flex position={'fixed'} bottom={0} w={{ base: 'full', md: size }} display={size == '500px' ? 'flex' : 'none'}>
         <BottomBar />
       </Flex>
     </Flex>

@@ -10,7 +10,7 @@ import { MdArrowBackIos } from 'react-icons/md';
 import { logoutSuccess } from '../../redux/reducer/authReducer';
 import { logout } from '../../config/firebase-config';
 
-export const Detail = ({ setActivePage }) => {
+export const Detail = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const listMenu = [
