@@ -65,6 +65,18 @@ export const init = (sequelize) => {
       store_idstore: {
         type: DataTypes.INTEGER,
         allowNull: true,
+      },
+      resetTokenUsed: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      resetTokenExpires: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      googleLogin: {
+        type: DataTypes.TINYINT,
+        allowNull: false,
       }
     },
     {

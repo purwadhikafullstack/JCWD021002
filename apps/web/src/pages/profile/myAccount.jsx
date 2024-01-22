@@ -10,7 +10,7 @@ import { useWebSize } from '../../provider.websize';
 
 export const MyAccount = () => {
   const user = useSelector((state) => state.AuthReducer.user);
-  const {size } = useWebSize()
+  const { size } = useWebSize();
 
   const { pathname } = useLocation();
   if (pathname != '/profile/detail/account/edit-profile')
@@ -33,9 +33,14 @@ export const MyAccount = () => {
 
     return email;
   };
-
   return (
-    <Flex direction={'column'} w={{base: "100vw",md: size}} align={'center'} gap={'50px'} bgColor={"white"}>
+    <Flex
+      direction={'column'}
+      w={{ base: '100vw', md: size }}
+      align={'center'}
+      gap={'50px'}
+      bgColor={'white'}
+    >
       <Flex
         align={'center'}
         w={'full'}
@@ -94,7 +99,13 @@ export const MyAccount = () => {
           <Text color={'gray'}>{user.username}</Text>
         </Flex>
 
-        <Link to={'/profile/detail/account/email-verification'}>
+        <Link
+          to={
+            user.googleLogin == 0
+              ? '/profile/detail/account/email-verification'
+              : '#'
+          }
+        >
           <Flex
             w={'full'}
             justify={'space-between'}
@@ -106,12 +117,15 @@ export const MyAccount = () => {
             <Text>Email</Text>
             <Flex align={'center'} gap={2}>
               <Text color={'gray'}>{censorEmail(user.email)}</Text>
-              <MdArrowForwardIos />
+              {user.googleLogin == 1 ? <></> : <MdArrowForwardIos />}
             </Flex>
           </Flex>
         </Link>
 
-        <Link to={'/profile/detail/account/change-password'}>
+        <Link
+          to={'/profile/detail/account/change-password'}
+          style={{ display: user.googleLogin == 1 ? 'none' : 'block' }}
+        >
           <Flex
             w={'full'}
             justify={'space-between'}

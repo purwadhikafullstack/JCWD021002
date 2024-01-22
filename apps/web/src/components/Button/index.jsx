@@ -11,7 +11,7 @@ export const MyButton = ({ value, type }) => {
       fontSize={'16px'}
       fontWeight={400}
       border={'none'}
-      borderRadius={'4px'}
+      borderRadius={'7px'}
       type={type}
     >
 			{value}

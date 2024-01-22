@@ -202,41 +202,68 @@ const UserLists = ({ size, handleWebSize }) => {
   };
 
   return (
-    <Box w={{ base: '100vw', md: size }} overflowX='hidden'>
-          <SideBar size={size} handleWebSize={handleWebSize}/>
-      <Box w={{ base: '100vw', md: size }} height='fit-content' backgroundColor='#fbfaf9' >
-      <Box p='20px'>
-        <Box pl={size == '500px' ? '0px' : '150px' }>
-                <Flex dir='row' gap='10px'>
-                <Box w='60%'>
-                <InputGroup mb='20px'>
-            <InputLeftElement pointerEvents='none'>
-              <IconSearch color='black' />
-            </InputLeftElement>
-            <Input type='text' placeholder='Search by username' width='50vw' value={username} borderRadius='full' borderColor='solid grey 1px' onChange={(e) => setUsername(e.target.value)} />
-          </InputGroup>
-                </Box>
-          <Box>
-          <Select
-          border='solid 1px black'
-              width='fit-content'
-              placeholder="Select role"
-              value={roleId}
-              onChange={(e) => setRoleId(e.target.value)}
-            >
-              <option value="">All Roles</option>
-              <option value="1">Super Admin</option>
-              <option value="2">Admin Store</option>
-              <option value="3">User</option>
-            </Select>
-          </Box>
-                </Flex>
-          <HStack mb='10px'>
-            <Button leftIcon={<IconPlus />} backgroundColor='#286043' textColor='white' border='solid 1px #286043' onClick={() => navigate('/add-user')}>Add User</Button>
-            
-            <Spacer /> 
-            <Button onClick={exportToPDF} borderRadius='full' border='solid 1px black' leftIcon={<IconArrowNarrowDown />}>Download</Button>
-          </HStack>
+    <Box w={{ base: '100vw', md: size }} overflowX="hidden">
+      <SideBar size={size} handleWebSize={handleWebSize} />
+      <Box
+        w={{ base: '100vw', md: size }}
+        height="fit-content"
+        backgroundColor="#fbfaf9"
+      >
+        <Box p="20px">
+          <Box pl={size == '500px' ? '0px' : '150px'}>
+            <Flex dir="row" gap="10px">
+              <Box w="60%">
+                <InputGroup mb="20px">
+                  <InputLeftElement pointerEvents="none">
+                    <IconSearch color="black" />
+                  </InputLeftElement>
+                  <Input
+                    type="text"
+                    placeholder="Search by username"
+                    width="50vw"
+                    value={username}
+                    borderRadius="full"
+                    borderColor="solid grey 1px"
+                    onChange={(e) => setUsername(e.target.value)}
+                  />
+                </InputGroup>
+              </Box>
+              <Box>
+                <Select
+                  border="solid 1px black"
+                  width="fit-content"
+                  placeholder="Select role"
+                  value={roleId}
+                  onChange={(e) => setRoleId(e.target.value)}
+                >
+                  <option value="">All Roles</option>
+                  <option value="1">Super Admin</option>
+                  <option value="2">Admin Store</option>
+                  <option value="3">User</option>
+                </Select>
+              </Box>
+            </Flex>
+            <HStack mb="10px">
+              <Button
+                leftIcon={<IconPlus />}
+                backgroundColor="#286043"
+                textColor="white"
+                border="solid 1px #286043"
+                onClick={() => navigate('/add-user')}
+              >
+                Add User
+              </Button>
+
+              <Spacer />
+              <Button
+                onClick={exportToPDF}
+                borderRadius="full"
+                border="solid 1px black"
+                leftIcon={<IconArrowNarrowDown />}
+              >
+                Download
+              </Button>
+            </HStack>
             <Flex
               alignItems={size == '500px' ? 'center' : 'flex-start'}
               gap={'24px'}

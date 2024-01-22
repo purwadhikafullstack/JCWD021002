@@ -1,4 +1,4 @@
-import { LoggedInUser } from '../pages/auth/loggedInUser';
+import { LoggedInUser } from './protection.route';
 import { Profile } from '../pages/profile';
 import { ChangeEmail } from '../pages/profile/changeEmail';
 import { ChangeEmailVerfy } from '../pages/profile/changeEmailVerify';

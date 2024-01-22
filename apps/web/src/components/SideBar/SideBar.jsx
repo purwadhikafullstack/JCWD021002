@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import {
   IconButton,
@@ -42,8 +43,8 @@ import {
   IconPackage,
   IconDiscount,
   IconPackages,
-} from "@tabler/icons-react";
-import LogoIcon from "../../assets/Groceria-no-Bg.png";
+} from '@tabler/icons-react';
+import LogoIcon from '../../assets/Groceria-no-Bg.png';
 // import { useAppSelector } from "../../redux/hook";
 // import { useAppDispatch } from "../../redux/hook";
 import { useNavigate } from 'react-router-dom';
@@ -51,6 +52,7 @@ import { logoutSuccess } from '../../redux/reducer/authReducer';
 import { useLocation, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { ResizeButton } from '../../components/ResizeButton';
+import { useWebSize } from '../../provider.websize';
 
 const LinkItems = [
   {
@@ -58,22 +60,24 @@ const LinkItems = [
     icon: IconLayoutDashboard,
     to: '/dashboard-admin',
   },
-  { name: "Product", icon: IconBox, to: "/product-lists" },
-  { name: "Stock", icon: IconPackages, to: "/product-stock-lists" },
-  { name: "Report", icon: IconReportMoney, to: "/report" },
-  { name: "Category", icon: IconHierarchy2, to: "/category-lists" },
-  { name: "Mass", icon: IconScaleOutline, to: "/mass-lists" },
-  { name: "Packaging", icon: IconPackage, to: "/packaging-lists" },
-  { name: "Discount", icon: IconDiscount, to: "/discount-lists" },
+  { name: 'Product', icon: IconBox, to: '/product-lists' },
+  { name: 'Stock', icon: IconPackages, to: '/product-stock-lists' },
+  { name: 'Report', icon: IconReportMoney, to: '/report' },
+  { name: 'Category', icon: IconHierarchy2, to: '/category-lists' },
+  { name: 'Mass', icon: IconScaleOutline, to: '/mass-lists' },
+  { name: 'Packaging', icon: IconPackage, to: '/packaging-lists' },
+  { name: 'Discount', icon: IconDiscount, to: '/discount-lists' },
 ];
 
 const SuperAdminLinkItems = [
-  { name: "Admin", icon: IconPasswordUser, to: "/user-lists" },
+  { name: 'Admin', icon: IconPasswordUser, to: '/user-lists' },
   { name: 'Store', icon: IconPasswordUser, to: '/store' },
 ];
 
-const SidebarContent = ({ onClose, size, handleWebSize, ...rest }) => {
+const SidebarContent = ({ onClose, ...rest }) => {
   const { user } = useSelector((state) => state.AuthReducer);
+  const { size } = useWebSize();
+  
   return (
     <Box
       transition="3s ease"
@@ -100,7 +104,7 @@ const SidebarContent = ({ onClose, size, handleWebSize, ...rest }) => {
       <Flex h="20" alignItems="center" justifyContent="space-between">
         <Image src={LogoIcon} margin={'auto'} width="130px" />
       </Flex>
-      
+
       {user?.role_idrole == 1 ? (
         <>
           {LinkItems.map((link) => (
@@ -175,10 +179,11 @@ const NavItem = ({ icon, children, to, ...rest }) => {
   );
 };
 
-const MobileNav = ({ onOpen, size, handleWebSize, ...rest }) => {
+const MobileNav = ({ onOpen, ...rest }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user, isLogin } = useSelector((state) => state.AuthReducer);
+  const { size } = useWebSize();
   return (
     <Flex
       className="mobile-nav-container"
@@ -221,7 +226,7 @@ const MobileNav = ({ onOpen, size, handleWebSize, ...rest }) => {
           aria-label="open menu"
           icon={<FiBell />}
         />
-        <ResizeButton webSize={size} handleWebSize={handleWebSize} />
+        <ResizeButton />
         <Flex alignItems={'center'}>
           <Menu>
             <MenuButton

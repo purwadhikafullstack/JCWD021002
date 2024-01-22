@@ -10,7 +10,7 @@ import {
   Button,
   FormErrorMessage,
 } from '@chakra-ui/react';
-import { MyButton } from '../../components/Button';
+import { MyButton } from '../../../components/Button';
 import { CiMail, CiLock } from 'react-icons/ci';
 import { BiHide, BiShow } from 'react-icons/bi';
 import { useState } from 'react';
@@ -19,8 +19,8 @@ import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
-import { login } from '../../redux/reducer/authReducer';
-import Loader from '../../components/Loader';
+import { login } from '../../../redux/reducer/authReducer';
+import Loader from '../../../components/Loader';
 
 const loginSchema = Yup.object().shape({
   emailOrUsername: Yup.string()
@@ -74,8 +74,8 @@ export const FormLogin = () => {
       } catch (error) {
         setTimeout(() => {
           setDisplayLoader('none');
-          toast.error("Login Failed");
-        }, 1500)
+          toast.error('Login Failed');
+        }, 1500);
       }
     },
   });
@@ -85,7 +85,7 @@ export const FormLogin = () => {
       style={{ width: '100%', height: '100%' }}
       onSubmit={formik.handleSubmit}
     >
-      <Flex direction={'column'} gap={'50px'}>
+      <Flex direction={'column'} gap={'20px'}>
         <Flex direction={'column'} gap={'30px'}>
           <FormControl
             isInvalid={
@@ -135,6 +135,16 @@ export const FormLogin = () => {
                 </Button>
               </InputRightElement>
             </InputGroup>
+            <Flex justify={'end'} mt={'5px'}>
+              <Button
+                variant={'link'}
+                fontSize={'14px'}
+                fontWeight={400}
+                onClick={() => navigate('/verify/forget-password')}
+              >
+                Lupa password?
+              </Button>
+            </Flex>
             {formik.touched.password && formik.errors.password && (
               <FormErrorMessage position={'absolute'}>
                 {formik.errors.password}
