@@ -11,10 +11,10 @@ const {
         try {
             const page = req.query.page || 1;
             const pageSize = parseInt(req.query.pageSize) || null;
-            const roleId = req.query.roleId || null;
+            const sortOrder = req.query.sortOrder || 'asc';
             const username = req.query.username || null;
 
-            const result = await getUserService(page, pageSize, roleId, username);
+            const result = await getUserService(page, pageSize, sortOrder, username);
 
             return res.status(200).json(result);
         } catch (err) {

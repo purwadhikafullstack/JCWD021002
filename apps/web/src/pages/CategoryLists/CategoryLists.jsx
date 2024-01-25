@@ -20,12 +20,15 @@ import {
   Input,
   Flex,
   Image,
+  Avatar,
+  Icon,
+  Table, Thead, Tbody, Tr, Th, Td, TableContainer
 } from "@chakra-ui/react";
 import {
   IconPlus,
   IconArrowNarrowDown,
   IconEditCircle,
-  IconTrashX,
+  IconTrashXFilled,
 } from '@tabler/icons-react';
 import { ResizeButton } from '../../components/ResizeButton';
 import LogoGroceria from '../../assets/Logo-Groceria-no-Bg.png';
@@ -65,6 +68,7 @@ const CategoryLists = () => {
 
   const handleEditCategory = (category) => {
     setSelectedCategory(category);
+    setEditCategory(category?.category);
     setEditModalOpen(true);
   };
 
@@ -97,7 +101,7 @@ const CategoryLists = () => {
       let formData = new FormData();
       formData.append("category_id", selectedCategory?.id);
       formData.append("category", editCategory);
-      formData.append("category", fieldImage);
+      {fieldImage ? formData.append("category", fieldImage) : null }
 
       await axios.patch(
         `http://localhost:8000/api/category/change-category`, 
@@ -199,7 +203,7 @@ const CategoryLists = () => {
     <>
     <Box w={{ base: '100vw', md: size }} overflowX="hidden">
       <SideBar size={size} handleWebSize={handleWebSize} />
-      <Box w={{ base: '98.7vw', md: size }} height='100vh' backgroundColor='#fbfaf9'>
+      <Box w={{ base: '98.7vw', md: size }} height='fit-content' backgroundColor='#fbfaf9'>
       <Box p='50px'>
         <Box pl={size == '500px' ? '0px' : '150px' } >
           <HStack mb='10px'>
@@ -252,27 +256,61 @@ const CategoryLists = () => {
               </ModalContent>
             </Modal>
             <Spacer /> 
-            <Button onClick={exportToExcel} borderRadius='full' border='solid 1px black' leftIcon={<IconArrowNarrowDown />}>Download</Button>
           </HStack>
-          <Box p="20px" boxShadow='0px 1px 5px gray'>
-            <HStack mb='5px'>
-              <Text fontWeight='bold'>Category Name</Text>
-              <Spacer /> 
-              <Text fontWeight='bold' mr='10px'>Action</Text>
-            </HStack>
-            <Box as='hr' borderTopWidth='3px' borderTopColor='black.200'></Box>
-            {dataCategory?.categories?.map((item, index) => (
-              <>
-                <HStack m='10px' >
-                  <Text width='210px' isTruncated textOverflow='ellipsis' whiteSpace='nowrap' >{item?.category}</Text>
-                  <Spacer />
-                  <IconButton  icon={<IconEditCircle />} variant='ghost' colorScheme='blue' onClick={() => handleEditCategory(item)} />
-                  <IconButton  icon={<IconTrashX />} variant='ghost' colorScheme='red' onClick={() => handleDeleteCategory(item)} />
-                </HStack>
-                <Box as='hr' borderTopWidth='1px' borderTopColor='black.200' />
-              </>
-            ))}
-          </Box>
+          <Box overflowX='auto'>
+        <TableContainer borderRadius='10px' border='solid black 1px'>
+        <Table size='sm' border='solid 1 px black' variant='striped' colorScheme='gray'>
+      <Thead>
+        <Tr bgColor='gray' >
+            <Th textColor='white'>Photo</Th>
+          <Th textColor='white'>Category Name</Th>
+          <Th textColor='white'>Actions</Th>
+        </Tr>
+      </Thead>
+      <Tbody>
+      {dataCategory?.categories?.map((item, index) => (
+          <Tr key={index}>
+              <Td>
+              <Avatar
+                        key={item?.imageUrl}
+                        boxSize={'64px'}
+                        name={item?.category}
+                        borderRadius={'full'}
+                        src={
+                          item?.imageUrl
+                            ? `${import.meta.env.VITE_API_IMAGE_URL}/categories/${item?.imageUrl}`
+                            : 'https://bit.ly/broken-link'
+                        }
+                        cursor="pointer"
+                        _hover={{
+                          transform: 'scale(1.1)',
+                        }}
+                      />
+              </Td>
+            <Td>{item.category}</Td>
+            <Td>
+            <Flex alignItems={'center'} gap={'8px'}>
+                          {/* <IconButton  icon={<IconInfoCircle />} variant='ghost' colorScheme='blue' onClick={() => navigate(`/detail-user/${item?.id}`)} /> */}
+                          <IconButton
+                            icon={<IconEditCircle />}
+                            variant="ghost"
+                            colorScheme="blue"
+                            onClick={() => handleEditCategory(item)}
+                          />
+                          <IconButton
+                            icon={<IconTrashXFilled />}
+                            variant="ghost"
+                            colorScheme="red"
+                            onClick={() => handleDeleteCategory(item)}
+                          />
+                        </Flex>
+            </Td>
+          </Tr>
+        ))}
+      </Tbody>
+    </Table>
+        </TableContainer>
+        </Box>
           {deleteModalOpen && (
             <Modal isOpen={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
               <ModalOverlay />

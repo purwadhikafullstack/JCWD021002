@@ -28,15 +28,21 @@ const getUserRegisterQuery = async ({
   }
 };
 
-const getUserQuery = async (page, pageSize, roleId, username) => {
+const getUserQuery = async (page, pageSize, sortOrder, username) => {
   try {
     const offset = (page - 1) * (pageSize || 0);
 
     const whereConditions = {};
 
-    if (roleId) {
-      whereConditions.role_idrole = roleId;
-    }
+    // if (roleId) {
+      whereConditions.role_idrole = 2;
+    // } else {
+    //   whereConditions.role_idrole = {
+    //     [Op.ne]: [1, 3]
+    //   };
+    // }
+
+    
 
     if (username) {
       whereConditions.username = { [Op.like]: `%${username}%` };
@@ -48,6 +54,23 @@ const getUserQuery = async (page, pageSize, roleId, username) => {
       offset: offset,
       limit: pageSize || undefined,
       where: whereConditions,
+      include: [
+        {
+          model: Store,
+          include: [
+            {
+              model: City,
+              include: [
+                {
+                  model: Province,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+      order: [[{model : City}, 'name', 'asc']],
+      order: [['status', 'asc']],
     });
 
     const totalUsers = await User.count({

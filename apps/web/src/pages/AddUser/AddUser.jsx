@@ -17,6 +17,7 @@ import AvatarSVG from './icon-default-avatar.svg';
 import { ResizeButton } from '../../components/ResizeButton';
 import LogoGroceria from '../../assets/Groceria-no-Bg.png';
 import { useWebSize } from '../../provider.websize';
+import SideBar from '../../components/SideBar/SideBar';
 
 function formatPriceToIDR(price) {
   return new Intl.NumberFormat('id-ID', {
@@ -120,19 +121,11 @@ const AddUser = () => {
   return (
     <>
       {/* <SidebarWithHeader /> */}
-      <ToastContainer />
-      <Box w={{ base: '98.7vw', md: size }} overflowX='hidden' height='100vh' backgroundColor='#fbfaf9' p='20px'>
-      <Flex
-        position={'relative'}
-        // top={{ base: '20px', lg: '-30px' }}
-        // px={'20px'}
-        h={"10vh"}
-        justify={"space-between"}
-        align={"center"}
-      >
-        <Image src={LogoGroceria} h={'30px'} />
-        <ResizeButton webSize={size} handleWebSize={handleWebSize} color={"black"}/>
-      </Flex>
+      <Box w={{ base: '100vw', md: size }}>
+          <SideBar size={size} handleWebSize={handleWebSize}/>
+      <ToastContainer position="top-center" closeOnClick pauseOnFocusLoss draggable pauseOnHover theme="colored" />
+      <Box w={{ base: '100vw', md: size }} overflowX='hidden' height='100vh' backgroundColor='#fbfaf9' p='20px'>
+      
       <Box pl={size == '500px' ? '0px' : '150px' } pr={size == '500px' ? '0px' : '20px'} pt='20px' pb='20px'>
         <HStack mb='10px'>
           <Button leftIcon={<IconArrowLeft />} borderRadius='full' backgroundColor='white' textColor='black' border='solid 1px black' onClick={() => navigate('/user-lists')}>Back</Button>
@@ -227,6 +220,7 @@ const AddUser = () => {
           </form>
         </Box>
         </Box>
+      </Box>
       </Box>
     </>
   );

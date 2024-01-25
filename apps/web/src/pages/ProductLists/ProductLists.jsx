@@ -4,7 +4,7 @@ import Slider from 'react-slick';
 import reactLogo from '../../assets/react.svg';
 import viteLogo from '/vite.svg';
 import { Text, Box, HStack, Image, Flex, Button, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useDisclosure, Select, Stack, Card, Divider, CardFooter, ButtonGroup, useColorModeValue, CardBody, Heading, InputGroup, InputLeftElement, Spacer, IconButton } from '@chakra-ui/react';
-import { IconChevronLeft, IconCircleXFilled, IconCirclePlus, IconTrashXFilled, IconSquareRoundedPlusFilled } from '@tabler/icons-react';
+import { IconChevronLeft, IconCircleXFilled, IconCirclePlus, IconTrashXFilled, IconSquareRoundedPlusFilled, IconPlus } from '@tabler/icons-react';
 import { IconSearch, IconAdjustmentsHorizontal, IconChevronRight, IconEditCircle, IconTrashX, IconInfoCircle, IconLayoutGrid, IconList, IconSortAscending2, IconSortDescending2, IconAbc, IconTags, IconCircleCheckFilled} from '@tabler/icons-react'
 import star from '../ProductDetail/star-svgrepo-com.svg';
 import { ResizeButton } from '../../components/ResizeButton';
@@ -15,9 +15,9 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import SideBar from '../../components/SideBar/SideBar'
 import { useWebSize } from '../../provider.websize';
-
-
-const MAX_VISIBLE_PAGES = 3; 
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { PaginationControls } from '../../components/PaginationControls/PaginationControls';
 
 function ProductLists() {
 
@@ -38,17 +38,6 @@ function ProductLists() {
   const [categoryId, setCategoryId] = useState();
   const [productName, setProductName] = useState()
   const [dataCategory, setDataCategory] = useState([])
-  const [cityId, setCityId] = useState("");
-  const [sliderSettings, setSliderSettings] = useState({
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    focusOnSelect: true,
-    // variableWidth: true,
-  });
-  const [quantity, setQuantity] = useState(1);
   const navigate = useNavigate();
   const [selectedPage, setSelectedPage] = useState(page);
   const [searchParams, setSearchParams] = useSearchParams({ page, pageSize });
@@ -61,6 +50,7 @@ function ProductLists() {
   const token = localStorage.getItem("token");
 
   console.log('ini categoryId',categoryId);
+  console.log("data suer :", user);
 
   const handleDeleteProductStock = async () => {
     try {
@@ -100,6 +90,7 @@ function ProductLists() {
       setAddToStockModalIsOpen(false); // Close the modal after successful addition
     } catch (error) {
       console.error(error);
+      toast.error("Product already in stock");
       // Handle error as needed
     }
   };
@@ -178,18 +169,7 @@ useEffect(() => {
 }, []);
 
 console.log(data);
-// console.log(data?.products[1]?.ProductStocks[0]?.id);
-// console.log(data?.products[0]?.ProductImages[0]?.imageUrl);
-//   useEffect(() => {
-//     (async () => {
-//       const { data } = await axios.get(
-//         `${import.meta.env.VITE_API_URL}/products/product-detail/3`,
-//       );
-//       setSampleData(data);
-//     })();
-//   }, []);
 
-//   console.log(sampleData);
 function formatPriceToIDR(price) {
     // Use Intl.NumberFormat to format the number as IDR currency
     return new Intl.NumberFormat('id-ID', {
@@ -197,34 +177,6 @@ function formatPriceToIDR(price) {
       currency: 'IDR',
     }).format(price);
   }
-
-  const getPageNumbers = () => {
-    const totalPages = data?.totalPages || 0;
-    const currentPage = selectedPage;
-  
-    let startPage = Math.max(currentPage - Math.floor(MAX_VISIBLE_PAGES / 2), 1);
-    let endPage = Math.min(startPage + MAX_VISIBLE_PAGES - 1, totalPages);
-  
-    if (totalPages - endPage < Math.floor(MAX_VISIBLE_PAGES / 2)) {
-      startPage = Math.max(endPage - MAX_VISIBLE_PAGES + 1, 1);
-    }
-  
-    const pages = [];
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(i);
-    }
-  
-    if (startPage > 1) {
-      pages.unshift("...");
-    }
-  
-    if (endPage < totalPages) {
-      pages.push("...");
-    }
-  
-    return pages;
-  };
-
   
   const fetchStore = async () => {
     try {
@@ -246,6 +198,7 @@ function formatPriceToIDR(price) {
 
   return (
     <Box w={{ base: '100vw', md: size }} overflowX='hidden'>
+      <ToastContainer position="top-center" closeOnClick pauseOnFocusLoss draggable pauseOnHover theme="colored" />
           <SideBar size={size} handleWebSize={handleWebSize}/>
     <Box backgroundColor='#f5f5f5'  w={{ base: '100vw', md: size }} p={size == '500px' ? 0 : 5} height='fit-content'>
     <HStack mb='10px' p={0}>
@@ -298,6 +251,11 @@ function formatPriceToIDR(price) {
           </ModalFooter>
         </ModalContent>
       </Modal>
+      <Flex flexDir='row' flexWrap='wrap' mb='10px'>
+            <Button ml={size == '500px' ? '20px' : '0px'} leftIcon={<IconPlus />} backgroundColor='#286043' textColor='white' border='solid 1px #286043' onClick={() => navigate('/add-product')}>Add Product</Button>
+            <Spacer />
+            
+            </Flex>
 
       
 
@@ -321,17 +279,13 @@ function formatPriceToIDR(price) {
                     />
                   <CardBody>
                     <Stack mt='-3' spacing='0'>
-                    <Heading size='sm' width='200px' isTruncated>{item.name}</Heading>
-                      {/* <Text isTruncated maxW='200px'>
-                        {item.description}
-                      </Text> */}
+                    <Heading size='sm' width='180px' flexWrap='wrap' >{item.name}</Heading>
                         <Flex dir='row' gap='1' flexWrap='wrap'>
                         <Text fontSize='xs' mt='5px'>{item?.massProduct} {item?.Mass?.name}/{item.Packaging?.name} </Text>
-                        <Text>|</Text>
+                        </Flex>
                         <Flex dir='row' mt='5px'>
                         <Image boxSize='17px' src={star} />
-                        <Text fontSize='xs' fontWeight='bold'>5/5</Text>
-                        </Flex>
+                        <Text fontSize='xs' fontWeight='bold'>{item?.averageRating?.toFixed(1) || 0.0}/5.0 ({item?.totalReviews})</Text>
                         </Flex>
                    
                         <Text fontWeight='bold' color='orangered' mb='10px'>
@@ -347,10 +301,6 @@ function formatPriceToIDR(price) {
                           <Text color={item?.status == 1 ? 'green' : 'red'} fontWeight='bold'>
                           {item?.status == 1 ? 'Active' : 'Deactive'}
                           </Text>
-
-
-
-
                           {/* <IconButton  icon={<IconInfoCircle />} variant='ghost' colorScheme='blue' onClick={() => navigate(`/product-detail-admin/${item?.id}`)} /> */}
                       </Flex>
                     </Stack>
@@ -362,46 +312,15 @@ function formatPriceToIDR(price) {
                 </>
               ))}
           </Stack>
-          <Flex marginTop='10px' p='10px' flexWrap='wrap'>
-            <Box mt='20px'>
-            <HStack>
-            <Text>Show per Page</Text>
-            <Select border='solid 1px black' width='fit-content' value={pageSize} onChange={(e) => setPageSize(e.target.value)}>
-              <option value={1}>1</option>
-              <option value={10}>10</option>
-              <option value={15}>15</option>
-              <option value={20}>20</option>
-              <option value={30}>30</option>
-              <option>All</option>
-            </Select>
-            </HStack>
-            </Box>
-            <Spacer />
-            <Box mt='20px'>
-            <Button borderRadius='full' backgroundColor='#286043' textColor='white' border='solid 1px #286043' leftIcon={<IconChevronLeft />} isDisabled={page == 1 ? true : false} onClick={() => {setPage(page - 1); setSelectedPage(selectedPage -1);}} ></Button>
-  {getPageNumbers().map((pageNumber, index) => (
-          <Button
-            key={index}
-            ml='2px'
-            mr='2px'
-            borderRadius='full'
-            backgroundColor={selectedPage === pageNumber ? '#286043' : 'white'}
-            textColor={selectedPage === pageNumber ? 'white' : '#286043'}
-            border={`solid 1px ${selectedPage === pageNumber ? 'white' : '#286043'}`}
-            onClick={() => {
-              // Handle the case where the button is "..." separately
-              if (pageNumber !== "...") {
-                setPage(pageNumber);
-                setSelectedPage(pageNumber);
-              }
-            }}
-          >
-            {pageNumber}
-          </Button>
-        ))}
-  <Button borderRadius='full' backgroundColor='#286043' textColor='white' border='solid 1px #286043' rightIcon={<IconChevronRight />} isDisabled={page == data?.totalPages ? true : false} onClick={() => {setSelectedPage(selectedPage +1); setPage(page+1);}}></Button>
-            </Box>
-  </Flex>
+          <PaginationControls 
+              page= {page}
+              pageSize={pageSize}
+              selectedPage={selectedPage}
+              setPage={setPage}
+              setPageSize={setPageSize}
+              setSelectedPage={setSelectedPage}
+              data={data}
+            />
     
   <Modal isOpen={addToStockModalIsOpen} onClose={() => setAddToStockModalIsOpen(false)}>
         {/* ... (other modal content) */}
@@ -418,7 +337,7 @@ function formatPriceToIDR(price) {
             placeholder="Select store"
             value={selectedStore}
             onChange={(e) => setSelectedStore(e.target.value)}
-            isDisabled={user?.store_idstore != 0 ? true : false}
+            isDisabled={user?.store_idstore ? true : false}
           >
             {dataStore?.map((store) => (
               <option key={store.id} value={store.id}>

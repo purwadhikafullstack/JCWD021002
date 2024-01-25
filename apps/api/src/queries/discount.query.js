@@ -220,6 +220,7 @@ import Store from '../models/store.model'
     }
 
       const updateDiscountQuery = async (
+        id,
         type,
         discountValue,
         minimumPurchase,
@@ -234,8 +235,32 @@ import Store from '../models/store.model'
         banner,
         discountNom,
         distributionId,
+        name,
+        description,
+        status,
     ) => {
         try {
+          console.log("ini di query", 
+          id,
+        type,
+        discountValue,
+        minimumPurchase,
+        startDate,
+        endDate,
+        productStock_idproductStock,
+        buy_quantity,
+        get_quantity,
+        discountAmount,
+        usageRestrictionId,
+        referralCode,
+        banner,
+        discountNom,
+        distributionId,
+        name,
+        description,
+        status,
+          );
+
             const updatedValue = {
                 type,
                 discountValue,
@@ -245,23 +270,27 @@ import Store from '../models/store.model'
                 productStock_idproductStock,
                 buy_quantity,
                 get_quantity,
-                status : 1,
                 discountAmount,
                 usageRestrictionId,
                 referralCode,
                 banner,
                 discountNom,
                 distributionId,
+                name,
+                description,
+                status,
               };
         
               // Remove properties with null values
               Object.keys(updatedValue).forEach((key) => {
-                if (updatedValue[key] == null || updatedValue[key] == undefined || addedValue[key] == undefined) {
+                if (updatedValue[key] == null || updatedValue[key] == 'null' || updatedValue[key] == undefined ||  updatedValue[key] == undefined) {
                   delete updatedValue[key];
                 }
               });
 
-            const result = Discount.update(updatedValue)
+            const result = Discount.update(updatedValue, {
+              where: {id : id},
+            })
 
             return result;
         } catch (err) {

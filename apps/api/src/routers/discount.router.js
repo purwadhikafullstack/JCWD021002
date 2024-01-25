@@ -2,12 +2,13 @@ import { Router } from 'express';
 import {
   addDiscountController,
   getPaginatedAndFilteredDiscountController,
-  editDiscountController,
   getDetailDiscountController,
+  updatedDiscountController,
 } from '../controllers/discount.controller';
 import {
   uploadDiscountFile
 } from '../middlewares/multerConfig';
+import { verifyToken } from '../middlewares/auth';
 
 const discountRouter = Router();
 
@@ -24,14 +25,14 @@ discountRouter.get('/discount-detail/:id', async (req, res) => {
 });
 
 // POST
-discountRouter.post('/add-discount', uploadDiscountFile, async (req, res) => {
+discountRouter.post('/add-discount', verifyToken, uploadDiscountFile, async (req, res) => {
   const result = await addDiscountController(req, res);
   return result;
 });
 
 // POST
-discountRouter.patch('/edit-discount', uploadDiscountFile, async (req, res) => {
-  const result = await editDiscountController(req, res);
+discountRouter.patch('/edit-discount', verifyToken, uploadDiscountFile, async (req, res) => {
+  const result = await updatedDiscountController(req, res);
   return result;
 });
 

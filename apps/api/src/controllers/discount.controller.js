@@ -119,6 +119,7 @@ const {
     const updatedDiscountController = async (req, res) => {
         try {
             const { 
+                id,
                 type,
                 discountValue,
                 minimumPurchase,
@@ -132,10 +133,14 @@ const {
                 referralCode,
                 discountNom,
                 distributionId,
+                name,
+                description,
+                status,
              } = req.body;
 
 
              const result = await updateDiscountService(
+                 id,
                 type,
                 discountValue,
                 minimumPurchase,
@@ -150,6 +155,9 @@ const {
                 req.file?.filename,
                 discountNom,
                 distributionId,
+                name,
+                description,
+                status,
              );
 
             return res.status(201).json(result);

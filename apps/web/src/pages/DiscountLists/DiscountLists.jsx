@@ -6,8 +6,6 @@ import viteLogo from '/vite.svg';
 import { Text, Box, HStack, Image, Flex, Button, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useDisclosure, Select, Stack, Card, Divider, CardFooter, ButtonGroup, useColorModeValue, CardBody, Heading, InputGroup, InputLeftElement, Spacer, IconButton } from '@chakra-ui/react';
 import { IconChevronLeft, IconCircleXFilled, IconCirclePlus, IconTrashXFilled, IconSquareRoundedPlusFilled, IconClock, IconPlus } from '@tabler/icons-react';
 import { IconSearch, IconAdjustmentsHorizontal, IconChevronRight, IconEditCircle, IconTrashX, IconInfoCircle, IconLayoutGrid, IconList, IconSortAscending2, IconSortDescending2, IconAbc, IconTags, IconCircleCheckFilled} from '@tabler/icons-react'
-import star from '../ProductDetail/star-svgrepo-com.svg';
-import { ResizeButton } from '../../components/ResizeButton';
 import LogoGroceria from '../../assets/Groceria-no-Bg.png';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -61,11 +59,15 @@ function DiscountLists() {
 
   console.log('ini categoryId',categoryId);
 
-  const handleDeleteProductStock = async () => {
+  const handleDeleteDiscount = async () => {
     try {
       // You can replace this URL with your actual API endpoint for adding stock
       const response = await axios.patch(
-        `${import.meta.env.VITE_API_URL}/products/product-soft-delete/${selectedProduct?.id}`,
+        `${import.meta.env.VITE_API_URL}/discount/edit-discount`,
+        {
+          id: selectedProduct?.id,
+          status: 0,
+        },
         {headers: {
           Authorization: `Bearer ${token}`,
         }}
@@ -179,25 +181,6 @@ useEffect(() => {
 }, []);
 
 console.log(data);
-// console.log(data?.products[1]?.ProductStocks[0]?.id);
-// console.log(data?.products[0]?.ProductImages[0]?.imageUrl);
-//   useEffect(() => {
-//     (async () => {
-//       const { data } = await axios.get(
-//         `${import.meta.env.VITE_API_URL}/products/product-detail/3`,
-//       );
-//       setSampleData(data);
-//     })();
-//   }, []);
-
-//   console.log(sampleData);
-function formatPriceToIDR(price) {
-    // Use Intl.NumberFormat to format the number as IDR currency
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-    }).format(price);
-  }
 
   const getPageNumbers = () => {
     const totalPages = data?.totalPages || 0;
@@ -317,7 +300,6 @@ function formatPriceToIDR(price) {
               <Image
                       key={item?.banner}
                       src={item?.banner ? `http://localhost:8000/uploads/discounts/${item?.banner}` : (LogoGroceria)}
-                      // src="https://ecs7.tokopedia.net/blog-tokopedia-com/uploads/2017/08/Banner-Blog-Seller-Center-1200x630.jpg"
                       alt={item.name}
                       objectFit='cover'
                       width='100%'
@@ -347,14 +329,18 @@ function formatPriceToIDR(price) {
                         </Text>
                         <Text fontSize='sm' fontWeight='bold' color='orangered' mb='5px'>
                         {item?.discountValue ?
-                                (item?.minimumPurchase ?
-                                `Buy total ${toRupiah(item?.minimumPurchase)}, get ${item?.discountValue}% discount` :
-                                `${item?.discountValue}% discount`
-                                ) :
-                                (item?.buy_quantity ? 
-                                `Buy ${item?.buy_quantity} Get ${item?.get_quantity}` : null
-                                )
-                            }
+                              (item?.minimumPurchase ?
+                                  `Buy total ${toRupiah(item?.minimumPurchase)}, get ${item?.discountValue}% discount` :
+                                  `${item?.discountValue}% discount`
+                              ) :
+                              (item?.discountNom ?
+                                  `${toRupiah(item?.discountNom)} discount` :
+                                  (item?.buy_quantity ? 
+                                      `Buy ${item?.buy_quantity} Get ${item?.get_quantity}` :
+                                      null
+                                  )
+                              )
+                          }
                         </Text>
                       <Flex justifyContent='flex-start' flexDirection='row' gap='2px' borderRadius='10px' >
                           <Text color='green'><IconClock /></Text>
@@ -387,7 +373,7 @@ function formatPriceToIDR(price) {
                       </Flex>
                       <Flex flexWrap='wrap' column='row' justifyContent='center'>
                             {/* <IconButton  icon={<IconSquareRoundedPlusFilled />} isDisabled={item?.status == 0 ? true : false} variant='ghost' colorScheme='green' onClick={(event) => { setSelectedProduct(item); setAddToStockModalIsOpen(true); event.stopPropagation(); }} /> */}
-                            {user?.role_idrole == 1 || user?.store_idstore == item?.store_idstore ? <IconButton  icon={<IconEditCircle />} variant='ghost' colorScheme='blue' onClick={(event) => { navigate(`/edit-product/${item?.id}`); event.stopPropagation(); }} /> : (null) }
+                            {user?.role_idrole == 1 || user?.store_idstore == item?.store_idstore ? <IconButton  icon={<IconEditCircle />} variant='ghost' colorScheme='blue' onClick={(event) => { navigate(`/edit-discount/${item?.id}`); event.stopPropagation(); }} /> : (null) }
                             {user?.role_idrole == 1 || user?.store_idstore == item?.store_idstore ? <IconButton  icon={<IconTrashXFilled />} variant='ghost' colorScheme='red' onClick={(event) => { setSelectedProduct(item); setDeleteModalOpen(true); event.stopPropagation(); }} /> : (null) }
                       </Flex>
                       
@@ -495,17 +481,17 @@ function formatPriceToIDR(price) {
         {/* ... (other modal content) */}
         <ModalOverlay />
         <ModalContent>
-        <ModalHeader>Deactive Product</ModalHeader>
+        <ModalHeader>Deactive Discount</ModalHeader>
 
           <ModalCloseButton />
         <ModalBody>
-        <Text fontWeight='bold'>Name Product</Text>
+        <Text fontWeight='bold'>Name Discount</Text>
         <Text> {selectedProduct?.name}</Text>
-          <Text>Deactive this product from all store ?</Text>
+          <Text>Deactive this discount ?</Text>
         </ModalBody>
         <ModalFooter>
-          <Button isDisabled={selectedProduct?.status == true ? false : true } colorScheme="blue" mr={3} onClick={handleDeleteProductStock}>
-            {selectedProduct?.status == true ? 'Deactive Product' : 'Product was deactive'}
+          <Button isDisabled={selectedProduct?.status == true ? false : true } colorScheme="blue" mr={3} onClick={handleDeleteDiscount}>
+            {selectedProduct?.status == true ? 'Deactive Discount' : 'Discount was deactive'}
           </Button>
           <Button colorScheme="red" onClick={() => setDeleteModalOpen(false)}>
             Cancel

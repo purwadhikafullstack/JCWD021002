@@ -238,19 +238,21 @@ function formatPriceToIDR(price) {
             <Text fontWeight='bold'>{data?.result?.Product?.name}</Text>
             <Text >{data?.result?.Product?.massProduct} {data?.result?.Product?.Mass?.name} / {data?.result?.Product?.Packaging?.name} </Text>
         </Box>
-        <Box mt='10px' width='97%' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
+        <Box justifyContent='center' mt='10px' width='97%' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
             <Text fontSize='larger' fontWeight='bold'>Deskripsi</Text>
+            <Box w='100%' pl='20px' pr='20px'>
             {showFullDescription ? (
-            <Text>{data?.result?.Product?.description}</Text>
-          ) : (
-            <>
-              <Text>{truncateDescription(data?.result?.Product?.description, 200)}</Text>
-              {truncateDescription(data?.result?.Product?.description, 200) != data?.result?.Product?.description  ? 
-              <Text textColor="teal" cursor='pointer' onClick={() => setShowFullDescription(true)}>
-                Baca Selengkapnya
-              </Text> : null}
-            </>
-          )}
+    <div dangerouslySetInnerHTML={{ __html: data?.result?.Product?.description }} style={{ wordWrap: 'break-word' }} />
+  ) : (
+    <>
+      <div dangerouslySetInnerHTML={{ __html: truncateDescription(data?.result?.Product?.description, 200) }} style={{ wordWrap: 'break-word' }} />
+      {truncateDescription(data?.result?.Product?.description, 200) !== data?.result?.Product?.description &&
+        <Text textColor="teal" cursor='pointer' onClick={() => setShowFullDescription(true)}>
+          Baca Selengkapnya
+        </Text>}
+    </>
+  )}
+            </Box>
             <Text fontSize='larger' fontWeight='bold'>Kategori</Text>
             <Flex flexWrap="wrap" columnGap='5px'>
         {data?.result?.Product?.ProductCategories?.map((item) => (
@@ -322,7 +324,7 @@ function formatPriceToIDR(price) {
           +
         </Button>
             </HStack>
-        <Text ml='40px' fontWeight='bold' >Total : {formatPriceToIDR(quantity * data?.result?.Product?.price)}</Text>
+        <Text ml='40px' fontWeight='bold' >Total : {formatPriceToIDR(calculateDiscountPrice(quantity * data?.result?.Product?.price, data?.result?.Discounts))}</Text>
 
         <Button width='100%' bgColor='#286043' textColor='white'>+ Keranjang</Button>
             
@@ -347,7 +349,7 @@ function formatPriceToIDR(price) {
         <Button mr='50px'>+ Keranjang</Button>
 
         </Flex>
-        <Text ml='40px' color='white'>Total: {formatPriceToIDR(quantity * data?.result?.Product?.price)}</Text>
+        <Text ml='40px' color='white'>Total: {formatPriceToIDR(calculateDiscountPrice(quantity * data?.result?.Product?.price, data?.result?.Discounts))}</Text>
 
         </Box>
     </Flex>) : (<></>)}

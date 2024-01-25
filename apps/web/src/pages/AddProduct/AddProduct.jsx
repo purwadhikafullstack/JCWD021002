@@ -11,20 +11,16 @@ import {
   ModalContent, ModalCloseButton, ModalBody, ModalFooter, VStack, Flex, FormLabel, Checkbox, Textarea, InputRightElement, Select
 } from "@chakra-ui/react";
 import {
-  IconPlus, IconArrowLeft, IconPhotoUp, IconX, IconArrowRight, IconEye, IconEyeOff
+  IconPlus, IconArrowLeft, IconLibraryPhoto, IconX, IconArrowRight, IconEye, IconEyeOff
 } from '@tabler/icons-react';
 import AvatarSVG from './icon-default-avatar.svg';
 import { ResizeButton } from '../../components/ResizeButton';
 import LogoGroceria from '../../assets/Groceria-no-Bg.png';
 import { useWebSize } from '../../provider.websize';
-
-
-function formatPriceToIDR(price) {
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-  }).format(price);
-}
+import toRupiah from '@develoka/angka-rupiah-js';
+import SideBar from '../../components/SideBar/SideBar'
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const AddProduct = () => {
   const {size, handleWebSize } = useWebSize();
@@ -112,7 +108,7 @@ const AddProduct = () => {
           }
       );
 
-      navigate("/user-lists");
+      navigate("/product-lists");
       toast.success("Success");
     } catch (err) {
       console.log(err);
@@ -215,22 +211,13 @@ console.log('category', selectedC);
   return (
     <>
       {/* <SidebarWithHeader /> */}
-      <ToastContainer />
-      <Box w={{ base: '98.7vw', md: size }} overflowX='hidden' height='100vh' backgroundColor='#fbfaf9' p='20px'>
-      <Flex
-        position={'relative'}
-        // top={{ base: '20px', lg: '-30px' }}
-        // px={'20px'}
-        h={"10vh"}
-        justify={"space-between"}
-        align={"center"}
-      >
-        <Image src={LogoGroceria} h={'30px'} />
-        <ResizeButton webSize={size} handleWebSize={handleWebSize} color={"black"}/>
-      </Flex>
+      <ToastContainer position="top-center" closeOnClick pauseOnFocusLoss draggable pauseOnHover theme="colored" />
+      <Box w={{ base: '100vw', md: size }}>
+          <SideBar size={size} handleWebSize={handleWebSize}/>
+      <Box w={{ base: '100vw', md: size }} overflowX='hidden' height='100vh' backgroundColor='#fbfaf9' p='20px'>
       <Box pl={size == '500px' ? '0px' : '150px' } pr={size == '500px' ? '0px' : '20px'} pt='20px' pb='20px'>
         <HStack mb='10px'>
-          <Button leftIcon={<IconArrowLeft />} borderRadius='full' backgroundColor='white' textColor='black' border='solid 1px black' onClick={() => navigate('/user-lists')}>Back</Button>
+          <Button leftIcon={<IconArrowLeft />} borderRadius='full' backgroundColor='white' textColor='black' border='solid 1px black' onClick={() => navigate('/product-lists')}>Back</Button>
           <Spacer />
           <Button rightIcon={<IconArrowRight />} borderRadius='full' backgroundColor='#286043' textColor='white' border='solid 1px #286043' onClick={() => addProduct()}>Add Item</Button>
         </HStack>
@@ -263,7 +250,7 @@ console.log('category', selectedC);
   </Flex>
   ))}
   </Flex>
-  {selectedImages.length == 0 ? (<Image src={AvatarSVG} />) : null}
+  {selectedImages.length == 0 ? (<Box bgColor='#ebf5ff' p='20px' borderRadius='10px'><IconLibraryPhoto color='#0049cc' size='100px' /></Box>) : null}
   <Box mt="-50px" mr="-90px">
     <Input
       display="none"
@@ -294,26 +281,37 @@ console.log('category', selectedC);
               <Box width='100%'>
                 <Text fontSize='large' fontWeight='bold'>Name</Text>
                 <FormLabel>Name Product</FormLabel>
-                <Input placeholder= 'Name Product' name='name' value={name} onChange={(e) => setName(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
+                <Input placeholder= 'Ex. Indomie' name='name' value={name} onChange={(e) => setName(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
               </Box>
               <Box pt='27px' width='100%'>
-                <FormLabel>Price</FormLabel>
-                <Input placeholder= 'Price' name='username' value={price} onChange={(e) => setPrice(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
+                <Flex flexDir='row'><FormLabel>Price</FormLabel><Text>{toRupiah(price)}</Text></Flex>
+                <Input placeholder= 'Ex. 12000' name='price' value={price} onChange={(e) => setPrice(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' onKeyPress={(e) => {
+      const isValidInput = /^\d$/.test(e.key) || e.key === 'Backspace' || e.key === 'ArrowLeft' || e.key === 'ArrowRight';
+      if (!isValidInput) {
+        e.preventDefault();
+      }
+    }}/>
               </Box>
               
             </Flex>
-            <Box width='60%'>
+            <Box width='60%' pb='30px'>
                 <FormLabel>Description</FormLabel>
-                <Textarea name='desc' value={description} onChange={(e) => setDescription(e.target.value)} type='text' border='solid gray 1px' borderRadius='10px' height='20vh'/>
+                {/* <Textarea style={{ whiteSpace: 'pre-wrap' }} name='desc' value={description} onChange={(e) => setDescription(e.target.value)} type='text' border='solid gray 1px' borderRadius='10px' height='20vh'/> */}
+                <ReactQuill
+        value={description}
+        onChange={(value) => setDescription(value)}
+        theme='snow'
+        style={{ height:'200px'}}
+      />
             </Box>
             <Flex columnGap='10px' mb='20px ' flexDir={size == '500px' ? 'column' : 'row'}>
               <Box pt='27px' width='100%'>
-                <FormLabel>Mass Product</FormLabel>
-                <Input placeholder= 'Mass Product' name='massProduct' value={massProduct} onChange={(e) => setMassProduct(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
+                <FormLabel>Weight Product</FormLabel>
+                <Input placeholder= 'Ex. 950' name='massProduct' value={massProduct} onChange={(e) => setMassProduct(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
               </Box>
               <Box pt ='27px' width='100%'>
-                <FormLabel>Mass</FormLabel>
-              <Select border='solid gray 1px' borderRadius='full' placeholder="Select option" value={massId} onChange={(e) => setMassId(e.target.value)}>
+                <FormLabel>Unit</FormLabel>
+              <Select border='solid gray 1px' borderRadius='full' placeholder="Ex. gram" value={massId} onChange={(e) => setMassId(e.target.value)}>
             {dataMass?.map((item) => ( 
               <option key={item.id} value={item.id}>{item.name}</option>
             ))}
@@ -321,7 +319,7 @@ console.log('category', selectedC);
               </Box>
               <Box pt ='27px' width='100%'>
                 <FormLabel>Packaging</FormLabel>
-              <Select border='solid gray 1px' borderRadius='full' placeholder="Select option" value={packagingId} onChange={(e) => setPackagingId(e.target.value)}>
+              <Select border='solid gray 1px' borderRadius='full' placeholder="Ex. pcs" value={packagingId} onChange={(e) => setPackagingId(e.target.value)}>
             {dataPackaging?.map((item) => ( 
               <option key={item.id} value={item.id}>{item.name}</option>
             ))}
@@ -367,6 +365,7 @@ console.log('category', selectedC);
           </form>
         </Box>
         </Box>
+      </Box>
       </Box>
     </>
   );

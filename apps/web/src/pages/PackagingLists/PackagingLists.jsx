@@ -233,7 +233,7 @@ const getPageNumbers = () => {
     <Box w={{ base: '100vw', md: size }} overflowX="hidden">
       <SideBar size={size} handleWebSize={handleWebSize} />
       <Box w={{ base: '98.7vw', md: size }} height='100vh' backgroundColor='#fbfaf9'>
-          <ToastContainer />
+      <ToastContainer position="top-center" closeOnClick pauseOnFocusLoss draggable pauseOnHover theme="colored" />
       <Box p='50px'>
         <Box pl={size == '500px' ? '0px' : '150px' } >
           <HStack mb='10px'>

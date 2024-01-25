@@ -95,6 +95,7 @@ const {
     }
 
     const updateDiscountService = async (
+        id,
         type,
         discountValue,
         minimumPurchase,
@@ -109,9 +110,13 @@ const {
         banner,
         discountNom,
         distributionId,
+        name,
+        description,
+        status,
     ) => {
         try {
             const result = await updateDiscountQuery(
+                id,
                 type,
                 discountValue,
                 minimumPurchase,
@@ -126,6 +131,9 @@ const {
                 banner,
                 discountNom,
                 distributionId,
+                name,
+                description,
+                status,
                     );
 
                     return result;

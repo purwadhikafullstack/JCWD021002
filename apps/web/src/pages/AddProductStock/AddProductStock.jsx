@@ -220,7 +220,7 @@ console.log('category', selectedC);
   return (
     <>
       {/* <SidebarWithHeader /> */}
-      <ToastContainer />
+      <ToastContainer position="top-center" closeOnClick pauseOnFocusLoss draggable pauseOnHover theme="colored" />
       <Box w={{ base: '98.7vw', md: size }} overflowX='hidden' height='100vh' backgroundColor='#fbfaf9' p='20px'>
       <Flex
         position={'relative'}
