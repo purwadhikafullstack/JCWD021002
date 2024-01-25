@@ -3,6 +3,7 @@ import EditUser from "../pages/EditUser/EditUser";
 import UserDetail from "../pages/UserDetail/UserDetail";
 import UserLists from "../pages/UserLists/UserLists";
 import Store from "../pages/store";
+import { StoreList } from '../pages/store/storeList';
 import withRoleRestriction from './withRoleRestriction';
 
 const AdminUserListsWithRoleCheck = withRoleRestriction([1])(UserLists);
@@ -17,8 +18,13 @@ const routeAdmin = [
   { path: '/detail-user/:id', element: <AdminUserDetailsWithRoleCheck /> },
   { path: '/add-user', element: <AdminAddUsersWithRoleCheck /> },
   { path: '/edit-user/:id', element: <AdminEditUsersWithRoleCheck /> },
-  { path: '/store-management', element: <AdminStoresWithRoleCheck /> },
+  // { path: '/store-management', element: <AdminStoresWithRoleCheck /> },
+  {
+    path: '/store',
+    element: <Store />,
+    children: [{ index: true, element: <StoreList /> }],
+  },
 
 ];
 
-export default routeAdmin
+export default routeAdmin;
