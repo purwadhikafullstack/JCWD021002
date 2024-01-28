@@ -194,12 +194,12 @@ const MobileNav = ({ onOpen, onClose, ...rest }) => {
       onOpen();
     }
   };
+  const location = useLocation()?.pathname
   return (
     <Flex
       className="mobile-nav-container"
       ml={{ base: 0, md: 0 }}
       px={{ base: 4, md: 4 }}
-      mx={size == '100vw' && '30px'}
       height="20"
       alignItems="center"
       bg={useColorModeValue('white', 'gray.900')}
@@ -299,7 +299,7 @@ const MobileNav = ({ onOpen, onClose, ...rest }) => {
               bg={useColorModeValue('white', 'gray.900')}
               borderColor={useColorModeValue('gray.200', 'gray.700')}
             >
-              <MenuItem onClick={() => navigate('/profile/detail')}>Profile</MenuItem>
+              <MenuItem onClick={() => navigate(`/profile/detail?fromPage=${location}`)}>Profile</MenuItem>
               <MenuItem>Settings</MenuItem>
               <MenuItem>Billing</MenuItem>
               <MenuDivider />

@@ -2,6 +2,7 @@
 // import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom'
 
 import { Flex, Text, Button } from '@chakra-ui/react';
 import { MdKeyboardArrowRight } from 'react-icons/md';
@@ -35,12 +36,15 @@ export const Detail = () => {
     }
   };
 
+  const location = useLocation()
+  const fromPage = new URLSearchParams(location.search).get('fromPage');
+
   return (
     <Flex direction={'column'} w={'full'} h={'85%'} align={'center'} gap={2}>
       <Flex
         w={'full'}
         onClick={() => {
-          navigate('/profile');
+          navigate(fromPage ? fromPage : -1);
         }}
         cursor={'pointer'}
         p={'10px'}
