@@ -8,20 +8,120 @@ import ProductDetail from '../pages/ProductDetail/Product';
 import ProductDetailAdmin from '../pages/ProductDetailAdmin/ProductDetailAdmin';
 import ProductLists from '../pages/ProductLists/ProductLists';
 import ProductStockLists from '../pages/ProductStockLists/ProductStockLists';
-import ProductSearch from '../pages/ProductSearch/ProductSearch'
+import ProductSearch from '../pages/ProductSearch/ProductSearch';
+import { ProtectAdminRoute, ProtectLoggedInUser } from './protection.route';
 
 const routeAdminProduct = [
-  { path: '/product-detail/:id', element: <ProductDetail /> },
-  { path: '/product-search', element: <ProductSearch /> },
-  { path: '/product-lists', element: <ProductLists /> },
-  { path: '/category-lists', element: <CategoryLists /> },
-  { path: '/add-product', element: <AddProduct /> },
-  { path: '/edit-product/:id', element: <EditProduct /> },
-  { path: '/product-detail-admin/:id', element: <ProductDetailAdmin /> },
-  { path: '/mass-lists', element: <MassLists /> },
-  { path: '/packaging-lists', element: <PackagingLists /> },
-  { path: '/add-product-stock/:productId', element: <AddProductStock /> },
-  { path: '/product-stock-lists', element: <ProductStockLists /> },
+  {
+    path: '/product-detail/:id',
+    element: (
+      <ProtectLoggedInUser>
+        <ProtectAdminRoute>
+          <ProductDetail />
+        </ProtectAdminRoute>
+      </ProtectLoggedInUser>
+    ),
+  },
+  {
+    path: '/product-search',
+    element: (
+      <ProtectLoggedInUser>
+        <ProtectAdminRoute>
+          <ProductSearch />
+        </ProtectAdminRoute>
+      </ProtectLoggedInUser>
+    ),
+  },
+  {
+    path: '/product-lists',
+    element: (
+      <ProtectLoggedInUser>
+        <ProtectAdminRoute>
+          <ProductLists />
+        </ProtectAdminRoute>
+      </ProtectLoggedInUser>
+    ),
+  },
+  {
+    path: '/category-lists',
+    element: (
+      <ProtectLoggedInUser>
+        <ProtectAdminRoute>
+          <CategoryLists />
+        </ProtectAdminRoute>
+      </ProtectLoggedInUser>
+    ),
+  },
+  {
+    path: '/add-product',
+    element: (
+      <ProtectLoggedInUser>
+        <ProtectAdminRoute>
+          <AddProduct />
+        </ProtectAdminRoute>
+      </ProtectLoggedInUser>
+    ),
+  },
+  {
+    path: '/edit-product/:id',
+    element: (
+      <ProtectLoggedInUser>
+        <ProtectAdminRoute>
+          <EditProduct />
+        </ProtectAdminRoute>
+      </ProtectLoggedInUser>
+    ),
+  },
+  {
+    path: '/product-detail-admin/:id',
+    element: (
+      <ProtectLoggedInUser>
+        <ProtectAdminRoute>
+          <ProductDetailAdmin />
+        </ProtectAdminRoute>
+      </ProtectLoggedInUser>
+    ),
+  },
+  {
+    path: '/mass-lists',
+    element: (
+      <ProtectLoggedInUser>
+        <ProtectAdminRoute>
+          <MassLists />
+        </ProtectAdminRoute>
+      </ProtectLoggedInUser>
+    ),
+  },
+  {
+    path: '/packaging-lists',
+    element: (
+      <ProtectLoggedInUser>
+        <ProtectAdminRoute>
+          <PackagingLists />
+        </ProtectAdminRoute>
+      </ProtectLoggedInUser>
+    ),
+  },
+  {
+    path: '/add-product-stock/:productId',
+    element: (
+      <ProtectLoggedInUser>
+        <ProtectAdminRoute>
+          <AddProductStock />
+        </ProtectAdminRoute>
+      </ProtectLoggedInUser>
+    ),
+  },
+  {
+    path: '/product-stock-lists',
+    element: (
+      <ProtectLoggedInUser>
+        <ProtectAdminRoute>
+          <ProductStockLists />
+        </ProtectAdminRoute>
+      </ProtectLoggedInUser>
+    ),
+  },
 ];
 
 export default routeAdminProduct;

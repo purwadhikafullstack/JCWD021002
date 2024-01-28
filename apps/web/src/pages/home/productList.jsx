@@ -14,14 +14,14 @@ export const ProductList = () => {
   function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
-  const coordinat = useSelector((state) => state.AuthReducer.location);
+  const coordinat = useSelector((state) => state.addressReducer?.address);
 
   const getProductList = async (latitude, longitude) => {
     try {
       const res = await axios.get(
         `${
           import.meta.env.VITE_API_URL
-        }/store?&page=1&pageSize=&latitude=${latitude}&longitude=${longitude}&statusStock=1`,
+        }/store?&page=1&pageSize=&latitude=${latitude}&longitude=${longitude}&statusStock=1&name=`,
       );
       setProduct(res?.data?.data?.products);
     } catch (err) {
@@ -30,11 +30,11 @@ export const ProductList = () => {
   };
 
   useEffect(() => {
-    getProductList(coordinat.latitude, coordinat.longitude);
+    getProductList(coordinat?.latitude, coordinat?.longitude);
   }, [coordinat]);
 
   return (
-    <Flex direction={'column'} mt={'10px'} p={size == '500px' ? '0 20px' : '30px 200px'}>
+    <Flex direction={'column'} mt={'10px'} p={size == '500px' ? '0 20px' : {base: '0 40px',lg: '30px 100px', xl: '30px 200px'}}>
       <Flex w={'full'} bgColor={'white'} py={'10px'}>
         <Text fontSize={'18px'} fontWeight={600} textAlign={'center'}>
           REKOMENDASI

@@ -149,7 +149,6 @@ const getPaginatedAndFilteredProductsQuery = async (
     });
 
     const totalPages = Math.ceil(totalProducts / (pageSize || totalProducts));
-
     return {
       products,
       totalPages,

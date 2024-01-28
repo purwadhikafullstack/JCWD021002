@@ -7,9 +7,9 @@ import {
 import { getPaginatedAndFilteredProductsQuery } from '../queries/product.query';
 const haversine = require('haversine-distance');
 
-export const getStoreListService = () => {
+export const getStoreListService = (name) => {
   try {
-    const res = getStoreQuery()
+    const res = getStoreQuery({name})
 
     return res
   } catch (err) {
@@ -29,10 +29,12 @@ export const getStoreService = async (
   statusStock,
   latitude,
   longitude,
+  name
 ) => {
   try {
     // Mengambil daftar toko dari query atau fungsi yang sesuai
-    const stores = await getStoreQuery();
+    const stores = await getStoreQuery({name});
+
 
     // Inisialisasi variabel untuk menyimpan ID toko terdekat
     let storeId = 13;
@@ -71,6 +73,7 @@ export const getStoreService = async (
       statusProduct,
       statusStock,
     );
+
 
     return result;
   } catch (err) {

@@ -6,6 +6,7 @@ const Colors = {
       quaternary: "#DE3B40",
       quinary: "#DDE5B6",
       senary: "#DE3B40",
+      greenBg: '#DAF1E8FF',
   }
 }
 

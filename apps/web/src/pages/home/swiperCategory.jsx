@@ -39,9 +39,9 @@ export const SwiperCategory = ({ size }) => {
   }, []);
 
   return (
-    <Flex h={'fit-content'} overflow={'hidden'} w={'full'} p={size == '500px' ? '0' : '30px 200px'}>
+    <Flex h={'fit-content'} overflow={'hidden'} w={'full'} p={size == '500px' ? '0' : {base: '0 40px',lg: '30px 100px', xl: '30px 200px'}}>
       <Swiper
-        slidesPerView={size == '500px' ? 5 : 8}
+        slidesPerView={size == '500px' ? 4.4 : 7.4}
         spaceBetween={30}
         className="mySwiper"
         style={{ height: 'fit-content', width: size, padding: '0 20px' }}
@@ -59,18 +59,19 @@ export const SwiperCategory = ({ size }) => {
                 height: 'fit-content',
                 alignItems: 'center',
               }}
+              
             >
               <Link to={`/product-search?page=1&pageSize=10&productName=&categoryId=${item.id}`}>
                 <Flex
                   bgColor={colors[colorIndex]}
-                  h={size == '500px' ? '70px' : '100px'}
-                  w={size == '500px' ? '70px' : '100px'}
+                  h={size == '500px' ? {base: '60px', md: '70px'} : {base: '70px', md: '100px'}}
+                  w={size == '500px' ?  {base: '60px', md: '70px'} : {base: '70px', md: '100px'}}
                   borderRadius={'50%'}
                   justify={'center'}
                   align={'center'}
                   cursor={'pointer'}
                 >
-                  <Image src={image[imageIndex]} />
+                  <Image src={image[imageIndex]} w={{base: '35px', md: '45px'}}/>
                 </Flex>
               </Link>
               <Text

@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 
-import { Header } from './header';
+import { Header } from '../../components/navbar/header';
 import { Collections } from './collections';
 import { MySwiper } from './swiper';
 import { ProductList } from './productList';
@@ -13,31 +13,27 @@ import { IoIosArrowForward } from 'react-icons/io';
 import { useWebSize } from '../../provider.websize';
 
 export const Home = () => {
-
-  const {size, handleWebSize } = useWebSize()
+  const { size } = useWebSize();
 
   return (
     <Flex
       w={{ base: '100vw', lg: size }}
       direction={'column'}
       bgColor={'colors.secondary'}
-      transition={"all .3s ease-in-out"}
+      transition={'all .3s ease-in-out'}
       // gap={size == '500px' ? '0' : '100px'}
     >
-      <Header size={size} handleWebSize={handleWebSize} />
-
+      <Header /> 
       <Flex>
         <MySwiper size={size} />
       </Flex>
-
       <SwiperCategory size={size} />
-
       <Flex
         direction={'column'}
         gap={2}
         w={{ base: 'full', lg: size }}
         overflowX={'hidden'}
-        mb={"60px"}
+        mb={'60px'}
       >
         <Flex
           display={size == '500px' ? 'flex' : 'none'}
@@ -64,8 +60,13 @@ export const Home = () => {
 
         <ProductList />
       </Flex>
-      
-      <Flex position={'fixed'} bottom={0} w={{ base: 'full', md: size }} display={size == '500px' ? 'flex' : 'none'}>
+      <Flex
+        position={'fixed'}
+        bottom={0}
+        w={{ base: 'full', md: size }}
+        display={size == '500px' ? 'flex' : 'none'}
+        zIndex={10}
+      >
         <BottomBar />
       </Flex>
     </Flex>

@@ -12,6 +12,7 @@ const routesConfiq = [
   ...routeAdminProduct,
   ...routeAdmin,
   ...routeDiscount,
+  
 ];
 
 export default routesConfiq

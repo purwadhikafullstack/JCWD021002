@@ -1,23 +1,41 @@
 import Store from '../models/store.model';
 import City from '../models/city.model';
 import Province from '../models/province.model';
-import { where } from 'sequelize';
+import { Op } from 'sequelize';
 
-export const getStoreQuery = async () => {
+export const getStoreQuery = async ({name = null}) => {
   try {
+    let params = {};
+
+    if (name) {
+      params = {
+        name: {
+          [Op.like]: `%${name}%`
+        }
+      }
+    }
+
     const res = await Store.findAll({
       include: [{ model: City, include: [{ model: Province }] }],
-      where: { status: 'active' }
+      where: {
+        status: 'active',
+        ...params,
+      },
     });
 
-    console.log(res);
     return res;
   } catch (err) {
     throw err;
   }
 };
 
-export const addStoreQuery = async (storeName, latitude, longitude, storeAddress, cityId) => {
+export const addStoreQuery = async (
+  storeName,
+  latitude,
+  longitude,
+  storeAddress,
+  cityId,
+) => {
   try {
     const res = await Store.create({
       name: storeName,
@@ -25,13 +43,21 @@ export const addStoreQuery = async (storeName, latitude, longitude, storeAddress
       latitude: latitude,
       longitude: longitude,
       storeAddress: storeAddress,
+      status: 'active',
     });
     return res;
   } catch (err) {
     throw err;
   }
 };
-export const changeStoreQuery = async (storeId, name, cityId, latitude, longitude, storeAddress) => {
+export const changeStoreQuery = async (
+  storeId,
+  name,
+  cityId,
+  latitude,
+  longitude,
+  storeAddress,
+) => {
   try {
     const res = await Store.update(
       {
@@ -40,14 +66,14 @@ export const changeStoreQuery = async (storeId, name, cityId, latitude, longitud
         latitude: latitude,
         longitude: longitude,
         storeAddress: storeAddress,
-        status: 'active'
+        status: 'active',
       },
       { where: { id: storeId } },
     );
 
     return res;
   } catch (err) {
-    console.log(err)
+    console.log(err);
     throw err;
   }
 };
@@ -55,14 +81,14 @@ export const deleteStoreQuery = async (storeId) => {
   try {
     const res = await Store.update(
       {
-        status: 'inactive'
+        status: 'deactive',
       },
       { where: { id: storeId } },
     );
 
     return res;
   } catch (err) {
-    console.log(err)
+    console.log(err);
     throw err;
   }
 };

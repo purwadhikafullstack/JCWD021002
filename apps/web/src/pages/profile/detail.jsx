@@ -9,6 +9,8 @@ import { MdArrowBackIos } from 'react-icons/md';
 
 import { logoutSuccess } from '../../redux/reducer/authReducer';
 import { logout } from '../../config/firebase-config';
+import DeleteAlert from '../../components/DeleteAlert';
+import toast from 'react-hot-toast';
 
 export const Detail = () => {
   const navigate = useNavigate();
@@ -27,8 +29,9 @@ export const Detail = () => {
   const onLogout = () => {
     const result = logout();
     dispatch(logoutSuccess());
+    toast.success('Log out Success')
     if (result === 'logout success') {
-      navigate('/login');
+      navigate('/');
     }
   };
 
@@ -74,15 +77,19 @@ export const Detail = () => {
           })}
         </Flex>
         <Flex direction={'column'} gap={2} w={'full'}>
-          <Button
-            onClick={onLogout}
-            w={'full'}
-            bgColor={'transparent'}
-            color={'red'}
-            border={'1px solid red'}
-          >
-            Log out
-          </Button>
+          <DeleteAlert
+            btnValue={'Log out'}
+            style={{
+              color: 'red',
+              bgColor: 'transparent',
+              border: '1px solid red',
+              size: 'md'
+            }}
+            deleteAction={onLogout}
+            titleValue={'Log out'}
+            mainValue={'Anda akan keluar dari akun anda. Yakin ingin melanjutkan?'}
+            buttonActionValue={'lanjutkan'}
+          />
           <Button
             onClick={onLogout}
             w={'full'}

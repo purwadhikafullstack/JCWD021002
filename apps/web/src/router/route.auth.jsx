@@ -1,4 +1,4 @@
-import { LoginRoute } from './protection.route';
+import { ProtectLoginRoute } from './protection.route';
 import { Login } from '../pages/auth/login';
 import { Register } from '../pages/auth/register';
 import { SentMailSuccess } from '../pages/auth/sentMailSuccess';
@@ -14,41 +14,41 @@ const routeAuth = [
   {
     path: '/login',
     element: (
-      <LoginRoute>
+      <ProtectLoginRoute>
         <Login />
-      </LoginRoute>
+      </ProtectLoginRoute>
     ),
   },
   {
     path: '/register',
     element: (
-      <LoginRoute>
+      <ProtectLoginRoute>
         <Register />
-      </LoginRoute>
+      </ProtectLoginRoute>
     ),
   },
   {
     path: '/set-password',
     element: (
-      <LoginRoute>
+      <ProtectLoginRoute>
         <SetPassword />
-      </LoginRoute>
+      </ProtectLoginRoute>
     ),
   },
   {
     path: '/sentMailSuccess',
     element: (
-      <LoginRoute>
+      <ProtectLoginRoute>
         <SentMailSuccess />
-      </LoginRoute>
+      </ProtectLoginRoute>
     ),
   },
   {
     path: '/verify',
     element: (
-      <LoginRoute>
+      <ProtectLoginRoute>
         <Verify />
-      </LoginRoute>
+      </ProtectLoginRoute>
     ),
     children: [
       { path: 'forget-password', element: <VerifyForgetPassword /> },
@@ -58,9 +58,9 @@ const routeAuth = [
   {
     path: '/password',
     element: (
-      <LoginRoute>
+      <ProtectLoginRoute>
         <ResetPassword />
-      </LoginRoute>
+      </ProtectLoginRoute>
     ),
     children: [
       { index: true, element: <SetPassword /> },

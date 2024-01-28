@@ -26,17 +26,16 @@ import DeleteAlert from '../../components/DeleteAlert';
 export const StoreList = () => {
   const { size } = useWebSize();
   const [store, setStore] = useState();
-  // const [province, setProvince] = useState();
-  // const [provinceId, setProvinceId] = useState();
-  // const [cities, setCities] = useState();
-  // const [cityId, setCityId] = useState();
+  const [inputValue, setInputValue] = useState('');
   const [selectedItems, setSelectedItems] = useState();
   const [isOpenEdit, setIsOpenEDit] = useState(false);
   const [updateStore, setUpdateStore] = useState(false);
 
-  const getStore = async () => {
+  const getStore = async (inputValue) => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/store/list`);
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/store/list?name=${inputValue}`,
+      );
       setStore(res?.data?.data);
     } catch (err) {
       console.log(err);
@@ -44,34 +43,13 @@ export const StoreList = () => {
   };
 
   useEffect(() => {
-    getStore();
-  }, [updateStore]);
+    getStore(inputValue);
+  }, [updateStore, inputValue]);
 
   const handleClick = (items) => {
     setSelectedItems(items);
     setIsOpenEDit(true);
   };
-
-  // const getProvince = async () => {
-  //   try {
-  //     const res = await axios.get(
-  //       `${import.meta.env.VITE_API_URL}/address/getProvince`,
-  //     );
-  //     setProvince(res?.data?.data);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-  // const getCity = async (provinceId) => {
-  //   try {
-  //     const res = await axios.get(
-  //       `${import.meta.env.VITE_API_URL}/city/getCity?provinceId=${provinceId}`,
-  //     );
-  //     setCities(res?.data?.data);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
 
   const handleDelete = async (storeId) => {
     try {
@@ -84,18 +62,16 @@ export const StoreList = () => {
     }
   };
 
-  // useEffect(() => {
-  //   getProvince();
-  // }, []);
-  // useEffect(() => {
-  //   getCity(provinceId);
-  // }, [provinceId]);
-
   return (
-    <Flex direction={'column'} w={'full'} gap={5}>
+    <Flex direction={'column'} w={'full'} gap={size == '500px' ? 5 : '40px'} mt={'80px'} px={size == '100vw' && '30px'}>
       <Flex justify={'space-between'}>
         <Flex w={'40%'}>
-          <Input placeholder="Cari" />
+          <Input
+            placeholder="Cari"
+            name="inputValue"
+            onChange={(even) => setInputValue(even.target.value)}
+            value={inputValue}
+          />
         </Flex>
         <Flex gap={2}>
           <Menu>
@@ -183,7 +159,8 @@ export const StoreList = () => {
                     titleValue={'Hapus Store'}
                     mainValue={`Apakah kamu yakin ingin menhapus ${item?.name}?`}
                     deleteAction={() => handleDelete(item?.id)}
-                    style={{ color: 'colors.tertiary', fontWeight: '400' }}
+                    style={{ color: 'colors.tertiary', fontWeight: '400', size: 'xm'}}
+                    buttonActionValue={'Delete'}
                   />
                 </Flex>
               </Card>

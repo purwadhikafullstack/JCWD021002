@@ -8,7 +8,8 @@ import {
 
 export const getStoreListController = async (req, res) => {
   try {
-    const result = await getStoreListService();
+    const { name } = req.query
+    const result = await getStoreListService(name);
 
     return res.status(200).json({
       message: 'get store success',
@@ -32,7 +33,7 @@ export const getStoreController = async (req, res) => {
     const statusStock = req.query.statusStock || null;
     const latitude = req.query.latitude;
     const longitude = req.query.longitude;
-
+    const { name } = req.query;
     const result = await getStoreService(
       page,
       pageSize,
@@ -45,6 +46,7 @@ export const getStoreController = async (req, res) => {
       statusStock,
       latitude,
       longitude,
+      name
     );
     res.status(200).json({
       message: 'get store success',

@@ -30,12 +30,12 @@ function App() {
                   >
                     <Routes>
                       {/* <Route path="/" element={<Home />} /> */}
-                      {routesConfiq.map((route) => (
-                        <Route key={route.path} {...route}>
+                      {routesConfiq.map((route, index) => (
+                        <Route key={index} {...route}>
                           {route.children && (
                             <Route>
-                              {route.children.map((childRoute) => (
-                                <Route key={childRoute.path} {...childRoute} />
+                              {route.children.map((childRoute, index) => (
+                                <Route key={index} {...childRoute} />
                               ))}
                             </Route>
                           )}

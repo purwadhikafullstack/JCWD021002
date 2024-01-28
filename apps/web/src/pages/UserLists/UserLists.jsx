@@ -46,10 +46,11 @@ import LogoGroceria from '../../assets/Groceria-no-Bg.png';
 import { FaStar } from 'react-icons/fa6';
 // import  SidebarWithHeader  from '../../components/SideBar/SideBar'
 import SideBar from '../../components/SideBar/SideBar';
+import { useWebSize } from '../../provider.websize';
 
 const MAX_VISIBLE_PAGES = 3;
 
-const UserLists = ({ size, handleWebSize }) => {
+const UserLists = () => {
   const [data, setData] = useState([]);
   const [dataUser, setDataUser] = useState([]);
   const [sortOrder, setSortOrder] = useState('asc');
@@ -64,6 +65,7 @@ const UserLists = ({ size, handleWebSize }) => {
   const [roleId, setRoleId] = useState('');
   const [username, setUsername] = useState();
   const [searchParams, setSearchParams] = useSearchParams({ page, pageSize });
+  const { size, handleWebSize } = useWebSize();
 
   const handleSortOrder = (order) => {
     setSortOrder(order);

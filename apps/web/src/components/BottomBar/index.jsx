@@ -1,15 +1,6 @@
 import {
   Flex,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
   useDisclosure,
-  Text,
-  Button,
   Avatar,
 } from '@chakra-ui/react';
 import {
@@ -24,12 +15,16 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useWebSize } from '../../provider.websize';
+import { LoginModal } from '../LoginModal';
 
 export const BottomBar = () => {
   const [active, setActive] = useState('');
   const path = useLocation();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const user = useSelector((state) => state.AuthReducer.user);
+  const token = localStorage.getItem('token')
+  const { size } = useWebSize();
 
   const bar = [
     {
@@ -93,12 +88,13 @@ export const BottomBar = () => {
       p={'20px'}
       fontSize={'10px'}
       boxShadow={'0px -8px 8px -14px rgba(0,0,0,1)'}
+      display={size == '500px' ? 'flex' : 'none'}
     >
       {bar?.map((item, index) => {
         return (
           <Link
-            to={isLogin ? item.link : '#'}
-            onClick={item.link == '/' ? null : isLogin ? null : onOpen}
+            to={isLogin ? item?.link : item.link == '/profile' ? '#' : item.link}
+            onClick={item.link == '/profile' ? (isLogin ? null : onOpen) : null}
             key={index}
           >
             <Flex
@@ -107,7 +103,7 @@ export const BottomBar = () => {
               alignItems={'center'}
               justifyContent={'center'}
             >
-              {item.link == '/profile' ? (
+              {item.link == '/profile' && token ? (
                 user.avatar ? (
                   <Avatar
                     size={'xs'}
@@ -127,43 +123,7 @@ export const BottomBar = () => {
           </Link>
         );
       })}
-
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
-        <ModalOverlay />
-        <ModalContent alignItems={'center'} w={'80%'}>
-          <ModalHeader></ModalHeader>
-          <ModalCloseButton />
-          <ModalBody
-            display={'flex'}
-            flexDirection={'column'}
-            alignItems={'center'}
-            justifyContent={'center'}
-            gap={5}
-          >
-            <Text textAlign={'center'}>
-              Hanya satu langkah lagi! Silakan login untuk melanjutkan.
-            </Text>
-            <Link to={'/login'}>
-              <Button
-                variant="ghost"
-                bgColor="colors.primary"
-                color={'white'}
-                _hover={{
-                  transform: 'scale(1.1)',
-                }}
-                _active={{
-                  transform: 'scale(1)',
-                }}
-                borderRadius={'10px'}
-                px={'30px'}
-              >
-                Login
-              </Button>
-            </Link>
-          </ModalBody>
-          <ModalFooter></ModalFooter>
-        </ModalContent>
-      </Modal>
+      <LoginModal isOpen={isOpen} onClose={onClose} fromPage={'/profile'}/>
     </Flex>
   );
 };
