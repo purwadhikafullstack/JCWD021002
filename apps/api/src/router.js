@@ -8,6 +8,8 @@ import { categoryRouter } from './routers/category.router';
 import { productStockRouter } from './routers/productStock.router';
 import { userRouter } from './routers/user.router';
 import { addressRouter } from './routers/address.router';
+import { checkoutRouter } from './routers/checkout.router';
+import { paymentRouter } from './routers/payment.router';
 
 const router = Router();
 
@@ -24,6 +26,8 @@ router.use('/user', userRouter);
 router.use('/products', productRouter);
 router.use('/category', categoryRouter);
 router.use('/product-stock', productStockRouter);
+router.use('/checkout', checkoutRouter);
+router.use('/payment', paymentRouter);
 
 // add another router here ...
 
