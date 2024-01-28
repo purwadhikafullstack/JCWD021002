@@ -28,6 +28,7 @@ export const MySwiper = ({ size }) => {
         className="mySwiper"
         modules={[Autoplay]}
         style={{
+          m: size == '500px' ? '0 20px' : '30px 200px',
           height: 'fit-content',
           width: size == '500px' ? size : '100%',
           // padding: '20px',

@@ -88,7 +88,7 @@ const Product = () => {
         },
       },
     ],
-    centerPadding: '50px'
+    centerPadding: '50px',
   };
 
   const handleIncrement = () => {
@@ -101,35 +101,51 @@ const Product = () => {
     }
   };
 
-  console.log("ini id", id);
+  console.log('ini id', id);
   const fetchData = async (id) => {
     try {
-        console.log("ini id the fetchdata", id);
-        const response = await axios.get(
-            `${import.meta.env.VITE_API_URL}/products/product-detail/${id}`
-        );
-        setData(response?.data);
+      console.log('ini id the fetchdata', id);
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/products/product-detail/${id}`,
+      );
+      console.log(response?.data);
+      setData(response?.data);
     } catch (err) {
-        console.log(err);
+      console.log(err);
     }
-};
+  };
 
-useEffect(() => {
-    fetchData(id);
-}, []);
+  const [carts, setCarts] = useState([]);
 
-console.log(data);
-//   useEffect(() => {
-//     (async () => {
-//       const { data } = await axios.get(
-//         `${import.meta.env.VITE_API_URL}/products/product-detail/3`,
-//       );
-//       setSampleData(data);
-//     })();
-//   }, []);
+  const fetchCarts = async (user) => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/cart/${user.id}`,
+      );
+      setCarts(response?.data?.data);
 
-//   console.log(sampleData);
-function formatPriceToIDR(price) {
+      const totalQuantity = response?.data?.data.reduce(
+        (total, item) => total + item.totalQuantity,
+        0,
+      );
+      setCartTotalQuantity(totalQuantity);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  console.log(data);
+  //   useEffect(() => {
+  //     (async () => {
+  //       const { data } = await axios.get(
+  //         `${import.meta.env.VITE_API_URL}/products/product-detail/3`,
+  //       );
+  //       setSampleData(data);
+  //     })();
+  //   }, []);
+
+  //   console.log(sampleData);
+  function formatPriceToIDR(price) {
     // Use Intl.NumberFormat to format the number as IDR currency
     return new Intl.NumberFormat('id-ID', {
       style: 'currency',
@@ -143,22 +159,24 @@ function formatPriceToIDR(price) {
   console.log(size);
   console.log("ini data now", data);
   return (
-    <Box backgroundColor='#f5f5f5' p='0'
-    pb='110px'
-    w={{ base: '100vw', md: size }}
-    h={'fit-content'}
-    transition="width 0.3s ease">
+    <Box
+      backgroundColor="#f5f5f5"
+      p="0"
+      pb="110px"
+      w={{ base: '100vw', md: size }}
+      h={'fit-content'}
+      transition="width 0.3s ease"
+    >
       <Flex
-
         position={'sticky'}
         top={0}
-        bgColor='white'
+        bgColor="white"
         zIndex={99}
         // top={{ base: '20px', lg: '-30px' }}
         px={'20px'}
-        h={"10vh"}
-        justify={"space-between"}
-        align={"center"}
+        h={'10vh'}
+        justify={'space-between'}
+        align={'center'}
       >
         <Image src={LogoGroceria} h={'30px'} />
         <ResizeButton color={"black"}/>

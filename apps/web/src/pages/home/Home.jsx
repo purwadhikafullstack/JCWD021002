@@ -27,7 +27,9 @@ export const Home = () => {
       <Flex>
         <MySwiper size={size} />
       </Flex>
+
       <SwiperCategory size={size} />
+
       <Flex
         direction={'column'}
         gap={2}

@@ -2,8 +2,15 @@
 import { Flex, Text, Image } from '@chakra-ui/react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import axios from 'axios';
+import axios from 'axios';
 import 'swiper/css';
 import { useEffect, useState } from 'react';
+import drinkImg from '../../assets/drink.png';
+import bahanPokokImg from '../../assets/bahanPokok.png';
+import healthyImg from '../../assets/healthy.png';
+import snackImg from '../../assets/snack.png';
+import foodImg from '../../assets/food.png';
+import { Link } from 'react-router-dom';
 import drinkImg from '../../assets/drink.png';
 import bahanPokokImg from '../../assets/bahanPokok.png';
 import healthyImg from '../../assets/healthy.png';
@@ -13,7 +20,16 @@ import { Link } from 'react-router-dom';
 
 export const SwiperCategory = ({ size }) => {
   const [categories, setCategories] = useState();
+  const [categories, setCategories] = useState();
 
+  const colors = [
+    '#ACDEC9FF',
+    '#DAF1E8FF',
+    '#FFEFCBFF',
+    '#F2F5E4FF',
+    '#F5C4C6FF',
+  ];
+  const image = [healthyImg, bahanPokokImg, foodImg, snackImg, drinkImg];
   const colors = [
     '#ACDEC9FF',
     '#DAF1E8FF',
@@ -29,12 +45,20 @@ export const SwiperCategory = ({ size }) => {
         'http://localhost:8000/api/category/category-lists',
       );
       setCategories(res.data.categories);
+      const res = await axios.get(
+        'http://localhost:8000/api/category/category-lists',
+      );
+      setCategories(res.data.categories);
     } catch (err) {
+      console.log(err);
       console.log(err);
     }
   };
+  };
 
   useEffect(() => {
+    category();
+  }, []);
     category();
   }, []);
 
@@ -47,6 +71,8 @@ export const SwiperCategory = ({ size }) => {
         style={{ height: 'fit-content', width: size, padding: '0 20px' }}
       >
         {categories?.map((item, index) => {
+          const colorIndex = index % colors.length;
+          const imageIndex = index % colors.length;
           const colorIndex = index % colors.length;
           const imageIndex = index % colors.length;
           return (
