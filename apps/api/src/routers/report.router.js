@@ -3,7 +3,10 @@ import {
   getSalesByDateController,
   getProductsByTransactionController,
   createSalesReportController,
-} from '../controllers/report.controller';
+} from '../controllers/reportSales.controller';
+import {
+  createStockReportController, getStockByDateController
+} from '../controllers/reportStock.controller';
 
 const reportRouter = Router();
 
@@ -21,6 +24,16 @@ reportRouter.get('/order-detail/:transactionId', async (req, res) => {
 reportRouter.get('/sales-report', async (req, res) => {
     const result = await createSalesReportController(req, res);
     return result
+});
+
+reportRouter.get('/stock-report', async (req, res) => {
+  const result = await createStockReportController(req, res);
+  return result
+});
+
+reportRouter.get('/get-stock', async (req, res) => {
+  const result = await getStockByDateController(req, res);
+  return result
 });
 
 // // POST

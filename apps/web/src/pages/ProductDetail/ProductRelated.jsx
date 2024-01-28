@@ -135,7 +135,7 @@ function formatPriceToIDR(price) {
                     />
                   <CardBody>
                     <Stack mt='-3' spacing='0'>
-                    <Heading size='sm' width='200px' isTruncated>{item.name}</Heading>
+                    <Heading size='sm' width='160px' flexWrap='wrap' >{item.name}</Heading>
                         <Flex dir='row' gap='1'>
                         <Text fontSize='xs' mt='5px'>{item?.massProduct} {item?.Mass?.name}/{item.Packaging?.name} </Text>
                         </Flex>

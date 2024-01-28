@@ -39,6 +39,7 @@ import {
   IconCirclePlus,
   IconTrashXFilled,
   IconSquareRoundedPlusFilled,
+  IconPlus,
 } from '@tabler/icons-react';
 import {
   IconSearch,
@@ -64,8 +65,9 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import SideBar from '../../components/SideBar/SideBar';
 import { useWebSize } from '../../provider.websize';
-
-const MAX_VISIBLE_PAGES = 3;
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { PaginationControls } from '../../components/PaginationControls/PaginationControls';
 
 function ProductLists() {
   const { size, handleWebSize } = useWebSize();
@@ -85,17 +87,6 @@ function ProductLists() {
   const [categoryId, setCategoryId] = useState();
   const [productName, setProductName] = useState();
   const [dataCategory, setDataCategory] = useState([]);
-  const [cityId, setCityId] = useState('');
-  const [sliderSettings, setSliderSettings] = useState({
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    focusOnSelect: true,
-    // variableWidth: true,
-  });
-  const [quantity, setQuantity] = useState(1);
   const navigate = useNavigate();
   const [selectedPage, setSelectedPage] = useState(page);
   const [searchParams, setSearchParams] = useSearchParams({ page, pageSize });
@@ -108,6 +99,7 @@ function ProductLists() {
   const token = localStorage.getItem('token');
 
   console.log('ini categoryId', categoryId);
+  console.log('data suer :', user);
 
   const handleDeleteProductStock = async () => {
     try {
@@ -153,6 +145,7 @@ function ProductLists() {
       setAddToStockModalIsOpen(false); // Close the modal after successful addition
     } catch (error) {
       console.error(error);
+      toast.error('Product already in stock');
       // Handle error as needed
     }
   };
@@ -228,18 +221,7 @@ function ProductLists() {
   }, []);
 
   console.log(data);
-  // console.log(data?.products[1]?.ProductStocks[0]?.id);
-  // console.log(data?.products[0]?.ProductImages[0]?.imageUrl);
-  //   useEffect(() => {
-  //     (async () => {
-  //       const { data } = await axios.get(
-  //         `${import.meta.env.VITE_API_URL}/products/product-detail/3`,
-  //       );
-  //       setSampleData(data);
-  //     })();
-  //   }, []);
 
-  //   console.log(sampleData);
   function formatPriceToIDR(price) {
     // Use Intl.NumberFormat to format the number as IDR currency
     return new Intl.NumberFormat('id-ID', {
@@ -247,36 +229,6 @@ function ProductLists() {
       currency: 'IDR',
     }).format(price);
   }
-
-  const getPageNumbers = () => {
-    const totalPages = data?.totalPages || 0;
-    const currentPage = selectedPage;
-
-    let startPage = Math.max(
-      currentPage - Math.floor(MAX_VISIBLE_PAGES / 2),
-      1,
-    );
-    let endPage = Math.min(startPage + MAX_VISIBLE_PAGES - 1, totalPages);
-
-    if (totalPages - endPage < Math.floor(MAX_VISIBLE_PAGES / 2)) {
-      startPage = Math.max(endPage - MAX_VISIBLE_PAGES + 1, 1);
-    }
-
-    const pages = [];
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(i);
-    }
-
-    if (startPage > 1) {
-      pages.unshift('...');
-    }
-
-    if (endPage < totalPages) {
-      pages.push('...');
-    }
-
-    return pages;
-  };
 
   const fetchStore = async () => {
     try {
@@ -298,32 +250,29 @@ function ProductLists() {
 
   return (
     <Box w={{ base: '100vw', md: size }} overflowX="hidden">
+      <ToastContainer
+        position="top-center"
+        closeOnClick
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <SideBar size={size} handleWebSize={handleWebSize} />
       <Box
         backgroundColor="#f5f5f5"
-        // w={size =='500vw' ? { base: '100vw', md: size } : { base: '100vw', md: '90vw' }}
+        w={{ base: '100vw', md: size }}
         p={size == '500px' ? 0 : 5}
-        pt={'80px'}
         height="fit-content"
-        sx={
-          size == '100vw' && {
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            w: { base: '100vw', md: '90vw' },
-            ml: '159px',
-          }
-        }
       >
         <HStack mb="10px" p={0}></HStack>
-        <Box p={size == '500px' ? 0 : '20px 0'}>
+        <Box p={size == '500px' ? 0 : 5} pl={size == '500px' ? '0px' : '150px'}>
           <Flex
             dir="row"
             gap="10px"
             p={size == '500px' ? 6 : 0}
             mb="20px"
             flexWrap="wrap"
-            justify={size =='100vw' && 'space-evenly'}
           >
             <Button
               backgroundColor="#f5f5f5"
@@ -437,12 +386,21 @@ function ProductLists() {
               </ModalFooter>
             </ModalContent>
           </Modal>
+          <Flex flexDir="row" flexWrap="wrap" mb="10px">
+            <Button
+              ml={size == '500px' ? '20px' : '0px'}
+              leftIcon={<IconPlus />}
+              backgroundColor="#286043"
+              textColor="white"
+              border="solid 1px #286043"
+              onClick={() => navigate('/add-product')}
+            >
+              Add Product
+            </Button>
+            <Spacer />
+          </Flex>
 
-          <Flex
-            rowGap={'30px'}
-            flexWrap="wrap"
-            justifyContent={'space-evenly'}
-          >
+          <Flex rowGap={'30px'} flexWrap="wrap" justifyContent={'space-evenly'}>
             {data?.products &&
               data?.products.map((item, index) => (
                 <>
@@ -471,24 +429,21 @@ function ProductLists() {
                     />
                     <CardBody>
                       <Stack mt="-3" spacing="0">
-                        <Heading size="sm" width="200px" isTruncated>
+                        <Heading size="sm" width="180px" flexWrap="wrap">
                           {item.name}
                         </Heading>
-                        {/* <Text isTruncated maxW='200px'>
-                        {item.description}
-                      </Text> */}
                         <Flex dir="row" gap="1" flexWrap="wrap">
                           <Text fontSize="xs" mt="5px">
                             {item?.massProduct} {item?.Mass?.name}/
                             {item.Packaging?.name}{' '}
                           </Text>
-                          <Text>|</Text>
-                          <Flex dir="row" mt="5px">
-                            <Image boxSize="17px" src={star} />
-                            <Text fontSize="xs" fontWeight="bold">
-                              5/5
-                            </Text>
-                          </Flex>
+                        </Flex>
+                        <Flex dir="row" mt="5px">
+                          <Image boxSize="17px" src={star} />
+                          <Text fontSize="xs" fontWeight="bold">
+                            {item?.averageRating?.toFixed(1) || 0.0}/5.0 (
+                            {item?.totalReviews})
+                          </Text>
                         </Flex>
 
                         <Text fontWeight="bold" color="orangered" mb="10px">
@@ -552,7 +507,6 @@ function ProductLists() {
                           >
                             {item?.status == 1 ? 'Active' : 'Deactive'}
                           </Text>
-
                           {/* <IconButton  icon={<IconInfoCircle />} variant='ghost' colorScheme='blue' onClick={() => navigate(`/product-detail-admin/${item?.id}`)} /> */}
                         </Flex>
                       </Stack>
@@ -564,77 +518,15 @@ function ProductLists() {
                 </>
               ))}
           </Flex>
-          <Flex marginTop="10px" p="10px" flexWrap="wrap">
-            <Box mt="20px">
-              <HStack>
-                <Text>Show per Page</Text>
-                <Select
-                  border="solid 1px black"
-                  width="fit-content"
-                  value={pageSize}
-                  onChange={(e) => setPageSize(e.target.value)}
-                >
-                  <option value={1}>1</option>
-                  <option value={10}>10</option>
-                  <option value={15}>15</option>
-                  <option value={20}>20</option>
-                  <option value={30}>30</option>
-                  <option>All</option>
-                </Select>
-              </HStack>
-            </Box>
-            <Spacer />
-            <Box mt="20px">
-              <Button
-                borderRadius="full"
-                backgroundColor="#286043"
-                textColor="white"
-                border="solid 1px #286043"
-                leftIcon={<IconChevronLeft />}
-                isDisabled={page == 1 ? true : false}
-                onClick={() => {
-                  setPage(page - 1);
-                  setSelectedPage(selectedPage - 1);
-                }}
-              ></Button>
-              {getPageNumbers().map((pageNumber, index) => (
-                <Button
-                  key={index}
-                  ml="2px"
-                  mr="2px"
-                  borderRadius="full"
-                  backgroundColor={
-                    selectedPage === pageNumber ? '#286043' : 'white'
-                  }
-                  textColor={selectedPage === pageNumber ? 'white' : '#286043'}
-                  border={`solid 1px ${
-                    selectedPage === pageNumber ? 'white' : '#286043'
-                  }`}
-                  onClick={() => {
-                    // Handle the case where the button is "..." separately
-                    if (pageNumber !== '...') {
-                      setPage(pageNumber);
-                      setSelectedPage(pageNumber);
-                    }
-                  }}
-                >
-                  {pageNumber}
-                </Button>
-              ))}
-              <Button
-                borderRadius="full"
-                backgroundColor="#286043"
-                textColor="white"
-                border="solid 1px #286043"
-                rightIcon={<IconChevronRight />}
-                isDisabled={page == data?.totalPages ? true : false}
-                onClick={() => {
-                  setSelectedPage(selectedPage + 1);
-                  setPage(page + 1);
-                }}
-              ></Button>
-            </Box>
-          </Flex>
+          <PaginationControls
+            page={page}
+            pageSize={pageSize}
+            selectedPage={selectedPage}
+            setPage={setPage}
+            setPageSize={setPageSize}
+            setSelectedPage={setSelectedPage}
+            data={data}
+          />
 
           <Modal
             isOpen={addToStockModalIsOpen}
@@ -654,7 +546,7 @@ function ProductLists() {
                   placeholder="Select store"
                   value={selectedStore}
                   onChange={(e) => setSelectedStore(e.target.value)}
-                  isDisabled={user?.store_idstore != 0 ? true : false}
+                  isDisabled={user?.store_idstore ? true : false}
                 >
                   {dataStore?.map((store) => (
                     <option key={store.id} value={store.id}>

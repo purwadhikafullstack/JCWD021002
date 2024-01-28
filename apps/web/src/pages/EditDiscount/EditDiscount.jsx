@@ -11,12 +11,14 @@ import {
   ModalContent, ModalCloseButton, ModalBody, ModalFooter, VStack, Flex, FormLabel, Checkbox, Textarea, InputRightElement, Select, RadioGroup, Radio
 } from "@chakra-ui/react";
 import {
-  IconPlus, IconArrowLeft, IconPhotoUp, IconX, IconArrowRight, IconEye, IconEyeOff
+  IconPlus, IconArrowLeft, IconDiscount, IconX, IconArrowRight, IconEye, IconEyeOff, IconDeviceFloppy
 } from '@tabler/icons-react';
 import AvatarSVG from './icon-default-avatar.svg';
 import SideBar from '../../components/SideBar/SideBar';
 import { useSelector } from "react-redux";
 import { useWebSize } from '../../provider.websize';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 
 function formatPriceToIDR(price) {
@@ -54,34 +56,11 @@ const EditDiscount = () => {
   const [referral, setReferral] = useState();
   const [productName, setProductName] = useState('');
   const [productId, setProductId] = useState();
+  const [productId2, setProductId2] = useState();
   const [editData, setEditData] = useState();
-
-
-
-
-
-  console.log("ini type", type);
-  const [fullname, setFullname] = useState("");
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [status, setStatus] = useState();
   const [storeId, setStoreId] = useState();
-
-  const fetchData = async () => {
-    try {
-          const response = await axios.get(
-            `${import.meta.env.VITE_API_URL}/products/product-lists?page=${1}&pageSize=&sortField=name&sortOrder=asc&categoryId=&productName=${productName}&storeId=${user?.store_idstore ? user?.store_idstore : storeId}&statusProduct=1&statusStock=1`
-          );
-          setData(response?.data);
-  } catch (err) {
-      console.log(err);
-  }
-  }
-
-  useEffect(() => {
-    fetchData();
-  }, [productName, storeId]);
+  const token = localStorage.getItem("token");
 
   const fetchStore = async () => {
     try {
@@ -90,16 +69,47 @@ const EditDiscount = () => {
       );
 
       setDataStore(response?.data);
+      setProductId(0);
+      setProductId(productId2);
     } catch (err) {
       console.log(err);
     }
   };
 
-      console.log("ini data store",dataStore);
+      console.log("ini data store",productId2, productId);
 
   useEffect(() => {
     fetchStore();
   }, []);
+
+  const fetchData = async () => {
+    try {
+          const response = await axios.get(
+            `${import.meta.env.VITE_API_URL}/products/product-lists?page=${1}&pageSize=&sortField=name&sortOrder=asc&categoryId=&productName=${productName}&storeId=${user?.store_idstore ? user?.store_idstore : storeId}&statusProduct=1&statusStock=1`
+          );
+          setData(response?.data);
+
+  } catch (err) {
+      console.log(err);
+  }
+  }
+
+  useEffect(() => {
+    if (storeId) {
+      fetchData();
+      setProductId(productId2);
+    }
+  }, [productName, storeId]);
+
+  useEffect(() => {
+    // Update productId when data or storeId changes
+    if (data?.products && data.products.length > 0 && storeId) {
+      const defaultProductId = data.products[0]?.ProductStocks[0]?.id;
+      setProductId(productId2);
+    }
+  }, [data, storeId]);
+
+  
 
   useEffect(() => {
 
@@ -119,14 +129,20 @@ const EditDiscount = () => {
       setMinNom(response?.data?.minimumPurchase);
       setBuy(response?.data?.buy_quantity);
       setGet(response?.data?.get_quantity);
-      setStartDate(new Date(response?.data?.startDate).toISOString().split('T')[0]);
-      setEndDate(new Date(response?.data?.endDate).toISOString().split('T')[0]);
+      setStartDate(new Date(response?.data?.startDate)?.toISOString()?.split('T')[0]);
+      setEndDate(new Date(response?.data?.endDate)?.toISOString()?.split('T')[0]);
       setName(response?.data?.name);
       setDescription(response?.data?.description);
       setMax(response?.data?.discountAmount);
       setReferral(response?.data?.referralCode);
+      setStatus(response?.data?.status == true ? 1 : 0);
       setStoreId(response?.data?.store_idstore);
-      setProductId(response?.data?.productStock_idproductStock);
+        setProductId2(response?.data?.productStock_idproductStock);
+      if(response?.data?.banner) {
+        setSelectedImage(`${
+            import.meta.env.VITE_API_IMAGE_URL
+          }/discounts/${response?.data?.banner}`);
+      }
       
 
     } catch (err) {
@@ -145,6 +161,7 @@ const EditDiscount = () => {
         
 
       let formData = new FormData();
+      formData.append("id", id)
       formData.append("distributionId", distribution);
       formData.append("type", type);
       formData.append("minimumPurchase", minNom);
@@ -159,11 +176,15 @@ const EditDiscount = () => {
       formData.append("name", name);
       formData.append("description", description);
       formData.append("productStock_idproductStock", productId);
+      formData.append("status", status);
       formData.append("discount", fieldImage);
 
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}discount/add-discount`,
-        formData
+      await axios.patch(
+        `${import.meta.env.VITE_API_URL}discount/edit-discount`,
+        formData,
+        {headers: {
+            Authorization: `Bearer ${token}`,
+          }}
       );
 
       navigate("/discount-lists");
@@ -209,17 +230,16 @@ const EditDiscount = () => {
 
   return (
     <>
-      {/* <SidebarWithHeader /> */}
       <Box w={{ base: '100vw', md: size }}>
           <SideBar size={size} handleWebSize={handleWebSize}/>
-      <ToastContainer />
+          <ToastContainer position="top-center" closeOnClick pauseOnFocusLoss draggable pauseOnHover theme="colored" />
       <Box w={{ base: '98.7vw', md: size }} overflowX='hidden' height='100vh' backgroundColor='#fbfaf9' p='20px'>
       
       <Box pl={size == '500px' ? '0px' : '150px' } pr={size == '500px' ? '0px' : '20px'} pt='20px' pb='20px'>
         <HStack mb='10px'>
-          <Button leftIcon={<IconArrowLeft />} borderRadius='full' backgroundColor='white' textColor='black' border='solid 1px black' onClick={() => navigate('/user-lists')}>Back</Button>
+          <Button leftIcon={<IconArrowLeft />} borderRadius='full' backgroundColor='white' textColor='black' border='solid 1px black' onClick={() => navigate('/discount-lists')}>Back</Button>
           <Spacer />
-          <Button rightIcon={<IconArrowRight />} borderRadius='full' backgroundColor='#286043' textColor='white' border='solid 1px #286043' onClick={() => addProduct()}>Add Item</Button>
+          <Button rightIcon={<IconDeviceFloppy />} borderRadius='full' backgroundColor='#286043' textColor='white' border='solid 1px #286043' onClick={() => addProduct()}>Save</Button>
         </HStack>
         <Box borderRadius='10px' p='20px' backgroundColor='white' boxShadow='0px 1px 5px gray'>
           <form>
@@ -229,9 +249,10 @@ const EditDiscount = () => {
             {selectedImage ? <Image
             src={selectedImage}
             alt="Selected Image"
-            boxSize="150px"
+            // boxSize="fit-content"
+            width='300px'
             objectFit="cover"
-            borderRadius="50%"/> : <Image src={AvatarSVG} />}
+            borderRadius="10px"/> : <Box bgColor='#ebf5ff' p='20px' display='flex' justifyContent='center' width='350px' borderRadius='10px'><IconDiscount color='#0049cc' size='100px' /></Box> }
             <Box mt='-50px' mr='-90px'>
       <Input display="none" id="fileInput" 
               type="file"
@@ -335,15 +356,26 @@ const EditDiscount = () => {
             <Text fontSize='large' fontWeight='bold'>Name Discount</Text>
                 <Input mb='20px' placeholder= 'Ex. Diskon 2.2' name='name' width={size == '500px' ? '100%' : '50%'} value={name} onChange={(e) => setName(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
               
+            <Box width={size == '500px' ? '100%' : '60%'} pb='50px'>
             <Text fontSize='large' fontWeight='bold'>Description</Text>
-                <Textarea mb='20px' name='desc' width={size == '500px' ? '100%' : '70%'} value={description} onChange={(e) => setDescription(e.target.value)} type='text' border='solid gray 1px' borderRadius='10px' height='20vh'/>
-            
+                <ReactQuill
+        value={description}
+        onChange={(value) => setDescription(value)}
+        theme='snow'
+        style={{ height:'200px'}}
+      />
+            </Box>
                 <Text fontSize='large' fontWeight='bold'>Max Usage Discount</Text>
-                <Input mb='20px' placeholder= 'Ex. 250' name='max' width={size == '500px' ? '100%' : '50%'} value={max} onChange={(e) => setMax(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
+                <Input mb='20px' isDisabled={distribution == 2 ? false : true} placeholder= 'Ex. 250' name='max' width={size == '500px' ? '100%' : '50%'} value={max} onChange={(e) => setMax(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
               
                 <Text fontSize='large' fontWeight='bold'>Referral Code</Text>
                 <Input mb='20px' placeholder= 'Ex. GROCERIAANNIV1' name='name' width={size == '500px' ? '100%' : '50%'} value={referral} onChange={(e) => setReferral(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
-              
+
+                <Text fontSize='large' fontWeight='bold'>Status</Text>
+                <Select mb='20px' border='solid gray 1px' borderRadius='full' width={size == '500px' ? '100%' : '50%'} placeholder="Select option" value={status} onChange={(e) => setStatus(parseInt(e.target.value))}>
+              <option value={1}>Active</option>
+              <option value={0}>Deactive</option>
+            </Select>
 
             <Flex columnGap='10px' mb='20px ' flexDir={size == '500px' ? 'column' : 'row'}>
               <Box width='100%'>
@@ -360,15 +392,21 @@ const EditDiscount = () => {
                 <FormLabel>Product</FormLabel>
                 <Input height='30px' mt='-5px' placeholder= 'Ex. Indomie' name='productName' width={size == '500px' ? '100%' : '50%'} value={productName} onChange={(e) => setProductName(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
                 </Flex>
-              <Select border='solid gray 1px' borderRadius='full' placeholder="Select option" value={productId} onChange={(e) => setProductId(e.target.value)}>
-            {data?.products?.map((item) => ( 
-              <option key={item?.id} value={item?.id}>{item?.name}</option>
-            ))}
-            </Select>
+                { storeId && data && productId ? (
+  <Select border='solid gray 1px' borderRadius='full' placeholder="Select option" value={productId} onChange={(e) => setProductId(e.target.value)}>
+    {data?.products?.map((product) => (
+      product?.ProductStocks?.map((stock) => (
+        <option key={stock?.id} value={stock?.id}>
+          {product?.name} - Stock: {stock?.stock}
+        </option>
+      ))
+    ))}
+  </Select>
+) : (
+  <p>Loading product data...</p>
+)}
               </Box>
             </Flex>
-
-            
           </form>
         </Box>
         </Box>

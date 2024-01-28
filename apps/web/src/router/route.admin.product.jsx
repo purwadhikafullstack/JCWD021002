@@ -1,5 +1,6 @@
+/* eslint-disable react-refresh/only-export-components */
+import DashboardAdmin from '../pages/DashboardAdmin/DashboardAdmin';
 import AddProduct from '../pages/AddProduct/AddProduct';
-import AddProductStock from '../pages/AddProductStock/AddProductStock';
 import CategoryLists from '../pages/CategoryLists/CategoryLists';
 import EditProduct from '../pages/EditProduct/EditProduct';
 import MassLists from '../pages/MassLists/MassLists';
@@ -9,119 +10,41 @@ import ProductDetailAdmin from '../pages/ProductDetailAdmin/ProductDetailAdmin';
 import ProductLists from '../pages/ProductLists/ProductLists';
 import ProductStockLists from '../pages/ProductStockLists/ProductStockLists';
 import ProductSearch from '../pages/ProductSearch/ProductSearch';
-import { ProtectAdminRoute, ProtectLoggedInUser } from './protection.route';
+import ProductCatalogue from '../pages/ProductCatalogue/ProductCatalogue';
+import ReportSales from '../pages/ReportSales/ReportSales';
+import ReportStock from '../pages/ReportStock/ReportStock';
+import Voucher from '../pages/Voucher/Voucher';
+import withRoleRestriction from './withRoleRestriction';
+
+const AdminDashboardWithRoleCheck = withRoleRestriction([1, 2])(DashboardAdmin);
+const AdminAddProductsWithRoleCheck = withRoleRestriction([1, 2])(AddProduct);
+const AdminCategoryListsWithRoleCheck = withRoleRestriction([1, 2])(CategoryLists);
+const AdminEditProductsWithRoleCheck = withRoleRestriction([1, 2])(EditProduct);
+const AdminMassListsWithRoleCheck = withRoleRestriction([1, 2])(MassLists);
+const AdminPackagingListsWithRoleCheck = withRoleRestriction([1, 2])(PackagingLists);
+const AdminProductDetailsAdminWithRoleCheck = withRoleRestriction([1, 2])(ProductDetailAdmin);
+const AdminProductListsWithRoleCheck = withRoleRestriction([1, 2])(ProductLists);
+const AdminProductStockListsWithRoleCheck = withRoleRestriction([1, 2])(ProductStockLists);
+const AdminReportSalesWithRoleCheck = withRoleRestriction([1, 2])(ReportSales);
+const AdminReportStockWithRoleCheck = withRoleRestriction([1, 2])(ReportStock);
+
 
 const routeAdminProduct = [
-  {
-    path: '/product-detail/:id',
-    element: (
-      <ProtectLoggedInUser>
-        <ProtectAdminRoute>
-          <ProductDetail />
-        </ProtectAdminRoute>
-      </ProtectLoggedInUser>
-    ),
-  },
-  {
-    path: '/product-search',
-    element: (
-      <ProtectLoggedInUser>
-        <ProtectAdminRoute>
-          <ProductSearch />
-        </ProtectAdminRoute>
-      </ProtectLoggedInUser>
-    ),
-  },
-  {
-    path: '/product-lists',
-    element: (
-      <ProtectLoggedInUser>
-        <ProtectAdminRoute>
-          <ProductLists />
-        </ProtectAdminRoute>
-      </ProtectLoggedInUser>
-    ),
-  },
-  {
-    path: '/category-lists',
-    element: (
-      <ProtectLoggedInUser>
-        <ProtectAdminRoute>
-          <CategoryLists />
-        </ProtectAdminRoute>
-      </ProtectLoggedInUser>
-    ),
-  },
-  {
-    path: '/add-product',
-    element: (
-      <ProtectLoggedInUser>
-        <ProtectAdminRoute>
-          <AddProduct />
-        </ProtectAdminRoute>
-      </ProtectLoggedInUser>
-    ),
-  },
-  {
-    path: '/edit-product/:id',
-    element: (
-      <ProtectLoggedInUser>
-        <ProtectAdminRoute>
-          <EditProduct />
-        </ProtectAdminRoute>
-      </ProtectLoggedInUser>
-    ),
-  },
-  {
-    path: '/product-detail-admin/:id',
-    element: (
-      <ProtectLoggedInUser>
-        <ProtectAdminRoute>
-          <ProductDetailAdmin />
-        </ProtectAdminRoute>
-      </ProtectLoggedInUser>
-    ),
-  },
-  {
-    path: '/mass-lists',
-    element: (
-      <ProtectLoggedInUser>
-        <ProtectAdminRoute>
-          <MassLists />
-        </ProtectAdminRoute>
-      </ProtectLoggedInUser>
-    ),
-  },
-  {
-    path: '/packaging-lists',
-    element: (
-      <ProtectLoggedInUser>
-        <ProtectAdminRoute>
-          <PackagingLists />
-        </ProtectAdminRoute>
-      </ProtectLoggedInUser>
-    ),
-  },
-  {
-    path: '/add-product-stock/:productId',
-    element: (
-      <ProtectLoggedInUser>
-        <ProtectAdminRoute>
-          <AddProductStock />
-        </ProtectAdminRoute>
-      </ProtectLoggedInUser>
-    ),
-  },
-  {
-    path: '/product-stock-lists',
-    element: (
-      <ProtectLoggedInUser>
-        <ProtectAdminRoute>
-          <ProductStockLists />
-        </ProtectAdminRoute>
-      </ProtectLoggedInUser>
-    ),
-  },
+  { path: '/product-detail/:id', element: <ProductDetail /> },
+  { path: '/product-search', element: <ProductSearch /> },
+  { path: '/product-catalogue', element: <ProductCatalogue /> },
+  { path: '/dashboard-admin', element: <AdminDashboardWithRoleCheck /> },
+  { path: '/product-lists', element: <AdminProductListsWithRoleCheck /> },
+  { path: '/category-lists', element: <AdminCategoryListsWithRoleCheck /> },
+  { path: '/add-product', element: <AdminAddProductsWithRoleCheck /> },
+  { path: '/edit-product/:id', element: <AdminEditProductsWithRoleCheck /> },
+  { path: '/product-detail-admin/:id', element: <AdminProductDetailsAdminWithRoleCheck /> },
+  { path: '/mass-lists', element: <AdminMassListsWithRoleCheck /> },
+  { path: '/packaging-lists', element: <AdminPackagingListsWithRoleCheck /> },
+  { path: '/product-stock-lists', element: <AdminProductStockListsWithRoleCheck /> },
+  { path: '/sales-report', element: <AdminReportSalesWithRoleCheck /> },
+  { path: '/stock-report', element: <AdminReportStockWithRoleCheck /> },
+  { path: '/voucher', element: <Voucher /> },
 ];
 
 export default routeAdminProduct;

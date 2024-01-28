@@ -23,13 +23,7 @@ import {
 import { ResizeButton } from '../../components/ResizeButton';
 import LogoGroceria from '../../assets/Groceria-no-Bg.png';
 import { useWebSize } from '../../provider.websize';
-
-function capitalizeFirstLetter(str) {
-  if (str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  }
-  return str; // return the unchanged string if it's undefined
-}
+import SideBar from '../../components/SideBar/SideBar';
 
 const UserDetail = () => {
   const { size, handleWebSize } = useWebSize();
@@ -56,46 +50,15 @@ const UserDetail = () => {
   console.log(data);
 
   return (
-    <>
-      {/* <SidebarWithHeader /> */}
-      <Box
-        w={{ base: '98.7vw', md: size }}
-        height="100vh"
-        p="20px"
-        overflowX="hidden"
-        backgroundColor="#fbfaf9"
-      >
-        <Flex
-          position={'relative'}
-          // top={{ base: '20px', lg: '-30px' }}
-          // px={'20px'}
-          h={'10vh'}
-          justify={'space-between'}
-          align={'center'}
-        >
-          <Image src={LogoGroceria} h={'30px'} />
-          <ResizeButton
-            color={'black'}
-          />
-        </Flex>
-
-        <Box
-          pl={size == '500px' ? '0px' : '150px'}
-          pr="0px"
-          pt="20px"
-          pb="20px"
-        >
-          <HStack mb="10px">
-            <Button
-              leftIcon={<IconArrowLeft />}
-              borderRadius="full"
-              backgroundColor="white"
-              textColor="black"
-              border="solid 1px black"
-              onClick={() => navigate('/user-lists')}
-            >
-              Back
-            </Button>
+      <>
+        {/* <SidebarWithHeader /> */}
+        <Box w={{ base: '100vw', md: size }} overflowX='hidden'>
+          <SideBar size={size} handleWebSize={handleWebSize}/>
+        <Box w={{ base: '100vw', md: size }} height='100vh' p='20px' overflowX='hidden' backgroundColor='#fbfaf9'>
+          
+      <Box pl={size == '500px' ? '0px' : '150px' } pr='0px' pt='20px' pb='20px'>
+      <HStack mb='10px'>
+            <Button leftIcon={<IconArrowLeft />} borderRadius='full' backgroundColor='white' textColor='black' border='solid 1px black' onClick={() => navigate('/user-lists')}>Back</Button>
             <Spacer />
             <Button
               rightIcon={<IconArrowRight />}
@@ -234,9 +197,10 @@ const UserDetail = () => {
               </Box>
             </Flex>
           </Box>
+          </Box>
+        </Box> 
         </Box>
-      </Box>
-    </>
+      </>
   );
 };
 

@@ -2,7 +2,6 @@ import { Router } from "express";
 import { getStoreListController, getStoreController, addStoreController, changeStoreController, deleteStoreController } from "../controllers/store.controller";
 const { check, validationResult } = require('express-validator');
 
-
 const validateSearchInput = [
   check('query').matches(/^[a-zA-Z0-9\s]*$/).withMessage('Input Tidak Valid'),
   (req, res, next) => {
@@ -14,7 +13,6 @@ const validateSearchInput = [
     next()
   }
 ]
-
 
 const storeRouter = Router()
 
