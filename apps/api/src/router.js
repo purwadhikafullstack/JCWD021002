@@ -9,7 +9,6 @@ import { productStockRouter } from './routers/productStock.router';
 import { userRouter } from './routers/user.router';
 import { addressRouter } from './routers/address.router';
 
-
 const router = Router();
 
 router.get('/', (req, res) => {

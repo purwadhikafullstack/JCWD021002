@@ -3,36 +3,48 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import toRupiah from '@develoka/angka-rupiah-js';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { useWebSize } from '../../provider.websize';
 
 export const ProductList = () => {
   const [product, setProduct] = useState();
+  const navigate = useNavigate();
+  const {size} = useWebSize()
 
   function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
+  const coordinat = useSelector((state) => state.AuthReducer.location);
 
-  const cityId = useSelector((state) => state.AuthReducer.location?.id);
-
-  console.log(cityId)
-  
-  const getproductList = async (cityId) => {
+  const getProductList = async (latitude, longitude) => {
     try {
       const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/products/product-lists?page=1&pageSize=8&cityId=${cityId}`,
+        `${
+          import.meta.env.VITE_API_URL
+        }/store?&page=1&pageSize=&latitude=${latitude}&longitude=${longitude}&statusStock=1`,
       );
-      setProduct(res?.data?.products);
+      setProduct(res?.data?.data?.products);
     } catch (err) {
       console.log(err);
     }
   };
 
   useEffect(() => {
-    getproductList(cityId);
-  }, [cityId]);
+    getProductList(coordinat.latitude, coordinat.longitude);
+  }, [coordinat]);
 
   return (
-    <Flex direction={'column'}>
-      <Grid templateColumns={'repeat(2, 1fr)'} w={'fit-content'} gap={5}>
+    <Flex direction={'column'} mt={'10px'} p={size == '500px' ? '0 20px' : '30px 200px'}>
+      <Flex w={'full'} bgColor={'white'} py={'10px'}>
+        <Text fontSize={'18px'} fontWeight={600} textAlign={'center'}>
+          REKOMENDASI
+        </Text>
+      </Flex>
+      <Grid
+        templateColumns={size == '500px' ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)'}
+        w={'fit-content'}
+        gap={5}
+      >
         {product?.map((item, index) => {
           return (
             <Card
@@ -42,6 +54,7 @@ export const ProductList = () => {
               bgColor={'white'}
               overflow={'hidden'}
               cursor={'pointer'}
+              onClick={() => navigate(`/product-detail/${item.id}`)}
             >
               <Flex w={'full'} h={'full'}>
                 <Image

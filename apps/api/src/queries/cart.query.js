@@ -2,6 +2,8 @@ import Cart from '../models/cart.model';
 import CartDetail from '../models/cartDetail.model';
 import ProductStock from '../models/productStock.model';
 import Product from '../models/product.model';
+import ProductImage from '../models/productImage.model';
+import Store from '../models/store.model';
 
 export const findCartQuery = async (userId) => {
   return Cart.findOne({
@@ -33,15 +35,15 @@ export const createCartQuery = async (userId) => {
 
 export const getProductStockQuery = async (productStockId) => {
   return ProductStock.findOne({
-    where: { product_idproduct: productStockId },
-    include: [Product],
+    where: { id: productStockId },
+    include: [{ model: Product, include: [ProductImage] }, { model: Store }],
   });
 };
 
 export const findCartDetailQuery = async (cartId, productStockId) => {
   return CartDetail.findOne({
     where: {
-      id: productStockId,
+      productStock_idproductStock: productStockId,
       cart_idcart: cartId,
     },
   });
@@ -145,3 +147,27 @@ export const deleteCartItemQuery = async (cart, productId) => {
     throw err;
   }
 };
+
+export const getAllCartQuery = async (userId) => {
+  return await Cart.findAll({
+    where: { user_iduser: userId },
+    include: [
+      {
+        model: CartDetail,
+        include: [
+          {
+            model: ProductStock,
+            include: [
+              { model: Product, include: [ProductImage] },
+              { model: Store },
+            ],
+          },
+        ],
+      },
+    ],
+    order: [
+      [CartDetail, 'id', 'ASC'], // Assuming `id` is the field you want to sort by
+    ],
+  });
+};
+

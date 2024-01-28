@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-import { useSelector } from 'react-redux';
 
 import { Header } from './header';
 import { Collections } from './collections';
@@ -11,39 +10,46 @@ import { SwiperCategory } from './swiperCategory';
 import { Flex, Text } from '@chakra-ui/react';
 import { PiGift } from 'react-icons/pi';
 import { IoIosArrowForward } from 'react-icons/io';
+import { useWebSize } from '../../provider.websize';
 
-export const Home = ({ handleWebSize, size }) => {
-  const user = useSelector((state) => state.AuthReducer.user);
+export const Home = () => {
+
+  const {size, handleWebSize } = useWebSize()
 
   return (
     <Flex
       w={{ base: '100vw', lg: size }}
       direction={'column'}
-      bgColor={'#F8F9FAFF'}
+      bgColor={'colors.secondary'}
       transition={"all .3s ease-in-out"}
+      // gap={size == '500px' ? '0' : '100px'}
     >
       <Header size={size} handleWebSize={handleWebSize} />
+
       <Flex>
         <MySwiper size={size} />
       </Flex>
+
       <SwiperCategory size={size} />
+
       <Flex
-        p={'20px'}
         direction={'column'}
-        gap={5}
+        gap={2}
         w={{ base: 'full', lg: size }}
         overflowX={'hidden'}
         mb={"60px"}
       >
         <Flex
+          display={size == '500px' ? 'flex' : 'none'}
           justify={'space-between'}
           align={'center'}
-          bgColor={'colors.secondary'}
+          bgColor={'white'}
           color={'colors.primary'}
           h={'36px'}
-          px={'10px'}
+          p={'10px'}
           borderRadius={'4px'}
           cursor={'pointer'}
+          m={size == '500px' ? '0 20px' : '30px 200px'}
         >
           <Flex gap={2}>
             <PiGift size={'20px'} />
@@ -58,7 +64,8 @@ export const Home = ({ handleWebSize, size }) => {
 
         <ProductList />
       </Flex>
-      <Flex position={'fixed'} bottom={0} w={{ base: 'full', md: size }}>
+      
+      <Flex position={'fixed'} bottom={0} w={{ base: 'full', md: size }} display={size == '500px' ? 'flex' : 'none'}>
         <BottomBar />
       </Flex>
     </Flex>
