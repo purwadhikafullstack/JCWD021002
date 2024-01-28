@@ -47,11 +47,8 @@ const addCategoryController = async (req, res) => {
   const editCategoryController = async (req, res) => {
     try {
       const { category_id, category } = req.body;
-  
-      console.log("ini di controller", category_id, category, req.file?.filename);
 
-      const result = await editCategoryService(category_id, category, req.file?.filename,);
-
+      const result = await editCategoryService(category_id, category, req?.file?.filename,);
   
       res.status(201).json({result})
     } catch (err) {
