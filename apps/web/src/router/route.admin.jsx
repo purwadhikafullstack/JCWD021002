@@ -24,7 +24,6 @@ const routeAdmin = [
     element: <Store />,
     children: [{ index: true, element: <StoreList /> }],
   },
-
 ];
 
 export default routeAdmin;

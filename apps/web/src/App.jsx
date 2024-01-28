@@ -4,14 +4,14 @@ import { Toaster } from 'react-hot-toast';
 import { Provider, useSelector } from 'react-redux';
 import { store } from './redux/store';
 import Theme from './theme';
-import { Location } from './hooks/geolocation';
-import { Auth } from './pages/auth';
+import { Location } from './utils/geolocation';
+import { Auth } from './auth';
 
 import { ChakraProvider, Flex } from '@chakra-ui/react';
 
 import { WebSizeProvider } from './provider.websize';
 import ScrollToTop from './scrollToTop';
-import routesConfiq from './router/route.index';
+import routesConfiq from './router';
 
 function App() {
   return (

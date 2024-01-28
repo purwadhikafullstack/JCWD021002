@@ -3,7 +3,7 @@ import Store from '../models/store.model';
 import City from '../models/city.model';
 import Province from '../models/province.model';
 // import Role from '../models/role.model';
-import { Op } from 'sequelize';
+import { Op, where } from 'sequelize';
 
 const getUserRegisterQuery = async ({
   id = null,
@@ -20,6 +20,7 @@ const getUserRegisterQuery = async ({
           email: email,
           referralCode,
         },
+        status: 'Active'
       },
     });
     return res;
@@ -51,7 +52,6 @@ const getUserQuery = async (page, pageSize, sortOrder, username, roleId) => {
       whereConditions.username = { [Op.like]: `%${username}%` };
     }
 
-    console.log('ini di query', username);
 
     const allUsers = await User.findAll({
       offset: offset,
@@ -94,7 +94,7 @@ const getUserQuery = async (page, pageSize, sortOrder, username, roleId) => {
 const getDetailUserQuery = async (userId) => {
   try {
     const result = await User.findOne({
-      where: { id: userId },
+      where: { id: userId, status: 'Active' },
       include: [
         {
           model: Store,
@@ -136,10 +136,8 @@ const updateUserQuery = async (
       avatar,
       role_idrole,
       status,
+      store_idstore
     };
-
-    console.log(username);
-    console.log(email);
 
     Object.keys(updatedValue).forEach((key) => {
       if (
@@ -171,7 +169,6 @@ const addUserQuery = async (
   role_idrole,
   store_idstore,
 ) => {
-  console.log('ini di query', store_idstore);
   try {
     const result = await User.create({
       username,
@@ -201,6 +198,7 @@ const getUserLoginQuery = async ({ emailOrUsername }) => {
           username: emailOrUsername,
           email: emailOrUsername,
         },
+        status: 'Active'
       },
     });
     return res;
@@ -217,6 +215,7 @@ const findUserQuery = async ({ email = null, username = null }) => {
           username: username,
           email: email,
         },
+        status: 'Active'
       },
     });
 
@@ -244,6 +243,21 @@ const getStoreQuery = async (cityId) => {
   }
 };
 
+const resetPasswordQuery = async (userId, newPassword) => {
+  try {
+    const res = await User.update({
+      password: newPassword
+    }, {
+      where: {
+        id: userId
+      }
+    })
+    return res
+  } catch (err) {
+    throw err
+  }
+}
+
 module.exports = {
   getUserQuery,
   updateUserQuery,
@@ -252,5 +266,6 @@ module.exports = {
   findUserQuery,
   getStoreQuery,
   getUserRegisterQuery,
-  getUserLoginQuery
+  getUserLoginQuery,
+  resetPasswordQuery
 };

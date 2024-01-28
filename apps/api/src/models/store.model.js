@@ -30,6 +30,14 @@ export const init = (sequelize) => {
         type: DataTypes.STRING(255),
         allowNull: false,
       },
+      storeAddress: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+      },
+      status: {
+        type: DataTypes.STRING(255),
+        allowNull: false,
+      },
     },
     {
       sequelize,

@@ -3,28 +3,27 @@ import { Center, Flex, Text, Button, Image } from '@chakra-ui/react';
 import { FormRegister } from './formRegister';
 import { FaGoogle, FaFacebook, FaTwitter } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import LogoGroceria from '../../assets/Groceria-no-Bg.png';
+import LogoGroceria from '../../../assets/Groceria-no-Bg.png';
 import {
   signUpWithFeacebook,
   signUpWithGoogle,
   signUpWithTwitter,
-} from '../../config/firebase-config';
+} from '../../../config/firebase-config';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import { ResizeButton } from '../../components/ResizeButton';
-import { useWebSize } from '../../provider.websize';
+import { ResizeButton } from '../../../components/ResizeButton';
+import { useWebSize } from '../../../provider.websize';
 
 export const Register = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { size, handleWebSize } = useWebSize();
+  const { size } = useWebSize();
 
   const onRegisterWithGoogle = async () => {
     try {
       const result = await signUpWithGoogle(dispatch);
-      console.log(result.user);
       await axios.post('http://localhost:8000/api/auth/registersocial', {
         username: result.user.displayName,
         email: result.user.email,
@@ -44,7 +43,6 @@ export const Register = () => {
   const onRegisterWithFacebook = async () => {
     try {
       const result = await signUpWithFeacebook(dispatch);
-      console.log(result.user);
       await axios.post('http://localhost:8000/api/auth/registersocial', {
         username: result.user.displayName,
         email: result.user.email,
@@ -64,7 +62,6 @@ export const Register = () => {
   const onRegisterWithTwitter = async () => {
     try {
       const result = await signUpWithTwitter(dispatch);
-      console.log(result.user);
       await axios.post('http://localhost:8000/api/auth/registersocial', {
         username: result.user.displayName,
         email: result.user.email,
@@ -103,7 +100,7 @@ export const Register = () => {
       <Flex
         position={'relative'}
         // top={{ base: '20px', lg: '-30px' }}
-        px={'20px'}
+        px={'30px'}
         h={'10vh'}
         justify={'space-between'}
         align={'center'}
@@ -112,8 +109,6 @@ export const Register = () => {
           <Image src={LogoGroceria} h={'30px'} />
         </Link>
         <ResizeButton
-          webSize={size}
-          handleWebSize={handleWebSize}
           color={'black'}
         />
       </Flex>
@@ -122,7 +117,7 @@ export const Register = () => {
         <Flex
           w={size == '500px' ? { base: '100vw', md: '500px' } : '50%'}
           h={'full'}
-          p={'20px'}
+          p={'20px 30px'}
           direction={'column'}
           transition="width 0.3s ease"
           // mt={{ base: '-20px', lg: '-30px' }}

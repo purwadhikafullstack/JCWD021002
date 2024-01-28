@@ -40,16 +40,12 @@ export const EditProfile = () => {
       formData.append('fullname', fullname);
       formData.append('avatar', selectedImage)
 
-      // for (let pair of formData.entries()) {
-      //   console.log("form",pair[0] + ', ' + pair[1]);
-      // }
       await axios.patch(`${import.meta.env.VITE_API_URL}/auth/update-profile/${user?.id}`, formData)
 
       dispatch(keepLogin())
       toast.success('Update data success');
     } catch (err) {
       toast.error(err.response?.data);
-      console.log('Error in editing profile', err);
     }
   };
 
@@ -70,7 +66,6 @@ export const EditProfile = () => {
 
     if (storedValues) {
       const parsedValues = JSON.parse(storedValues);
-      console.log('parse', parsedValues);
       formik.setValues(parsedValues);
     }
   }, []);

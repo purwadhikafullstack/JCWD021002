@@ -3,6 +3,7 @@ import Img1 from '../../assets/LP_IMAGEBLOCK_08012024054633_vubo2.jpg';
 import Img2 from '../../assets/LP_IMAGEBLOCK_08012024055039_A56S3.jpg';
 import Img3 from '../../assets/LP_IMAGEBLOCK_05012024092930_Msyhh.jpg';
 import Img4 from '../../assets/LP_IMAGEBLOCK_05012024092742_w6fxV.jpg';
+import { useWebSize } from '../../provider.websize';
 
 export const Collections = () => {
   const collection = [
@@ -12,8 +13,10 @@ export const Collections = () => {
     { img: Img4, link: '#' },
   ];
 
+  const { size } = useWebSize();
+
   return (
-    <Flex direction={'column'}>
+    <Flex direction={'column'} p={size == '500px' ? '0 20px' : '30px 200px'}>
       <Grid templateColumns={'repeat(2, 1fr)'} gap={5}>
         {collection?.map((item, index) => {
           return (

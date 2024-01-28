@@ -14,8 +14,6 @@ import Discount from '../models/discount.model';
 import DiscountDistribution from '../models/discountDistribution.model';
 import DiscountType from '../models/discountType.model';
 
-
-
 const getPaginatedAndFilteredProductsQuery = async (
   page,
   pageSize,

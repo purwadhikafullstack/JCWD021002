@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
@@ -20,25 +21,17 @@ import {
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
-  useDisclosure,
 } from '@chakra-ui/react';
 
-export const EditAddress = () => {
-  const [address, setAddress] = useState();
+export const EditAddress = ({ selectedItem, setUpdate, isOpen, onClose }) => {
   const userId = useSelector((state) => state.AuthReducer?.user?.id);
-  const [update, setUpdate] = useState(false);
   const [province, setProvince] = useState();
   const [cities, setCities] = useState();
   const [provinceId, setProvinceId] = useState();
   const [cityId, setCityId] = useState();
   const [isChecked, setIsChecked] = useState(false);
-  const [selectedItem, setSelectedItem] = useState();
   const { size } = useWebSize();
-  const { isOpen, onOpen, onClose } = useDisclosure({
-    onClose: () => {
-      formik.resetForm();
-    },
-  });
+
   const btnRef = React.useRef();
 
   const handleProvinceChange = (event) => {
@@ -156,82 +149,30 @@ export const EditAddress = () => {
     }
   }, [selectedItem]);
 
-  const getAddress = async (userId) => {
-    try {
-      const res = await axios.get(
-        `http://localhost:8000/api/address/getAddress/${userId}`,
-      );
-      setAddress(res?.data?.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  // const getAddress = async (userId) => {
+  //   try {
+  //     const res = await axios.get(
+  //       `http://localhost:8000/api/address/getAddress/${userId}`,
+  //     );
+  //     setAddress(res?.data?.data);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
 
-  useEffect(() => {
-    getAddress(userId);
-  }, [update, userId]);
+  // useEffect(() => {
+  //   getAddress(userId);
+  // }, [update, userId]);
 
-  const handleClick = (item) => {
-    setSelectedItem(item);
-    onOpen();
-  };
+  // const handleClick = (item) => {
+  //   setSelectedItem(item);
+  //   onOpen();
+  // };
 
   return (
     <Flex>
-      <Flex w={'full'} direction={'column'} gap={5} px={'30px'} mt={'80px'}>
-        {address?.map((item, index) => {
-          return (
-            <Flex
-              key={index}
-              bgColor={'white'}
-              boxShadow={'base'}
-              p={'15px'}
-              borderRadius={'10px'}
-              direction={'column'}
-              gap={2}
-              cursor={'pointer'}
-              onClick={() => handleClick(item)}
-            >
-              <Flex gap={2}>
-                <Text fontWeight={600}>{item?.recipientNames}</Text>
-                <Text
-                  fontSize={'12px'}
-                  fontWeight={300}
-                  display={'flex'}
-                  alignItems={'center'}
-                >
-                  |
-                </Text>
-                <Text>{item?.recipientsMobileNumber}</Text>
-              </Flex>
-              <Flex direction={'column'} gap={1}>
-                <Text fontSize={'14px'}>{item?.addressLine}</Text>
-                <Text>{`${item?.City?.city.toUpperCase()}, ${item?.City?.Province?.province.toUpperCase()}`}</Text>
-              </Flex>
-              {item.isMain == 1 ? (
-                <Flex>
-                  <Text
-                    border={'1px solid'}
-                    borderColor={'colors.quaternary'}
-                    color={'colors.quaternary'}
-                    px={'5px'}
-                    fontSize={'12px'}
-                    fontWeight={600}
-                  >
-                    Utama
-                  </Text>
-                </Flex>
-              ) : (
-                <></>
-              )}
-            </Flex>
-          );
-        })}
-      </Flex>
-
       <Drawer
         isOpen={isOpen}
-
         placement={size == '500px' ? 'bottom' : 'right'}
         onClose={onClose}
         finalFocusRef={btnRef}
@@ -239,7 +180,7 @@ export const EditAddress = () => {
         <DrawerOverlay />
         <DrawerContent
           sx={size == '500px' ? { w: size } : { maxW: '35vw' }}
-          borderRadius={size == '500px' ? '20px 20px 0 0' : 0}
+          borderRadius={size == '500px' ? '10px 10px 0 0' : 0}
           maxH={size == '500px' ? '90vh' : 'full'}
           m={'auto'}
           p={'30px'}

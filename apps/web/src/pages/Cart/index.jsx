@@ -47,8 +47,6 @@ export const Cart = ({ handleWebSize, size }) => {
       >
         <Image src={LogoGroceria} h={'30px'} />
         <ResizeButton
-          webSize={size}
-          handleWebSize={handleWebSize}
           color={'black'}
         />
       </Flex>

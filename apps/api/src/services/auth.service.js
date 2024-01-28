@@ -2,8 +2,9 @@ const {
   // getUserQuery,
   getUserRegisterQuery,
   getUserLoginQuery,
+  findUserQuery
 } = require('../queries/user.query');
-const { registerQuery, setPasswordQuery, keepLoginQuery, changePasswordQuery, updateProfileQuery } = require('../queries/auth.query');
+const { registerQuery, setPasswordQuery, keepLoginQuery, changePasswordQuery, updateProfileQuery, verifyQuery, resetPasswordQuery, checkTokenQuery } = require('../queries/auth.query');
 const short = require('short-uuid');
 import bcrypt from 'bcrypt';
 import transporter from '../utils/transporter';
@@ -50,8 +51,7 @@ export const registerService = async (username, email, password, fullname) => {
   try {
     // Check username and email
     const check = await getUserRegisterQuery({ username, email });
-    // console.log(check.verification_status)
-    if (check?.verification_status == "Unverified") throw new Error('Email or username has already existed');
+    if (check?.verification_status == "Unverified") throw new Error('Email or username is not verified');
     if (check) throw new Error('Email or username has already existed');
 
     // hash Password
@@ -81,12 +81,15 @@ export const registerService = async (username, email, password, fullname) => {
       throw new Error('JWT_SECRET_KEY is not set in the environment');
     }
 
-    const resetToken = jwt.sign({ email }, secretKey);
-    const setPasswordLink = `${process.env.WEB_BASE_URL}/set-password?resetToken=${resetToken}`;
+    const resetToken = jwt.sign({ email }, secretKey, { expiresIn: '1hr' });
+    const setPasswordLink = `${process.env.WEB_BASE_URL}/password?resetToken=${resetToken}`;
 
     const template = 'emailVerification.html'
 
     sentMail(email, template, setPasswordLink)
+
+    const googleLogin = 0
+    const verification_status = 'Unverified'
 
     const res = await registerQuery(
       username,
@@ -95,6 +98,8 @@ export const registerService = async (username, email, password, fullname) => {
       fullname,
       referralCode,
       resetToken,
+      verification_status,
+      googleLogin
     );
 
     return res;
@@ -132,6 +137,7 @@ export const loginService = async (emailOrUsername, password) => {
     const token = jwt.sign(payload, secretKey, {
       expiresIn: '1hr',
     });
+
     return {
       user: {
         id: check.id,
@@ -141,6 +147,7 @@ export const loginService = async (emailOrUsername, password) => {
         avatar: check.avatar,
         role_idrole: check.role_idrole,
         referralCode: check.referralCode,
+        googleLogin: check.googleLogin,
       },
       token,
     };
@@ -210,12 +217,25 @@ export const registerWithSocialService = async (username, email, fullname) => {
 
     const password = null
 
+    const secretKey = process.env.JWT_SECRET_KEY;
+    if (!secretKey) {
+      throw new Error('JWT_SECRET_KEY is not set in the environment');
+    }
+
+    const resetToken = jwt.sign({ email }, secretKey, { expiresIn: '1hr' });
+
+    const googleLogin = 1
+    const verification_status = 'Verified'
+
     const res = await registerQuery(
       username,
       email,
       password,
       fullname,
       referralCode,
+      resetToken,
+      verification_status,
+      googleLogin
     );
 
     return res
@@ -226,23 +246,31 @@ export const registerWithSocialService = async (username, email, fullname) => {
 
 export const setPasswordService = async (resetToken, password) => {
   try {
+    const check = await checkTokenQuery(resetToken)
+
+    if (!check) throw new Error('Link verifikasi tidak valid')
+
     const secretKey = process.env.JWT_SECRET_KEY;
     if (!secretKey)
       throw new Error('JWT_SECRET_KEY is not set in the environment');
 
     const decoded = jwt.verify(resetToken, secretKey);
-    console.log(decoded);
     if (typeof decoded == 'object' && 'email' in decoded) {
       const salt = await bcrypt.genSalt(10);
       const hashPassword = await bcrypt.hash(password, salt);
-      console.log(decoded.email)
       await setPasswordQuery(decoded.email, hashPassword);
     } else {
       throw new Error('Invalid Token');
     }
   } catch (err) {
-    console.log(err)
-    throw err;
+    if (err.name === 'TokenExpiredError') {
+      // Token telah kedaluwarsa, lakukan tindakan sesuai kebutuhan
+      throw new Error('Token has expired');
+    } else {
+      // Kesalahan lain selain TokenExpiredError
+      console.log(err)
+      throw err;
+    }
   }
 };
 
@@ -272,7 +300,6 @@ export const changePasswordService = async (id, password, newPassword) => {
 
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(newPassword, salt)
-    console.log("has", typeof check.id)
 
     const res = await changePasswordQuery(check.id, hashPassword)
 
@@ -285,11 +312,9 @@ export const changePasswordService = async (id, password, newPassword) => {
 export const changeEmailVerifyService = async (id, password) => {
   try {
     const check = await getUserRegisterQuery({ id })
-    console.log("check service", check)
 
     const checkPassword = await bcrypt.compare(password, check.password)
     if (!checkPassword) throw new Error("Password anda salah")
-    console.log(checkPassword)
 
     return "Terverifikasi"
 
@@ -301,17 +326,76 @@ export const changeEmailVerifyService = async (id, password) => {
 export const changeEmailService = async (id, newEmail) => {
   try {
     const check = await getUserRegisterQuery({ id })
-    const setPasswordLink = `${process.env.WEB_BASE_URL}/set-password?resetToken=${check.resetToken}`;
+    const setPasswordLink = `${process.env.WEB_BASE_URL}/password?resetToken=${check.resetToken}`;
     sentMail(newEmail, "changeEmailVerification.html", setPasswordLink)
   } catch (err) {
     throw err
   }
 }
+
 export const updateProfileService = async (id, username, fullname, avatar) => {
   try {
     const res = await updateProfileQuery({ id, username, fullname, avatar })
 
     return res
+  } catch (err) {
+    throw err
+  }
+}
+
+export const verifyService = async (email, isNew) => {
+  try {
+    const check = await findUserQuery({ email })
+
+    if (!check) throw new Error('Email yang anda masukkan salah');
+    if (check?.dataValues?.googleLogin == 1) throw new Error('Anda tidak bisa mengubah kata sandi google')
+
+    const secretKey = process.env.JWT_SECRET_KEY;
+    if (!secretKey) {
+      throw new Error('JWT_SECRET_KEY is not set in the environment');
+    }
+
+    const resetToken = jwt.sign({ email }, secretKey, { expiresIn: '1hr' });
+    let setPasswordLink;
+    if (isNew == true) {
+      setPasswordLink = `${process.env.WEB_BASE_URL}/password/new?resetToken=${resetToken}`;
+    } else if (isNew == false) {
+      setPasswordLink = `${process.env.WEB_BASE_URL}/password?resetToken=${resetToken}`;
+    }
+
+    const template = 'reset-password.html'
+
+    sentMail(email, template, setPasswordLink)
+
+
+    const result = await verifyQuery(check?.id, resetToken)
+
+    return result
+  } catch (err) {
+    throw err
+  }
+}
+
+export const reVerifyService = async (email, isNew) => {
+  try {
+    console.log(email, isNew)
+    const secretKey = process.env.JWT_SECRET_KEY;
+    if (!secretKey) {
+      throw new Error('JWT_SECRET_KEY is not set in the environment');
+    }
+
+    const resetToken = jwt.sign({ email }, secretKey, { expiresIn: '1hr' });
+    let setPasswordLink;
+    if (isNew == true) {
+      setPasswordLink = `${process.env.WEB_BASE_URL}/password/new?resetToken=${resetToken}`;
+    } else if (isNew == false) {
+      setPasswordLink = `${process.env.WEB_BASE_URL}/password?resetToken=${resetToken}`;
+    }
+
+    const template = 'emailVerification.html'
+
+    sentMail(email, template, setPasswordLink)
+
   } catch (err) {
     throw err
   }
