@@ -1,9 +1,11 @@
-const { getSalesByDateQuery, getProductsByTransactionQuery, createSalesReportQuery } = require('../queries/reportSales.query');
+const { getSalesByDateQuery, getProductsByTransactionQuery, createSalesReportQuery, getTop5ProductsSoldQuery, } = require('../queries/reportSales.query');
 
 const getSalesByDateService = async (startDate, endDate, storeId, categoryId, productId) => {
   try {
     const res = await getSalesByDateQuery(startDate, endDate, storeId, categoryId, productId);
-    return res;
+    const res1 = await getTop5ProductsSoldQuery(startDate, endDate, storeId, categoryId, productId);
+
+    return [res, res1];
   } catch (err) {
     throw new Error('Error in ReportService: ' + err.message);
   }

@@ -1,36 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import {
-  Box,
-  Button,
-  HStack,
-  Text,
-  Spacer,
-  VStack,
-  FormLabel,
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalHeader,
-  ModalContent,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-  Input,
-  Flex,
-  Select,
-} from '@chakra-ui/react';
-import {
-  IconAdjustmentsHorizontal,
-  IconSortAscending2,
-  IconSortDescending2,
-} from '@tabler/icons-react';
+import { Box, Button, HStack, Text, Spacer, VStack, FormLabel, useDisclosure, Modal, ModalOverlay, ModalHeader, ModalContent, ModalCloseButton, ModalBody, ModalFooter, Input, Flex, Select, } from '@chakra-ui/react';
+import { IconAdjustmentsHorizontal, IconSortAscending2, IconSortDescending2, } from '@tabler/icons-react';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { TableLists } from './TableLists';
 import { useWebSize } from '../../provider.websize';
 import { useSelector } from 'react-redux';
 import { PaginationControls } from '../../components/PaginationControls/PaginationControls';
 import { exportToExcel } from './exportToExcel';
+import { fetchStore } from './service/serviceStore';
+import { fetchCategory } from './service/serviceCategory';
+import { fetchReportSales } from './service/serviceSale';
+import { fetchDataProduct } from './service/serviceProduct';
 
 export const ReportStockV2 = () => {
   const {size, handleWebSize } = useWebSize();
@@ -41,149 +22,61 @@ export const ReportStockV2 = () => {
   const [pageSize, setPageSize] = useState();
   const [totalPage, setTotalPage] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const navigate = useNavigate();
   const [selectedPage, setSelectedPage] = useState(page);
-  const [roleId, setRoleId] = useState('');
-  const [username, setUsername] = useState();
-  const [searchParams, setSearchParams] = useSearchParams({ page, pageSize });
+  const [storeId, setStoreId] = useState('');
+  const [productId, setProductId] = useState('');
+  const [productName, setProductName] = useState('');
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
+  const [searchParams, setSearchParams] = useSearchParams({ page, pageSize, storeId, productId, startDate, endDate });
   const [categoryId, setCategoryId] = useState('');
   const [dataCategory, setDataCategory] = useState([]);
   const [dataProduct, setDataProduct] = useState([]);
   const [dataStore, setDataStore] = useState([]);
-  const [storeId, setStoreId] = useState('');
-  const [productId, setProductId] = useState('');
-  const [productName, setProductName] = useState('');
 
-  const fetchStore = async () => {
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}user/store-lists`
-      );
-
-      setDataStore(response?.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   useEffect(() => {
-    fetchStore();
+    fetchCategory(setDataCategory);
+    fetchStore(setDataStore);
     if (user?.store_idstore) {
       setStoreId(user?.store_idstore);
     }
   }, []);
 
-
-  const handleDeleteOrder = (user) => {
-    setSelectedUser(user);
-    setDeleteModalOpen(true);
-  };
-
-  const confirmDeleteUser = async () => {
-    try {
-      const result = await axios.patch(
-        `${import.meta.env.VITE_API_URL}user/update-user`,
-        {
-          id: selectedUser?.id,
-          status: 'Deactive',
-        },
-      );
-
-      if (result) {
-        alert('User deactive successful');
-        setDeleteModalOpen(false);
-        fetchReportSales();
-      }
-    } catch (err) {
-      alert('User used in another data');
-    }
-  };
-
-  const fetchCategory = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:8000/api/category/category-lists`
-      );
-
-      setDataCategory(response?.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  console.log(dataCategory);
-
   useEffect(() => {
-    fetchCategory();
-  }, []);
-
-  const fetchDataProduct = async () => {
-    try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/products/product-lists-v2?categoryId=${categoryId}&productName=${productName}`
-        );
-        setDataProduct(response?.data);
-  } catch (err) {
-      console.log(err);
-  }
-  }
-
-
-  useEffect(() => {
-      fetchDataProduct()
+      fetchDataProduct( categoryId, productName, setDataProduct )
   }, [productName, categoryId]);
 
-  const fetchReportSales = async () => {
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/report/stock-report?startDate=${startDate}&endDate=${endDate}&page=${page}&pageSize=${pageSize}&productId=${productId}&sortOrder=${sortOrder}&storeId=${storeId}`,
-      );
-
-      console.log('API Request URL:', response.config.url);
-      setData(response?.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   useEffect(() => {
-    setSearchParams({ page, pageSize, username, roleId });
-  }, [page, pageSize, username, roleId, ]);
+    setSearchParams({ page, pageSize, storeId, productId, startDate, endDate, });
+  }, [page, pageSize, storeId, productId ]);
 
   useEffect(() => {
     const pageFromUrl = parseInt(searchParams.get('page')) || 1;
     const pageSizeFromUrl = parseInt(searchParams.get('pageSize')) || 10;
-    const usernameFromUrl = searchParams.get('username') || '';
-    const roleIdFromUrl = searchParams.get('roleId') || '';
+    const storeIdFromUrl = searchParams.get('storeId') || '';
+    const productIdFromUrl = searchParams.get('productId') || '';
+    const startDateFromUrl = searchParams.get('startDate') || '';
+    const endDateFromUrl = searchParams.get('endDate') || '';
     setPage(pageFromUrl);
     setPageSize(pageSizeFromUrl);
-    setUsername(usernameFromUrl);
-    setRoleId(roleIdFromUrl);
+    setStoreId(storeIdFromUrl);
+    setProductId(productIdFromUrl);
+    setStartDate(startDateFromUrl);
+    setEndDate(endDateFromUrl);
     setSelectedPage(pageFromUrl);
-  }, []);
+  }, []); 
 
   useEffect(() => {
-    fetchReportSales();
+    fetchReportSales( startDate, endDate, page, pageSize, productId, sortOrder, storeId, setData );
   }, [page, pageSize, startDate, endDate, sortOrder, categoryId, storeId, productId]);
-
-
 
   return (
     <Box  overflowX='hidden'>
       <Box  height='fit-content' backgroundColor='#fbfaf9' >
-      <Box >
-        <Box>
-                <Flex dir='row' gap='10px'>
-                
-          <Box>
-          <Box>
+      <Box><Box><Flex dir='row' gap='10px'><Box>
     <Button leftIcon={<IconAdjustmentsHorizontal />} borderRadius='full' border='solid 1px black' onClick={onOpen}>Filter</Button>
-
-                </Box>
     <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -193,13 +86,13 @@ export const ReportStockV2 = () => {
           <FormLabel>Sort Order</FormLabel>
             <HStack><Button leftIcon={<IconSortAscending2 />} border='solid black 1px' borderRadius='full' onClick={() => setSortOrder("asc")} isDisabled={sortOrder == "asc" ? true : false}>Ascending</Button><Button leftIcon={<IconSortDescending2 />} border='solid black 1px' borderRadius='full' onClick={() => setSortOrder("desc")} isDisabled={sortOrder == "desc" ? true : false}>Descending</Button></HStack>
             <FormLabel>Category</FormLabel>
-            <Select placeholder="Select option" value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
+            <Select placeholder="Select option" border='solid gray 1px' borderRadius='full' value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
             {dataCategory?.categories?.map((category) => ( 
               <option key={category?.id} value={category?.id}>{category?.category}</option>
             ))}
             </Select>
             <FormLabel>Store</FormLabel>
-            <Select placeholder="Select option" isDisabled={ user?.store_idstore ? true : false } value={storeId} onChange={(e) => setStoreId(e.target.value)}>
+            <Select mb='10px' border='solid gray 1px' borderRadius='full' placeholder="Select option" isDisabled={ user?.store_idstore ? true : false } value={storeId} onChange={(e) => setStoreId(e.target.value)}>
             {dataStore?.map((item) => ( 
               <option key={item?.id} value={item?.id}>{item?.name}</option>
             ))}
@@ -214,7 +107,6 @@ export const ReportStockV2 = () => {
             ))}
             </Select>
           </ModalBody>
-
           <ModalFooter>
             <Button colorScheme='blue' mr={3} onClick={onClose}>
               Close
@@ -229,49 +121,9 @@ export const ReportStockV2 = () => {
         <Text>-</Text>
       <Input value={endDate} onChange={(e) => setEndDate(e.target.value)} width='fit-content' type='date' />
             <Spacer />
-            <Button
-  borderRadius="full"
-  backgroundColor="#286043"
-  textColor="white"
-  border="solid 1px #286043"
-  onClick={() => { exportToExcel(data, startDate, endDate); }}
->
-  Export to Excel
-</Button>
+            <Button borderRadius="full" backgroundColor="#286043" textColor="white" border="solid 1px #286043" onClick={() => { exportToExcel(data, startDate, endDate); }}>Export to Excel</Button>
             </Flex>
-          <TableLists data={data} handleDeleteOrder={handleDeleteOrder} navigate={navigate} />
-            
-            {deleteModalOpen && (
-              <Modal
-                isOpen={deleteModalOpen}
-                onClose={() => setDeleteModalOpen(false)}
-              >
-                <ModalOverlay />
-                <ModalContent>
-                  <ModalHeader>Delete User</ModalHeader>
-                  <ModalCloseButton />
-                  <ModalBody>
-                    <Text>
-                      Are you sure you want to delete the User "
-                      {selectedUser?.username}"?
-                    </Text>
-                    <VStack></VStack>
-                  </ModalBody>
-                  <ModalFooter>
-                    <Button
-                      colorScheme="blue"
-                      mr={3}
-                      onClick={() => setDeleteModalOpen(false)}
-                    >
-                      Cancel
-                    </Button>
-                    <Button colorScheme="red" onClick={confirmDeleteUser}>
-                      Delete
-                    </Button>
-                  </ModalFooter>
-                </ModalContent>
-              </Modal>
-            )}
+          <TableLists data={data} navigate={navigate} />
             <PaginationControls 
               page= {page}
               pageSize={pageSize}

@@ -40,12 +40,13 @@ const getPaginatedAndFilteredCategoryService = async (page, pageSize, sortField,
 
   const editCategoryService = async (category_id, categoryNew, imageUrl) => {
     try {
-      const check = await getCategoryQuery(categoryNew);
+      if(categoryNew != undefined) {
+        const check = await getCategoryQuery(categoryNew);
         if (check[0]?.category == categoryNew) {
             return ('Category name already added')
         }
+      }
 
-        console.log("ini di service", category_id, categoryNew, imageUrl);
       const res = await editCategoryQuery(category_id, categoryNew, imageUrl)
       return res;
     } catch (err) {

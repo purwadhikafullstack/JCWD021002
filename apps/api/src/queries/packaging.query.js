@@ -25,10 +25,10 @@ const getPaginatedAndFilteredPackagingQuery = async (
       const packaging = await Packaging.findAll({
         offset,
         limit: pageSize ? parseInt(pageSize) : undefined,
-      //   order: [
-      //       sortField,
-      //       sortOrder,
-      //   ],
+        order: [
+            [sortField,
+            sortOrder,]
+        ],
         where: whereCondition,
       });
       

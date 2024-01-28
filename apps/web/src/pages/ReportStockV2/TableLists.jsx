@@ -27,7 +27,7 @@ import { useWebSize } from '../../provider.websize';
 
 
 
-export const TableLists = ({ data, handleDeleteOrder, navigate }) => {
+export const TableLists = ({ data, navigate }) => {
     const { size, handleWebSize } = useWebSize();
   
     return (

@@ -3,6 +3,7 @@ const {
      getPaginatedAndFilteredDiscountService,
      updateDiscountService,
      getDetailDiscountService,
+     getPaginatedAndFilteredVoucherService,
 } = require('../services/discount.service')
 
         const getPaginatedAndFilteredDiscountController = async (req, res) => {
@@ -43,6 +44,57 @@ const {
                 productName,
                 status,
                 storeId,
+                    );
+        
+        
+            return res.status(200).json(result);
+            } catch (err) {
+                console.log(err);
+            console.error('Error in getPaginatedAndFilteredDiscountController:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+            }
+        };
+
+        const getPaginatedAndFilteredVoucherController = async (req, res) => {
+            try {
+            const page = req.query.page || 1;
+            const pageSize = parseInt(req.query.pageSize) || null;
+            const sortField = req.query.sortField || 'name';
+            const sortOrder = req.query.sortOrder || 'asc';
+            const typeId = req.query.typeId || null;
+            const discountName = req.query.discountName || null;
+            const usageRestrictionId = req.query.usageRestrictionId || null;
+            const productName = req.query.productName || null;
+            const status = req.query.status || null;
+            const storeId = req.query.storeId || null;
+            const productStockId = req.query.productStockId || null;
+
+            console.log(
+                'controller',
+                    page,
+                    pageSize,
+                    sortField,
+                    sortOrder,
+                    discountName,
+                    typeId,
+                    usageRestrictionId,
+                    productName,
+                    status,
+                    storeId,
+              );
+        
+            const result = await getPaginatedAndFilteredVoucherService(
+                page,
+                pageSize,
+                sortField,
+                sortOrder,
+                discountName,
+                typeId,
+                usageRestrictionId,
+                productName,
+                status,
+                storeId,
+                productStockId
                     );
         
         
@@ -172,4 +224,5 @@ const {
         getPaginatedAndFilteredDiscountController,
         updatedDiscountController,
         getDetailDiscountController,
+        getPaginatedAndFilteredVoucherController,
     }

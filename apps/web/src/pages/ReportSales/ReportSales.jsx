@@ -26,13 +26,9 @@ import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import SideBar from '../../components/SideBar/SideBar';
 import { TableLists } from './TableLists';
 import { useWebSize } from '../../provider.websize';
-import * as XLSX from 'xlsx';
+import { exportToExcel } from './exportToExcel';
 import { useSelector } from 'react-redux';
 import { PaginationControls } from '../../components/PaginationControls/PaginationControls';
-
-
-
-const MAX_VISIBLE_PAGES = 3;
 
 const ReportSales = () => {
   const {size, handleWebSize } = useWebSize();
@@ -178,38 +174,6 @@ const ReportSales = () => {
     fetchReportSales();
   }, [page, pageSize, startDate, endDate, categoryId, storeId, productId]);
 
-  const exportToExcel = () => {
-    const exportData = data?.data || [];
-  
-    // Map the data to match the table structure
-    const formattedData = exportData.map((orderDetail) => ({
-      'Code Transaction': orderDetail.Order?.codeTransaction,
-      'Quantity': orderDetail.quantity,
-      'Subtotal': orderDetail.subtotal,
-      'Product Name': orderDetail.ProductStock?.Product?.name,
-      'Order Date': new Date(orderDetail.Order?.orderDate).toLocaleString('id-ID', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        timeZone: 'Asia/Jakarta',
-      }),
-      'Status': orderDetail.Order?.status,
-    }));
-  
-    // Create a worksheet
-    const ws = XLSX.utils.json_to_sheet(formattedData);
-  
-    // Create a workbook
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'SalesReport');
-  
-    // Save the file
-    XLSX.writeFile(wb, 'SalesReport.xlsx');
-  };
-  
-  console.log("ini data store", dataStore);
 
   return (
     <Box w={{ base: '100vw', md: size }} overflowX='hidden'>
@@ -272,7 +236,7 @@ const ReportSales = () => {
   backgroundColor="#286043"
   textColor="white"
   border="solid 1px #286043"
-  onClick={exportToExcel}
+  onClick={() => exportToExcel(data, startDate, endDate)}
 >
   Export to Excel
 </Button>

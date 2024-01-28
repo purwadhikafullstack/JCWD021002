@@ -12,6 +12,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useWebSize } from '../../provider.websize';
 import { PaginationControls } from '../../components/PaginationControls/PaginationControls';
 import { CardProductStock } from './CardProductStock';
+import { useSelector } from 'react-redux';
 
 function ProductSearch() {
   const {size, handleWebSize } = useWebSize();
@@ -24,17 +25,28 @@ function ProductSearch() {
   const [pageSize, setPageSize] = useState()
   const [categoryId, setCategoryId] = useState();
   const [productName, setProductName] = useState()
-  const [cityId, setCityId] = useState("");
   const [selectedPage, setSelectedPage] = useState(page);
   const [searchParams, setSearchParams] = useSearchParams({ page, pageSize });
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [storeId, setStoreId] = useState();
+  const cityId = useSelector((state) => state.AuthReducer.location?.id);
+
+  const getStoreList = async (cityId) => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/user/store-lists?cityId=${cityId}`,
+      );
+      setStoreId(res?.data[0].id);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const fetchData = async () => {
     try {
       if ((productName.trim() !== '') || (categoryId !== undefined && String(categoryId).trim() !== '')) {
         const response = await axios.get(
       
-      `${import.meta.env.VITE_API_URL}/products/product-lists?page=${page}&pageSize=${pageSize}&sortField=${sortField}&sortOrder=${sortOrder}&categoryId=${categoryId}&productName=${productName}&storeId=1&cityId=${cityId}&statusProduct=1&statusStock=1`
+      `${import.meta.env.VITE_API_URL}/products/product-lists?page=${page}&pageSize=${pageSize}&sortField=${sortField}&sortOrder=${sortOrder}&categoryId=${categoryId}&productName=${productName}&storeId=${storeId}&statusProduct=1&statusStock=1`
         );
         setData(response?.data);
       }
@@ -63,8 +75,9 @@ function ProductSearch() {
   }, []);
 
   useEffect(() => {
+    getStoreList(cityId);
     fetchData();
-  }, [page, pageSize, sortField, sortOrder, categoryId, productName]);
+  }, [page, pageSize, sortField, sortOrder, categoryId, productName, storeId, cityId, ]);
 
   const fetchCategory = async () => {
     try {

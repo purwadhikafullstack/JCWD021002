@@ -355,7 +355,7 @@ function formatPriceToIDR(price) {
     </Flex>) : (<></>)}
     <Box mt='10px'>
     <Text pl='20px' pb='10px' fontWeight='bold' >Produk kategori serupa</Text>
-    <Box w='100%' pt='5px' pb='5px' overflowX='auto'>
+    <Box w='100%' pt='5px' pb='5px' style={{ msOverflowStyle: 'none' }} css={{ scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none', }, }} overflowX='auto'>
      <ProductRelated store={data?.result?.Product?.ProductCategories[0]?.id} category={data?.result?.Product?.ProductCategories[0]?.id} />
         </Box>
         </Box>

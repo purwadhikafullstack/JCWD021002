@@ -31,10 +31,6 @@ import { TableLists } from './TableLists';
 import { useWebSize } from '../../provider.websize';
 import { PaginationControls } from './PaginationControls';
 
-
-
-const MAX_VISIBLE_PAGES = 3;
-
 const UserLists = () => {
   const {size, handleWebSize } = useWebSize();
   const [dataUser, setDataUser] = useState([]);
@@ -47,7 +43,7 @@ const UserLists = () => {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const navigate = useNavigate();
   const [selectedPage, setSelectedPage] = useState(page);
-  const [roleId, setRoleId] = useState('');
+  const [roleId, setRoleId] = useState('2');
   const [username, setUsername] = useState();
   const [searchParams, setSearchParams] = useSearchParams({ page, pageSize });
   const [viewType, setViewType] = useState('table'); // 'grid' or 'table'
@@ -150,7 +146,6 @@ const UserLists = () => {
               onChange={(e) => setRoleId(e.target.value)}
             >
               <option value="">All Roles</option>
-              <option value="1">Super Admin</option>
               <option value="2">Admin Store</option>
               <option value="3">User</option>
             </Select>

@@ -1,40 +1,21 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
-// import { SidebarWithHeader } from '../../components/SideBar/SideBar';
 import { FiUpload } from "react-icons/fi";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {
-  Box, Button, HStack, Icon, Input, InputGroup, InputLeftAddon, InputLeftElement, Spacer, Text, Image, IconButton,
-  Card, CardBody, Stack, Heading, Divider, CardFooter, ButtonGroup, useDisclosure, Modal, ModalOverlay, ModalHeader,
-  ModalContent, ModalCloseButton, ModalBody, ModalFooter, VStack, Flex, FormLabel, Checkbox, Textarea, InputRightElement, Select
-} from "@chakra-ui/react";
-import {
-  IconPlus, IconArrowLeft, IconPhotoUp, IconX, IconArrowRight, IconEye, IconEyeOff
-} from '@tabler/icons-react';
+import { Box, Button, HStack, Input, InputGroup, Spacer, Text, Image, IconButton, VStack, Flex, FormLabel, InputRightElement, Select } from "@chakra-ui/react";
+import { IconArrowLeft, IconArrowRight, IconEye, IconEyeOff } from '@tabler/icons-react';
 import AvatarSVG from './icon-default-avatar.svg';
-import { ResizeButton } from '../../components/ResizeButton';
-import LogoGroceria from '../../assets/Groceria-no-Bg.png';
 import { useWebSize } from '../../provider.websize';
 import SideBar from '../../components/SideBar/SideBar';
 
-function formatPriceToIDR(price) {
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-  }).format(price);
-}
-
 const AddUser = () => {
   const {size, handleWebSize } = useWebSize();
-  const [data, setData] = useState([]);
   const [fieldImage, setFieldImage] = useState(null);
   const [selectedImage, setSelectedImage] = useState('');
-  const [selectedC, setSelectedC] = useState([]);
   const navigate = useNavigate();
   const [dataStore, setDataStore] = useState([]);
-
   const [fullname, setFullname] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -53,8 +34,6 @@ const AddUser = () => {
       console.log(err);
     }
   };
-
-      console.log("ini data store",dataStore);
 
   useEffect(() => {
     fetchStore();
@@ -98,8 +77,6 @@ const AddUser = () => {
     }
   };
 
-  console.log(fieldImage);
-
   const handleImageChange = (event) => {
     const selectedFile = event.currentTarget.files[0];
 
@@ -107,9 +84,7 @@ const AddUser = () => {
     const fileSizeInMB = selectedFile.size / (1024 * 1024); // Convert size to megabytes
 
     if (fileSizeInMB > 1) {
-      // Display toast message for image size greater than 1 MB
       toast.warning("Selected image size should be less than 1 MB");
-      return; // Don't proceed with further handling
     }
 
     setFieldImage(selectedFile);
@@ -120,12 +95,10 @@ const AddUser = () => {
 
   return (
     <>
-      {/* <SidebarWithHeader /> */}
       <Box w={{ base: '100vw', md: size }}>
           <SideBar size={size} handleWebSize={handleWebSize}/>
       <ToastContainer position="top-center" closeOnClick pauseOnFocusLoss draggable pauseOnHover theme="colored" />
       <Box w={{ base: '100vw', md: size }} overflowX='hidden' height='100vh' backgroundColor='#fbfaf9' p='20px'>
-      
       <Box pl={size == '500px' ? '0px' : '150px' } pr={size == '500px' ? '0px' : '20px'} pt='20px' pb='20px'>
         <HStack mb='10px'>
           <Button leftIcon={<IconArrowLeft />} borderRadius='full' backgroundColor='white' textColor='black' border='solid 1px black' onClick={() => navigate('/user-lists')}>Back</Button>
@@ -164,10 +137,7 @@ const AddUser = () => {
       </IconButton>
     </Box>
     </VStack>
-    
-
             </Box>
-
             <Flex columnGap='10px' mb='20px ' flexDir={size == '500px' ? 'column' : 'row'}>
               <Box width='100%'>
                 <Text fontSize='large' fontWeight='bold'>Name</Text>
@@ -202,7 +172,6 @@ const AddUser = () => {
                         borderRightRadius='full'
                         icon= {showPassword ? <IconEyeOff /> : <IconEye />}
                       />
-                        
                     </InputRightElement>
                 </InputGroup>
               </Box>
@@ -215,8 +184,6 @@ const AddUser = () => {
             </Select>
               </Box>
             </Flex>
-
-            
           </form>
         </Box>
         </Box>

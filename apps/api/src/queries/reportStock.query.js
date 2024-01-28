@@ -39,7 +39,12 @@ const getStockByDateQuery = async (startDate, endDate, productId, storeId, sortO
       whereConditions.store_idstore = storeId;
     }
 
-    if (productStockIds.length > 0) {
+    if(productId && productStockIds.length == 0) {
+      return {
+        data: [],
+        totalPages: 0,
+      };
+    } else if (productStockIds.length > 0) {
       whereConditions.productStock_idproductStock = { [Op.in]: productStockIds };
     }
 
@@ -154,7 +159,13 @@ const createStockReportQuery = async (
         whereConditions.store_idstore = storeId;
       }
   
-      if (productStockIds.length > 0) {
+      if(productId && productStockIds.length == 0) {
+        return {
+          total: 0,
+          data: [],
+          totalPages: 0,
+        };
+      } else if (productStockIds.length > 0) {
         whereConditions.productStock_idproductStock = { [Op.in]: productStockIds };
       }
   

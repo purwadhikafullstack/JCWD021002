@@ -4,6 +4,7 @@ import {
   getPaginatedAndFilteredDiscountController,
   getDetailDiscountController,
   updatedDiscountController,
+  getPaginatedAndFilteredVoucherController,
 } from '../controllers/discount.controller';
 import {
   uploadDiscountFile
@@ -15,6 +16,12 @@ const discountRouter = Router();
 // GET
 discountRouter.get('/discount-lists', async (req, res) => {
   const result = await getPaginatedAndFilteredDiscountController(req, res);
+  return result;
+});
+
+// GET
+discountRouter.get('/voucher-lists', async (req, res) => {
+  const result = await getPaginatedAndFilteredVoucherController(req, res);
   return result;
 });
 

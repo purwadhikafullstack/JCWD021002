@@ -13,8 +13,9 @@ const {
             const pageSize = parseInt(req.query.pageSize) || null;
             const sortOrder = req.query.sortOrder || 'asc';
             const username = req.query.username || null;
+            const roleId = req.query.roleId || null;
 
-            const result = await getUserService(page, pageSize, sortOrder, username);
+            const result = await getUserService(page, pageSize, sortOrder, username, roleId);
 
             return res.status(200).json(result);
         } catch (err) {

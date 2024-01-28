@@ -20,7 +20,7 @@ const getSalesByDateQuery = async (startDate, endDate, storeId, categoryId, prod
           [Sequelize.col('Order->Store.name'), 'storeName'], // Adding Store Name to the select
           [Sequelize.col('ProductStock->Product.id'), 'productId'], // Adding Store Name to the select
           [Sequelize.col('ProductStock->Product.name'), 'productName'], // Adding Store Name to the select
-          [Sequelize.col('ProductStock->Product->ProductCategory_Has_Product.ProductCategory.id'), 'categoryId'], // Adding Store Name to the select
+          // [Sequelize.col('ProductStock->Product->ProductCategory_Has_Product.ProductCategory.id'), 'categoryId'], // Adding Store Name to the select
 
           // Add other Store columns as needed
         ],
@@ -49,19 +49,19 @@ const getSalesByDateQuery = async (startDate, endDate, storeId, categoryId, prod
                 include: [
                   {
                     model: Product,
-                    include: [
-                      {
-                        model: ProductCategory_has_Product,
-                        attributes: [],
-                        include: [
-                          {
-                            model: ProductCategory,
-                            where: { id: categoryId ? categoryId : { [Op.ne]: null } },
-                            attributes: [], // Exclude ProductCategory columns from the main query
-                          },
-                        ],
-                      },
-                    ],
+                    // include: [
+                    //   {
+                    //     model: ProductCategory_has_Product,
+                    //     attributes: [],
+                    //     include: [
+                    //       {
+                    //         model: ProductCategory,
+                    //         where: { id: categoryId ? categoryId : { [Op.ne]: null } },
+                    //         attributes: [], // Exclude ProductCategory columns from the main query
+                    //       },
+                    //     ],
+                    //   },
+                    // ],
                     where: { id: productId ? productId : { [Op.ne]: null } },
                     attributes: [], // Exclude Product columns from the main query
                   },
@@ -75,7 +75,7 @@ const getSalesByDateQuery = async (startDate, endDate, storeId, categoryId, prod
           Sequelize.col('Order->Store.name'), // Include Store Name in the group by
           Sequelize.col('ProductStock->Product.id'), // Adding Store Name to the select
           Sequelize.col('ProductStock->Product.name'), // Adding Store Name to the select
-          Sequelize.col('ProductStock->Product->ProductCategory_Has_Product.ProductCategory.id'), // Adding Store Name to the select
+          // Sequelize.col('ProductStock->Product->ProductCategory_Has_Product.ProductCategory.id'), // Adding Store Name to the select
           // [Sequelize.col('ProductStock->Product->ProductCategory.id'), 'categoryId'], // Adding Store Name to the select
 
           // Add other Store columns as needed
@@ -83,7 +83,7 @@ const getSalesByDateQuery = async (startDate, endDate, storeId, categoryId, prod
         raw: true,
         dialect: 'mysql', // Set the dialect explicitly
       });
-  
+
       const aggregatedData = {
         totalSales: 0,
         totalQuantity: 0,
@@ -104,19 +104,72 @@ const getSalesByDateQuery = async (startDate, endDate, storeId, categoryId, prod
         aggregatedData.storeName =  storeId ? item.storeName : null;
         aggregatedData.productId = productId ? item.productId : null;
         aggregatedData.productName = productId ? item.productName : null;
-        aggregatedData.categoryId = categoryId ? item.categoryId : null;
+        // aggregatedData.categoryId = categoryId ? item.categoryId : null;
       });
   
-      return [aggregatedData];
-
       // masih error di categoryId
+      // return [aggregatedData];
+      return aggregatedData;
   
     } catch (err) {
       throw err;
     }
   };
   
-
+  const getTop5ProductsSoldQuery = async (startDate, endDate, storeId, categoryId, productId) => {
+    try {
+      const topProducts = await OrderDetail.findAll({
+        attributes: [
+          [Sequelize.col('ProductStock->Product.id'), 'productId'],
+          [Sequelize.col('ProductStock->Product.name'), 'productName'],
+          [Sequelize.fn('sum', Sequelize.col('quantity')), 'totalQuantity'],
+        ],
+        include: [
+          {
+            model: Order,
+            attributes: [],
+            include: [
+              {
+                model: Store,
+                attributes: [],
+              },
+            ],
+            where: {
+              [Op.and]: [
+                { orderDate: { [Op.gte]: new Date(`${startDate}T00:00:00.000Z`) } },
+                { orderDate: { [Op.lte]: new Date(`${endDate}T23:59:59.999Z`) } },
+                storeId ? { store_idstore: storeId } : {},
+              ],
+            },
+          },
+          {
+            model: ProductStock,
+            include: [
+              {
+                model: Product,
+                where: { id: productId ? productId : { [Op.ne]: null } },
+                attributes: [],
+              },
+            ],
+            attributes: [],
+          },
+        ],
+        group: [
+          Sequelize.col('ProductStock->Product.id'),
+          Sequelize.col('ProductStock->Product.name'),
+        ],
+        order: [[Sequelize.fn('sum', Sequelize.col('quantity')), 'DESC']],
+        limit: 5, // Adjust this number based on the desired number of top products
+        raw: true,
+        dialect: 'mysql',
+      });
+  
+      return topProducts;
+    } catch (err) {
+      throw err;
+    }
+  };
+  
 
 
 const getProductsByTransactionQuery = async (transactionId) => {
@@ -245,4 +298,5 @@ module.exports = {
   getSalesByDateQuery,
   getProductsByTransactionQuery,
   createSalesReportQuery,
+  getTop5ProductsSoldQuery,
 };

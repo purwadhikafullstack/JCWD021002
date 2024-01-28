@@ -1,5 +1,5 @@
+import DashboardAdmin from '../pages/DashboardAdmin/DashboardAdmin';
 import AddProduct from '../pages/AddProduct/AddProduct';
-import AddProductStock from '../pages/AddProductStock/AddProductStock';
 import CategoryLists from '../pages/CategoryLists/CategoryLists';
 import EditProduct from '../pages/EditProduct/EditProduct';
 import MassLists from '../pages/MassLists/MassLists';
@@ -12,11 +12,11 @@ import ProductSearch from '../pages/ProductSearch/ProductSearch';
 import ProductCatalogue from '../pages/ProductCatalogue/ProductCatalogue';
 import ReportSales from '../pages/ReportSales/ReportSales';
 import ReportStock from '../pages/ReportStock/ReportStock';
-// import ReportStockV2 from '../pages/ReportStockV2/ReportStockV2';
+import Voucher from '../pages/Voucher/Voucher';
 import withRoleRestriction from './withRoleRestriction';
 
+const AdminDashboardWithRoleCheck = withRoleRestriction([1, 2])(DashboardAdmin);
 const AdminAddProductsWithRoleCheck = withRoleRestriction([1, 2])(AddProduct);
-const AdminAddProductStocksWithRoleCheck = withRoleRestriction([1, 2])(AddProductStock);
 const AdminCategoryListsWithRoleCheck = withRoleRestriction([1, 2])(CategoryLists);
 const AdminEditProductsWithRoleCheck = withRoleRestriction([1, 2])(EditProduct);
 const AdminMassListsWithRoleCheck = withRoleRestriction([1, 2])(MassLists);
@@ -26,13 +26,13 @@ const AdminProductListsWithRoleCheck = withRoleRestriction([1, 2])(ProductLists)
 const AdminProductStockListsWithRoleCheck = withRoleRestriction([1, 2])(ProductStockLists);
 const AdminReportSalesWithRoleCheck = withRoleRestriction([1, 2])(ReportSales);
 const AdminReportStockWithRoleCheck = withRoleRestriction([1, 2])(ReportStock);
-// const AdminReportStockV2WithRoleCheck = withRoleRestriction([1, 2])(ReportStockV2);
 
 
 const routeAdminProduct = [
   { path: '/product-detail/:id', element: <ProductDetail /> },
   { path: '/product-search', element: <ProductSearch /> },
   { path: '/product-catalogue', element: <ProductCatalogue /> },
+  { path: '/dashboard-admin', element: <AdminDashboardWithRoleCheck /> },
   { path: '/product-lists', element: <AdminProductListsWithRoleCheck /> },
   { path: '/category-lists', element: <AdminCategoryListsWithRoleCheck /> },
   { path: '/add-product', element: <AdminAddProductsWithRoleCheck /> },
@@ -40,11 +40,10 @@ const routeAdminProduct = [
   { path: '/product-detail-admin/:id', element: <AdminProductDetailsAdminWithRoleCheck /> },
   { path: '/mass-lists', element: <AdminMassListsWithRoleCheck /> },
   { path: '/packaging-lists', element: <AdminPackagingListsWithRoleCheck /> },
-  { path: '/add-product-stock/:productId', element: <AdminAddProductStocksWithRoleCheck /> },
   { path: '/product-stock-lists', element: <AdminProductStockListsWithRoleCheck /> },
   { path: '/sales-report', element: <AdminReportSalesWithRoleCheck /> },
   { path: '/stock-report', element: <AdminReportStockWithRoleCheck /> },
-  // { path: '/stock-report-v2', element: <AdminReportStockV2WithRoleCheck /> },
+  { path: '/voucher', element: <Voucher /> },
 ];
 
 export default routeAdminProduct;

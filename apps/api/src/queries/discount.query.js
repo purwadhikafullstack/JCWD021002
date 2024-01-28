@@ -6,9 +6,7 @@ import ProductStock from '../models/productStock.model';
 import UsageRestriction from '../models/usageRestriction.model'
 import DiscountDistribution from '../models/discountDistribution.model'
 import Store from '../models/store.model'
-
-
-
+const moment = require('moment');
     
       const getPaginatedAndFilteredDiscountQuery = async (
                 page,
@@ -127,6 +125,109 @@ import Store from '../models/store.model'
           throw err;
         }
       };
+
+      const getPaginatedAndFilteredVoucherQuery = async (
+                page,
+                pageSize,
+                sortField,
+                sortOrder,
+                discountName,
+                typeId,
+                usageRestrictionId,
+                productName,
+                status,
+                storeId,
+                productStockId,
+      ) => {
+        try {
+          console.log(
+            'query',
+                page,
+                pageSize,
+                sortField,
+                sortOrder,
+                discountName,
+                typeId,
+                usageRestrictionId,
+                productName,
+                status,
+                storeId,
+          );
+
+          const offset = (page - 1) * (pageSize || 0);
+
+          const whereCondition = {};
+
+          if (discountName) {
+            whereCondition.name = {
+              [Op.like]: `%${discountName}%`,
+            };
+          }
+
+          if (status) {
+            whereCondition.status = {
+              [Op.eq]: `${status}`,
+            };
+          }
+
+          whereCondition.endDate = {
+            [Op.gte]: moment().toDate(),
+          };
+
+          whereCondition.distributionId = {
+              [Op.eq]: 2,
+          };
+
+          whereCondition.productStock_idproductStock = {
+            [Op.or]: [null, productStockId],
+          };
+      
+          const discounts = await Discount.findAndCountAll({
+            offset: offset,
+            limit: pageSize ? pageSize : undefined,
+            order: [[sortField, sortOrder]],
+            where: {
+              ...whereCondition,
+              ...(storeId ? { store_idstore: storeId } : {}),
+            },
+            include: [
+              {
+                required: true,
+                model: DiscountType,
+                where: typeId ? { id: typeId } : {},
+              },
+              {
+                required: true,
+                model: UsageRestriction,
+                where: usageRestrictionId ? { id: usageRestrictionId } : {}
+              },
+              {
+                model: ProductStock,
+                include: [
+                  {
+                    model: Product,
+                    where: productName ? { name: {
+                      [Op.like]: `%${productName}%`,
+                    } } : {}
+                  }
+                ]
+              }
+            ],
+          });
+
+          
+          const totalPages = Math.ceil(discounts.count / (pageSize || discounts.count));
+
+          return {
+            discounts: discounts.rows,
+            totalPages: totalPages,
+          };
+        } catch (err) {
+          console.error('Error in getPaginatedAndFilteredDiscountQuery:', err);
+          throw err;
+        }
+      };
+
 
       const getDetailDiscountQuery = async (id) => {
         try {
@@ -303,4 +404,5 @@ import Store from '../models/store.model'
         getPaginatedAndFilteredDiscountQuery,
         updateDiscountQuery,
         getDetailDiscountQuery,
+        getPaginatedAndFilteredVoucherQuery,
     }
