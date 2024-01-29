@@ -119,18 +119,9 @@ useEffect(() => {
 }, []);
 
 console.log(data);
-//   useEffect(() => {
-//     (async () => {
-//       const { data } = await axios.get(
-//         `${import.meta.env.VITE_API_URL}/products/product-detail/3`,
-//       );
-//       setSampleData(data);
-//     })();
-//   }, []);
 
-//   console.log(sampleData);
+
 function formatPriceToIDR(price) {
-    // Use Intl.NumberFormat to format the number as IDR currency
     return new Intl.NumberFormat('id-ID', {
       style: 'currency',
       currency: 'IDR',
@@ -221,14 +212,18 @@ function formatPriceToIDR(price) {
             {data?.result?.Discounts && data?.result?.Discounts.length > 0 && (
     <>
       <Text color='grey' fontSize='xs' fontWeight='bold'>
-  <s>{formatPriceToIDR(data?.result?.Product?.price)}</s>
+  <s>{ calculateDiscountPrice(data?.result?.Product?.price, data?.result?.Discounts) == data?.result?.Product?.price ? null : formatPriceToIDR(data?.result?.Product?.price)}</s>
   {data?.result?.Discounts.map((discount, index) => (
     <React.Fragment key={index}>
-      {discount.DiscountType?.id === 4 && discount.discountValue && ` (${discount.discountValue}% Off)`}
-      {discount.DiscountType?.id === 4 && discount.discountNom && ` (${formatPriceToIDR(discount.discountNom)} Off)`}
-      {discount.DiscountType?.id === 5 && ` (Minimum Purchase) - ${discount.discountValue}% Off`}
-      {discount.DiscountType?.id === 6 && ` ( Beli ${discount.buy_quantity} Gratis ${discount.get_quantity})`}
-      {index < data.result.Discounts.length - 1 && ', '}
+      {discount.distributionId === 1 && (
+      <>
+        {discount.DiscountType?.id === 4 && discount.discountValue && ` (${discount.discountValue}% Off)`}
+        {discount.DiscountType?.id === 4 && discount.discountNom && ` (${formatPriceToIDR(discount.discountNom)} Off)`}
+        {discount.DiscountType?.id === 5 && ` (Minimum Purchase) - ${discount.discountValue}% Off`}
+        {discount.DiscountType?.id === 6 && ` (Beli ${discount.buy_quantity} Gratis ${discount.get_quantity})`}
+        {index < data.result.Discounts.length - 1 && ', '}
+      </>
+    )}
     </React.Fragment>
   ))}
 </Text>

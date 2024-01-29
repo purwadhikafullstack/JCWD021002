@@ -23,29 +23,31 @@ export const calculateDiscountPrice = (originalPrice, discounts) => {
         //     const discountValue = parseFloat(activeDiscount?.discountValue);
         //     discountedPrice = newPrice - (newPrice * discountValue) / 100;
         //   } else 
-          if (activeDiscount?.discountValue) {
+          if (activeDiscount?.discountValue && activeDiscount?.distributionId == 1) {
             const discountValue = parseFloat(activeDiscount?.discountValue);
             discountedPrice -= (discountedPrice * discountValue) / 100;
-          } else {
+          } else if (activeDiscount?.discountNom && activeDiscount?.distributionId == 1) {
             discountedPrice -= activeDiscount?.discountNom;
-          }
+          } else {return discountedPrice}
           break;
   
         case 5: // Minimum Amount Discount
           const minimumPurchase = parseFloat(activeDiscount?.minimumPurchase);
-          if (discountedPrice >= minimumPurchase) {
+          if (discountedPrice >= minimumPurchase && activeDiscount?.distributionId == 1) {
             const discountValueMinAmount = parseFloat(activeDiscount?.discountValue);
             discountedPrice -= discountValueMinAmount;
           }
           break;
   
         case 6: // B O G O
+          if(activeDiscount?.distributionId == 1) {
           const buyQuantity = activeDiscount?.buy_quantity || 1;
           const getQuantity = activeDiscount?.get_quantity || 1;
           const totalQuantity = buyQuantity + getQuantity;
           const setsCount = Math.floor(discountedPrice / totalQuantity);
           const discountedPriceBOGO = setsCount * buyQuantity * discountedPrice;
           discountedPrice = discountedPriceBOGO / totalQuantity;
+          }
           break;
   
         case 7: // Voucher

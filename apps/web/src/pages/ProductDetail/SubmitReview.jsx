@@ -32,7 +32,6 @@ export const SubmitReview = ({userId, productId}) => {
   const [editedReviewText, setEditedReviewText] = useState();
   const token = localStorage.getItem("token");
 
-  console.log('ini productId', productId);
   const fetchData = async () => {
     try {
         const response = await axios.get(
@@ -106,67 +105,61 @@ export const SubmitReview = ({userId, productId}) => {
   }
 
   return (
-               
-
             <>
-                {isLogin == true ? 
-                (data?.result?.id ? 
-                    <Box mt='10px' width='97%' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
-                    <Text fontSize="lg" mb="2" fontWeight='bold'>Ulasan Anda</Text>
-                    <Flex flexDirection='row'>
-                    {[1, 2, 3, 4, 5].map((value) => (
-                        value <= data?.result?.rating ? (
-                            <Image cursor='pointer' src={star} width='30px' key={value} onClick={() => setRating(value)} color='yellow' />
-                        ) : (
-                            <Text color='grey'><IconStarFilled cursor='pointer' size='30px' key={value} onClick={() => setRating(value)} /></Text>
-                        )
-                        ))}
-                    </Flex>
-                    {/* <Textarea
-                        mt="2"
-                        value={reviewText}
-                        onChange={(e) => setReviewText(e.target.value)}
-                        placeholder="Tulis ulasan kamu..."
-                        resize='none'
-                    /> */}
-                    <Text fontSize='xs'>Tanggal ulasan {formatWIBDate(data?.result?.reviewDate)} WIB</Text>
-                    <Text fontSize='xs'>Tanggal order {formatWIBDate(data?.result?.Order?.orderDate)} WIB</Text>
-                    <Text fontSize='xs' fontWeight='bold'>Kode Transaksi {data?.result?.Order?.codeTransaction}</Text>
-                    <Text>{data?.result?.reviewText}</Text>
-                    <Button mt="2" colorScheme="teal" onClick={() => setIsEditModalOpen(true)}>
-                        Ganti Ulasan
-                    </Button>
-                    </Box>
-                    :
-                    <Box mt='10px' width='97%' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
-                        <Text fontSize="lg" mb="2"></Text>
-                        <Flex flexDirection='row'>
-                        {[1, 2, 3, 4, 5].map((value) => (
-                            value <= rating ? (
-                                <Image cursor='pointer' src={star} width='30px' key={value} onClick={() => setRating(value)} color='yellow' />
-                            ) : (
-                                <Text color='grey'><IconStarFilled cursor='pointer' size='30px' key={value} onClick={() => setRating(value)} /></Text>
-                            )
-                            ))}
-                        </Flex>
-                        <Select border='solid gray 1px' borderRadius='full' placeholder="Select option" value={orderId} onChange={(e) => setOrderId(e.target.value)}>
-                            {data?.orderResults?.map((item) => ( 
-                            <option key={item?.Order?.id} value={item?.Order?.id}>{item?.Order?.codeTransaction} - {formatWIBDate(item?.Order?.orderDate)}</option>
-                            ))}
-                        </Select>
-                        <Textarea
-                            mt="2"
-                            value={reviewText}
-                            onChange={(e) => setReviewText(e.target.value)}
-                            placeholder="Tulis ulasan kamu..."
-                            resize='none'
-                        />
-                        <Button mt="2" colorScheme="teal" onClick={handleSubmitReview}>
-                            Submit Review
-                        </Button>
-                        </Box>)
-                : null
-                }
+                        {
+                          isLogin ? (
+                            data?.result?.id ? (
+                              <Box mt='10px' width='97%' bg='#FFFEF7' textAlign='left' p={4} rounded='lg' boxShadow="0px 1px 5px gray">
+                                <Text fontSize="lg" mb="2" fontWeight='bold'>Ulasan Anda</Text>
+                                <Flex flexDirection='row'>
+                                  {[1, 2, 3, 4, 5].map((value) => (
+                                    value <= data?.result?.rating ? (
+                                      <Image cursor='pointer' src={star} width='30px' key={value} onClick={() => setRating(value)} color='yellow' />
+                                    ) : (
+                                      <Text color='grey'><IconStarFilled cursor='pointer' size='30px' key={value} onClick={() => setRating(value)} /></Text>
+                                    )
+                                  ))}
+                                </Flex>
+                                <Text fontSize='xs'>Tanggal ulasan {formatWIBDate(data?.result?.reviewDate)} WIB</Text>
+                                <Text fontSize='xs'>Tanggal order {formatWIBDate(data?.result?.Order?.orderDate)} WIB</Text>
+                                <Text fontSize='xs' fontWeight='bold'>Kode Transaksi {data?.result?.Order?.codeTransaction}</Text>
+                                <Text>{data?.result?.reviewText}</Text>
+                                <Button mt="2" colorScheme="teal" onClick={() => setIsEditModalOpen(true)}>
+                                    Ganti Ulasan
+                                </Button>
+                                </Box>
+                            ) : data?.orderResults.lenth > 0 ? (
+                              <Box mt='10px' width='97%' bg='#FFFEF7' textAlign='left' p={4} rounded='lg' boxShadow="0px 1px 5px gray">
+                                <Text fontSize="lg" mb="2"></Text>
+                                <Flex flexDirection='row'>
+                                  {[1, 2, 3, 4, 5].map((value) => (
+                                    value <= rating ? (
+                                      <Image cursor='pointer' src={star} width='30px' key={value} onClick={() => setRating(value)} color='yellow' />
+                                    ) : (
+                                      <Text color='grey'><IconStarFilled cursor='pointer' size='30px' key={value} onClick={() => setRating(value)} /></Text>
+                                    )
+                                  ))}
+                                </Flex>
+                                <Select border='solid gray 1px' borderRadius='full' placeholder="Select option" value={orderId} onChange={(e) => setOrderId(e.target.value)}>
+                                  {data?.orderResults?.map((item) => (
+                                    <option key={item?.Order?.id} value={item?.Order?.id}>{item?.Order?.codeTransaction} - {formatWIBDate(item?.Order?.orderDate)}</option>
+                                  ))}
+                                </Select>
+                                <Textarea
+                                  mt="2"
+                                  value={reviewText}
+                                  onChange={(e) => setReviewText(e.target.value)}
+                                  placeholder="Tulis ulasan kamu..."
+                                  resize='none'
+                                />
+                                <Button mt="2" colorScheme="teal" onClick={handleSubmitReview}>
+                                  Submit Review
+                                </Button>
+                              </Box>
+                            ) : null
+                          ) : null
+                        }
+
                  <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
         <ModalOverlay />
         <ModalContent>
