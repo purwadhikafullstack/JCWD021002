@@ -1,7 +1,14 @@
+const { Op, Sequelize } = require('sequelize');
 import Cart from '../models/cart.model';
 import CartDetail from '../models/cartDetail.model';
 import ProductStock from '../models/productStock.model';
 import Product from '../models/product.model';
+import ProductImage from '../models/productImage.model';
+import Store from '../models/store.model';
+import Discount from '../models/discount.model';
+import DiscountType from '../models/discountType.model';
+import DiscountDistribution from '../models/discountDistribution.model';
+import UsageRestriction from '../models/usageRestriction.model';
 
 export const findCartQuery = async (userId) => {
   return Cart.findOne({
@@ -33,15 +40,15 @@ export const createCartQuery = async (userId) => {
 
 export const getProductStockQuery = async (productStockId) => {
   return ProductStock.findOne({
-    where: { product_idproduct: productStockId },
-    include: [Product],
+    where: { id: productStockId },
+    include: [{ model: Product, include: [ProductImage] }, { model: Store }, ],
   });
 };
 
 export const findCartDetailQuery = async (cartId, productStockId) => {
   return CartDetail.findOne({
     where: {
-      id: productStockId,
+      productStock_idproductStock: productStockId,
       cart_idcart: cartId,
     },
   });
@@ -145,3 +152,50 @@ export const deleteCartItemQuery = async (cart, productId) => {
     throw err;
   }
 };
+
+export const getAllCartQuery = async (userId) => {
+  return await Cart.findAll({
+    where: { user_iduser: userId },
+    include: [
+      {
+        model: CartDetail,
+        include: [
+          {
+            model: ProductStock,
+            include: [
+              { model: Product, include: [ProductImage] },
+              { model: Store },
+              {
+                separate: true,
+                model: Discount,
+                where: {
+                  startDate: { [Sequelize.Op.lte]: new Date() }, // Include discounts with start date less than or equal to the current date
+                  endDate: { [Sequelize.Op.gte]: new Date() },   // Include discounts with end date greater than or equal to the current date
+                  // productStock_idproductStock: productStockId, // Additional condition to match productStock_idproductStock with the main query's id
+                },
+                include: [
+                  {
+                    model: UsageRestriction,
+                  },
+                  {
+                    model: DiscountType,
+                  },
+                  {
+                    model: DiscountDistribution,
+                  },
+                  {
+                    model: Store,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    order: [
+      [CartDetail, 'id', 'ASC'], // Assuming `id` is the field you want to sort by
+    ],
+  });
+};
+

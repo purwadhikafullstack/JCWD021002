@@ -1,35 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import {
-  Box,
-  Button,
-  Text,
-  Spacer,
-  VStack,
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalHeader,
-  ModalContent,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-  Input,
-  Flex,
-  Select,
-  InputGroup,
-  InputLeftElement,
-} from '@chakra-ui/react';
-import {
-  IconPlus,
-  IconSearch,
-} from '@tabler/icons-react';
+import { Box, Button, Text, Spacer, VStack, useDisclosure, Modal, ModalOverlay, ModalHeader, ModalContent, ModalCloseButton, ModalBody, ModalFooter, Input, Flex, Select, InputGroup, InputLeftElement, } from '@chakra-ui/react';
+import { IconPlus, IconSearch, } from '@tabler/icons-react';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import SideBar from '../../components/SideBar/SideBar';
 import { GridLists } from './GridLists';
 import { TableLists } from './TableLists';
 import { useWebSize } from '../../provider.websize';
 import { PaginationControls } from './PaginationControls';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const UserLists = () => {
   const {size, handleWebSize } = useWebSize();
@@ -75,16 +55,16 @@ const UserLists = () => {
   
       if (result) {
         if (newStatus === 'Active') {
-          alert('User activated successfully');
+          toast.success('User activated successfully');
         } else {
-          alert('User deactivated successfully');
+          toast.success('User deactivated successfully');
         }
         
         setDeleteModalOpen(false);
         fetchUser();
       }
     } catch (err) {
-      alert('Error: User used in another data');
+      toast.error('Error: User used in another data');
     }
   };
   
@@ -124,6 +104,7 @@ const UserLists = () => {
 
   return (
     <Box w={{ base: '100vw', md: size }} overflowX='hidden'>
+      <ToastContainer position="top-center" closeOnClick pauseOnFocusLoss draggable pauseOnHover theme="colored" />
           <SideBar size={size} handleWebSize={handleWebSize}/>
       <Box w={{ base: '100vw', md: size }} height='fit-content' backgroundColor='#fbfaf9' >
       <Box p='20px'>

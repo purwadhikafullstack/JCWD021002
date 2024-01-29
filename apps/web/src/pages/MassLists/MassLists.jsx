@@ -7,6 +7,8 @@ import { useSelector } from 'react-redux';
 import SideBar from '../../components/SideBar/SideBar';
 import { useWebSize } from '../../provider.websize';
 import { PaginationControls } from "../../components/PaginationControls/PaginationControls";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const MassLists = () => {
   const {size, handleWebSize } = useWebSize();
@@ -34,7 +36,8 @@ const MassLists = () => {
         },
       );
 
-      alert(result?.data?.result);
+      if (result?.data?.result == 'Mass name already added'){
+        toast.warning(result?.data?.result); } else { toast.success('Mass added') }
       onClose();
       fetchMass();
       setNewMass()
@@ -51,13 +54,13 @@ const MassLists = () => {
           massNew: editMass
         });
 
-      alert("Edit mass successful");
+      toast.success("Edit mass successful");
       onClose();
       setEditModalOpen(false)
       fetchMass();
       setEditMass("")
     } catch (err) {
-      alert("error");
+      toast.error("error");
     }
   };
 
@@ -67,12 +70,12 @@ const MassLists = () => {
         `http://localhost:8000/api/mass/remove-mass/${selectedMass.id}`
       );
 
-      alert("delete mass successful");
+      toast.success("Delete mass successful");
       onClose();
       setDeleteModalOpen(false);
       fetchMass();
     } catch (err) {
-      alert("Mass used in another data");
+      toast.error("Mass used in another data");
     }
   };
 
@@ -109,6 +112,7 @@ const MassLists = () => {
   
   return (
     <Box w={{ base: '100vw', md: size }} overflowX="hidden">
+      toast.success
       <SideBar size={size} handleWebSize={handleWebSize} />
       <Box w={{ base: '98.7vw', md: size }} height='100vh' backgroundColor='#fbfaf9'>
       <Box p='50px'>

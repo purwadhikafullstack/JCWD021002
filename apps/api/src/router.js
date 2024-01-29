@@ -14,6 +14,8 @@ import { discountRouter } from './routers/discount.router';
 import { ratingRouter } from './routers/ratingAndReview.router';
 import { reportRouter } from './routers/report.router';
 import { storeRouter } from './routers/store.router.js';
+import { checkoutRouter } from './routers/checkout.router';
+import { paymentRouter } from './routers/payment.router';
 
 const router = Router();
 
@@ -36,7 +38,9 @@ router.use('/discount', discountRouter);
 router.use('/report', reportRouter);
 router.use('/rating', ratingRouter);
 router.use('/store', storeRouter);
-
+router.use('/product-stock', productStockRouter);
+router.use('/checkout', checkoutRouter);
+router.use('/payment', paymentRouter);
 
 // add another router here ...
 

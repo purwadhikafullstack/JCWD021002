@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
-// import { SidebarWithHeader } from '../../components/SideBar/SideBar';
 import { FiUpload } from "react-icons/fi";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,7 +12,6 @@ import {
 import {
   IconPlus, IconArrowLeft, IconDiscount, IconX, IconArrowRight, IconEye, IconEyeOff
 } from '@tabler/icons-react';
-import AvatarSVG from './icon-default-avatar.svg';
 import SideBar from '../../components/SideBar/SideBar';
 import { useSelector } from "react-redux";
 import { useWebSize } from '../../provider.websize';

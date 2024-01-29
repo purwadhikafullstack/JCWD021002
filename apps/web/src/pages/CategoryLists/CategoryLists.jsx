@@ -9,6 +9,8 @@ import { EditModalCategory } from './EditModalCategory';
 import { useWebSize } from '../../provider.websize';
 import { PaginationControls } from '../../components/PaginationControls/PaginationControls';
 import { TableLists } from './TableLists';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const CategoryLists = () => {
   const {size, handleWebSize } = useWebSize();
@@ -49,9 +51,8 @@ const CategoryLists = () => {
         formData
       );
 
-      alert(result?.data?.result);
-      console.log("ini result",result);
-
+      if (result?.data?.result == 'Category name already added'){
+        toast.warning(result?.data?.result); } else { toast.success('Category added') }
       onClose();
       fetchCategory();
       setNewCategory();
@@ -80,10 +81,9 @@ const CategoryLists = () => {
       setFieldImage(null);
       setSelectedImage('');
       setEditModalOpen(false);
-      alert("Edit category successful");
+      toast.success("Edit category successful");
     } catch (err) {
-      alert("error");
-      console.log(err);
+      toast.error("error");
     }
   };
 
@@ -93,12 +93,12 @@ const CategoryLists = () => {
         `http://localhost:8000/api/category/remove-category/${selectedCategory.id}`
       );
 
-      alert("delete category successful");
+      toast.success("Delete category successful");
       onClose();
       setDeleteModalOpen(false);
       fetchCategory();
     } catch (err) {
-      alert("category used in another data");
+      toast.error("category used in another data");
     }
   };
 
@@ -135,6 +135,7 @@ const CategoryLists = () => {
 
   return (
     <Box w={{ base: '100vw', md: size }} overflowX="hidden">
+      <ToastContainer position="top-center" closeOnClick pauseOnFocusLoss draggable pauseOnHover theme="colored" />
       <SideBar size={size} handleWebSize={handleWebSize} />
       <Box w={{ base: '98.7vw', md: size }} height='fit-content' backgroundColor='#fbfaf9'>
       <Box p='50px'>

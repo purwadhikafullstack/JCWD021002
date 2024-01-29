@@ -32,9 +32,9 @@ const PackagingLists = () => {
         `http://localhost:8000/api/packaging/add-packaging`, {
           packaging: newPackaging
         }, );
+        
       if (result?.data?.result == 'Packaging name already added'){
           toast.warning(result?.data?.result); } else { toast.success('Packaging added') }
-
       onClose();
       fetchPackaging();
       setNewPackaging()
@@ -51,13 +51,13 @@ const PackagingLists = () => {
           packagingNew: editPackaging
         });
 
-      alert("Edit packaging successful");
+      toast.success("Edit packaging successful");
       onClose();
       setEditModalOpen(false)
       fetchPackaging();
       setEditPackaging("")
     } catch (err) {
-      alert("error");
+      toast.error("error");
     }
   };
 
@@ -67,13 +67,13 @@ const PackagingLists = () => {
         `http://localhost:8000/api/packaging/remove-packaging/${selectedPackaging.id}`
       );
 
-      alert("delete packaging successful");
+      toast.success("Delete packaging successful");
       onClose();
       setDeleteModalOpen(false);
       fetchPackaging();
     } catch (err) {
       console.log(err);
-      alert("Packaging used in another data");
+      toast.error("Packaging used in another data");
     }
   };
 
