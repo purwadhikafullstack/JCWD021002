@@ -10,7 +10,10 @@ import {
   changePasswordController,
   changeEmailController,
   changeEmailVerifyController,
-  updateProfileController
+  updateProfileController,
+  verifyController,
+  resetPasswordController,
+  reVerifyController
 } from '../controllers/auth.controller';
 import { verifyToken } from '../middlewares/auth';
 import { uploadAvatarFile } from '../middlewares/multerConfig';
@@ -51,6 +54,12 @@ authRouter.patch('/change-email/:id', async (req, res) => {
 });
 authRouter.post('/change-email-verification/:id', async (req, res) => {
   await changeEmailVerifyController(req, res);
+});
+authRouter.post('/verify', async (req, res) => {
+  await verifyController(req, res);
+});
+authRouter.post('/reverify', async (req, res) => {
+  await reVerifyController(req, res);
 });
 authRouter.patch('/update-profile/:id', uploadAvatarFile, updateProfileController);
 

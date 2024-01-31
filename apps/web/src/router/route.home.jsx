@@ -1,7 +1,7 @@
 import { Cart } from "../pages/Cart";
 import { Checkout } from "../pages/Checkout";
 import { Home } from "../pages/home/Home";
-// import HereGeocodingApp from "../pages/profile/HereGeocodingApp";
+import HereGeocodingApp from "../pages/profile/HereGeocodingApp";
 
 const routeHome = [
   {path: "/", element:  <Home />},

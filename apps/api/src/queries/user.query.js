@@ -3,7 +3,7 @@ import Store from '../models/store.model';
 import City from '../models/city.model';
 import Province from '../models/province.model';
 import Role from '../models/role.model';
-import { Op } from 'sequelize';
+import { Op, where } from 'sequelize';
 
 const getUserRegisterQuery = async ({
   id = null,
@@ -20,6 +20,7 @@ const getUserRegisterQuery = async ({
           email: email,
           referralCode,
         },
+        status: 'Active'
       },
     });
     return res;
@@ -28,26 +29,51 @@ const getUserRegisterQuery = async ({
   }
 };
 
-const getUserQuery = async (page, pageSize, roleId, username) => {
+const getUserQuery = async (page, pageSize, sortOrder, username, roleId) => {
   try {
     const offset = (page - 1) * (pageSize || 0);
 
     const whereConditions = {};
 
-    if (roleId) {
+    if (roleId > 1) {
       whereConditions.role_idrole = roleId;
+    } else {
+      whereConditions.role_idrole = {
+        [Op.notIn]: [1] // Exclude role_idrole = 1 (assuming 1 is admin role)
+      };
     }
+
+    console.log("ini roleId", roleId);
+    console.log("ini wherecondition", whereConditions);
+
+    
 
     if (username) {
       whereConditions.username = { [Op.like]: `%${username}%` };
     }
 
-    console.log('ini di query', username);
 
     const allUsers = await User.findAll({
       offset: offset,
       limit: pageSize || undefined,
       where: whereConditions,
+      include: [
+        {
+          model: Store,
+          include: [
+            {
+              model: City,
+              include: [
+                {
+                  model: Province,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+      order: [[{model : City}, 'name', 'asc']],
+      order: [['status', 'asc']],
     });
 
     const totalUsers = await User.count({
@@ -68,7 +94,7 @@ const getUserQuery = async (page, pageSize, roleId, username) => {
 const getDetailUserQuery = async (userId) => {
   try {
     const result = await User.findOne({
-      where: { id: userId },
+      where: { id: userId, status: 'Active' },
       include: [
         {
           model: Store,
@@ -110,10 +136,8 @@ const updateUserQuery = async (
       avatar,
       role_idrole,
       status,
+      store_idstore
     };
-
-    console.log(username);
-    console.log(email);
 
     Object.keys(updatedValue).forEach((key) => {
       if (
@@ -145,7 +169,6 @@ const addUserQuery = async (
   role_idrole,
   store_idstore,
 ) => {
-  console.log('ini di query', store_idstore);
   try {
     const result = await User.create({
       username,
@@ -157,10 +180,12 @@ const addUserQuery = async (
       status: 'Active',
       store_idstore: store_idstore ? store_idstore : null,
       registrationDate: new Date(),
+      verification_status: 'Verified',
     });
 
     return result;
   } catch (err) {
+    console.log(err);
     throw err;
   }
 };
@@ -173,6 +198,7 @@ const getUserLoginQuery = async ({ emailOrUsername }) => {
           username: emailOrUsername,
           email: emailOrUsername,
         },
+        status: 'Active'
       },
     });
     return res;
@@ -189,6 +215,7 @@ const findUserQuery = async ({ email = null, username = null }) => {
           username: username,
           email: email,
         },
+        status: 'Active'
       },
     });
 
@@ -198,9 +225,17 @@ const findUserQuery = async ({ email = null, username = null }) => {
   }
 };
 
-const getStoreQuery = async () => {
+const getStoreQuery = async (cityId) => {
   try {
-    const result = await Store.findAll({});
+    let queryOptions = {};
+
+    if (cityId) {
+      queryOptions.where = {
+        city_idcity: cityId
+      };
+    }
+
+    const result = await Store.findAll(queryOptions);
 
     return result;
   } catch (err) {
@@ -221,6 +256,21 @@ const getUserRoleQuery = async (userId) => {
   }
 }
 
+const resetPasswordQuery = async (userId, newPassword) => {
+  try {
+    const res = await User.update({
+      password: newPassword
+    }, {
+      where: {
+        id: userId
+      }
+    })
+    return res
+  } catch (err) {
+    throw err
+  }
+}
+
 module.exports = {
   getUserQuery,
   updateUserQuery,
@@ -231,4 +281,5 @@ module.exports = {
   getUserRegisterQuery,
   getUserLoginQuery,
   getUserRoleQuery,
+  resetPasswordQuery
 };

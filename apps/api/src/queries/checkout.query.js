@@ -1,3 +1,4 @@
+const { Op, Sequelize } = require('sequelize');
 import CartDetail from '../models/cartDetail.model';
 import ProductStock from '../models/productStock.model';
 import Order from '../models/order.model';
@@ -6,6 +7,12 @@ import Product from '../models/product.model';
 import ProductImage from '../models/productImage.model';
 import Store from '../models/store.model';
 import Cart from '../models/cart.model';
+import Discount from '../models/discount.model';
+import DiscountType from '../models/discountType.model';
+import DiscountDistribution from '../models/discountDistribution.model';
+import UsageRestriction from '../models/usageRestriction.model';
+import { calculateDiscountPrice } from '../utils/calculateDiscountPrice';
+import { calculateDiscountBOGO } from '../utils/calculateDiscountBOGO';
 
 export const findPendingOrderQuery = async (userId) => {
   try {
@@ -80,6 +87,28 @@ export const getSelectedCartItemsQuery = async (cartId, selectedItems) => {
         include: [
           { model: Product, include: [ProductImage] },
           { model: Store },
+          {
+            separate: true,
+            model: Discount,
+            where: {
+              startDate: { [Sequelize.Op.lte]: new Date() }, // Include discounts with start date less than or equal to the current date
+              endDate: { [Sequelize.Op.gte]: new Date() },   // Include discounts with end date greater than or equal to the current date
+            },
+            include: [
+              {
+                model: UsageRestriction,
+              },
+              {
+                model: DiscountType,
+              },
+              {
+                model: DiscountDistribution,
+              },
+              {
+                model: Store,
+              },
+            ],
+          },
         ],
       },
     ],
@@ -101,6 +130,28 @@ export const getOrderQuery = async (userId) => {
               include: [
                 { model: Product, include: [ProductImage] },
                 { model: Store },
+                {
+                  separate: true,
+                  model: Discount,
+                  where: {
+                    startDate: { [Sequelize.Op.lte]: new Date() }, // Include discounts with start date less than or equal to the current date
+                    endDate: { [Sequelize.Op.gte]: new Date() },   // Include discounts with end date greater than or equal to the current date
+                  },
+                  include: [
+                    {
+                      model: UsageRestriction,
+                    },
+                    {
+                      model: DiscountType,
+                    },
+                    {
+                      model: DiscountDistribution,
+                    },
+                    {
+                      model: Store,
+                    },
+                  ],
+                },
               ],
             },
           ],
@@ -135,8 +186,8 @@ export const createOrderQuery = async (
       await OrderDetail.create(
         {
           order_idorder: order.id,
-          quantity: cartItem.quantity,
-          subtotal: cartItem.quantity * cartItem.price,
+          quantity: (calculateDiscountBOGO(cartItem.quantity, cartItem.ProductStock.Discounts)),
+          subtotal: cartItem.quantity * (calculateDiscountPrice(cartItem.price, cartItem.ProductStock.Discounts)),
           productStock_idproductStock: cartItem.productStock_idproductStock,
         },
         { transaction: t },
@@ -147,6 +198,7 @@ export const createOrderQuery = async (
     return order;
   } catch (err) {
     await t.rollback();
+    console.log(err);
     throw err;
   }
 };
@@ -196,3 +248,5 @@ export const cancelOrder = async (order) => {
     throw err;
   }
 };
+
+// export const 

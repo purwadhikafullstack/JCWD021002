@@ -18,7 +18,7 @@ export const init = (sequelize) => {
       sequelize,
       timestamps: false,
       modelName: 'UsageRestriction',
-      tableName: 'usagerestriction'
+      tableName: 'usagerestriction',
     },
   );
 };

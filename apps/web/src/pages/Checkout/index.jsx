@@ -25,7 +25,7 @@ import { BsTelephoneFill } from 'react-icons/bs';
 import { IoIosArrowForward } from 'react-icons/io';
 import { LiaBoxSolid } from 'react-icons/lia';
 import { IconChevronLeft } from '@tabler/icons-react';
-
+import { calculateDiscountPrice } from '../../utils/calculateDiscountPrice';
 import Voucher from '../../assets/voucher.png';
 import BebasOngkir from '../../assets/bebas_ongkir.png';
 import { CheckoutHeader } from '../../components/Checkout/Checkout.Header';
@@ -36,6 +36,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useWebSize } from '../../provider.websize';
 import { useLocation } from 'react-router-dom';
+import { VoucherPage } from '../Voucher/Voucher';
 
 export const Checkout = () => {
   const user = useSelector((state) => state.AuthReducer.user);
@@ -45,6 +46,7 @@ export const Checkout = () => {
   const [orderDetail, setOrderDetail] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { size, handleWebSize } = useWebSize();
+  const [discountVoucher, setDiscountVoucher] = useState(0);
 
   const location = useLocation();
   const isCartShipment = location.pathname === '/cart/shipment';
@@ -92,6 +94,12 @@ export const Checkout = () => {
   };
 
   console.log('cek data order: ', order);
+  function formatPriceToIDR(price) {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+    }).format(price);
+  }
 
   useEffect(() => {
     fetchOrder(userId);
@@ -258,9 +266,7 @@ export const Checkout = () => {
                 <Text>{item.ProductStock.Product.name}</Text>
                 <Text fontWeight="semibold">
                   {item.quantity} x{' '}
-                  {angkaRupiahJs(item.ProductStock.Product.price, {
-                    formal: false,
-                  })}
+                  {formatPriceToIDR(calculateDiscountPrice(item.ProductStock.Product.price, item?.ProductStock?.Discounts))}
                 </Text>
               </Box>
             </Flex>
@@ -292,16 +298,7 @@ export const Checkout = () => {
             <Icon as={Image} src={Voucher} w={'43px'} h="22px" />
             <Text>Voucher Groceria</Text>
           </Flex>
-          <Button
-            rightIcon={<IoIosArrowForward />}
-            variant="ghost"
-            _hover={{ color: 'black', opacity: 0.9 }}
-            transition="color 0.3s ease-in-out, opacity 0.3s ease-in-out"
-            fontWeight="medium"
-            color="gray.600"
-          >
-            Gunakan Voucher
-          </Button>
+          <VoucherPage order={order} setDiscountVoucher={setDiscountVoucher} fetchOrder={fetchOrder} />
         </HStack>
         {/* {order.length > 0 ? (order.map ((item, index) => ( */}
         <Stack p={4} pl={5} pr={5} spacing={0} background="white" pb={20}>
@@ -329,7 +326,7 @@ export const Checkout = () => {
                 - {angkaRupiahJs(24000, { formal: false })}
               </Text>
               <Text fontSize="sm">
-                - {angkaRupiahJs(400000, { formal: false })}
+                - { order?.totalDiscount ? angkaRupiahJs(order?.totalDiscount, { formal: false }) : angkaRupiahJs(0, { formal: false }) }
               </Text>
             </Flex>
           </Flex>

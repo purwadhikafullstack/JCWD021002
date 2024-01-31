@@ -1,4 +1,4 @@
-const { Op, col } = require('sequelize');
+const { Op, Sequelize } = require('sequelize');
 import Product from '../models/product.model';
 import ProductCategory from '../models/productCategory.model';
 import ProductStock from '../models/productStock.model';
@@ -8,6 +8,11 @@ import User from '../models/user.model';
 import ProductImage from '../models/productImage.model';
 import Mass from '../models/mass.model';
 import Packaging from '../models/packaging.model';
+import RatingsAndReviews from '../models/ratingsAndReviews.model';
+import UsageRestriction from '../models/usageRestriction.model';
+import Discount from '../models/discount.model';
+import DiscountDistribution from '../models/discountDistribution.model';
+import DiscountType from '../models/discountType.model';
 
 const getPaginatedAndFilteredProductsQuery = async (
   page,
@@ -17,6 +22,9 @@ const getPaginatedAndFilteredProductsQuery = async (
   categoryId,
   productName,
   cityId,
+  storeId,
+  statusProduct,
+  statusStock,
 ) => {
   try {
     console.log(
@@ -28,6 +36,157 @@ const getPaginatedAndFilteredProductsQuery = async (
       categoryId,
       productName,
       cityId,
+      storeId,
+      statusProduct,
+      statusStock,
+    );
+
+    const offset = (page - 1) * (pageSize || 0);
+
+    const whereCondition = {};
+    const whereConditionCategory = {};
+
+    if (productName) {
+      whereCondition.name = {
+        [Op.like]: `%${productName}%`,
+      };
+    }
+
+    if (categoryId !== null && categoryId.trim() !== '') {
+      whereConditionCategory.id = categoryId;
+    }
+
+    console.log(categoryId);
+
+    const productStockQuery = {
+      where: {
+        status: statusStock ? statusStock : [0, 1],
+        store_idstore: storeId ? storeId : {},
+        // Add other conditions here
+      },
+      include: [
+        {
+          model: Store,
+              where: cityId ? { city_idcity: cityId } : {},
+        },
+      ],
+      // Add any other conditions for ProductStock here
+    };
+
+    const productStocks = await ProductStock.findAll(productStockQuery);
+
+    const productStockIds = productStocks.map((stock) => stock.id)
+    const productIds = productStocks.map((stock) => stock.product_idproduct);
+
+    const products = await Product.findAll({
+      attributes: {
+        include: [
+          [Sequelize.literal('(SELECT AVG(rating) FROM RatingAndReview WHERE RatingAndReview.product_idproduct = Product.id)'), 'averageRating'],
+          [Sequelize.literal('(SELECT COUNT(rating) FROM RatingAndReview WHERE RatingAndReview.product_idproduct = Product.id)'), 'totalReviews'],
+        ],
+      },
+      offset: offset,
+      limit: pageSize ? pageSize : undefined,
+      order: [[sortField, sortOrder]],
+      where: {
+        ...whereCondition,
+        id: productIds, // Filter based on the associated ProductStocks
+        ...(statusProduct ? { status: statusProduct } : {}),
+      },
+      required: true,
+      include: [
+        {
+          model: ProductCategory,
+          through: { attributes: [] },
+          where: {...whereConditionCategory},
+        },
+        {
+          model: ProductImage,
+        },
+        {
+          separate: true,
+          model: ProductStock,
+          where: {
+            id: productStockIds,
+            // Add other conditions for ProductStock here
+          },
+        },
+        {
+          model: Mass,
+        },
+        {
+          model: Packaging,
+        },
+        // {
+        //   separate: true,
+        //   model: RatingsAndReviews,
+        //   where: { product_idproduct: productIds },
+        //   attributes: [
+        //     'product_idproduct',
+        //     [Sequelize.fn('AVG', Sequelize.col('rating')), 'averageRating'],
+        //     [Sequelize.fn('COUNT', Sequelize.col('rating')), 'totalReviews'],
+        //   ],
+        //   group: ['product_idproduct'],
+        // },
+      ],
+    });
+
+    const totalProducts = await Product.count({
+      where: {
+        ...whereCondition,
+        id: productIds, // Filter based on the associated ProductStocks
+        ...(statusProduct ? { status: statusProduct } : {}),
+      },
+      required: true,
+      include: [
+        {
+          model: ProductCategory,
+          through: { attributes: [] },
+          where: categoryId ? { id: categoryId } : {},
+        },
+        {
+          separate: true,
+          model: ProductStock,
+          where: {
+            id: productStockIds,
+            // Add other conditions for ProductStock here
+          },
+        },
+      ],
+    });
+
+    const totalPages = Math.ceil(totalProducts / (pageSize || totalProducts));
+
+    return {
+      products,
+      totalPages,
+    };
+  } catch (err) {
+    console.error('Error in getPaginatedAndFilteredProductsQuery:', err);
+    throw err;
+  }
+};
+
+
+const getPaginatedAndFilteredProductsRealQuery = async (
+  page,
+  pageSize,
+  sortField,
+  sortOrder,
+  categoryId,
+  productName,
+  status
+) => {
+  try {
+    console.log(
+      'query',
+      page,
+      pageSize,
+      sortField,
+      sortOrder,
+      categoryId,
+      productName,
+      status,
     );
 
     const offset = (page - 1) * (pageSize || 0);
@@ -40,28 +199,21 @@ const getPaginatedAndFilteredProductsQuery = async (
       };
     }
 
-    const productStockQuery = {
-      include: [
-        {
-          model: Store,
-          where: cityId ? { city_idcity: cityId } : {},
-        },
-      ],
-      // Add any other conditions for ProductStock here
-    };
-
-    const productStocks = await ProductStock.findAll(productStockQuery);
-
-    const productIds = productStocks.map((stock) => stock.product_idproduct);
-
     const products = await Product.findAll({
       offset: offset,
       limit: pageSize ? pageSize : undefined,
       order: [[sortField, sortOrder]],
+      attributes: {
+        include: [
+          [Sequelize.literal('(SELECT AVG(rating) FROM RatingAndReview WHERE RatingAndReview.product_idproduct = Product.id)'), 'averageRating'],
+          [Sequelize.literal('(SELECT COUNT(rating) FROM RatingAndReview WHERE RatingAndReview.product_idproduct = Product.id)'), 'totalReviews'],
+        ],
+      },
       where: {
         ...whereCondition,
-        id: productIds, // Filter based on the associated ProductStocks
+        ...(status ? { status: status } : {}),
       },
+      required: true,
       include: [
         {
           model: ProductCategory,
@@ -86,8 +238,9 @@ const getPaginatedAndFilteredProductsQuery = async (
     const totalProducts = await Product.count({
       where: {
         ...whereCondition,
-        id: productIds, // Filter based on the associated ProductStocks
+        ...(status ? { status: status } : {}),
       },
+      required: true,
       include: [
         {
           model: ProductCategory,
@@ -109,13 +262,11 @@ const getPaginatedAndFilteredProductsQuery = async (
   }
 };
 
-const getDetailProductQuery = async (id) => {
+const getDetailProductRealQuery = async (id) => {
   try {
-    const result = await ProductStock.findOne({
+    const result = await Product.findOne({
       include: [
-        {
-          model: Product,
-          include: [
+          
             {
               model: ProductCategory,
               through: { attributes: [] }, // This removes unnecessary attributes from the join table
@@ -129,20 +280,109 @@ const getDetailProductQuery = async (id) => {
             {
               model: Packaging,
             },
+      ],
+      where: {
+        id: id,
+      },
+    });
+
+    const subquery = await RatingsAndReviews.findOne({
+      attributes: [
+        [
+          Sequelize.fn('AVG', Sequelize.col('rating')),
+          'averageRating',
+        ],
+        [Sequelize.fn('COUNT', Sequelize.col('rating')), 'totalReviews'],
+      ],
+      where: {
+        product_idproduct: result.id,
+      },
+      raw: true,
+    });
+
+    return {result, subquery};
+  } catch (err) {
+    throw err;
+  }
+}
+
+const getDetailProductQuery = async (id) => {
+  try {
+    const result = await ProductStock.findOne({
+      include: [
+        {
+          model: Product,
+          include: [
+            {
+              model: ProductCategory,
+              through: { attributes: [] },
+            },
+            {
+              model: ProductImage,
+            },
+            {
+              model: Mass,
+            },
+            {
+              model: Packaging,
+            },
+            {
+              model: RatingsAndReviews,
+              attributes: [],
+            },
+          ],
+        },
+        {
+          separate: true,
+          model: Discount,
+          where: {
+            startDate: { [Sequelize.Op.lte]: new Date() }, // Include discounts with start date less than or equal to the current date
+            endDate: { [Sequelize.Op.gte]: new Date() },   // Include discounts with end date greater than or equal to the current date
+            productStock_idproductStock: id, // Additional condition to match productStock_idproductStock with the main query's id
+          },
+          include: [
+            {
+              model: UsageRestriction,
+            },
+            {
+              model: DiscountType,
+            },
+            {
+              model: DiscountDistribution,
+            },
+            {
+              model: Store,
+            },
           ],
         },
       ],
       where: {
-        id: id.id,
+        id: id,
       },
     });
 
-    return result;
+    // Subquery to calculate average rating and total reviews
+    const subquery = await RatingsAndReviews.findOne({
+      attributes: [
+        [
+          Sequelize.fn('AVG', Sequelize.col('rating')),
+          'averageRating',
+        ],
+        [Sequelize.fn('COUNT', Sequelize.col('rating')), 'totalReviews'],
+      ],
+      where: {
+        product_idproduct: result.Product.id,
+      },
+      raw: true,
+    });
+
+    return {result, subquery};
   } catch (err) {
-    console.log('ini di query', err);
-    throw error;
+    console.log('Error in query:', err);
+    throw err;
   }
 };
+
 
 const addProductQuery = async (
   name,
@@ -190,6 +430,22 @@ const addImageProductQuery = async (imageUrl, product_idproduct) => {
   }
 };
 
+  const deleteProductImageQuery = async (imageUrl, productId) => {
+    try {
+      const res = await ProductImage.destroy({
+        where: {
+          imageUrl: imageUrl,
+          product_idproduct: productId,
+        }
+      })
+
+      return res;
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  }
+
 const softDeleteProductQuery = async (id) => {
   try {
     await Product.update(
@@ -215,6 +471,15 @@ const updateProductQuery = async (
   mass_idmass,
   packaging_idpackaging,
 ) => {
+  console.log("ini di query", 
+  id,
+  name,
+  description,
+  price,
+  status,
+  massProduct,
+  mass_idmass,
+  packaging_idpackaging,)
   try {
     // Create an object with non-null values
     const updatedValue = {
@@ -229,7 +494,7 @@ const updateProductQuery = async (
 
     // Remove properties with null values
     Object.keys(updatedValue).forEach((key) => {
-      if (updatedValue[key] == null || updatedValue[key] == undefined) {
+      if (updatedValue[key] == null || updatedValue[key] == undefined || updatedValue[key] == "undefined") {
         delete updatedValue[key];
       }
     });
@@ -259,9 +524,12 @@ const updateProductQuery = async (
 
 module.exports = {
   getPaginatedAndFilteredProductsQuery,
+  getPaginatedAndFilteredProductsRealQuery,
   getDetailProductQuery,
+  getDetailProductRealQuery,
   addProductQuery,
   addImageProductQuery,
   softDeleteProductQuery,
   updateProductQuery,
+  deleteProductImageQuery,
 };

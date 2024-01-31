@@ -3,6 +3,7 @@ import angkaRupiahJs from '@develoka/angka-rupiah-js';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { calculateDiscountPrice } from '../../utils/calculateDiscountPrice';
 
 export const CartFooter = ({
   size,
@@ -32,7 +33,8 @@ export const CartFooter = ({
       );
 
       if (item && item.price && quantities[productStockId]) {
-        return total + item.price * quantities[productStockId];
+        // return total + item.price * quantities[productStockId];
+        return total + calculateDiscountPrice(item?.price, item?.ProductStock?.Discounts) * quantities[productStockId];
       }
 
       return total;

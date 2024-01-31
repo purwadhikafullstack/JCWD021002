@@ -7,6 +7,7 @@ export default class Store extends Model {
     this.hasMany(models.Order, { foreignKey: 'store_idstore' });
     this.hasMany(models.Journal, { foreignKey: 'store_idstore' });
     this.hasMany(models.User, { foreignKey: 'store_idstore' });
+    this.hasMany(models.Discount, { foreignKey: 'store_idstore' });
   }
 }
 
@@ -26,6 +27,14 @@ export const init = (sequelize) => {
         allowNull: false,
       },
       longitude: {
+        type: DataTypes.STRING(255),
+        allowNull: false,
+      },
+      storeAddress: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+      },
+      status: {
         type: DataTypes.STRING(255),
         allowNull: false,
       },

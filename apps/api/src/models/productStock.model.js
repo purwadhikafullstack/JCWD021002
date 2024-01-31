@@ -9,7 +9,6 @@ export default class ProductStock extends Model {
     this.hasMany(models.Discount, { foreignKey: 'productStock_idproductStock' });
     this.hasMany(models.CartDetail, { foreignKey: 'productStock_idproductStock' });
     this.hasMany(models.VoucherProduct, { foreignKey: 'productStock_idproductStock' });
-    this.hasMany(models.RatingsAndReviews, { foreignKey: 'productStock_idproductStock' });
   }
 }
 

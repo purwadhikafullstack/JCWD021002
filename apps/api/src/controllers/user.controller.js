@@ -11,13 +11,15 @@ const {
         try {
             const page = req.query.page || 1;
             const pageSize = parseInt(req.query.pageSize) || null;
-            const roleId = req.query.roleId || null;
+            const sortOrder = req.query.sortOrder || 'asc';
             const username = req.query.username || null;
+            const roleId = req.query.roleId || null;
 
-            const result = await getUserService(page, pageSize, roleId, username);
+            const result = await getUserService(page, pageSize, sortOrder, username, roleId);
 
             return res.status(200).json(result);
         } catch (err) {
+            console.log(err);
             return res.status(500).json({ error: 'Internal Server Error' });
         }
 
@@ -62,11 +64,12 @@ const {
 
     const getStoreController = async (req, res) => {
         try {
-            const result = await getStoreService();
+            const {cityId} = req.query;
+            const result = await getStoreService(cityId);
 
-            console.log(result);
             return res.status(200).json(result);
         } catch (err) {
+            console.log(err);
             return res.status(500).json({error : 'Internal Server Error'})
         }
     }

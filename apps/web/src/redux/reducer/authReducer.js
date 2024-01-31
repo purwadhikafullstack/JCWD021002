@@ -10,7 +10,11 @@ const initialState = {
     fullname: '',
     avatar: '',
     role_idrole: '',
-    referralCode: ''
+    referralCode: '',
+    status: '',
+    verification_status: '',
+    store_idstore:'',
+    googleLogin: ''
   },
   location: [],
   isLogin: false,
@@ -21,7 +25,7 @@ const authReducer = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      const { id, username, email, fullname, avatar, role_idrole, referralCode } =
+      const { id, username, email, fullname, avatar, role_idrole, referralCode, store_idstore, googleLogin } =
         action.payload;
 
       state.user = {
@@ -31,7 +35,9 @@ const authReducer = createSlice({
         fullname,
         role_idrole,
         username,
-        referralCode
+        referralCode,
+        store_idstore,
+        googleLogin,
       };
     },
     setLocation: (state, action) => {
@@ -61,7 +67,6 @@ export const login = (emailOrUsername, password) => {
       const { data } = res.data;
 
       localStorage.setItem('token', data.token);
-      console.log('data login', data);
       dispatch(setUser(data.user));
       dispatch(loginSuccess());
       toast.success('login is successful');

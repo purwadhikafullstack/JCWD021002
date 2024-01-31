@@ -59,6 +59,7 @@ export const CartHeader = ({ handleWebSize, size, user,
         />
     </Flex>
     <CartTotalSelected
+      zIndex={98}
         user={user}
         selectedItems={selectedItems}
         isScrolled={isScrolled}

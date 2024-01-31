@@ -9,9 +9,9 @@ const {
 const bcrypt = require("bcrypt");
 
 
-    const getUserService = async (page, pageSize, roleId, username) => {
+    const getUserService = async (page, pageSize, sortOrder, username, roleId) => {
         try {
-            const res = await getUserQuery(page, pageSize, roleId, username)
+            const res = await getUserQuery(page, pageSize, sortOrder, username, roleId)
 
             return res;
         } catch (err) {
@@ -55,9 +55,9 @@ const bcrypt = require("bcrypt");
             }
         }
 
-        const getStoreService = async () => {
+        const getStoreService = async (cityId) => {
             try {
-                const result = await getStoreQuery();
+                const result = await getStoreQuery(cityId);
 
                 return result;
             } catch (err) {

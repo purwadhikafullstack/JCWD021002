@@ -13,6 +13,7 @@ import {
   updateOrderTotalAmountQuery,
   getOrderQuery,
 } from '../queries/checkout.query';
+import { calculateDiscountPrice } from '../utils/calculateDiscountPrice';
 
 export const getOrderService = async (userId) => {
     try {
@@ -63,14 +64,13 @@ export const checkoutService = async (userId, selectedItems) => {
     if (!selectedCartItem || selectedCartItem.length === 0) {
       throw new Error('No valid items in the cart for checkout.');
     }
-  
+    console.log("ini selected cart item", selectedCartItem);
     // Calculate total amount
     let subTotalProduct = selectedCartItem.reduce((total, orderItem) => {
         console.log('orderItem: ', orderItem?.price);
-      return total + (orderItem?.price || 0) * orderItem.quantity;
+      return total + (calculateDiscountPrice(orderItem?.price, orderItem?.ProductStock?.Discounts, orderItem.quantity)) * orderItem.quantity;
     }, 0);
     console.log('subTotalProduct', subTotalProduct);
-  
     let shippingCost = 5000;
   
     // let totalAmount = subTotalProduct + shippingCost;

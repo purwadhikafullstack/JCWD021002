@@ -50,7 +50,7 @@ const UserDetail = ({size, handleWebSize}) => {
         align={"center"}
       >
         <Image src={LogoGroceria} h={'30px'} />
-        <ResizeButton webSize={size} handleWebSize={handleWebSize} color={"black"}/>
+        <ResizeButton color={"black"}/>
       </Flex>
       
       <Box pl={size == '500px' ? '0px' : '150px' } pr='20px' pt='20px' pb='20px'>

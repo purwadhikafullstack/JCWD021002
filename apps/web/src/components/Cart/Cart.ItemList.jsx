@@ -11,6 +11,7 @@ import { RiDeleteBinLine } from 'react-icons/ri';
 import { HiMinusSmall } from 'react-icons/hi2';
 import { FiPlus } from 'react-icons/fi';
 import angkaRupiahJs from '@develoka/angka-rupiah-js';
+import { calculateDiscountPrice } from '../../utils/calculateDiscountPrice';
 
 export const CartItemList = ({
   user,
@@ -74,6 +75,13 @@ export const CartItemList = ({
     if (quantities[productStockId] === 1) await deleteCartProduct(productStockId);
   };
 
+  function formatPriceToIDR(price) {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+    }).format(price);
+  }
+
   return (
     <Flex key={item.id} flexDirection='row' gap={2}>
       <Checkbox
@@ -95,7 +103,7 @@ export const CartItemList = ({
       <Stack spacing={1}>
         <Text>{item.ProductStock.Product.name}</Text>
         <Text fontSize='md' fontWeight='bold' color='tomato'>
-        {angkaRupiahJs(item.price, {formal: false})}
+        {formatPriceToIDR(calculateDiscountPrice(item?.price, item?.ProductStock?.Discounts))}
         </Text>
         <Flex gap={1} border='1px' borderColor='gray.200'>
           <IconButton
