@@ -24,6 +24,13 @@ checkoutRouter.post('/', async (req, res) => {
   await checkoutController(req, res);
 });
 
+<<<<<<< Updated upstream
+=======
+checkoutRouter.post('/beliSekarang', async (req, res) => {
+  await beliSekarangController(req, res);
+});
+
+>>>>>>> Stashed changes
 //PATCH
 checkoutRouter.patch(
   '/upload-payment-proof/:id',

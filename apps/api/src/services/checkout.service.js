@@ -82,6 +82,10 @@ export const checkoutService = async (userId, selectedItems) => {
       // If a pending order exists, update the cart details and totalAmount
       await updateOrderDetailsQuery(pendingOrder.id, selectedCartItem);
       await updateOrderTotalAmountQuery(pendingOrder.id, subTotalProduct);
+<<<<<<< Updated upstream
+=======
+      
+>>>>>>> Stashed changes
       return { order: pendingOrder, selectedCartItem };
     } else {
       // If no pending order exists, create a new order
@@ -91,15 +95,33 @@ export const checkoutService = async (userId, selectedItems) => {
         // totalAmount,
         subTotalProduct,
         selectedCartItem,
+<<<<<<< Updated upstream
       );
   
       // Mark the cart as used in the order
       // await markCartAsUsedQuery(cart.id, order.id);
+=======
+        );
+        
+        // Mark the cart as used in the order
+        // await markCartAsUsedQuery(cart.id, order.id);
+>>>>>>> Stashed changes
   
       return { order };
     }
   };
 
+<<<<<<< Updated upstream
+=======
+  export const beliSekarangService = async (userId, productStockId, quantity) => {
+    try {
+      
+    } catch (err) {
+      throw err;
+    }
+  }
+
+>>>>>>> Stashed changes
 export const updatePaymentStatusService = async (orderId, paymentProof) => {
     console.log(orderId, paymentProof);
     const order = await findOrderQuery(orderId);

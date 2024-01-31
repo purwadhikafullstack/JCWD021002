@@ -35,15 +35,38 @@ import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useWebSize } from '../../provider.websize';
+<<<<<<< Updated upstream
+=======
+import { useLocation } from 'react-router-dom';
+>>>>>>> Stashed changes
 
 export const Checkout = () => {
   const user = useSelector((state) => state.AuthReducer.user);
   const userId = user?.id;
+<<<<<<< Updated upstream
+=======
+  const [heading, setHeading] = useState(null);
+>>>>>>> Stashed changes
   const [order, setOrder] = useState([]);
   const [orderDetail, setOrderDetail] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { size, handleWebSize } = useWebSize();
 
+<<<<<<< Updated upstream
+=======
+  const location = useLocation();
+  const isCartShipment = location.pathname === '/cart/shipment';
+  const isBeliSekarang = location.pathname === '/beli-sekarang';
+
+  useEffect(() => {
+    if (isCartShipment) {
+      setHeading('Checkout');
+    } else if (isBeliSekarang) {
+      setHeading('Beli Sekarang');
+    }
+  }, [isCartShipment, isBeliSekarang]);
+  
+>>>>>>> Stashed changes
   const {
     isOpen: addressDrawerIsOpen,
     onOpen: onOpenAddressDrawer,
@@ -91,7 +114,11 @@ export const Checkout = () => {
       transition="width 0.3s ease"
       backgroundColor="#f5f5f5"
     >
+<<<<<<< Updated upstream
       <CheckoutHeader handleWebSize={handleWebSize} size={size} />
+=======
+      <CheckoutHeader heading={heading} handleWebSize={handleWebSize} size={size} />
+>>>>>>> Stashed changes
 
       <Flex
         flexDirection="column"

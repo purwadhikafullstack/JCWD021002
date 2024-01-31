@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/react';
 import EmptyCart from '../../assets/empty_cart.png';
 import { CartItemList } from './Cart.ItemList';
+import { CartTotalSelected } from './Cart.TotalSelected';
 
 export const CartBody = ({
   user,
@@ -22,9 +23,12 @@ export const CartBody = ({
   setSelectedItems,
   quantities,
   setQuantities,
+  isScrolled,
   setIsScrolled,
   showToast,
+  deleteCartProduct,
 }) => {
+
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
@@ -41,7 +45,7 @@ export const CartBody = ({
   const isStoreAllSelected = (storeId) => {
     const storeProductIds = carts
       .filter((item) => item.ProductStock.Store.id === storeId)
-      .map((item) => item.id);
+      .map((item) => item.productStock_idproductStock);
 
     return (
       storeProductIds.length > 0 &&
@@ -51,7 +55,14 @@ export const CartBody = ({
   };
 
   return (
-    <Box height='100vh' overflowY='auto' position='relative'>
+      <Box height='100vh' overflowY='auto' position='relative'>
+    {/* <Box height='100vh'> */}
+      {/* <CartTotalSelected
+        user={user}
+        selectedItems={selectedItems}
+        isScrolled={isScrolled}
+        showToast={showToast}
+        /> */}
       {uniqueStoreIds.length === 0 ? (
         <Flex
         flexDirection='column'
@@ -59,7 +70,7 @@ export const CartBody = ({
         alignItems='center'
         h='70vh'
         gap={4}
-      >
+        >
         <VStack gap={0}>
           <Image src={EmptyCart} w='10em' />
           <Text fontSize='12pt'>Wah, keranjang belanjamu masih kosong</Text>
@@ -73,14 +84,14 @@ export const CartBody = ({
       </Flex>
       ) : (
         uniqueStoreIds.map((storeId, storeIndex) => (
-            <Stack
-              key={storeIndex}
-              pt={3}
-              pb={4}
-              top={0}
-              marginBottom='12px'
-              backgroundColor='white'
-            >
+          <Stack
+          key={storeIndex}
+          pt={3}
+          pb={4}
+          top={0}
+          marginBottom='12px'
+          backgroundColor='white'
+          >
               <Box
                 w='full'
                 pl={4}
@@ -89,40 +100,42 @@ export const CartBody = ({
                 borderBottom='1px'
                 borderBottomColor='rgba(192, 192, 192, 0.5)'
                 marginBottom='5px'
-              >
+                >
                 <Checkbox
                   colorScheme='green'
                   isChecked={isStoreAllSelected(storeId)}
                   onChange={() => handleCheckboxStoreChange(storeId)}
-                >
+                  >
                   {carts.find((item) => item.ProductStock.Store.id === storeId)
                     ?.ProductStock.Store.name || 'Loading...'}
                 </Checkbox>
               </Box>
-              <Flex flexDirection='column' pl={4} pr={4} gap={2}>
+              <Flex flexDirection='column' px={4} gap={2}>
                 {carts
                   .filter((item) => item.ProductStock.Store.id === storeId)
                   .map((item) => (
                     <CartItemList
-                      key={item.id}
-                      user={user}
-                      carts={carts}
-                      fetchCart={fetchCart}
-                      storeId={storeId}
-                      item={item}
-                      selectedItems={selectedItems}
-                      setSelectedItems={setSelectedItems}
-                      isStoreAllSelected={isStoreAllSelected}
-                      handleCheckboxStoreChange={handleCheckboxStoreChange}
-                      quantities={quantities}
-                      setQuantities={setQuantities}
-                      showToast={showToast}
+                    key={item.id}
+                    user={user}
+                    carts={carts}
+                    fetchCart={fetchCart}
+                    storeId={storeId}
+                    item={item}
+                    selectedItems={selectedItems}
+                    setSelectedItems={setSelectedItems}
+                    isStoreAllSelected={isStoreAllSelected}
+                    handleCheckboxStoreChange={handleCheckboxStoreChange}
+                    quantities={quantities}
+                    setQuantities={setQuantities}
+                    showToast={showToast}
+                    deleteCartProduct={deleteCartProduct}
                     />
-                  ))}
+                    ))}
               </Flex>
             </Stack>
           ))
-      )}
-    </Box>
+          )}
+    {/* </Box> */}
+          </Box>
   );
 };

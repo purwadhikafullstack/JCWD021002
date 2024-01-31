@@ -4,6 +4,10 @@ import {
   updatePaymentStatusService,
   getSelectedCartItemsService,
   getOrderService,
+<<<<<<< Updated upstream
+=======
+  beliSekarangService,
+>>>>>>> Stashed changes
 } from '../services/checkout.service';
 
 export const getOrderController = async (req, res) => {
@@ -49,6 +53,19 @@ export const checkoutController = async (req, res) => {
   }
 };
 
+<<<<<<< Updated upstream
+=======
+export const beliSekarangController = async (req, res) => {
+  try {
+    const { userId, productStockId, quantity } = req.body;
+    const result = await beliSekarangService(userId, productStockId, quantity);
+    res.status(200).json({ result });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+>>>>>>> Stashed changes
 export const uploadPaymentProofController = async (req, res) => {
   try {
     const orderId = req.params.id;
