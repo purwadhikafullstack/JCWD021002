@@ -4,6 +4,7 @@ import {
   updatePaymentStatusService,
   getSelectedCartItemsService,
   getOrderService,
+  beliSekarangService,
   shippingCostService
 } from '../services/checkout.service';
 
@@ -45,6 +46,16 @@ export const checkoutController = async (req, res) => {
   try {
     const { order, cartItems } = await checkoutService(userId, selectedItems);
     res.status(200).json({ order, cartItems });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const beliSekarangController = async (req, res) => {
+  try {
+    const { userId, productStockId, quantity } = req.body;
+    const result = await beliSekarangService(userId, productStockId, quantity);
+    res.status(200).json({ result });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

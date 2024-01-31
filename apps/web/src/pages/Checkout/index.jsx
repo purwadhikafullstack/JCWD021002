@@ -23,6 +23,7 @@ import { BsTelephoneFill } from 'react-icons/bs';
 import { IoIosArrowForward } from 'react-icons/io';
 import { LiaBoxSolid } from 'react-icons/lia';
 import { IconChevronLeft } from '@tabler/icons-react';
+import { calculateDiscountPrice } from '../../utils/calculateDiscountPrice';
 import { Link, useLocation } from 'react-router-dom';
 
 import Voucher from '../../assets/voucher.png';
@@ -33,6 +34,8 @@ import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useWebSize } from '../../provider.websize';
+import { useLocation } from 'react-router-dom';
+import { VoucherPage } from '../Voucher/Voucher';
 import { useDispatch } from 'react-redux';
 import { setAddress } from '../../redux/reducer/addressReducer';
 import { groupBy } from 'lodash';
@@ -40,19 +43,32 @@ import { ListProductOrder } from './listProductOrder';
 import '../../scrollbar.css';
 
 export const Checkout = () => {
-  const [orderDetail, setOrderDetail] = useState([]);
-  const [order, setOrder] = useState([]);
-  const [userAddress, setUserAddress] = useState();
   const [selectedItem, setSelectedItem] = useState();
   const [active, setActive] = useState();
-  const { size, handleWebSize } = useWebSize();
   const user = useSelector((state) => state.AuthReducer.user);
   const userId = user?.id;
+  const [heading, setHeading] = useState(null);
+  const [order, setOrder] = useState([]);
+  const [orderDetail, setOrderDetail] = useState([]);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { size, handleWebSize } = useWebSize();
+  const [discountVoucher, setDiscountVoucher] = useState(0);
   const address = useSelector((state) => state.addressReducer?.address);
-  const location = useLocation()?.pathname;
   const dispatch = useDispatch();
   const [selectedShipping, setSelectedshipping] = useState();
 
+  const location = useLocation();
+  const isCartShipment = location.pathname === '/cart/shipment';
+  const isBeliSekarang = location.pathname === '/beli-sekarang';
+
+  useEffect(() => {
+    if (isCartShipment) {
+      setHeading('Checkout');
+    } else if (isBeliSekarang) {
+      setHeading('Beli Sekarang');
+    }
+  }, [isCartShipment, isBeliSekarang]);
+  
   const {
     isOpen: addressDrawerIsOpen,
     onOpen: onOpenAddressDrawer,
@@ -121,7 +137,7 @@ export const Checkout = () => {
       backgroundColor="#f5f5f5"
       className="hide-scrollbar"
     >
-      <CheckoutHeader handleWebSize={handleWebSize} size={size} />
+      <CheckoutHeader heading={heading} handleWebSize={handleWebSize} size={size} />
 
       <Flex
         flexDirection="column"
@@ -358,16 +374,7 @@ export const Checkout = () => {
             <Icon as={Image} src={Voucher} w={'43px'} h="22px" />
             <Text>Voucher Groceria</Text>
           </Flex>
-          <Button
-            rightIcon={<IoIosArrowForward />}
-            variant="ghost"
-            _hover={{ color: 'black', opacity: 0.9 }}
-            transition="color 0.3s ease-in-out, opacity 0.3s ease-in-out"
-            fontWeight="medium"
-            color="gray.600"
-          >
-            Gunakan Voucher
-          </Button>
+          <VoucherPage order={order} setDiscountVoucher={setDiscountVoucher} fetchOrder={fetchOrder} />
         </HStack>
 
         {/* {order.length > 0 ? (order.map ((item, index) => ( */}
@@ -398,7 +405,7 @@ export const Checkout = () => {
                 - {angkaRupiahJs(24000, { formal: false })}
               </Text>
               <Text fontSize="sm">
-                - {angkaRupiahJs(400000, { formal: false })}
+                - { order?.totalDiscount ? angkaRupiahJs(order?.totalDiscount, { formal: false }) : angkaRupiahJs(0, { formal: false }) }
               </Text>
             </Flex>
           </Flex>

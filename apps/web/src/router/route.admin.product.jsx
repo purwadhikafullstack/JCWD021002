@@ -13,7 +13,6 @@ import ProductSearch from '../pages/ProductSearch/ProductSearch';
 import ProductCatalogue from '../pages/ProductCatalogue/ProductCatalogue';
 import ReportSales from '../pages/ReportSales/ReportSales';
 import ReportStock from '../pages/ReportStock/ReportStock';
-import Voucher from '../pages/Voucher/Voucher';
 import withRoleRestriction from './withRoleRestriction';
 
 const AdminDashboardWithRoleCheck = withRoleRestriction([1, 2])(DashboardAdmin);
@@ -44,7 +43,6 @@ const routeAdminProduct = [
   { path: '/product-stock-lists', element: <AdminProductStockListsWithRoleCheck /> },
   { path: '/sales-report', element: <AdminReportSalesWithRoleCheck /> },
   { path: '/stock-report', element: <AdminReportStockWithRoleCheck /> },
-  { path: '/voucher', element: <Voucher /> },
 ];
 
 export default routeAdminProduct;

@@ -18,6 +18,7 @@ export const init = (sequelize) => {
       sequelize,
       timestamps: false,
       modelName: 'Role',
+      tableName: 'role',
     },
   );
 };

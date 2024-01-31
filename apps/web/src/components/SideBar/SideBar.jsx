@@ -79,7 +79,6 @@ const SuperAdminLinkItems = [
 const SidebarContent = ({ onClose, ...rest }) => {
   const { user } = useSelector((state) => state.AuthReducer);
   const { size } = useWebSize();
-
   return (
     <Box
       transition="3s ease"

@@ -106,6 +106,17 @@ export const deleteAddressService = async (id) => {
 
     return res
   } catch (err) {
-    throw err
+    console.log(err);
+    throw err;
+  }
+};
+
+export const getAddressService = async (id) => {
+  try {
+    const res = await getAddressQuery(id);
+
+    return res;
+  } catch (err) {
+    throw err;
   }
 } 

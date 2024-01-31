@@ -12,17 +12,17 @@ import 'slick-carousel/slick/slick-theme.css';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import toRupiah from '@develoka/angka-rupiah-js';
-import SideBar from '../../components/SideBar/SideBar'
+import { IoIosArrowForward } from 'react-icons/io';
 import { useWebSize } from '../../provider.websize';
 import { PaginationControls } from '../../components/PaginationControls/PaginationControls';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-const MAX_VISIBLE_PAGES = 3; 
-
-function Voucher() {
+export const VoucherPage = ({ order, setDiscountVoucher, fetchOrder, }) => {
   const {size, handleWebSize } = useWebSize();
   const { user, isLogin } = useSelector((state) => state.AuthReducer);
   const [userStore, setUserStore] = useState(user?.store_idstore);
-
+  const userId = user?.id;
   const [sampleData, setSampleData] = useState([]);
   const [data, setData] = useState([]);
   const [dataStore, setDataStore] = useState([]);
@@ -101,10 +101,24 @@ function Voucher() {
     // onClose();
   };
 
-  const handleProductName = (value) => {
-    setProductName(value);
-    setPage(1);
-  };
+  const useVoucher = async (item) => {
+    try {
+      const response = await axios.patch(`${import.meta.env.VITE_API_URL}/voucher/use-voucher`,
+      {
+        order: order,
+        voucher: item,
+      }
+      )
+
+      console.log("ini response voucher", response?.data?.data);
+      await fetchOrder(userId);
+      setDiscountVoucher(response?.data?.data);
+      toast.success('Voucher used');
+      setDrawerOpen(false);
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   const fetchCategory = async () => {
     try {
@@ -126,34 +140,6 @@ useEffect(() => {
 }, []);
 
 console.log(data);
-
-  const getPageNumbers = () => {
-    const totalPages = data?.totalPages || 0;
-    const currentPage = selectedPage;
-  
-    let startPage = Math.max(currentPage - Math.floor(MAX_VISIBLE_PAGES / 2), 1);
-    let endPage = Math.min(startPage + MAX_VISIBLE_PAGES - 1, totalPages);
-  
-    if (totalPages - endPage < Math.floor(MAX_VISIBLE_PAGES / 2)) {
-      startPage = Math.max(endPage - MAX_VISIBLE_PAGES + 1, 1);
-    }
-  
-    const pages = [];
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(i);
-    }
-  
-    if (startPage > 1) {
-      pages.unshift("...");
-    }
-  
-    if (endPage < totalPages) {
-      pages.push("...");
-    }
-  
-    return pages;
-  };
-
   
   const fetchStore = async () => {
     try {
@@ -174,8 +160,20 @@ console.log(data);
   }, []);
 
   return (
-      <Box w={{ base: '100vw', md: size }}>
-          <Button onClick={handleDrawerOpen}>Open Drawer</Button>
+    <Box>
+      <ToastContainer position="top-center" closeOnClick pauseOnFocusLoss draggable pauseOnHover theme="colored" />
+          <Button
+            rightIcon={<IoIosArrowForward />}
+            variant="ghost"
+            _hover={{ color: 'black', opacity: 0.9 }}
+            transition="color 0.3s ease-in-out, opacity 0.3s ease-in-out"
+            fontWeight="medium"
+            color="gray.600"
+            onClick={handleDrawerOpen}
+            isDisabled={order?.totalDiscount ? true : false }
+          >
+            Gunakan Voucher
+          </Button>
     <Drawer isOpen={isDrawerOpen} onClose={handleDrawerClose} placement="bottom">
         <DrawerOverlay />
         <DrawerContent height='90vh' margin='auto' width='500px'>
@@ -233,7 +231,7 @@ console.log(data);
                 <>
                 
                 <Card key={item.id} w='450px' minHeight='250px' maxHeight='270px' bg={useColorModeValue('white', 'gray.800')}
-            boxShadow='0px 1px 5px gray' border={item?.status == 1 ? 'solid 2px green' : 'solid 2px red'} onClick={() => navigate(`/product-detail-admin/${item?.id}`)} _hover={{ cursor: 'pointer' }}>
+            boxShadow='0px 1px 5px gray' border={item?.status == 1 ? 'solid 2px green' : 'solid 2px red'} _hover={{ cursor: 'pointer' }}>
               <Image
                       key={item?.banner}
                       src={item?.banner ? `http://localhost:8000/uploads/discounts/${item?.banner}` : (LogoGroceria)}
@@ -304,6 +302,7 @@ console.log(data);
                           </Text>
                           </Flex>
                       </Flex>
+                      <Button onClick={() => {useVoucher(item);}}>Gunakan</Button>
                     </Stack>
                   </CardBody>
                   {/* <CardFooter>
@@ -328,9 +327,6 @@ console.log(data);
             </DrawerBody>
         </DrawerContent>
     </Drawer>
-      </Box>
+    </Box>
   );
 }
-
-export default Voucher;
-

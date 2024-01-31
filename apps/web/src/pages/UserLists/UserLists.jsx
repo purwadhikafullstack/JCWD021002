@@ -1,35 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import {
-  Box,
-  Button,
-  Text,
-  Spacer,
-  VStack,
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalHeader,
-  ModalContent,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-  Input,
-  Flex,
-  Select,
-  InputGroup,
-  InputLeftElement,
-} from '@chakra-ui/react';
-import {
-  IconPlus,
-  IconSearch,
-} from '@tabler/icons-react';
+import { Box, Button, Text, Spacer, VStack, useDisclosure, Modal, ModalOverlay, ModalHeader, ModalContent, ModalCloseButton, ModalBody, ModalFooter, Input, Flex, Select, InputGroup, InputLeftElement, } from '@chakra-ui/react';
+import { IconPlus, IconSearch, } from '@tabler/icons-react';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import SideBar from '../../components/SideBar/SideBar';
 import { GridLists } from './GridLists';
 import { TableLists } from './TableLists';
 import { useWebSize } from '../../provider.websize';
 import { PaginationControls } from './PaginationControls';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const UserLists = () => {
   const {size, handleWebSize } = useWebSize();
@@ -64,7 +45,7 @@ const UserLists = () => {
   const confirmDeleteUser = async () => {
     try {
       let newStatus = selectedUser?.status === 'Active' ? 'Deactive' : 'Active';
-  
+    
       const result = await axios.patch(
         `${import.meta.env.VITE_API_URL}user/update-user`,
         {
@@ -75,23 +56,26 @@ const UserLists = () => {
   
       if (result) {
         if (newStatus === 'Active') {
-          alert('User activated successfully');
+          toast.success('User activated successfully');
         } else {
-          alert('User deactivated successfully');
+          toast.success('User deactivated successfully');
         }
         
         setDeleteModalOpen(false);
         fetchUser();
+        fetchUser();
       }
     } catch (err) {
-      alert('Error: User used in another data');
+      toast.error('Error: User used in another data');
     }
   };
+  
   
 
   const fetchUser = async () => {
     try {
       const response = await axios.get(
+        `http://localhost:8000/api/user/user-lists?page=${page}&pageSize=${pageSize}&roleId=${roleId}&username=${username}`,
         `http://localhost:8000/api/user/user-lists?page=${page}&pageSize=${pageSize}&roleId=${roleId}&username=${username}`,
       );
 
@@ -118,12 +102,14 @@ const UserLists = () => {
     setSelectedPage(pageFromUrl);
   }, []); 
 
+
   useEffect(() => {
     fetchUser();
   }, [page, pageSize, username, roleId]);
 
   return (
     <Box w={{ base: '100vw', md: size }} overflowX='hidden'>
+      <ToastContainer position="top-center" closeOnClick pauseOnFocusLoss draggable pauseOnHover theme="colored" />
           <SideBar size={size} handleWebSize={handleWebSize}/>
       <Box w={{ base: '100vw', md: size }} height='fit-content' backgroundColor='#fbfaf9' >
       <Box p='20px'>
@@ -151,6 +137,15 @@ const UserLists = () => {
             </Select>
           </Box>
                 </Flex>
+            <Button leftIcon={<IconPlus />} backgroundColor='#286043' textColor='white' border='solid 1px #286043' onClick={() => navigate('/add-user')}>Add Admin Store</Button>
+            <Spacer />
+            <Button
+            onClick={handleSwitchView}
+            borderRadius='full'
+            border='solid 1px black'
+          >
+            Switch View
+          </Button>
           <Flex flexDir='row' flexWrap='wrap' mb='10px'>
             <Button leftIcon={<IconPlus />} backgroundColor='#286043' textColor='white' border='solid 1px #286043' onClick={() => navigate('/add-user')}>Add Admin Store</Button>
             <Spacer />
@@ -211,9 +206,57 @@ const UserLists = () => {
             />
             
           </Box>
+          {viewType === 'table' ? (
+          <TableLists dataUser={dataUser} handleDeleteUser={handleDeleteUser} navigate={navigate} />
+        ) : (
+          <GridLists dataUser={dataUser} handleDeleteUser={handleDeleteUser} navigate={navigate} />
+        )}
+            
+            {deleteModalOpen && (
+              <Modal
+                isOpen={deleteModalOpen}
+                onClose={() => setDeleteModalOpen(false)}
+              >
+                <ModalOverlay />
+                <ModalContent>
+                  <ModalHeader>{selectedUser?.status == 'Active' ? "Delete User" : "Activated User" } </ModalHeader>
+                  <ModalCloseButton />
+                  <ModalBody>
+                    <Text>
+                    {selectedUser?.status == 'Active' ? `Are you sure you want to delete the User "
+                      ${selectedUser?.username}"?` : `Are you sure you want to Activated the User "
+                      ${selectedUser?.username}"?`}
+                    </Text>
+                    <VStack></VStack>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button
+                      colorScheme="blue"
+                      mr={3}
+                      onClick={() => setDeleteModalOpen(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button colorScheme="red" onClick={confirmDeleteUser}>
+                      {selectedUser?.status == 'Active' ? "Delete" : "Activated"}
+                    </Button>
+                  </ModalFooter>
+                </ModalContent>
+              </Modal>
+            )}
+            <PaginationControls 
+              page= {page}
+              pageSize={pageSize}
+              selectedPage={selectedPage}
+              setPage={setPage}
+              setPageSize={setPageSize}
+              setSelectedPage={setSelectedPage}
+              dataUser={dataUser}
+            />
+            
+          </Box>
         </Box>
       </Box>
-    </Box>
   );
 };
 

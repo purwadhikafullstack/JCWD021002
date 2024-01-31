@@ -14,6 +14,7 @@ import {
   updateOrderTotalAmountQuery,
   getOrderQuery,
 } from '../queries/checkout.query';
+import { calculateDiscountPrice } from '../utils/calculateDiscountPrice';
 
 export const getOrderService = async (userId) => {
   try {
@@ -49,57 +50,65 @@ export const preCheckoutService = async (userId, selectedItems) => {
 };
 
 export const checkoutService = async (userId, selectedItems) => {
-  // Find the user's cart
-  const cart = await findCartQuery(userId);
+    // Find the user's cart
+    const cart = await findCartQuery(userId);
+  
+    // If cart doesn't exist, throw an error
+    if (!cart) {
+      throw new Error('Cart not found for the user.');
+    }
+  
+    // Get cart items corresponding to the selected items
+    const selectedCartItem = await getSelectedCartItemsQuery(cart.id, selectedItems);
+  
+    // Check if there are valid items in the cart for checkout
+    if (!selectedCartItem || selectedCartItem.length === 0) {
+      throw new Error('No valid items in the cart for checkout.');
+    }
+    console.log("ini selected cart item", selectedCartItem);
+    // Calculate total amount
+    let subTotalProduct = selectedCartItem.reduce((total, orderItem) => {
+        console.log('orderItem: ', orderItem?.price);
+      return total + (calculateDiscountPrice(orderItem?.price, orderItem?.ProductStock?.Discounts, orderItem.quantity)) * orderItem.quantity;
+    }, 0);
+    console.log('subTotalProduct', subTotalProduct);
+    let shippingCost = 5000;
+  
+    // let totalAmount = subTotalProduct + shippingCost;
+  
+    // Check if there is an existing pending order for the user
+    const pendingOrder = await findPendingOrderQuery(userId);
+  
+    if (pendingOrder) {
+      // If a pending order exists, update the cart details and totalAmount
+      await updateOrderDetailsQuery(pendingOrder.id, selectedCartItem);
+      await updateOrderTotalAmountQuery(pendingOrder.id, subTotalProduct);
+      
+      return { order: pendingOrder, selectedCartItem };
+    } else {
+      // If no pending order exists, create a new order
+      const order = await createOrderQuery(
+        userId,
+        selectedCartItem[0]?.ProductStock.store_idstore,
+        // totalAmount,
+        subTotalProduct,
+        selectedCartItem,
+        );
+        
+        // Mark the cart as used in the order
+        // await markCartAsUsedQuery(cart.id, order.id);
+  
+      return { order };
+    }
+  };
 
-  // If cart doesn't exist, throw an error
-  if (!cart) {
-    throw new Error('Cart not found for the user.');
+  export const beliSekarangService = async (userId, productStockId, quantity) => {
+    try {
+      
+    } catch (err) {
+      throw err;
+    }
   }
-
-  // Get cart items corresponding to the selected items
-  const selectedCartItem = await getSelectedCartItemsQuery(cart.id, selectedItems);
-
-  // Check if there are valid items in the cart for checkout
-  if (!selectedCartItem || selectedCartItem.length === 0) {
-    throw new Error('No valid items in the cart for checkout.');
-  }
-
-  // Calculate total amount
-  let subTotalProduct = selectedCartItem.reduce((total, orderItem) => {
-    console.log('orderItem: ', orderItem?.price);
-    return total + (orderItem?.price || 0) * orderItem.quantity;
-  }, 0);
-  console.log('subTotalProduct', subTotalProduct);
-
-  let shippingCost = 5000;
-
-  // let totalAmount = subTotalProduct + shippingCost;
-
-  // Check if there is an existing pending order for the user
-  const pendingOrder = await findPendingOrderQuery(userId);
-
-  if (pendingOrder) {
-    // If a pending order exists, update the cart details and totalAmount
-    await updateOrderDetailsQuery(pendingOrder.id, selectedCartItem);
-    await updateOrderTotalAmountQuery(pendingOrder.id, subTotalProduct);
-    return { order: pendingOrder, selectedCartItem };
-  } else {
-    // If no pending order exists, create a new order
-    const order = await createOrderQuery(
-      userId,
-      selectedCartItem[0]?.ProductStock.store_idstore,
-      // totalAmount,
-      subTotalProduct,
-      selectedCartItem,
-    );
-
-    // Mark the cart as used in the order
-    // await markCartAsUsedQuery(cart.id, order.id);
-
-    return { order };
-  }
-};
 
 export const updatePaymentStatusService = async (orderId, paymentProof) => {
   console.log(orderId, paymentProof);

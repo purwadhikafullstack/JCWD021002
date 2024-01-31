@@ -40,6 +40,7 @@ const getSalesByDateQuery = async (startDate, endDate, storeId, categoryId, prod
                 { orderDate: { [Op.lte]: new Date(`${endDate}T23:59:59.999Z`) } },
                 // { store_idstore: storeId ? storeId : { [Op.ne]: null } },
                 storeId ? { store_idstore: storeId } : {},
+                { status: { [Op.not]: "Pending" } },
               ],
             },
           },
@@ -258,7 +259,7 @@ const createSalesReportQuery = async (
                 [Op.gte]: new Date(`${startDate}T00:00:00.000Z`),
                 [Op.lte]: new Date(`${endDate}T23:59:59.999Z`),
               },
-              status: "Success"
+              status: { [Op.not]: "Pending" },
             },
           },
           {

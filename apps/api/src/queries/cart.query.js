@@ -1,9 +1,14 @@
+const { Op, Sequelize } = require('sequelize');
 import Cart from '../models/cart.model';
 import CartDetail from '../models/cartDetail.model';
 import ProductStock from '../models/productStock.model';
 import Product from '../models/product.model';
 import ProductImage from '../models/productImage.model';
 import Store from '../models/store.model';
+import Discount from '../models/discount.model';
+import DiscountType from '../models/discountType.model';
+import DiscountDistribution from '../models/discountDistribution.model';
+import UsageRestriction from '../models/usageRestriction.model';
 
 export const findCartQuery = async (userId) => {
   return Cart.findOne({
@@ -33,10 +38,10 @@ export const createCartQuery = async (userId) => {
   }
 };
 
-export const getProductStockQuery = async (productStockId) => {
+export const findProductStockQuery = async (productStockId) => {
   return ProductStock.findOne({
     where: { id: productStockId },
-    include: [{ model: Product, include: [ProductImage] }, { model: Store }],
+    include: [{ model: Product, include: [ProductImage] }, { model: Store }, ],
   });
 };
 
@@ -160,6 +165,28 @@ export const getAllCartQuery = async (userId) => {
             include: [
               { model: Product, include: [ProductImage] },
               { model: Store },
+              {
+                separate: true,
+                model: Discount,
+                where: {
+                  startDate: { [Sequelize.Op.lte]: new Date() }, // Include discounts with start date less than or equal to the current date
+                  endDate: { [Sequelize.Op.gte]: new Date() },   // Include discounts with end date greater than or equal to the current date
+                },
+                include: [
+                  {
+                    model: UsageRestriction,
+                  },
+                  {
+                    model: DiscountType,
+                  },
+                  {
+                    model: DiscountDistribution,
+                  },
+                  {
+                    model: Store,
+                  },
+                ],
+              },
             ],
           },
         ],
@@ -171,3 +198,21 @@ export const getAllCartQuery = async (userId) => {
   });
 };
 
+export const clearCartQuery = async (cartId, productStockId) => {
+  const t = await CartDetail.sequelize.transaction();
+
+  try {
+    await CartDetail.destroy({
+      where: {
+        cart_idcart: cartId,
+        productStock_idproductStock: productStockId,
+      },
+      transaction: t,
+    });
+
+    await t.commit();
+  } catch (err) {
+    await t.rollback();
+    throw err;
+  }
+};

@@ -28,6 +28,10 @@ checkoutRouter.post('/sippingCost', async (req, res) => {
   await shippingCostController(req, res);
 });
 
+checkoutRouter.post('/beliSekarang', async (req, res) => {
+  await beliSekarangController(req, res);
+});
+
 //PATCH
 checkoutRouter.patch(
   '/upload-payment-proof/:id',

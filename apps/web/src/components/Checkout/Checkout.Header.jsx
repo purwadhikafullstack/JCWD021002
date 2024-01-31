@@ -3,7 +3,7 @@ import { Flex, IconButton, Heading } from '@chakra-ui/react';
 import { IconChevronLeft } from '@tabler/icons-react';
 import { ResizeButton } from '../../components/ResizeButton';
 
-export const CheckoutHeader = ({ handleWebSize, size }) => {
+export const CheckoutHeader = ({ heading, handleWebSize, size }) => {
   const navigate = useNavigate();
 
   const handleGoBack = () => {
@@ -33,7 +33,7 @@ export const CheckoutHeader = ({ handleWebSize, size }) => {
           _hover={{ color: 'gray.600', opacity: 0.9 }}
             transition='color 0.3s ease-in-out, opacity 0.3s ease-in-out'
         />
-        <Heading size='sm'>Checkout</Heading>
+        <Heading size='sm'>{heading}</Heading>
       </Flex>
       <ResizeButton
         webSize={size}

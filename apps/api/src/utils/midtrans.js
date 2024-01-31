@@ -1,6 +1,6 @@
 import { Snap } from 'midtrans-client';
 import Product from '../models/product.model';
-import OrderDetail from '../models/orderDetail.model';
+const { CoreApi } = require('midtrans-client');
 
 const snap = new Snap({
   isProduction: false,
@@ -66,6 +66,24 @@ export const generateMidtransToken = async (
 
     const token = await snap.createTransactionToken(transactionOptions);
     return token;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getMidtransTransactionStatus = async (orderId) => {
+  try {
+    // Initialize Midtrans CoreApi with your credentials
+    const coreApi = new CoreApi({
+      isProduction: false,
+      serverKey: process.env.MIDTRANS_SERVER_KEY,
+      clientKey: process.env.MIDTRANS_CLIENT_KEY,
+    });
+
+    // Get transaction status
+    const transactionStatus = await coreApi.transaction.status(orderId);
+
+    return transactionStatus;
   } catch (error) {
     throw error;
   }
