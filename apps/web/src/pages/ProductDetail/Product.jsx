@@ -198,6 +198,26 @@ const Product = () => {
     }
   };
 
+  const handleBeliSekarang = async () => {
+      try {
+        await axios.post(`${import.meta.env.VITE_API_URL}/checkout`, {
+          userId: user.id,
+          selectedItems: id,
+        });
+
+        navigate('/beli-sekarang');
+      } catch (error) {
+        console.error('Checkout failed:', error);
+        toast({
+          title: 'Checkout failed',
+          description: 'An error occurred during the checkout process.',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+  };
+
   const showToast = (status, description) => {
     toast({
       title: status === 'success' ? 'Success' : 'Error',
@@ -544,6 +564,7 @@ const Product = () => {
             </DrawerBody>
             <DrawerFooter>
               <Button
+                onClick={handleBeliSekarang}
                 variant="ghost"
                 bgColor="colors.primary"
                 color={'white'}

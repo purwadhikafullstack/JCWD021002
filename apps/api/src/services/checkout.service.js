@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { findCartQuery } from '../queries/cart.query';
 import {
   createOrderQuery,
@@ -16,15 +17,15 @@ import {
 import { calculateDiscountPrice } from '../utils/calculateDiscountPrice';
 
 export const getOrderService = async (userId) => {
-    try {
-        const pendingOrder = await findPendingOrderQuery(userId)
-        if(!pendingOrder) throw new Error('Order not found');
+  try {
+    const pendingOrder = await findPendingOrderQuery(userId)
+    if (!pendingOrder) throw new Error('Order not found');
 
-        const result = await getOrderQuery(pendingOrder.user_iduser);
-        return result;
-    } catch (err) {
-        throw err;
-    }
+    const result = await getOrderQuery(pendingOrder.user_iduser);
+    return result;
+  } catch (err) {
+    throw err;
+  }
 }
 
 export const preCheckoutService = async (userId, selectedItems) => {
@@ -38,7 +39,7 @@ export const preCheckoutService = async (userId, selectedItems) => {
 
   if (!cartItems || cartItems.length === 0) {
     throw new Error('No valid items in the cart for pre-checkout.');
-  } 
+  }
 
   const totalAmount = cartItems.reduce((total, cartItem) => {
     return total + (cartItem?.price || 0) * cartItem.quantity;
@@ -82,6 +83,7 @@ export const checkoutService = async (userId, selectedItems) => {
       // If a pending order exists, update the cart details and totalAmount
       await updateOrderDetailsQuery(pendingOrder.id, selectedCartItem);
       await updateOrderTotalAmountQuery(pendingOrder.id, subTotalProduct);
+      
       return { order: pendingOrder, selectedCartItem };
     } else {
       // If no pending order exists, create a new order
@@ -91,43 +93,73 @@ export const checkoutService = async (userId, selectedItems) => {
         // totalAmount,
         subTotalProduct,
         selectedCartItem,
-      );
-  
-      // Mark the cart as used in the order
-      // await markCartAsUsedQuery(cart.id, order.id);
+        );
+        
+        // Mark the cart as used in the order
+        // await markCartAsUsedQuery(cart.id, order.id);
   
       return { order };
     }
   };
 
+  export const beliSekarangService = async (userId, productStockId, quantity) => {
+    try {
+      
+    } catch (err) {
+      throw err;
+    }
+  }
+
 export const updatePaymentStatusService = async (orderId, paymentProof) => {
-    console.log(orderId, paymentProof);
-    const order = await findOrderQuery(orderId);
-  
-    if (!order) {
-      throw new Error('Order not found.');
+  console.log(orderId, paymentProof);
+  const order = await findOrderQuery(orderId);
+
+  if (!order) {
+    throw new Error('Order not found.');
+  }
+
+  const updatedOrder = await updatePaymentStatusQuery(orderId, paymentProof);
+
+  return updatedOrder;
+};
+
+export const cancelOrderService = async (orderId) => {
+  const order = await cancelOrderQuery.getOrderWithDetails(orderId);
+
+  if (!order) {
+    throw new Error('Order not found.');
+  }
+
+  // Validate if the order can be canceled
+  if (!order.canCancelOrder()) {
+    throw new Error('Order cannot be canceled at this time.');
+  }
+
+  // Process the order cancellation
+  await cancelOrderQuery.cancelOrder(order);
+
+  return { message: 'Order canceled successfully.' };
+};
+
+
+export const shippingCostService = async (key, origin, destination, weight, courier) => {
+  try {
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'key': key,
     }
 
-    const updatedOrder = await updatePaymentStatusQuery(orderId, paymentProof);
-  
-    return updatedOrder;
-  };
-  
-  export const cancelOrderService = async (orderId) => {
-    const order = await cancelOrderQuery.getOrderWithDetails(orderId);
-  
-    if (!order) {
-      throw new Error('Order not found.');
-    }
-  
-    // Validate if the order can be canceled
-    if (!order.canCancelOrder()) {
-      throw new Error('Order cannot be canceled at this time.');
-    }
-  
-    // Process the order cancellation
-    await cancelOrderQuery.cancelOrder(order);
-  
-    return { message: 'Order canceled successfully.' };
-  };
-  
+    const data = {
+      origin,
+      destination,
+      weight,
+      courier,
+    };
+
+    const res = await axios.post('https://api.rajaongkir.com/starter/cost', data, {headers})
+    return res.data
+  } catch (err) {
+    throw err
+  }
+}

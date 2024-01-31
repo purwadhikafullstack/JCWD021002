@@ -13,6 +13,7 @@ import DiscountDistribution from '../models/discountDistribution.model';
 import UsageRestriction from '../models/usageRestriction.model';
 import { calculateDiscountPrice } from '../utils/calculateDiscountPrice';
 import { calculateDiscountBOGO } from '../utils/calculateDiscountBOGO';
+import City from '../models/city.model'
 
 export const findPendingOrderQuery = async (userId) => {
   try {
@@ -72,20 +73,13 @@ export const updateOrderDetailsQuery = async (orderId, cartItems) => {
   }
 };
 
-export const markCartAsUsedQuery = async (cartId, orderId) => {
-  return await Cart.update(
-    { status: 'used' },
-    { where: { idcart: cartId, order_idorder: orderId } },
-  );
-};
-
 export const getSelectedCartItemsQuery = async (cartId, selectedItems) => {
   console.log('cartId: ', cartId);
   console.log('selectedItems: ', selectedItems);
   return CartDetail.findAll({
     where: {
       cart_idcart: cartId,
-      id: selectedItems,
+      productStock_idproductStock: selectedItems,
         // productStock_idproductStock: selectedItems,
     },
     include: [
@@ -136,7 +130,7 @@ export const getOrderQuery = async (userId) => {
               model: ProductStock,
               include: [
                 { model: Product, include: [ProductImage] },
-                { model: Store },
+                { model: Store, include: [City] },
                 {
                   separate: true,
                   model: Discount,
@@ -231,17 +225,22 @@ export const clearCartQuery = async (cartId, selectedItems) => {
 
 export const findOrderQuery = async (orderId) => {
   try {
-    const order = await Order.findByPk(orderId);
+      const order = await Order.findByPk(orderId, {
+          include: [{
+              model: OrderDetail,
+              as: 'OrderDetails', // Use the correct alias defined in your association
+          }],
+      });
 
-    return order;
+      return order;
   } catch (err) {
-    throw err;
+      throw err;
   }
 };
 
-export const updatePaymentStatusQuery = async (orderId, paymentProof) => {
+export const updateOrderStatusQuery = async (orderId, status) => {
   return await Order.update(
-    { image: paymentProof, status: 'complete' },
+    { status: status },
     { where: { id: orderId } },
   );
 };

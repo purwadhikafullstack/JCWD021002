@@ -7,17 +7,14 @@ import {
   InputLeftElement,
   Image,
 } from '@chakra-ui/react';
-import { useSelector } from 'react-redux';
-import { IoIosSearch, IoIosArrowDown } from 'react-icons/io';
-import { PiMapPinLine } from 'react-icons/pi';
-import { ResizeButton } from '../../components/ResizeButton';
+import { IoIosSearch } from 'react-icons/io';
+import { ResizeButton } from '../ResizeButton';
 import { Link } from 'react-router-dom';
 import { useWebSize } from '../../provider.websize';
 import LogoGroceria from '../../assets/Groceria-no-Bg.png';
+import { DrawerLocation } from './drawerLocation';
 
 export const Header = () => {
-  const location = useSelector((state) => state.AuthReducer.location.address);
-
   const { size } = useWebSize();
 
   return (
@@ -33,48 +30,32 @@ export const Header = () => {
       <Flex
         justify={'space-between'}
         h={'full'}
-        direction={size == '500px' ? 'row' : 'column'}
+        direction={size == '500px' ? 'row' : 'column-reverse'}
         gap={size == '500px' ? 0 : 2}
       >
-        <Flex
-          color={size == '500px' ? 'white' : 'colors.primary'}
-          gap={2}
-          align={'center'}
-          cursor={'pointer'}
-          fontSize={'14px'}
-          minW={size == '500px' ? '90%' : 'fit-content'}
-        >
-          <PiMapPinLine size={'18px'} />
-          <Flex gap={1.5}>
-            <Text fontWeight={600}>
-              {location?.city
-                ? `${location.city}, ${location.Province?.province}`
-                : location && location.length > 0
-                  ? location.toString()
-                  : '. . .'}
-            </Text>
-          </Flex>
-          <IoIosArrowDown size={'16px'} />
+        <Flex w={'100%'}>
+          <DrawerLocation />
         </Flex>
-
         <Flex
           gap={5}
-          w={'full'}
+          w={size == '500px' ? '20%' : 'full'}
           justify={size == '500px' ? 'end' : 'space-between'}
           align={'center'}
         >
           <Flex
-            gap={3}
+            gap={'50px'}
             align={'center'}
             display={size == '500px' ? 'none' : 'flex'}
           >
             <Link to={'/'}>
               <Image src={LogoGroceria} h={'30px'} />
             </Link>
-            <Text>Home</Text>
-            <Text>Home</Text>
-            <Text>Home</Text>
-            <Text>Home</Text>
+            <Flex gap={3}>
+              <Text>Home</Text>
+              <Text>Home</Text>
+              <Text>Home</Text>
+              <Text>Home</Text>
+            </Flex>
           </Flex>
           <Flex gap={5}>
             <Flex display={size == '500px' ? 'none' : 'flex'} align={'center'}>
@@ -111,8 +92,6 @@ export const Header = () => {
             borderRadius={'5px'}
             placeholder="Search"
             readOnly
-            // cursor={'pointer'}
-            // onClick={}
           />
         </InputGroup>
       </Link>

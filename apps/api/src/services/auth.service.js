@@ -121,7 +121,7 @@ export const loginService = async (emailOrUsername, password) => {
       throw new Error(
         'Your email is not verified, check your email to verify your account.',
       );
-    if (check.status == 'Inactive') throw new Error('Your email is Inactive.');
+    if (check.status == 'Deactive') throw new Error('Your email is Inactive.');
 
     const payload = {
       id: check.id,
@@ -159,9 +159,9 @@ export const loginService = async (emailOrUsername, password) => {
 export const loginWithSocialService = async (email) => {
   try {
     const check = await getUserRegisterQuery({ email });
-    if (!check) throw new Error('Email or username has not been registered');
+    if (!check) throw new Error('Email or username has not been registered.');
 
-    if (check.status == 'Inactive') throw new Error('Your email is Inactive.');
+    if (check.status == 'deactive') throw new Error('Email or username has not been registered.');
 
     const payload = {
       id: check.id,

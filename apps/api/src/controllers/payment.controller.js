@@ -1,4 +1,4 @@
-import { paymentGatewayService } from "../services/payment.service";
+import { afterPaymentService, paymentGatewayService, updateOrderService } from "../services/payment.service";
 
 export const paymentGatewayController = async (req, res) => {
     try {
@@ -15,4 +15,22 @@ export const paymentGatewayController = async (req, res) => {
             message: err.message,
           });
         }
+}
+
+export const updateOrderController = async (req, res) => {
+  try {
+    const {orderId} = req.params;
+    console.log('cek', orderId);
+    const result = await updateOrderService(orderId)
+    return res.status(200).json({
+      success: true,
+      message: 'Get Token Midtrans Successfully',
+      data: result,
+    });
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
 }

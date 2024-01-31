@@ -15,7 +15,7 @@ const WebSizeProvider = ({ children }) => {
   const handleWebSize = () => {
     setNewSize((prevSize) => (prevSize === '500px' ? '100vw' : '500px'));
     localStorage.setItem('page size', newSize);
-    setSize(newSize)
+    setSize(newSize);
   };
 
   useEffect(() => {
@@ -26,6 +26,22 @@ const WebSizeProvider = ({ children }) => {
       localStorage.setItem('page size', newSize);
     }
   }, [newSize]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 600) {
+        setSize(newSize)
+        localStorage.setItem('page size', newSize);
+      }
+    }
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, []);
+
+  console.log(window.innerWidth)
 
   return (
     <WebSizeContext.Provider value={{ size, handleWebSize }}>

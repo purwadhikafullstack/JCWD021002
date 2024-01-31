@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import AddDiscount from "../pages/AddDiscount/AddDiscount";
 import DiscountLists from "../pages/DiscountLists/DiscountLists";
 import EditDiscount from "../pages/EditDiscount/EditDiscount";

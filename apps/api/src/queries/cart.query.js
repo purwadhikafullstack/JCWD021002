@@ -38,7 +38,7 @@ export const createCartQuery = async (userId) => {
   }
 };
 
-export const getProductStockQuery = async (productStockId) => {
+export const findProductStockQuery = async (productStockId) => {
   return ProductStock.findOne({
     where: { id: productStockId },
     include: [{ model: Product, include: [ProductImage] }, { model: Store }, ],
@@ -198,3 +198,21 @@ export const getAllCartQuery = async (userId) => {
   });
 };
 
+export const clearCartQuery = async (cartId, productStockId) => {
+  const t = await CartDetail.sequelize.transaction();
+
+  try {
+    await CartDetail.destroy({
+      where: {
+        cart_idcart: cartId,
+        productStock_idproductStock: productStockId,
+      },
+      transaction: t,
+    });
+
+    await t.commit();
+  } catch (err) {
+    await t.rollback();
+    throw err;
+  }
+};

@@ -12,9 +12,6 @@ const routeCart = [
   {
     path: '/cart/shipment',
     element: <Checkout />,
-    children: [
-        { path: 'shipment', element: <Checkout /> },
-      ],
   },
 ];
 

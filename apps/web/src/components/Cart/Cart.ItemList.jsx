@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import axios from 'axios';
 import {
   Checkbox,
@@ -22,6 +23,7 @@ export const CartItemList = ({
   quantities,
   setQuantities,
   showToast,
+  deleteCartProduct,
 }) => {
   const handleCheckboxChange = (cartDetailId) => {
     setSelectedItems((prevSelectedItems) =>
@@ -51,46 +53,27 @@ export const CartItemList = ({
     }
   };
   
-  const deleteCartProduct = async (productId) => {
-    try {
-      const response = await axios.delete(
-        `${import.meta.env.VITE_API_URL}/cart/delete-product/${user.id}`,
-        { data: { productId } }
-      );
-  
-      if (response.status === 200) {
-        showToast('success', 'Item quantity deleted successfully!');
-        await fetchCart(user.id);
-      } else {
-        console.error('Failed to delete item:', response.data);
-        showToast('error', 'Failed to delete item');
-      }
-    } catch (err) {
-      console.error('Error deleting item:', err);
-      showToast('error', 'Error deleting item');
-    }
-  };
 
-  const handleQuantityChange = (cartDetailId, productId, quantityChange) => {
-    const newQuantity = quantities[cartDetailId] + quantityChange;
+  const handleQuantityChange = (productId, quantityChange) => {
+    const newQuantity = quantities[productId] + quantityChange;
     setQuantities((prevQuantities) => ({
       ...prevQuantities,
-      [cartDetailId]: newQuantity,
+      [productId]: newQuantity,
     }));
     updateQuantities(productId, newQuantity);
   };
 
-  const handleDecrement = (cartDetailId, productId) => {
-    if (quantities[cartDetailId] > 1)
-      handleQuantityChange(cartDetailId, productId, -1);
+  const handleDecrement = (productId) => {
+    if (quantities[productId] > 1)
+      handleQuantityChange(productId, -1);
   };
 
 
-  const handleIncrement = (cartDetailId, productId) =>
-    handleQuantityChange(cartDetailId, productId, 1);
+  const handleIncrement = (productId) =>
+    handleQuantityChange(productId, 1);
 
-  const handleDeleteProduct = async (cartDetailId, productId) => {
-    if (quantities[cartDetailId] === 1) await deleteCartProduct(productId);
+  const handleDeleteProduct = async (productStockId) => {
+    if (quantities[productStockId] === 1) await deleteCartProduct(productStockId);
   };
 
   function formatPriceToIDR(price) {
@@ -104,8 +87,8 @@ export const CartItemList = ({
     <Flex key={item.id} flexDirection='row' gap={2}>
       <Checkbox
         colorScheme='green'
-        isChecked={selectedItems.includes(item.id)}
-        onChange={() => handleCheckboxChange(item.id)}
+        isChecked={selectedItems.includes(item.productStock_idproductStock)}
+        onChange={() => handleCheckboxChange(item.productStock_idproductStock)}
       />
       <Image
         w={'10vw'}
@@ -126,14 +109,12 @@ export const CartItemList = ({
         <Flex gap={1} border='1px' borderColor='gray.200'>
           <IconButton
             onClick={() =>
-              quantities[item.id] !== 1
+              quantities[item.productStock_idproductStock] !== 1
                 ? handleDecrement(
-                    item.id,
                     item.productStock_idproductStock
                   )
                 : handleDeleteProduct(
-                    item.id,
-                    // item.productStock_idproductStock
+                    item.productStock_idproductStock
                   )
             }
             h='30px'
@@ -141,7 +122,7 @@ export const CartItemList = ({
             variant='outline'
             color='black'
             icon={
-              quantities[item.id] === 1 ? (
+              quantities[item.productStock_idproductStock] === 1 ? (
                 <RiDeleteBinLine />
               ) : (
                 <HiMinusSmall />
@@ -149,11 +130,11 @@ export const CartItemList = ({
             }
           />
           <Text mx='10px' fontSize='lg'>
-            {quantities[item.id]}
+            {quantities[item.productStock_idproductStock]}
           </Text>
           <IconButton
             onClick={() =>
-              handleIncrement(item.id, item.productStock_idproductStock)
+              handleIncrement(item.productStock_idproductStock)
             }
             h='30px'
             borderRadius={0}

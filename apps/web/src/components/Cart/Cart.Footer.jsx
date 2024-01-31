@@ -1,6 +1,7 @@
 import { Button, Checkbox, Flex, Text, useToast } from '@chakra-ui/react';
 import angkaRupiahJs from '@develoka/angka-rupiah-js';
 import axios from 'axios';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { calculateDiscountPrice } from '../../utils/calculateDiscountPrice';
 
@@ -12,25 +13,33 @@ export const CartFooter = ({
   handleCheckboxAllChange,
   quantities,
 }) => {
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  useEffect(() => {
+    setTotalPrice(calculateTotalPrice());
+  }, [quantities, selectedItems]);
+
   const isAllSelected =
+    selectedItems.length > 0 &&
     selectedItems.length === carts.length &&
-    selectedItems.every((item) => carts.some((cart) => cart.id === item));
+    selectedItems.every((productStockId) =>
+      carts.some((cart) => cart.productStock_idproductStock === productStockId)
+    );
 
   const calculateTotalPrice = () =>
-    selectedItems.length === 0
-      ? 0
-      : selectedItems.reduce((total, cartDetailId) => {
-          const item = carts.find((cart) => cart.id === cartDetailId);
+    selectedItems.reduce((total, productStockId) => {
+      const item = carts.find(
+        (cart) => cart.productStock_idproductStock === productStockId
+      );
 
           if (item && item.price && quantities[cartDetailId]) {
             return total + calculateDiscountPrice(item?.price, item?.ProductStock?.Discounts) * quantities[cartDetailId];
           }
 
-          return total;
-        }, 0);
+      return total;
+    }, 0);
 
   const toast = useToast();
-
   const navigate = useNavigate();
 
   const handleCheckout = async () => {
@@ -74,7 +83,7 @@ export const CartFooter = ({
       >
         <Checkbox
           colorScheme='green'
-          isChecked={carts.length > 0 && isAllSelected}
+          isChecked={isAllSelected}
           onChange={() => handleCheckboxAllChange()}
           isDisabled={!carts || carts.length === 0}
         >
@@ -84,10 +93,10 @@ export const CartFooter = ({
         <Flex gap={2} alignItems='center' h='full'>
           <Text>Total</Text>
           <Text fontSize='lg' fontWeight='bold' color='tomato'>
-          {angkaRupiahJs(calculateTotalPrice(), {formal: false})}
+            {angkaRupiahJs(totalPrice, { formal: false })}
           </Text>
           <Button
-            isDisabled={!carts || carts.length === 0}
+            isDisabled={!selectedItems || selectedItems.length === 0 }
             background='green.700'
             color='white'
             onClick={handleCheckout}

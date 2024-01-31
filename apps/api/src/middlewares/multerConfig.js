@@ -57,7 +57,7 @@ const fileFilter = (req, file, cb) => {
   if (
     fileType === "png" ||
     fileType === "jpg" ||
-    fileType === "jpeg" 
+    fileType === "jpeg"
   ) {
     cb(null, true);
   } else {
