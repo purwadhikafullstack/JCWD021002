@@ -4,26 +4,24 @@ import { useEffect, useState } from 'react';
 import toRupiah from '@develoka/angka-rupiah-js';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useWebSize } from '../../provider.websize';
 
 export const ProductList = () => {
   const [product, setProduct] = useState();
   const navigate = useNavigate();
+  const { size } = useWebSize();
 
   function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
-  const coordinat = useSelector((state) => state.AuthReducer.location);
+  const coordinat = useSelector((state) => state.addressReducer?.address);
 
   const getProductList = async (latitude, longitude) => {
     try {
       const res = await axios.get(
         `${
           import.meta.env.VITE_API_URL
-<<<<<<< Updated upstream:apps/web/src/pages/home/productList.jsx
-        }/store?&page=1&pageSize=&latitude=${latitude}&longitude=${longitude}&statusStock=1`,
-=======
         }/store?&page=1&pageSize=&latitude=${latitude}&longitude=${longitude}&statusStock=1&statusProduct=1`,
->>>>>>> Stashed changes:apps/web/src/pages/home/home.productList.jsx
       );
       setProduct(res?.data?.data?.products);
     } catch (err) {
@@ -32,26 +30,29 @@ export const ProductList = () => {
   };
 
   useEffect(() => {
-<<<<<<< Updated upstream:apps/web/src/pages/home/productList.jsx
-    getProductList(coordinat.latitude, coordinat.longitude);
-=======
     getProductList(coordinat?.latitude, coordinat?.longitude);
-    console.log(coordinat)
->>>>>>> Stashed changes:apps/web/src/pages/home/home.productList.jsx
+    console.log(coordinat);
   }, [coordinat]);
 
   return (
-    <Flex direction={'column'} mt={'10px'}>
-      <Flex w={'full'} bgColor={'white'} p={'10px 20px'}>
+    <Flex
+      direction={'column'}
+      mt={'10px'}
+      p={
+        size == '500px'
+          ? '0 20px'
+          : { base: '0 40px', lg: '30px 100px', xl: '30px 200px' }
+      }
+    >
+      <Flex w={'full'} bgColor={'white'} py={'10px'}>
         <Text fontSize={'18px'} fontWeight={600} textAlign={'center'}>
           REKOMENDASI
         </Text>
       </Flex>
       <Grid
-        templateColumns={'repeat(2, 1fr)'}
+        templateColumns={size == '500px' ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)'}
         w={'fit-content'}
         gap={5}
-        m={'5px 20px 20px 20px'}
       >
         {product?.map((item, index) => {
           return (
@@ -62,7 +63,9 @@ export const ProductList = () => {
               bgColor={'white'}
               overflow={'hidden'}
               cursor={'pointer'}
-              onClick={() => navigate(`/product-detail/${item?.ProductStocks[0]?.id}`)}
+              onClick={() =>
+                navigate(`/product-detail/${item?.ProductStocks[0]?.id}`)
+              }
             >
               <Flex w={'full'} h={'full'}>
                 <Image

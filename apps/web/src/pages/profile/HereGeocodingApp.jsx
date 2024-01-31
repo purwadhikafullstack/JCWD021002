@@ -30,6 +30,7 @@ const HereGeocodingApp = ({ setUserAddress, value }) => {
   const handleMarkerClick = async (position) => {
     const { lat, lng } = position;
     setUserAddress({ lat: lat, lng: lng });
+    // setUserLocation({ lat: lat, lng: lng });
   };
 
   useEffect(() => {

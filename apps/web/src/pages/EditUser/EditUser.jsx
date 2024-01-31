@@ -56,6 +56,7 @@ import AvatarSVG from './icon-default-avatar.svg';
 import { ResizeButton } from '../../components/ResizeButton';
 import LogoGroceria from '../../assets/Groceria-no-Bg.png';
 import { useWebSize } from '../../provider.websize';
+import SideBar from '../../components/SideBar/SideBar';
 
 const EditUser = () => {
   const { size, handleWebSize } = useWebSize();
@@ -124,15 +125,14 @@ const EditUser = () => {
       //   }
 
       let formData = new FormData();
-      formData.append('id', id);
-      formData.append('fullname', fullname);
-      formData.append('username', username);
-      formData.append('email', email);
-      formData.append('password', password);
-      formData.append('role_idrole', 2);
-      formData.append('store_idstore', storeId);
-      formData.append('status', status);
-      formData.append('avatar', fieldImage);
+      formData.append("id", id);
+      formData.append("fullname", fullname);
+      formData.append("username", username);
+      formData.append("email", email);
+      formData.append("password", password);
+      formData.append("store_idstore", storeId);
+      formData.append("status", status);
+      formData.append("avatar", fieldImage);
 
       await axios.patch(
         `${import.meta.env.VITE_API_URL}user/update-user`,
@@ -166,95 +166,69 @@ const EditUser = () => {
 
   return (
     <>
-      {/* <SidebarWithHeader /> */}
-      <ToastContainer />
-      <Box
-        w={{ base: '98.7vw', md: size }}
-        overflowX="hidden"
-        height="100vh"
-        backgroundColor="#fbfaf9"
-        p="20px"
+      <Box w={{ base: '100vw', md: size }}>
+          <SideBar size={size} handleWebSize={handleWebSize}/>
+      <ToastContainer position="top-center" closeOnClick pauseOnFocusLoss draggable pauseOnHover theme="colored" />
+      <Box w={{ base: '98.7vw', md: size }} overflowX='hidden' height='100vh' backgroundColor='#fbfaf9' p='20px'>
+      <Box pl={size == '500px' ? '0px' : '150px' } pr={size == '500px' ? '0px' : '20px'} pt='20px' pb='20px'>
+        <HStack mb='10px'>
+          <Button leftIcon={<IconArrowLeft />} borderRadius='full' backgroundColor='white' textColor='black' border='solid 1px black' onClick={() => navigate('/user-lists')}>Back</Button>
+          <Spacer />
+          <Button rightIcon={<IconArrowRight />} borderRadius='full' backgroundColor='#286043' textColor='white' border='solid 1px #286043' onClick={() => addProduct()}>Edit User</Button>
+        </HStack>
+        <Box borderRadius='10px' p='20px' backgroundColor='white' boxShadow='0px 1px 5px gray'>
+          <form>
+            <FormLabel>User Information (Fill in only the parts that need to be replaced/edited)</FormLabel>
+            <Flex justifyContent='center' gap='20px' flexDirection={size == '500px' ? 'column' : 'row'}>
+            <Box>
+            <VStack>
+                        <Avatar
+                          key={data?.avatar}
+                          name={data?.username}
+                          borderRadius={"full"}
+                          src={data && data?.avatar ? `${
+                            import.meta.env.VITE_API_IMAGE_URL
+                          }/avatar/${data?.avatar}` : "https://bit.ly/broken-link"}
+                          boxSize="150px"
+                          cursor="pointer" // Set the cursor property to "pointer"
+                          // transition="background 0.3s ease"
+                          _hover={{
+                            transform: "scale(1.1)", // Set the scale factor for the hover effect
+                          }}
+                        />
+                        </VStack>
+            </Box>
+            
+            <Box>
+              <VStack>
+            {selectedImage ? <Image
+            src={selectedImage}
+            alt="Selected Image"
+            boxSize="150px"
+            objectFit="cover"
+            borderRadius="50%"/> : <Image src={AvatarSVG} />}
+            <Box mt='-50px' mr='-90px'>
+      <Input display="none" id="fileInput" 
+              type="file"
+              name="image"
+              size="md"
+              onChange={(event) => {
+                setFieldImage(event.currentTarget.files[0]);
+              }, handleImageChange}
+            />
+      <IconButton
+        onClick={() => document.getElementById('fileInput').click()}
+        icon={<FiUpload color='white' />}
+        variant='outline'
+        background='blue'
+        borderRadius='50%'
+        colorScheme="white"
+        border='solid white 2px'
       >
-        <Flex
-          position={'relative'}
-          // top={{ base: '20px', lg: '-30px' }}
-          // px={'20px'}
-          h={'10vh'}
-          justify={'space-between'}
-          align={'center'}
-        >
-          <Image src={LogoGroceria} h={'30px'} />
-          <ResizeButton
-            color={'black'}
-          />
-        </Flex>
-        <Box
-          pl={size == '500px' ? '0px' : '150px'}
-          pr={size == '500px' ? '0px' : '20px'}
-          pt="20px"
-          pb="20px"
-        >
-          <HStack mb="10px">
-            <Button
-              leftIcon={<IconArrowLeft />}
-              borderRadius="full"
-              backgroundColor="white"
-              textColor="black"
-              border="solid 1px black"
-              onClick={() => navigate('/user-lists')}
-            >
-              Back
-            </Button>
-            <Spacer />
-            <Button
-              rightIcon={<IconArrowRight />}
-              borderRadius="full"
-              backgroundColor="#286043"
-              textColor="white"
-              border="solid 1px #286043"
-              onClick={() => addProduct()}
-            >
-              Edit User
-            </Button>
-          </HStack>
-          <Box
-            borderRadius="10px"
-            p="20px"
-            backgroundColor="white"
-            boxShadow="0px 1px 5px gray"
-          >
-            <form>
-              <FormLabel>
-                User Information (Fill in only the parts that need to be
-                replaced/edited)
-              </FormLabel>
-              <Flex
-                justifyContent="center"
-                gap="20px"
-                flexDirection={size == '500px' ? 'column' : 'row'}
-              >
-                <Box>
-                  <VStack>
-                    <Avatar
-                      key={data?.avatar}
-                      name={data?.username}
-                      borderRadius={'full'}
-                      src={
-                        data && data?.avatar
-                          ? `${import.meta.env.VITE_API_IMAGE_URL}/avatar/${
-                              data?.avatar
-                            }`
-                          : 'https://bit.ly/broken-link'
-                      }
-                      boxSize="150px"
-                      cursor="pointer" // Set the cursor property to "pointer"
-                      // transition="background 0.3s ease"
-                      _hover={{
-                        transform: 'scale(1.1)', // Set the scale factor for the hover effect
-                      }}
-                    />
-                  </VStack>
-                </Box>
+      </IconButton>
+    </Box>
+    </VStack>
+            </Box>
 
                 <Box>
                   <VStack>
@@ -457,6 +431,7 @@ const EditUser = () => {
             </form>
           </Box>
         </Box>
+      </Box>
       </Box>
     </>
   );

@@ -2,6 +2,7 @@ import {
   createCartService,
   updateCartItemQtyService,
   deleteCartItemService,
+  getCartService,
 } from '../services/cart.service';
 
 export const createCartController = async (req, res) => {
@@ -46,11 +47,30 @@ export const updateItemCartQtyController = async (req, res) => {
 
 export const deleteCartItemController = async (req, res) => {
   try {
-    const { userId, productId } = req.params;
+    // const { userId, productId } = req.params;
+    const { userId } = req.params;
+    const { productId } = req.body;
     const result = await deleteCartItemService({ userId, productId });
     return res.status(200).json({
       success: true,
       message: 'Delete Product from Cart Successfully',
+      data: result,
+    });
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
+};
+
+export const getCartController = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const result = await getCartService(userId);
+    return res.status(200).json({
+      success: true,
+      message: 'Get Cart Successfully',
       data: result,
     });
   } catch (err) {

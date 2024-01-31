@@ -17,7 +17,6 @@ const initialState = {
     store_idstore: '',
     googleLogin: ''
   },
-  location: [],
   isLogin: false,
 };
 
@@ -41,15 +40,13 @@ const authReducer = createSlice({
         googleLogin,
       };
     },
-    setLocation: (state, action) => {
-      state.location = action.payload;
-    },
     loginSuccess: (state) => {
       state.isLogin = true;
     },
     logoutSuccess: (state) => {
       state.isLogin = false;
       localStorage.removeItem('token');
+      localStorage.removeItem('persist:root');
     },
     keepLoginSuccess: (state) => {
       state.isLogin = true;

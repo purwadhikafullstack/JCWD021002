@@ -1,16 +1,10 @@
 /* eslint-disable react/prop-types */
 
-<<<<<<< Updated upstream
-import { Header } from './header';
-import { Collections } from './collections';
-import { MySwiper } from './swiper';
-import { ProductList } from './productList';
-=======
+
 import { Header } from '../../components/navbar/header';
 import { Collections } from './home.collections';
 import { MySwiper } from './home.swiper';
 import { ProductList } from './home.productList';
->>>>>>> Stashed changes
 import { BottomBar } from '../../components/BottomBar';
 import { SwiperCategory } from './home.swiperCategory';
 
@@ -21,42 +15,41 @@ import { useWebSize } from '../../provider.websize';
 import { Footer } from './home.footer';
 
 export const Home = () => {
-
-  const {size, handleWebSize } = useWebSize()
+  const { size } = useWebSize();
 
   return (
     <Flex
       w={{ base: '100vw', lg: size }}
       direction={'column'}
-      bgColor={'#F8F9FAFF'}
-      transition={"all .3s ease-in-out"}
+      bgColor={'colors.secondary'}
+      transition={'all .3s ease-in-out'}
+      // gap={size == '500px' ? '0' : '100px'}
     >
-      <Header size={size} handleWebSize={handleWebSize} />
+      <Header /> 
       <Flex>
         <MySwiper size={size} />
       </Flex>
+
       <SwiperCategory size={size} />
+
       <Flex
         direction={'column'}
-        gap={5}
+        gap={2}
         w={{ base: 'full', lg: size }}
         overflowX={'hidden'}
-<<<<<<< Updated upstream
-        mb={"60px"}
-=======
         mb={size == '500px' && '60px'}
->>>>>>> Stashed changes
       >
         <Flex
+          display={size == '500px' ? 'flex' : 'none'}
           justify={'space-between'}
           align={'center'}
-          bgColor={'red'}
+          bgColor={'white'}
           color={'colors.primary'}
           h={'36px'}
           p={'10px'}
           borderRadius={'4px'}
           cursor={'pointer'}
-          m={'10px 20px'}
+          m={size == '500px' ? '0 20px' : '30px 200px'}
         >
           <Flex gap={2}>
             <PiGift size={'20px'} />
@@ -73,7 +66,13 @@ export const Home = () => {
 
         <Footer />
       </Flex>
-      <Flex position={'fixed'} bottom={0} w={{ base: 'full', md: size }}>
+      <Flex
+        position={'fixed'}
+        bottom={0}
+        w={{ base: 'full', md: size }}
+        display={size == '500px' ? 'flex' : 'none'}
+        zIndex={10}
+      >
         <BottomBar />
       </Flex>
     </Flex>

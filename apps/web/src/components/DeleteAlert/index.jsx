@@ -12,7 +12,7 @@ import {
   Button
 } from '@chakra-ui/react'
 
-function DeleteAlert({btnValue, titleValue, mainValue, deleteAction, style}) {
+function DeleteAlert({btnValue, titleValue, mainValue, deleteAction, style, buttonActionValue}) {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const cancelRef = React.useRef()
 
@@ -23,7 +23,7 @@ function DeleteAlert({btnValue, titleValue, mainValue, deleteAction, style}) {
 
   return (
     <>
-      <Button variant={'unstayled'} onClick={onOpen} w={'fit-content'} size={'xm'} {...style}>
+      <Button variant={'unstayled'} onClick={onOpen} {...style}>
         {btnValue}
       </Button>
 
@@ -48,7 +48,7 @@ function DeleteAlert({btnValue, titleValue, mainValue, deleteAction, style}) {
                 Cancel
               </Button>
               <Button colorScheme='red' onClick={handleDelete} ml={3}>
-                Delete
+                {buttonActionValue}
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>

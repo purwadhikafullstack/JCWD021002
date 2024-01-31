@@ -3,8 +3,8 @@ const {
     getPaginatedAndFilteredDiscountQuery,
     updateDiscountQuery,
     getDetailDiscountQuery,
+    getPaginatedAndFilteredVoucherQuery,
 } = require('../queries/discount.query')
-
 
     const getPaginatedAndFilteredDiscountService = async (
                 page,
@@ -30,6 +30,42 @@ const {
                 productName,
                 status,
                 storeId,
+                    )
+
+                    return result;
+        } catch (err) {
+            console.error('Error in getPaginatedAndFilteredDiscountService:', err);
+
+            throw err;
+        }
+    } 
+
+    const getPaginatedAndFilteredVoucherService = async (
+                page,
+                pageSize,
+                sortField,
+                sortOrder,
+                discountName,
+                typeId,
+                usageRestrictionId,
+                productName,
+                status,
+                storeId,
+                productStockId,
+    ) => {
+        try {
+            const result = await getPaginatedAndFilteredVoucherQuery(
+                page,
+                pageSize,
+                sortField,
+                sortOrder,
+                discountName,
+                typeId,
+                usageRestrictionId,
+                productName,
+                status,
+                storeId,
+                productStockId,
                     )
 
                     return result;
@@ -90,11 +126,13 @@ const {
 
                     return result;
         } catch (err) {
+            console.log("ini error", err);
             throw err;
         }
     }
 
     const updateDiscountService = async (
+        id,
         type,
         discountValue,
         minimumPurchase,
@@ -109,9 +147,13 @@ const {
         banner,
         discountNom,
         distributionId,
+        name,
+        description,
+        status,
     ) => {
         try {
             const result = await updateDiscountQuery(
+                id,
                 type,
                 discountValue,
                 minimumPurchase,
@@ -126,6 +168,9 @@ const {
                 banner,
                 discountNom,
                 distributionId,
+                name,
+                description,
+                status,
                     );
 
                     return result;
@@ -139,4 +184,5 @@ const {
         getPaginatedAndFilteredDiscountService,
         updateDiscountService,
         getDetailDiscountService,
+        getPaginatedAndFilteredVoucherService,
     }

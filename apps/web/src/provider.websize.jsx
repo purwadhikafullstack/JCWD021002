@@ -1,15 +1,47 @@
+/* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react/prop-types */
-import { createContext, useContext, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const WebSizeContext = createContext();
+const WebSizeContext = React.createContext();
 
 const WebSizeProvider = ({ children }) => {
-  const [size, setSize] = useState('500px');
+  const [size, setSize] = useState(() => {
+    const pageSize = localStorage.getItem('page size');
+    return pageSize || '500px';
+  });
+
+  const [newSize, setNewSize] = useState('500px');
+
   const handleWebSize = () => {
-    setSize((prevSize) =>
-      prevSize === '500px' ? '100vw' : '500px',
-    );
+    setNewSize((prevSize) => (prevSize === '500px' ? '100vw' : '500px'));
+    localStorage.setItem('page size', newSize);
+    setSize(newSize);
   };
+
+  useEffect(() => {
+    const pageSize = localStorage.getItem('page size');
+    if (pageSize) {
+      setSize(pageSize);
+    } else {
+      localStorage.setItem('page size', newSize);
+    }
+  }, [newSize]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 600) {
+        setSize(newSize)
+        localStorage.setItem('page size', newSize);
+      }
+    }
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, []);
+
+  console.log(window.innerWidth)
 
   return (
     <WebSizeContext.Provider value={{ size, handleWebSize }}>
@@ -19,11 +51,10 @@ const WebSizeProvider = ({ children }) => {
 };
 
 const useWebSize = () => {
-  const context = useContext(WebSizeContext);
+  const context = React.useContext(WebSizeContext);
   if (!context) {
     throw new Error('useWebSize must be used within a WebSizeProvider');
   }
-
   return context;
 };
 

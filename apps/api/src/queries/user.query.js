@@ -29,15 +29,24 @@ const getUserRegisterQuery = async ({
   }
 };
 
-const getUserQuery = async (page, pageSize, roleId, username) => {
+const getUserQuery = async (page, pageSize, sortOrder, username, roleId) => {
   try {
     const offset = (page - 1) * (pageSize || 0);
 
     const whereConditions = {};
 
-    if (roleId) {
+    if (roleId > 1) {
       whereConditions.role_idrole = roleId;
+    } else {
+      whereConditions.role_idrole = {
+        [Op.notIn]: [1] // Exclude role_idrole = 1 (assuming 1 is admin role)
+      };
     }
+
+    console.log("ini roleId", roleId);
+    console.log("ini wherecondition", whereConditions);
+
+    
 
     if (username) {
       whereConditions.username = { [Op.like]: `%${username}%` };
@@ -48,6 +57,23 @@ const getUserQuery = async (page, pageSize, roleId, username) => {
       offset: offset,
       limit: pageSize || undefined,
       where: whereConditions,
+      include: [
+        {
+          model: Store,
+          include: [
+            {
+              model: City,
+              include: [
+                {
+                  model: Province,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+      order: [[{model : City}, 'name', 'asc']],
+      order: [['status', 'asc']],
     });
 
     const totalUsers = await User.count({
@@ -232,6 +258,24 @@ const resetPasswordQuery = async (userId, newPassword) => {
   }
 }
 
+const deleteUserQuery = async (id) => {
+  try {
+    const res = await User.update({
+      status: 'Deactive',
+    },
+      {
+        where: {
+          id: id
+        }
+      }
+    )
+
+    return res
+  } catch (err) {
+    throw err
+  }
+}
+
 module.exports = {
   getUserQuery,
   updateUserQuery,
@@ -241,5 +285,6 @@ module.exports = {
   getStoreQuery,
   getUserRegisterQuery,
   getUserLoginQuery,
-  resetPasswordQuery
+  resetPasswordQuery,
+  deleteUserQuery
 };

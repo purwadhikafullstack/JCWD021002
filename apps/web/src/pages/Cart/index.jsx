@@ -1,113 +1,152 @@
-/* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import {
-  Text,
-  Box,
-  HStack,
-  Image,
-  Flex,
-  Button,
-  Spacer,
-  VStack,
-  Stack,
-  Checkbox,
-  Heading,
-  Input,
-  InputLeftElement,
-  InputGroup,
-} from '@chakra-ui/react';
-import { IconChevronLeft } from '@tabler/icons-react';
-// import './Home.css';
-import { ResizeButton } from '../../components/ResizeButton';
-import LogoGroceria from '../../assets/Groceria-no-Bg.png';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
-import { BottomBar } from '../../components/BottomBar';
+import { Box, useToast, Flex } from '@chakra-ui/react';
+import { useSelector } from 'react-redux';
+import { CartHeader } from '../../components/Cart/Cart.Header';
+import { CartFooter } from '../../components/Cart/Cart.Footer';
+import { CartTotalSelected } from '../../components/Cart/Cart.TotalSelected';
+import { CartBody } from '../../components/Cart/Cart.Body';
+import { useWebSize } from '../../provider.websize';
 
-export const Cart = ({ handleWebSize, size }) => {
+export const Cart = () => {
+  const user = useSelector((state) => state.AuthReducer.user);
+  const toast = useToast();
+  const [carts, setCarts] = useState([]);
+  const [quantities, setQuantities] = useState({});
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const {size, handleWebSize } = useWebSize();
+
+
+  console.log('cartDetailId: ', selectedItems);
+  const showToast = (type, message) => {
+    toast({
+      title: message,
+      status: type,
+      duration: 3000,
+      isClosable: true,
+    });
+  };
+
+  const userId = user?.id;
+  console.log('userId: ', userId);
+
+  const fetchCart = async (userId) => {
+    try {
+      if (!userId) {
+        console.warn('User ID not available. Skipping cart fetch.');
+        return;
+      }
+
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/cart/${userId}`,
+      );
+
+      console.log('Cart API Response:', response);
+
+      const updatedCart = response?.data?.data[0]?.CartDetails || [];
+      const updatedQuantities = updatedCart.reduce(
+        (q, item) => ({ ...q, [item.id]: item.quantity }),
+        {},
+      );
+
+      setCarts(updatedCart);
+      setQuantities(updatedQuantities);
+      setSelectedItems([]);
+
+      return updatedCart;
+    } catch (err) {
+      console.warn('Cart not found for user:', userId);
+    }
+  };
+
+  useEffect(() => {
+    fetchCart(userId);
+  }, [user, userId]);
+
+  const handleCheckboxAllChange = () => {
+    setSelectedItems((prevSelectedItems) => {
+      const allProductIds = carts.map((item) => item.id);
+      return prevSelectedItems.length === allProductIds.length
+        ? []
+        : allProductIds;
+    });
+  };
+
+  const handleCheckboxStoreChange = (storeId) => {
+    setSelectedItems((prevSelectedItems) => {
+      const storeProductIds = carts
+        .filter((item) => item.ProductStock.Store.id === storeId)
+        .map((item) => item.id);
+
+      const allStoreProductsSelected =
+        storeProductIds.length > 0 &&
+        storeProductIds.every((productId) =>
+          prevSelectedItems.includes(productId),
+        );
+
+      let updatedSelectedItems;
+
+      if (allStoreProductsSelected) {
+        updatedSelectedItems = prevSelectedItems.filter(
+          (item) => !storeProductIds.includes(item),
+        );
+      } else {
+        updatedSelectedItems = [
+          ...prevSelectedItems.filter(
+            (item) => !storeProductIds.includes(item),
+          ),
+          ...storeProductIds,
+        ];
+      }
+
+      if (updatedSelectedItems.length === 0) {
+        return [];
+      }
+
+      return updatedSelectedItems;
+    });
+  };
+
   return (
     <Box
+      direction="column"
       p="0"
-      pb="110px"
       w={{ base: '100vw', md: size }}
-      h={'fit-content'}
+      h="fit-content"
       transition="width 0.3s ease"
+      backgroundColor="#f5f5f5"
     >
-      <Flex
-        position={'sticky'}
-        top={0}
-        bgColor="white"
-        zIndex={99}
-        // top={{ base: '20px', lg: '-30px' }}
-        px={'20px'}
-        h={'10vh'}
-        justify={'space-between'}
-        align={'center'}
-      >
-        <Image src={LogoGroceria} h={'30px'} />
-        <ResizeButton
-          color={'black'}
-        />
-      </Flex>
-      <Flex
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Heading size="md">Keranjang</Heading>
-      </Flex>
-      <Flex
-        flexDirection="column"
-        gap={2}
-        p={4}
-      >
-        <Text fontWeight="bold">My Orders</Text>
-        <Flex justifyContent="space-between" gap={5}>
-          <Checkbox colorScheme="green" defaultChecked />
-          <Box w="7em" h="5em" background="red"></Box>
-          <Stack w="full">
-            <Text>Product Name</Text>
-            <Text>Rp. 20.000</Text>
-            <Flex>
-              <Button
-                h="30px"
-                // onClick={handleDecrement}
-                variant="outline"
-                color="black"
-              >
-                -
-              </Button>
-              <Text color="black" mx="10px" fontSize="lg">
-                1
-              </Text>
-              <Button
-                h="30px"
-                // onClick={handleIncrement}
-                variant="outline"
-                color="black"
-              >
-                +
-              </Button>
-            </Flex>
-          </Stack>
-        </Flex>
-      </Flex>
-      <Flex position={'fixed'} bottom={0} w={{ base: 'full', md: size }}>
-      <Flex
-      justify={'space-between'}
-      w={'full'}
-      bgColor={'white'}
-      p={'20px'}
-      boxShadow={'0px -8px 8px -14px rgba(0,0,0,1)'}
-    >
-      <Checkbox colorScheme="green">Semua</Checkbox>
-      <Flex gap={2} alignItems='center' h='full'>
-        <Text>Total</Text>
-        <Text fontSize='13pt' fontWeight='bold'>Rp. 10000</Text>
-        <Button background='green.700' color='white'>Checkout</Button>
-      </Flex>
-    </Flex>
-      </Flex>
+      <CartHeader handleWebSize={handleWebSize} size={size} />
+      <CartTotalSelected
+        user={user}
+        selectedItems={selectedItems}
+        isScrolled={isScrolled}
+        showToast={showToast}
+      />
+      <CartBody
+        user={user}
+        setIsScrolled={setIsScrolled}
+        uniqueStoreIds={[
+          ...new Set(carts.map((item) => item.ProductStock.Store.id)),
+        ]}
+        carts={carts}
+        fetchCart={fetchCart}
+        handleCheckboxStoreChange={handleCheckboxStoreChange}
+        selectedItems={selectedItems}
+        setSelectedItems={setSelectedItems}
+        quantities={quantities}
+        setQuantities={setQuantities}
+        showToast={showToast}
+      />
+      <CartFooter
+        size={size}
+        userId={userId}
+        carts={carts}
+        selectedItems={selectedItems}
+        handleCheckboxAllChange={handleCheckboxAllChange}
+        quantities={quantities}
+      />
     </Box>
   );
 };

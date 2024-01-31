@@ -50,12 +50,10 @@ export const calculateDiscountPrice = (originalPrice, discounts) => {
   
         case 7: // Voucher
           // Handle voucher discount logic here
-          // You may need additional data or API calls to implement this
-          // For now, do nothing for vouchers
+
           break;
   
         default:
-          // Unsupported discount type, do nothing
           break;
       }
     });

@@ -28,6 +28,7 @@ const getPaginatedAndFilteredCategoryQuery = async (
     //       sortField,
     //       sortOrder,
     //   ],
+    order:[['category', sortOrder]],
       where: whereCondition,
     });
     
@@ -89,8 +90,8 @@ const addCategoryQuery = async (category, imageUrl) => {
 const editCategoryQuery = async (category_id, categoryNew, imageUrl) => {
     try {
         const updatedCategory = await ProductCategory.update({
-            category: categoryNew ? categoryNew : {},
-            imageUrl: imageUrl ? imageUrl : {} 
+            category: categoryNew,
+            imageUrl: imageUrl,
             },
             { where: { id: category_id },
             });

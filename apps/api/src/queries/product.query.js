@@ -44,12 +44,19 @@ const getPaginatedAndFilteredProductsQuery = async (
     const offset = (page - 1) * (pageSize || 0);
 
     const whereCondition = {};
+    const whereConditionCategory = {};
 
     if (productName) {
       whereCondition.name = {
         [Op.like]: `%${productName}%`,
       };
     }
+
+    if (categoryId !== null && categoryId.trim() !== '') {
+      whereConditionCategory.id = categoryId;
+    }
+
+    console.log(categoryId);
 
     const productStockQuery = {
       where: {
@@ -91,7 +98,7 @@ const getPaginatedAndFilteredProductsQuery = async (
         {
           model: ProductCategory,
           through: { attributes: [] },
-          where: categoryId ? { id: categoryId } : {},
+          where: {...whereConditionCategory},
         },
         {
           model: ProductImage,
@@ -149,7 +156,6 @@ const getPaginatedAndFilteredProductsQuery = async (
     });
 
     const totalPages = Math.ceil(totalProducts / (pageSize || totalProducts));
-
     return {
       products,
       totalPages,
@@ -195,6 +201,12 @@ const getPaginatedAndFilteredProductsRealQuery = async (
       offset: offset,
       limit: pageSize ? pageSize : undefined,
       order: [[sortField, sortOrder]],
+      attributes: {
+        include: [
+          [Sequelize.literal('(SELECT AVG(rating) FROM RatingAndReview WHERE RatingAndReview.product_idproduct = Product.id)'), 'averageRating'],
+          [Sequelize.literal('(SELECT COUNT(rating) FROM RatingAndReview WHERE RatingAndReview.product_idproduct = Product.id)'), 'totalReviews'],
+        ],
+      },
       where: {
         ...whereCondition,
         ...(status ? { status: status } : {}),
@@ -272,7 +284,21 @@ const getDetailProductRealQuery = async (id) => {
       },
     });
 
-    return result;
+    const subquery = await RatingsAndReviews.findOne({
+      attributes: [
+        [
+          Sequelize.fn('AVG', Sequelize.col('rating')),
+          'averageRating',
+        ],
+        [Sequelize.fn('COUNT', Sequelize.col('rating')), 'totalReviews'],
+      ],
+      where: {
+        product_idproduct: result.id,
+      },
+      raw: true,
+    });
+
+    return {result, subquery};
   } catch (err) {
     throw err;
   }
@@ -443,6 +469,15 @@ const updateProductQuery = async (
   mass_idmass,
   packaging_idpackaging,
 ) => {
+  console.log("ini di query", 
+  id,
+  name,
+  description,
+  price,
+  status,
+  massProduct,
+  mass_idmass,
+  packaging_idpackaging,)
   try {
     // Create an object with non-null values
     const updatedValue = {
@@ -457,7 +492,7 @@ const updateProductQuery = async (
 
     // Remove properties with null values
     Object.keys(updatedValue).forEach((key) => {
-      if (updatedValue[key] == null || updatedValue[key] == undefined) {
+      if (updatedValue[key] == null || updatedValue[key] == undefined || updatedValue[key] == "undefined") {
         delete updatedValue[key];
       }
     });

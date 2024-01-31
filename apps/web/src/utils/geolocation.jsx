@@ -1,11 +1,13 @@
 /* eslint-disable react/prop-types */
 import axios from 'axios';
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { setLocation } from '../redux/reducer/authReducer';
+import { useDispatch, useSelector } from 'react-redux';
+import { setAddress } from '../redux/reducer/addressReducer';
 
 export const Location = ({ children }) => {
   const dispatch = useDispatch();
+
+  const location = useSelector((state) => state.addressReducer.address);
 
   useEffect(() => {
     const getLocation = async () => {
@@ -29,18 +31,8 @@ export const Location = ({ children }) => {
               const res = await axios.get(
                 `${import.meta.env.VITE_API_URL}/city/getCity?cityName=${city}`,
               );
-<<<<<<< Updated upstream
 
-              dispatch(
-                setLocation({
-                  address: res?.data?.data[0] || city,
-                  latitude: latitude,
-                  longitude: longitude,
-                }),
-              );
-=======
               const dataLocation = res?.data?.data[0];
-              console.log('user location', dataLocation)
               if (!location.id) {
                 dispatch(
                   setAddress({
@@ -60,7 +52,6 @@ export const Location = ({ children }) => {
                   }),
                 );
               }
->>>>>>> Stashed changes
             } catch (error) {
               console.error('Error getting city:', error.message);
             }

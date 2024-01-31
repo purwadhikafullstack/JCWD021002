@@ -7,6 +7,7 @@ import {
   updateItemCartQtyQuery,
   updateCartTotalsQuery,
   deleteCartItemQuery,
+  getAllCartQuery,
 } from '../queries/cart.query';
 
 export const createCartService = async (userId, cartDetails) => {
@@ -98,5 +99,19 @@ export const deleteCartItemService = async ({ userId, productId }) => {
   } catch (err) {
     console.error(err.message);
     throw err;
+  }
+};
+
+export const getCartService = async (userId) => {
+  try {
+    const cart = await getAllCartQuery(userId);
+
+    if (!cart) {
+      throw new Error(`Cart item with product id ${productId} not found`);
+    }
+
+    return cart;
+  } catch (error) {
+    throw error;
   }
 };

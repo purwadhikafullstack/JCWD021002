@@ -16,7 +16,7 @@ export const MySwiper = ({ size }) => {
     { slide: Img2 },
   ];
   return (
-    <Flex h={'fit-content'} w={'full'} >
+    <Flex h={'fit-content'} w={'full'} p={size == '500px' ? '20px' : {base: '0 40px',lg: '30px 100px', xl: '30px 200px'}}>
       <Swiper
         slidesPerView={1}
         autoplay={{
@@ -28,9 +28,10 @@ export const MySwiper = ({ size }) => {
         className="mySwiper"
         modules={[Autoplay]}
         style={{
+          m: size == '500px' ? '0 20px' : '30px 200px',
           height: 'fit-content',
-          width: size,
-          padding: '20px',
+          width: size == '500px' ? size : '100%',
+          // padding: '20px',
           transition: 'width .2s ease-in-out',
         }}
       >
@@ -40,9 +41,9 @@ export const MySwiper = ({ size }) => {
               key={index}
               style={{
                 height: size == '500px' ? '200px' : '500px',
-                width: size,
+                // width: size,
                 borderRadius: '8px',
-                justifyContent: 'center',
+                // justifyContent: 'center',
                 background: `url(${item.slide})`,
                 backgroundPosition: 'bottom',
                 backgroundSize: 'cover',

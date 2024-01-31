@@ -11,20 +11,14 @@ import {
   ModalContent, ModalCloseButton, ModalBody, ModalFooter, VStack, Flex, FormLabel, Checkbox, Textarea, InputRightElement, Select, RadioGroup, Radio
 } from "@chakra-ui/react";
 import {
-  IconPlus, IconArrowLeft, IconPhotoUp, IconX, IconArrowRight, IconEye, IconEyeOff
+  IconPlus, IconArrowLeft, IconDiscount, IconX, IconArrowRight, IconEye, IconEyeOff
 } from '@tabler/icons-react';
 import AvatarSVG from './icon-default-avatar.svg';
 import SideBar from '../../components/SideBar/SideBar';
 import { useSelector } from "react-redux";
 import { useWebSize } from '../../provider.websize';
-
-
-function formatPriceToIDR(price) {
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-  }).format(price);
-}
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const AddDiscount = () => {
   const {size, handleWebSize } = useWebSize();
@@ -52,18 +46,15 @@ const AddDiscount = () => {
   const [max, setMax] = useState();
   const [referral, setReferral] = useState();
   const [productName, setProductName] = useState('');
-  const [productId, setProductId] = useState()
+  const [productId, setProductId] = useState();
+  const token = localStorage.getItem("token");
+
 
 
 
 
 
   console.log("ini type", type);
-  const [fullname, setFullname] = useState("");
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [storeId, setStoreId] = useState();
 
   const fetchData = async () => {
@@ -97,7 +88,12 @@ const AddDiscount = () => {
 
   useEffect(() => {
     fetchStore();
+    if (user?.store_idstore) {
+      setStoreId(user?.store_idstore);
+    }
   }, []);
+
+
 
   const addProduct = async () => {
     try {
@@ -122,7 +118,10 @@ const AddDiscount = () => {
 
       await axios.post(
         `${import.meta.env.VITE_API_URL}discount/add-discount`,
-        formData
+        formData,
+        {headers: {
+          Authorization: `Bearer ${token}`,
+        }}
       );
 
       navigate("/discount-lists");
@@ -171,12 +170,12 @@ const AddDiscount = () => {
       {/* <SidebarWithHeader /> */}
       <Box w={{ base: '100vw', md: size }}>
           <SideBar size={size} handleWebSize={handleWebSize}/>
-      <ToastContainer />
+      <ToastContainer position="top-center" closeOnClick pauseOnFocusLoss draggable pauseOnHover theme="colored" />
       <Box w={{ base: '98.7vw', md: size }} overflowX='hidden' height='100vh' backgroundColor='#fbfaf9' p='20px'>
       
       <Box pl={size == '500px' ? '0px' : '150px' } pr={size == '500px' ? '0px' : '20px'} pt='20px' pb='20px'>
         <HStack mb='10px'>
-          <Button leftIcon={<IconArrowLeft />} borderRadius='full' backgroundColor='white' textColor='black' border='solid 1px black' onClick={() => navigate('/user-lists')}>Back</Button>
+          <Button leftIcon={<IconArrowLeft />} borderRadius='full' backgroundColor='white' textColor='black' border='solid 1px black' onClick={() => navigate('/discount-lists')}>Back</Button>
           <Spacer />
           <Button rightIcon={<IconArrowRight />} borderRadius='full' backgroundColor='#286043' textColor='white' border='solid 1px #286043' onClick={() => addProduct()}>Add Item</Button>
         </HStack>
@@ -188,9 +187,9 @@ const AddDiscount = () => {
             {selectedImage ? <Image
             src={selectedImage}
             alt="Selected Image"
-            boxSize="150px"
+            width="350px"
             objectFit="cover"
-            borderRadius="50%"/> : <Image src={AvatarSVG} />}
+            borderRadius="10px"/> : <Box bgColor='#ebf5ff' p='20px' display='flex' justifyContent='center' width='350px' borderRadius='10px'><IconDiscount color='#0049cc' size='100px' /></Box>}
             <Box mt='-50px' mr='-90px'>
       <Input display="none" id="fileInput" 
               type="file"
@@ -226,17 +225,17 @@ const AddDiscount = () => {
             <Text fontSize='large' fontWeight='bold'>Usage Restriction Type</Text>
             <RadioGroup mb='20px' value={usageType} onChange={(value) => { handleReset(); setUsageType(value); }}>
                 <Stack spacing={4} direction='row' display='flex' flexWrap='wrap'>
-                    <Radio value='1'>Purchase</Radio>
-                    <Radio value='2'>Shipping</Radio>
+                    <Radio value='1' isDisabled={distribution == null ? true : false}>Purchase</Radio>
+                    <Radio value='2' isDisabled={distribution == null ? true : false}>Shipping</Radio>
                 </Stack>
             </RadioGroup>
 
             <Text fontSize='large' fontWeight='bold' mt='10px'>Discount Type</Text>
             <RadioGroup mb='20px' value={type} onChange={(value) => { handleReset(); setType(value); }}>
                 <Stack spacing={4} direction='row' display='flex' flexWrap='wrap'>
-                    <Radio value='4'>Direct Discount</Radio>
-                    <Radio value='5'>Minimum Amount Discount</Radio>
-                    <Radio value='6' isDisabled={usageType == 2 ? true : false}>B O G O</Radio>
+                    <Radio value='4' isDisabled={usageType == null ? true : false}>Direct Discount</Radio>
+                    <Radio value='5' isDisabled={usageType == null ? true : false}>Minimum Amount Discount</Radio>
+                    <Radio value='6' isDisabled={usageType == 2 || usageType == null ? true : false}>B O G O</Radio>
                 </Stack>
             </RadioGroup>
 
@@ -294,21 +293,27 @@ const AddDiscount = () => {
             <Text fontSize='large' fontWeight='bold'>Name Discount</Text>
                 <Input mb='20px' placeholder= 'Ex. Diskon 2.2' name='name' width={size == '500px' ? '100%' : '50%'} value={name} onChange={(e) => setName(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
               
+            <Box pb='60px'>
             <Text fontSize='large' fontWeight='bold'>Description</Text>
-                <Textarea mb='20px' name='desc' width={size == '500px' ? '100%' : '70%'} value={description} onChange={(e) => setDescription(e.target.value)} type='text' border='solid gray 1px' borderRadius='10px' height='20vh'/>
-            
-                <Text fontSize='large' fontWeight='bold'>Max Usage Discount</Text>
-                <Input mb='20px' placeholder= 'Ex. 250' name='max' width={size == '500px' ? '100%' : '50%'} value={max} onChange={(e) => setMax(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
+            <ReactQuill
+        value={description}
+        onChange={(value) => setDescription(value)}
+        theme='snow'
+        style={{ height:'200px'}}
+      />
+            </Box>
+                <Text fontSize='large' fontWeight='bold'>Max Usage Discount (Voucher)</Text>
+                <Input mb='20px' isDisabled={distribution == 2 ? false : true} placeholder= 'Ex. 250' name='max' width={size == '500px' ? '100%' : '50%'} value={max} onChange={(e) => setMax(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
               
                 <Text fontSize='large' fontWeight='bold'>Referral Code</Text>
-                <Input mb='20px' placeholder= 'Ex. GROCERIAANNIV1' name='name' width={size == '500px' ? '100%' : '50%'} value={referral} onChange={(e) => setReferral(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
+                <Input mb='20px' isDisabled={distribution == 2 ? false : true} placeholder= 'Ex. GROCERIAANNIV1' name='name' width={size == '500px' ? '100%' : '50%'} value={referral} onChange={(e) => setReferral(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
               
 
             <Flex columnGap='10px' mb='20px ' flexDir={size == '500px' ? 'column' : 'row'}>
               <Box width='100%'>
                 <Text fontSize='large' fontWeight='bold'>Product</Text>
                 <FormLabel>Store</FormLabel>
-                <Select border='solid gray 1px' borderRadius='full' placeholder="Select option" value={storeId} onChange={(e) => setStoreId(e.target.value)}>
+                <Select isDisabled={user?.store_idstore ? true : false} border='solid gray 1px' borderRadius='full' placeholder="Select option" value={storeId} onChange={(e) => setStoreId(e.target.value)}>
             {dataStore?.map((item) => ( 
               <option key={item.id} value={item.id}>{item.name}</option>
             ))}
@@ -321,7 +326,7 @@ const AddDiscount = () => {
                 </Flex>
               <Select border='solid gray 1px' borderRadius='full' placeholder="Select option" value={productId} onChange={(e) => setProductId(e.target.value)}>
             {data?.products?.map((item) => ( 
-              <option key={item?.id} value={item?.id}>{item?.name}</option>
+              <option key={item?.id} value={item?.ProductStocks[0].id}>{item?.name}</option>
             ))}
             </Select>
               </Box>

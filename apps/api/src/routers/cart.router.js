@@ -4,6 +4,7 @@ import {
   createCartController,
   updateItemCartQtyController,
   deleteCartItemController,
+  getCartController,
 } from '../controllers/cart.controller';
 
 const cartRouter = Router();
@@ -19,8 +20,16 @@ cartRouter.put('/update/:userId/:productId/:newQuantity', async (req, res) => {
 });
 
 // DELETE
-cartRouter.delete('/delete-product/:userId/:productId', async (req, res) => {
+// cartRouter.delete('/delete-product/:userId/:productId', async (req, res) => {
+//   await deleteCartItemController(req, res);
+// });
+cartRouter.delete('/delete-product/:userId', async (req, res) => {
   await deleteCartItemController(req, res);
+});
+
+// GET
+cartRouter.get('/:userId', async (req, res) => {
+  await getCartController(req, res);
 });
 
 export { cartRouter };

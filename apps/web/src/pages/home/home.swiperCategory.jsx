@@ -31,6 +31,7 @@ export const SwiperCategory = ({ size }) => {
       setCategories(res.data.categories);
     } catch (err) {
       console.log(err);
+      console.log(err);
     }
   };
 
@@ -39,9 +40,6 @@ export const SwiperCategory = ({ size }) => {
   }, []);
 
   return (
-<<<<<<< Updated upstream:apps/web/src/pages/home/swiperCategory.jsx
-    <Flex h={'fit-content'} overflow={'hidden'} w={'full'}>
-=======
     <Flex
       h={'fit-content'}
       overflow={'hidden'}
@@ -52,9 +50,8 @@ export const SwiperCategory = ({ size }) => {
           : { base: '0 40px', lg: '30px 100px', xl: '30px 200px' }
       }
     >
->>>>>>> Stashed changes:apps/web/src/pages/home/home.swiperCategory.jsx
       <Swiper
-        slidesPerView={size == '500px' ? 5 : 6}
+        slidesPerView={size == '500px' ? 4.4 : 7.4}
         spaceBetween={30}
         className="mySwiper"
         style={{ height: 'fit-content', width: size, padding: '0 20px' }}
@@ -78,10 +75,6 @@ export const SwiperCategory = ({ size }) => {
               >
                 <Flex
                   bgColor={colors[colorIndex]}
-<<<<<<< Updated upstream:apps/web/src/pages/home/swiperCategory.jsx
-                  h={size == '500px' ? '70px' : '100px'}
-                  w={size == '500px' ? '70px' : '100px'}
-=======
                   h={
                     size == '500px'
                       ? { base: '60px', md: '70px' }
@@ -92,20 +85,16 @@ export const SwiperCategory = ({ size }) => {
                       ? { base: '60px', md: '70px' }
                       : { base: '70px', md: '100px' }
                   }
->>>>>>> Stashed changes:apps/web/src/pages/home/home.swiperCategory.jsx
+                  x
                   borderRadius={'50%'}
                   justify={'center'}
                   align={'center'}
                   cursor={'pointer'}
                 >
-<<<<<<< Updated upstream:apps/web/src/pages/home/swiperCategory.jsx
-                  <Image src={image[imageIndex]} />
-=======
                   <Image
                     src={image[imageIndex]}
                     w={{ base: '35px', md: '45px' }}
                   />
->>>>>>> Stashed changes:apps/web/src/pages/home/home.swiperCategory.jsx
                 </Flex>
               </Link>
               <Text

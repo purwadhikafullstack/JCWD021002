@@ -1,20 +1,9 @@
 import {
   Flex,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
   useDisclosure,
-  Text,
-  Button,
   Avatar,
-<<<<<<< Updated upstream
-=======
   Text
->>>>>>> Stashed changes
+  Box,
 } from '@chakra-ui/react';
 import {
   HiOutlineHome,
@@ -28,12 +17,36 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useWebSize } from '../../provider.websize';
+import { LoginModal } from '../LoginModal';
+import axios from 'axios';
 
 export const BottomBar = () => {
   const [active, setActive] = useState('');
   const path = useLocation();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const user = useSelector((state) => state.AuthReducer.user);
+  const token = localStorage.getItem('token')
+  const { size } = useWebSize();
+
+  const [carts, setCarts] = useState([]);
+
+  const fetchCarts = async (user) => {
+    try {
+      console.log('userId: ', user.id);
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/cart/${user.id}`,
+      );
+      console.log('res data: ', response?.data?.data);
+      setCarts(response?.data?.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchCarts(user);
+  }, [user]);
 
   const bar = [
     {
@@ -48,12 +61,43 @@ export const BottomBar = () => {
     },
     {
       text: 'Cart',
-      icon:
-        active == '/cart' ? (
-          <HiShoppingCart size={'26px'} />
-        ) : (
-          <HiOutlineShoppingCart size={'26px'} />
-        ),
+      icon: (
+        <Flex alignItems='center'>
+          {active == '/cart' ? (
+            <HiShoppingCart size={'26px'} />
+          ) : (
+            // <HiOutlineShoppingCart size={'26px'} />
+             <Link to='/cart'>
+            <HiOutlineShoppingCart size={'26px'} />
+            {carts.length > 0
+              ? carts.map((item, index) => (
+                  <Flex
+                    hidden={item.totalQuantity === 0 ? true : false}
+                    key={index}
+                    position='absolute'
+                    top={0}
+                    w='5%'
+                    h='37%'
+                    borderRadius={'50%'}
+                    justifyContent='center'
+                    alignItems='center'
+                    cursor={'pointer'}
+                    transform='translate(35%, 35%)'
+                    background='red'
+                    color='white'
+                    p={1.5}
+                  >
+                    <Text fontSize='10pt'>
+                      {/* 300 */}
+                      {item.totalQuantity}
+                    </Text>
+                  </Flex>
+                ))
+              : null}
+          </Link>
+          )}
+        </Flex>
+      ),
       link: '/cart',
     },
     {
@@ -97,12 +141,13 @@ export const BottomBar = () => {
       p={'20px'}
       fontSize={'10px'}
       boxShadow={'0px -8px 8px -14px rgba(0,0,0,1)'}
+      display={size == '500px' ? 'flex' : 'none'}
     >
       {bar?.map((item, index) => {
         return (
           <Link
-            to={isLogin ? item.link : '#'}
-            onClick={item.link == '/' ? null : isLogin ? null : onOpen}
+            to={isLogin ? item?.link : item.link == '/profile' ? '#' : item.link}
+            onClick={item.link == '/profile' ? (isLogin ? null : onOpen) : null}
             key={index}
           >
             <Flex
@@ -111,11 +156,11 @@ export const BottomBar = () => {
               alignItems={'center'}
               justifyContent={'center'}
             >
-              {item.link == '/profile' ? (
+              {item.link == '/profile' && token ? (
                 user.avatar ? (
                   <Avatar
                     size={'xs'}
-                    bgColor="#DAF1E8FF"
+                    bgColor='#DAF1E8FF'
                     color={'colors.primary'}
                     src={`${import.meta.env.VITE_API_IMAGE_URL}/avatar/${
                       user?.avatar
@@ -131,43 +176,7 @@ export const BottomBar = () => {
           </Link>
         );
       })}
-
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
-        <ModalOverlay />
-        <ModalContent alignItems={'center'} w={'80%'}>
-          <ModalHeader></ModalHeader>
-          <ModalCloseButton />
-          <ModalBody
-            display={'flex'}
-            flexDirection={'column'}
-            alignItems={'center'}
-            justifyContent={'center'}
-            gap={5}
-          >
-            <Text textAlign={'center'}>
-              Hanya satu langkah lagi! Silakan login untuk melanjutkan.
-            </Text>
-            <Link to={'/login'}>
-              <Button
-                variant="ghost"
-                bgColor="colors.primary"
-                color={'white'}
-                _hover={{
-                  transform: 'scale(1.1)',
-                }}
-                _active={{
-                  transform: 'scale(1)',
-                }}
-                borderRadius={'10px'}
-                px={'30px'}
-              >
-                Login
-              </Button>
-            </Link>
-          </ModalBody>
-          <ModalFooter></ModalFooter>
-        </ModalContent>
-      </Modal>
+      <LoginModal isOpen={isOpen} onClose={onClose} fromPage={'/profile'}/>
     </Flex>
   );
 };

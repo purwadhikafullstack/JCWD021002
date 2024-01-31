@@ -1,14 +1,9 @@
-import { Cart } from "../pages/Cart";
-import { Home } from "../pages/home/Home";
-import HereGeocodingApp from "../pages/profile/HereGeocodingApp";
+import ErrorPage from '../error.page';
+import { Home } from '../pages/home/Home';
+import { ProtectUserRoute } from './protection.route';
 
 const routeHome = [
-<<<<<<< Updated upstream
-  {path: "/", element:  <Home />},
-  {path: "/cart", element:  <Cart />},
-  {path: "/maps", element:  <HereGeocodingApp />},
-]
-=======
+
   {
     path: '/',
     element: (
@@ -17,19 +12,10 @@ const routeHome = [
       </ProtectUserRoute>
     ),
   },
-  // {
-  //   path: '/cart',
-  //   element: (
-  //     <ProtectUserRoute>
-  //       <Cart />
-  //     </ProtectUserRoute>
-  //   ),
-  // },
   {
     path: '*',
     element: <ErrorPage />,
   },
 ];
->>>>>>> Stashed changes
 
-export default routeHome
+export default routeHome;
