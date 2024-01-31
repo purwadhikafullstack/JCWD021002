@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import DashboardAdmin from '../pages/DashboardAdmin/DashboardAdmin';
 import AddProduct from '../pages/AddProduct/AddProduct';
 import CategoryLists from '../pages/CategoryLists/CategoryLists';

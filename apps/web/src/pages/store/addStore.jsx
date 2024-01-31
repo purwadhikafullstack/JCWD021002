@@ -24,6 +24,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { BsBuildingAdd } from 'react-icons/bs';
 import HereGeocodingApp from '../profile/HereGeocodingApp';
+import { AddressAutoComplate } from '../../components/AddressAutoComplate/addressAutoComplate';
 
 export const AddStore = ({ setUpdate }) => {
   const { size } = useWebSize();
@@ -202,10 +203,10 @@ export const AddStore = ({ setUpdate }) => {
                       <Input
                         type="name"
                         placeholder="Nama Toko*"
-                        _placeholder={{ fontSize: '14px' }}
                         name="storeName"
                         value={formik.values.storeName}
                         onChange={formik.handleChange}
+                        _placeholder={{ fontSize: '14px' }}
                         borderRadius={'20px'}
                         bgColor={'#E8EAEF'}
                       />
@@ -254,10 +255,6 @@ export const AddStore = ({ setUpdate }) => {
                       direction={'column'}
                       gap={1}
                     >
-                      <HereGeocodingApp
-                        value={address}
-                        setUserAddress={setUserCoordinates}
-                      />
                       <Input
                         placeholder="Alamat"
                         _placeholder={{ fontSize: '14px' }}
@@ -273,31 +270,18 @@ export const AddStore = ({ setUpdate }) => {
                           setVisible(true);
                         }}
                       />
-                      <List
-                        display={
-                          inputValue ? (visible ? 'flex' : 'none') : 'none'
-                        }
-                        flexDirection={'column'}
-                        bgColor={'#E8EAEF'}
-                        gap={2}
-                        borderRadius={'20px'}
-                        p={'10px 20px'}
-                      >
-                        {suggestedAddresses.map((address, index) => (
-                          <ListItem key={index}>
-                            <Box
-                              onClick={() => {
-                                handleInputChange(address);
-                                setAddress(address);
-                                setVisible(false);
-                              }}
-                              cursor="pointer"
-                            >
-                              {address}
-                            </Box>
-                          </ListItem>
-                        ))}
-                      </List>
+                      <HereGeocodingApp
+                        value={address}
+                        setUserAddress={setUserCoordinates}
+                      />
+                      <AddressAutoComplate
+                        inputValue={inputValue}
+                        visible={visible}
+                        suggestedAddresses={suggestedAddresses}
+                        handleInputChange={handleInputChange}
+                        setAddress={setAddress}
+                        setVisible={setVisible}
+                      />
                     </Flex>
                   </Flex>
                 </FormControl>

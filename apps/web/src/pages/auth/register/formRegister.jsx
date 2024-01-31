@@ -48,9 +48,9 @@ export const FormRegister = () => {
       password: 'pass12345',
     },
     validationSchema: registerSchema,
-    onSubmit: async (values) => {
+    onSubmit: (values) => {
       setDisplayLoader('flex');
-      const res = await dispatch(
+      const res = dispatch(
         register({
           username: values.username,
           email: values.email,

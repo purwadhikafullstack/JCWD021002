@@ -1,11 +1,21 @@
-import { Cart } from "../pages/Cart";
-import { Home } from "../pages/home/Home";
-import HereGeocodingApp from "../pages/profile/HereGeocodingApp";
+import ErrorPage from '../error.page';
+import { Home } from '../pages/home/Home';
+import { ProtectUserRoute } from './protection.route';
 
 const routeHome = [
-  {path: "/", element:  <Home />},
-  {path: "/cart", element:  <Cart />},
-  {path: "/maps", element:  <HereGeocodingApp />},
-]
 
-export default routeHome
+  {
+    path: '/',
+    element: (
+      <ProtectUserRoute>
+        <Home />
+      </ProtectUserRoute>
+    ),
+  },
+  {
+    path: '*',
+    element: <ErrorPage />,
+  },
+];
+
+export default routeHome;

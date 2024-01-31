@@ -16,13 +16,13 @@ export const Collections = () => {
   const { size } = useWebSize();
 
   return (
-    <Flex direction={'column'} p={size == '500px' ? '0 20px' : '30px 200px'}>
+    <Flex direction={'column'} p={size == '500px' ? '0 20px' : {base: '0 40px',lg: '30px 100px', xl: '30px 200px'}}>
       <Grid templateColumns={'repeat(2, 1fr)'} gap={5}>
         {collection?.map((item, index) => {
           return (
             <Flex
               key={index}
-              h={'90px'}
+              h={size == '500px' ? '90px' :{base: '90px',md: '140px', lg: '180px'}}
               border={'1px solid #F3F4F6FF'}
               borderRadius={'6px'}
               bgColor={'red'}

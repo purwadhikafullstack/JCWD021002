@@ -1,8 +1,6 @@
 const path = require("path");
 const multer = require("multer");
 
-
-
 const productStorage = multer.diskStorage({
   destination: (req, res, cb) => {
     console.log("Multer Received Data:", req.body);
@@ -41,6 +39,16 @@ const categoriesStorage = multer.diskStorage({
   filename: (req, file, cb) => {
     const { category } = req.body;
     cb(null, `categories-${category}-${Date.now()}-${file.originalname}`);
+  }
+})
+
+const paymentStorage = multer.diskStorage({
+  destination: (req, res, cb) => {
+    cb(null, path.join(__dirname, "../public/images/payments"));
+  },
+  filename: (req, file, cb) => {
+    const { username } = req.body;
+    cb(null, `payment_${username}-${Date.now()}-${file.originalname}`);
   },
 });
 
@@ -49,8 +57,7 @@ const fileFilter = (req, file, cb) => {
   if (
     fileType === "png" ||
     fileType === "jpg" ||
-    fileType === "jpeg" ||
-    fileType === "gif"
+    fileType === "jpeg"
   ) {
     cb(null, true);
   } else {
@@ -87,10 +94,16 @@ const uploadCategoriesFile = multer({
   limits,
 }).single("category");
 
+const uploadPaymentFile = multer({
+  storage: paymentStorage,
+  fileFilter,
+  limits,
+}).single("payment");
 
 module.exports = {
   uploadProductFile,
   uploadAvatarFile,
   uploadDiscountFile,
   uploadCategoriesFile,
-};
+  uploadPaymentFile,
+}

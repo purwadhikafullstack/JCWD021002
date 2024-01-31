@@ -146,28 +146,9 @@ export const EditAddress = ({ selectedItem, setUpdate, isOpen, onClose }) => {
       } else if (selectedItem.isMain == 0) {
         setIsChecked(false);
       }
+      setUpdate(false);
     }
   }, [selectedItem]);
-
-  // const getAddress = async (userId) => {
-  //   try {
-  //     const res = await axios.get(
-  //       `http://localhost:8000/api/address/getAddress/${userId}`,
-  //     );
-  //     setAddress(res?.data?.data);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   getAddress(userId);
-  // }, [update, userId]);
-
-  // const handleClick = (item) => {
-  //   setSelectedItem(item);
-  //   onOpen();
-  // };
 
   return (
     <Flex>
@@ -181,9 +162,9 @@ export const EditAddress = ({ selectedItem, setUpdate, isOpen, onClose }) => {
         <DrawerContent
           sx={size == '500px' ? { w: size } : { maxW: '35vw' }}
           borderRadius={size == '500px' ? '10px 10px 0 0' : 0}
-          maxH={size == '500px' ? '90vh' : 'full'}
+          maxH={size == '500px' ? '100vh' : 'full'}
           m={'auto'}
-          p={'30px'}
+          p={'10px 30px'}
         >
           <DrawerCloseButton />
           <DrawerHeader display={'flex'} justifyContent={'center'}>
@@ -196,32 +177,40 @@ export const EditAddress = ({ selectedItem, setUpdate, isOpen, onClose }) => {
             <DrawerBody>
               <Flex h={'fit-content'} bgColor={'white'}>
                 <FormControl>
-                  <Flex w={'full'} direction={'column'} gap={1}>
-                    <Flex bgColor={'white'} py={'10px'}>
+                  <Flex w={'full'} direction={'column'} gap={'20px'}>
+                    <Flex bgColor={'white'}>
                       <Input
                         type="recipientNames"
-                        variant={'unstyled'}
                         placeholder="Nama Penerima*"
                         name="recipientNames"
                         value={formik.values.recipientNames}
                         onChange={formik.handleChange}
+                        _placeholder={{ fontSize: '14px' }}
+                        borderRadius={'20px'}
+                        bgColor={'white'}
+                        p={'10px 20px'}
                       />
                     </Flex>
-                    <Flex bgColor={'white'} py={'10px'}>
+                    <Flex bgColor={'white'}>
                       <Input
-                        variant={'unstyled'}
                         placeholder="Nomor Handphone Penerima*"
                         name="recipientsMobileNumber"
                         value={formik.values.recipientsMobileNumber}
                         onChange={formik.handleChange}
+                        _placeholder={{ fontSize: '14px' }}
+                        borderRadius={'20px'}
+                        bgColor={'white'}
+                        p={'10px 20px'}
                       />
                     </Flex>
-                    <Flex py={'10px'}>
+                    <Flex gap={5}>
                       <Select
-                        variant="unstyled"
                         placeholder={'Provinsi'}
                         value={provinceId}
                         onChange={handleProvinceChange}
+                        _placeholder={{ fontSize: '14px' }}
+                        borderRadius={'20px'}
+                        bgColor={'white'}
                       >
                         {province?.map((item, index) => {
                           return (
@@ -231,13 +220,13 @@ export const EditAddress = ({ selectedItem, setUpdate, isOpen, onClose }) => {
                           );
                         })}
                       </Select>
-                    </Flex>
-                    <Flex py={'10px'}>
                       <Select
                         placeholder={'Kota / Kabupaten'}
                         value={cityId}
                         onChange={handleCityChange}
-                        variant="unstyled"
+                        _placeholder={{ fontSize: '14px' }}
+                        borderRadius={'20px'}
+                        bgColor={'white'}
                       >
                         {cities?.map((item, index) => {
                           return (
@@ -252,43 +241,55 @@ export const EditAddress = ({ selectedItem, setUpdate, isOpen, onClose }) => {
                         })}
                       </Select>
                     </Flex>
-                    <Flex bgColor={'white'} py={'10px'}>
+                    <Flex bgColor={'white'}>
                       <Input
-                        variant={'unstyled'}
                         placeholder="Alamat"
                         name="addressLine"
                         value={formik.values.addressLine}
                         onChange={formik.handleChange}
+                        _placeholder={{ fontSize: '14px' }}
+                        borderRadius={'20px'}
+                        bgColor={'white'}
+                        p={'10px 20px'}
                       />
                     </Flex>
-                    <Flex bgColor={'white'} py={'10px'}>
+                    <Flex bgColor={'white'}>
                       <Input
-                        variant={'unstyled'}
                         placeholder="Detail Alamat (Cth: Blok / Unit No., Patokan)"
                         name="addressDetails"
                         value={formik.values.addressDetails}
                         onChange={formik.handleChange}
+                        _placeholder={{ fontSize: '14px' }}
+                        borderRadius={'20px'}
+                        bgColor={'white'}
+                        p={'10px 20px'}
                       />
                     </Flex>
-                    <Flex bgColor={'white'} py={'10px'}>
+                    <Flex bgColor={'white'}>
                       <Input
-                        variant={'unstyled'}
                         placeholder="Kode pos"
                         name="postalCode"
                         value={formik.values.postalCode}
                         onChange={formik.handleChange}
+                        _placeholder={{ fontSize: '14px' }}
+                        borderRadius={'20px'}
+                        bgColor={'white'}
+                        p={'10px 20px'}
                       />
                     </Flex>
-                    <Flex bgColor={'white'} py={'10px'}>
+                    <Flex bgColor={'white'}>
                       <Input
-                        variant={'unstyled'}
                         placeholder="Label Alamat"
                         name="addressLabel"
                         value={formik.values.addressLabel}
                         onChange={formik.handleChange}
+                        _placeholder={{ fontSize: '14px' }}
+                        borderRadius={'20px'}
+                        bgColor={'white'}
+                        p={'10px 20px'}
                       />
                     </Flex>
-                    <Flex justify={'space-between'} py={'10px'}>
+                    <Flex justify={'space-between'} p={'10px 10px'}>
                       <Text>Atur sebagai Alamat Utama</Text>
                       <Switch
                         size="lg"

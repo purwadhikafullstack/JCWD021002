@@ -3,7 +3,7 @@
 import { Center, Flex, Text, Button, Image } from '@chakra-ui/react';
 import { FormLogin } from './formLogin';
 import { FaGoogle, FaFacebook, FaTwitter } from 'react-icons/fa';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import LogoGroceria from '../../../assets/Groceria-no-Bg.png';
 import {
   signInWithFacebook,
@@ -27,6 +27,8 @@ export const Login = () => {
   const dispatch = useDispatch();
   const { size } = useWebSize();
   const [displayLoader, setDisplayLoader] = useState('none');
+  const location = useLocation();
+  const fromPage = new URLSearchParams(location.search).get('fromPage')
 
   const onLoginWithGoogle = async () => {
     try {
@@ -48,7 +50,7 @@ export const Login = () => {
         setDisplayLoader('flex');
         setTimeout(() => {
           setDisplayLoader('none');
-          navigate('/');
+          navigate(fromPage);
         }, 1500);
       }
     } catch (err) {
@@ -71,7 +73,7 @@ export const Login = () => {
       toast.success('Sign in Success');
       if (result.message == 'signin with facebook success') {
         setDisplayLoader('none');
-        navigate('/');
+        navigate(fromPage);
       }
     } catch (err) {
       console.log(err);
@@ -90,7 +92,7 @@ export const Login = () => {
       if (!res) throw new Error('Email has not been registered');
       toast.success('Sign in Success');
       if (result.message == 'signin with twitter success') {
-        navigate('/');
+        navigate(fromPage);
       }
     } catch (err) {
       console.log(err);
@@ -159,7 +161,7 @@ export const Login = () => {
             direction={'column'}
             h={'full'}
           >
-            <FormLogin />
+            <FormLogin fromPage={fromPage}/>
 
             <Flex
               direction={'column'}

@@ -4,6 +4,7 @@ import {
   getAddressQuery,
   setMainAddress,
   changeAddressQuery,
+  deleteAddressQuery
 } from '../queries/address.query';
 
 export const getProvinceService = async () => {
@@ -24,6 +25,8 @@ export const createAddressService = async (
   addressLabel,
   addressDetails,
   isMain,
+  latitude,
+  longitude
 ) => {
   try {
     console.log(isMain);
@@ -41,6 +44,8 @@ export const createAddressService = async (
       addressLabel,
       addressDetails,
       isMain,
+      latitude,
+      longitude
     );
     return res;
   } catch (err) {
@@ -93,3 +98,14 @@ export const getAddressService = async (id) => {
     throw err;
   }
 };
+
+
+export const deleteAddressService = async (id) => {
+  try {
+    const res = await deleteAddressQuery(id)
+
+    return res
+  } catch (err) {
+    throw err
+  }
+} 
