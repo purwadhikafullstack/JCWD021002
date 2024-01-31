@@ -1,10 +1,6 @@
 import { Snap } from 'midtrans-client';
 import Product from '../models/product.model';
-<<<<<<< Updated upstream
-import OrderDetail from '../models/orderDetail.model';
-=======
 const { CoreApi } = require('midtrans-client');
->>>>>>> Stashed changes
 
 const snap = new Snap({
   isProduction: false,
@@ -74,8 +70,6 @@ export const generateMidtransToken = async (
     throw error;
   }
 };
-<<<<<<< Updated upstream
-=======
 
 export const getMidtransTransactionStatus = async (orderId) => {
   try {
@@ -94,4 +88,3 @@ export const getMidtransTransactionStatus = async (orderId) => {
     throw error;
   }
 };
->>>>>>> Stashed changes

@@ -3,11 +3,7 @@ import { Flex, IconButton, Heading } from '@chakra-ui/react';
 import { IconChevronLeft } from '@tabler/icons-react';
 import { ResizeButton } from '../../components/ResizeButton';
 
-<<<<<<< Updated upstream
-export const CheckoutHeader = ({ handleWebSize, size }) => {
-=======
 export const CheckoutHeader = ({ heading, handleWebSize, size }) => {
->>>>>>> Stashed changes
   const navigate = useNavigate();
 
   const handleGoBack = () => {
@@ -37,11 +33,7 @@ export const CheckoutHeader = ({ heading, handleWebSize, size }) => {
           _hover={{ color: 'gray.600', opacity: 0.9 }}
             transition='color 0.3s ease-in-out, opacity 0.3s ease-in-out'
         />
-<<<<<<< Updated upstream
-        <Heading size='sm'>Checkout</Heading>
-=======
         <Heading size='sm'>{heading}</Heading>
->>>>>>> Stashed changes
       </Flex>
       <ResizeButton
         webSize={size}

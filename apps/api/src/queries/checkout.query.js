@@ -65,27 +65,13 @@ export const updateOrderDetailsQuery = async (orderId, cartItems) => {
   }
 };
 
-<<<<<<< Updated upstream
-export const markCartAsUsedQuery = async (cartId, orderId) => {
-  return await Cart.update(
-    { status: 'used' },
-    { where: { idcart: cartId, order_idorder: orderId } },
-  );
-};
-
-=======
->>>>>>> Stashed changes
 export const getSelectedCartItemsQuery = async (cartId, selectedItems) => {
   console.log('cartId: ', cartId);
   console.log('selectedItems: ', selectedItems);
   return CartDetail.findAll({
     where: {
       cart_idcart: cartId,
-<<<<<<< Updated upstream
-      id: selectedItems,
-=======
       productStock_idproductStock: selectedItems,
->>>>>>> Stashed changes
         // productStock_idproductStock: selectedItems,
     },
     include: [
@@ -165,40 +151,6 @@ export const createOrderQuery = async (
   }
 };
 
-<<<<<<< Updated upstream
-export const clearCartQuery = async (cartId, selectedItems) => {
-  const t = await CartDetail.sequelize.transaction();
-
-  try {
-    await CartDetail.destroy({
-      where: {
-        cart_idcart: cartId,
-        productStock_idproductStock: selectedItems,
-      },
-      transaction: t,
-    });
-
-    await t.commit();
-  } catch (err) {
-    await t.rollback();
-    throw err;
-  }
-};
-
-export const findOrderQuery = async (orderId) => {
-  try {
-    const order = await Order.findByPk(orderId);
-
-    return order;
-  } catch (err) {
-    throw err;
-  }
-};
-
-export const updatePaymentStatusQuery = async (orderId, paymentProof) => {
-  return await Order.update(
-    { image: paymentProof, status: 'complete' },
-=======
 export const findOrderQuery = async (orderId) => {
   try {
       const order = await Order.findByPk(orderId, {
@@ -217,7 +169,6 @@ export const findOrderQuery = async (orderId) => {
 export const updateOrderStatusQuery = async (orderId, status) => {
   return await Order.update(
     { status: status },
->>>>>>> Stashed changes
     { where: { id: orderId } },
   );
 };

@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream
-import { paymentGatewayService } from "../services/payment.service";
-=======
 import { afterPaymentService, paymentGatewayService, updateOrderService } from "../services/payment.service";
->>>>>>> Stashed changes
 
 export const paymentGatewayController = async (req, res) => {
     try {
@@ -19,8 +15,6 @@ export const paymentGatewayController = async (req, res) => {
             message: err.message,
           });
         }
-<<<<<<< Updated upstream
-=======
 }
 
 export const updateOrderController = async (req, res) => {
@@ -39,5 +33,4 @@ export const updateOrderController = async (req, res) => {
       message: err.message,
     });
   }
->>>>>>> Stashed changes
 }
