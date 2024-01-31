@@ -14,9 +14,11 @@ import { CardProductStock } from './CardProductStock';
 import { FilterModal } from './FilterModal';
 import { EditModal } from './EditModal';
 import { handleActivateProductStock } from './services/serviceActivateStock';
+import { useWebSize } from '../../provider.websize';
 
-function ProductStockLists({ size, handleWebSize }) {
+function ProductStockLists() {
   const { user, isLogin } = useSelector((state) => state.AuthReducer);
+  const {size, handleWebSize } = useWebSize();
   const [userStore, setUserStore] = useState(user?.store_idstore);
   const [data, setData] = useState([]);
   const [dataStore, setDataStore] = useState([]);
