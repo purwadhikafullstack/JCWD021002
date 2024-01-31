@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+// import { SidebarWithHeader } from '../../components/SideBar/SideBar';
 import { FiUpload } from "react-icons/fi";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -12,6 +13,7 @@ import {
 import {
   IconPlus, IconArrowLeft, IconDiscount, IconX, IconArrowRight, IconEye, IconEyeOff
 } from '@tabler/icons-react';
+import AvatarSVG from './icon-default-avatar.svg';
 import SideBar from '../../components/SideBar/SideBar';
 import { useSelector } from "react-redux";
 import { useWebSize } from '../../provider.websize';
@@ -223,8 +225,8 @@ const AddDiscount = () => {
             <Text fontSize='large' fontWeight='bold'>Usage Restriction Type</Text>
             <RadioGroup mb='20px' value={usageType} onChange={(value) => { handleReset(); setUsageType(value); }}>
                 <Stack spacing={4} direction='row' display='flex' flexWrap='wrap'>
-                    <Radio value='1' isDisabled={distribution == null ? true : false} >Purchase</Radio>
-                    <Radio value='2' isDisabled={ distribution == null ? true : false || distribution == 1 ? true : false }>Shipping</Radio>
+                    <Radio value='1' isDisabled={distribution == null ? true : false}>Purchase</Radio>
+                    <Radio value='2' isDisabled={distribution == null ? true : false}>Shipping</Radio>
                 </Stack>
             </RadioGroup>
 
@@ -233,7 +235,7 @@ const AddDiscount = () => {
                 <Stack spacing={4} direction='row' display='flex' flexWrap='wrap'>
                     <Radio value='4' isDisabled={usageType == null ? true : false}>Direct Discount</Radio>
                     <Radio value='5' isDisabled={usageType == null ? true : false}>Minimum Amount Discount</Radio>
-                    <Radio value='6' isDisabled={usageType == 2 || usageType == null ? true : false || distribution == 2 ? true : false }>B O G O</Radio>
+                    <Radio value='6' isDisabled={usageType == 2 || usageType == null ? true : false}>B O G O</Radio>
                 </Stack>
             </RadioGroup>
 
@@ -322,7 +324,7 @@ const AddDiscount = () => {
                 <FormLabel>Product</FormLabel>
                 <Input height='30px' mt='-5px' placeholder= 'Ex. Indomie' name='productName' width={size == '500px' ? '100%' : '50%'} value={productName} onChange={(e) => setProductName(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
                 </Flex>
-              <Select isDisabled={ usageType == null ? true : false || usageType == 2 ? true : false } border='solid gray 1px' borderRadius='full' placeholder="Select option" value={productId} onChange={(e) => setProductId(e.target.value)}>
+              <Select border='solid gray 1px' borderRadius='full' placeholder="Select option" value={productId} onChange={(e) => setProductId(e.target.value)}>
             {data?.products?.map((item) => ( 
               <option key={item?.id} value={item?.ProductStocks[0].id}>{item?.name}</option>
             ))}

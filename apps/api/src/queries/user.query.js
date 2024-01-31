@@ -271,6 +271,24 @@ const resetPasswordQuery = async (userId, newPassword) => {
   }
 }
 
+const deleteUserQuery = async (id) => {
+  try {
+    const res = await User.update({
+      status: 'Deactive',
+    },
+      {
+        where: {
+          id: id
+        }
+      }
+    )
+
+    return res
+  } catch (err) {
+    throw err
+  }
+}
+
 module.exports = {
   getUserQuery,
   updateUserQuery,
@@ -281,5 +299,6 @@ module.exports = {
   getUserRegisterQuery,
   getUserLoginQuery,
   getUserRoleQuery,
-  resetPasswordQuery
+  resetPasswordQuery,
+  deleteUserQuery,
 };

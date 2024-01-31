@@ -25,6 +25,8 @@ export const createAddressQuery = async (
   addressLabel,
   addressDetails,
   isMain,
+  latitude,
+  longitude
 ) => {
   try {
     const res = await Address.create({
@@ -37,6 +39,9 @@ export const createAddressQuery = async (
       addressLabel: addressLabel,
       addressDetails: addressDetails,
       isMain: isMain,
+      latitude: latitude,
+      longitude: longitude,
+      status: 'Active'
     });
 
     return res;
@@ -81,7 +86,8 @@ export const getAddressQuery = async (id) => {
   try {
     const res = await Address.findAll({
       where: {
-        user_iduser: id
+        user_iduser: id,
+        status: "Active"
       },
       include: [{ model: City, include: Province }]
     })
@@ -101,6 +107,21 @@ export const setMainAddress = async (userId, addresId) => {
     }
 
     return true
+  } catch (err) {
+    throw err
+  }
+}
+
+export const deleteAddressQuery = async (id) => {
+  try {
+    const res = await Address.update({
+      status: 'Deactive'
+    }, {
+      where: {
+        id : id
+      }
+    })
+    return res
   } catch (err) {
     throw err
   }

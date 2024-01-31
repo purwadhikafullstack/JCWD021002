@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import AddUser from "../pages/AddUser/AddUser";
 import EditUser from "../pages/EditUser/EditUser";
 import UserDetail from "../pages/UserDetail/UserDetail";
@@ -21,9 +22,10 @@ const routeAdmin = [
   // { path: '/store-management', element: <AdminStoresWithRoleCheck /> },
   {
     path: '/store',
-    element: <Store />,
+    element: <AdminStoresWithRoleCheck />,
     children: [{ index: true, element: <StoreList /> }],
   },
+
 ];
 
 export default routeAdmin;

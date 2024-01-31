@@ -5,6 +5,7 @@ import {
   getSelectedCartItemsController,
   preCheckoutController,
   uploadPaymentProofController,
+  shippingCostController
 } from '../controllers/checkout.controller';
 import { uploadPaymentFile } from '../middlewares/multerConfig';
 
@@ -22,6 +23,9 @@ checkoutRouter.get('/pre-checkout', async (req, res) => {
 //POST
 checkoutRouter.post('/', async (req, res) => {
   await checkoutController(req, res);
+});
+checkoutRouter.post('/sippingCost', async (req, res) => {
+  await shippingCostController(req, res);
 });
 
 checkoutRouter.post('/beliSekarang', async (req, res) => {

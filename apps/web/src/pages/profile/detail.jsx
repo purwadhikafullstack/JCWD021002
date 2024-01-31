@@ -2,6 +2,7 @@
 // import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom'
 
 import { Flex, Text, Button } from '@chakra-ui/react';
 import { MdKeyboardArrowRight } from 'react-icons/md';
@@ -9,6 +10,8 @@ import { MdArrowBackIos } from 'react-icons/md';
 
 import { logoutSuccess } from '../../redux/reducer/authReducer';
 import { logout } from '../../config/firebase-config';
+import DeleteAlert from '../../components/DeleteAlert';
+import toast from 'react-hot-toast';
 
 export const Detail = () => {
   const navigate = useNavigate();
@@ -27,17 +30,21 @@ export const Detail = () => {
   const onLogout = () => {
     const result = logout();
     dispatch(logoutSuccess());
+    toast.success('Log out Success')
     if (result === 'logout success') {
-      navigate('/login');
+      navigate('/');
     }
   };
+
+  const location = useLocation()
+  const fromPage = new URLSearchParams(location.search).get('fromPage');
 
   return (
     <Flex direction={'column'} w={'full'} h={'85%'} align={'center'} gap={2}>
       <Flex
         w={'full'}
         onClick={() => {
-          navigate('/profile');
+          navigate(fromPage ? fromPage : -1);
         }}
         cursor={'pointer'}
         p={'10px'}
@@ -74,15 +81,19 @@ export const Detail = () => {
           })}
         </Flex>
         <Flex direction={'column'} gap={2} w={'full'}>
-          <Button
-            onClick={onLogout}
-            w={'full'}
-            bgColor={'transparent'}
-            color={'red'}
-            border={'1px solid red'}
-          >
-            Log out
-          </Button>
+          <DeleteAlert
+            btnValue={'Log out'}
+            style={{
+              color: 'red',
+              bgColor: 'transparent',
+              border: '1px solid red',
+              size: 'md'
+            }}
+            deleteAction={onLogout}
+            titleValue={'Log out'}
+            mainValue={'Anda akan keluar dari akun anda. Yakin ingin melanjutkan?'}
+            buttonActionValue={'lanjutkan'}
+          />
           <Button
             onClick={onLogout}
             w={'full'}

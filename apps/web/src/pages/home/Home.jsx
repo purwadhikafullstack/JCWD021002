@@ -1,31 +1,31 @@
 /* eslint-disable react/prop-types */
 
-import { Header } from './header';
-import { Collections } from './collections';
-import { MySwiper } from './swiper';
-import { ProductList } from './productList';
+
+import { Header } from '../../components/navbar/header';
+import { Collections } from './home.collections';
+import { MySwiper } from './home.swiper';
+import { ProductList } from './home.productList';
 import { BottomBar } from '../../components/BottomBar';
-import { SwiperCategory } from './swiperCategory';
+import { SwiperCategory } from './home.swiperCategory';
 
 import { Flex, Text } from '@chakra-ui/react';
 import { PiGift } from 'react-icons/pi';
 import { IoIosArrowForward } from 'react-icons/io';
 import { useWebSize } from '../../provider.websize';
+import { Footer } from './home.footer';
 
 export const Home = () => {
-
-  const {size, handleWebSize } = useWebSize()
+  const { size } = useWebSize();
 
   return (
     <Flex
       w={{ base: '100vw', lg: size }}
       direction={'column'}
       bgColor={'colors.secondary'}
-      transition={"all .3s ease-in-out"}
+      transition={'all .3s ease-in-out'}
       // gap={size == '500px' ? '0' : '100px'}
     >
-      <Header size={size} handleWebSize={handleWebSize} />
-
+      <Header /> 
       <Flex>
         <MySwiper size={size} />
       </Flex>
@@ -37,7 +37,7 @@ export const Home = () => {
         gap={2}
         w={{ base: 'full', lg: size }}
         overflowX={'hidden'}
-        mb={"60px"}
+        mb={size == '500px' && '60px'}
       >
         <Flex
           display={size == '500px' ? 'flex' : 'none'}
@@ -63,9 +63,16 @@ export const Home = () => {
         <Collections size={size} />
 
         <ProductList />
+
+        <Footer />
       </Flex>
-      
-      <Flex position={'fixed'} bottom={0} w={{ base: 'full', md: size }} display={size == '500px' ? 'flex' : 'none'}>
+      <Flex
+        position={'fixed'}
+        bottom={0}
+        w={{ base: 'full', md: size }}
+        display={size == '500px' ? 'flex' : 'none'}
+        zIndex={10}
+      >
         <BottomBar />
       </Flex>
     </Flex>

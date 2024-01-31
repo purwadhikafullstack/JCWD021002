@@ -5,24 +5,25 @@ import {
   getSelectedCartItemsService,
   getOrderService,
   beliSekarangService,
+  shippingCostService
 } from '../services/checkout.service';
 
 export const getOrderController = async (req, res) => {
-    const { userId } = req.params;
+  const { userId } = req.params;
 
-    try {
-      const result = await getOrderService(userId);
-      return res.status(200).json({
-        success: true,
-        message: 'Get Order Successfully',
-        data: result,
-      });
-    } catch (err) {
-      console.error(err.message);
-      return res.status(500).json({
-        message: err.message,
-      });
-    }
+  try {
+    const result = await getOrderService(userId);
+    return res.status(200).json({
+      success: true,
+      message: 'Get Order Successfully',
+      data: result,
+    });
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
 }
 
 export const preCheckoutController = async (req, res) => {
@@ -89,6 +90,19 @@ export const cancelOrderController = async (req, res) => {
   try {
     await cancelOrderService(orderId);
     res.status(200).json({ message: 'Order canceled successfully.' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+export const shippingCostController = async (req, res) => {
+  try {
+    const { key, origin, destination, weight, courier } = req.body
+
+    const result = await shippingCostService(key, origin, destination, weight, courier)
+    res.status(200).json({
+      message: 'Get Shipping cost success',
+      data: result
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

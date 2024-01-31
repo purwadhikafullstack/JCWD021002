@@ -1,4 +1,4 @@
-import { getProvinceService, createAddressService, getAddressService, changeAddressService } from "../services/address.service"
+import { getProvinceService, createAddressService, getAddressService, changeAddressService, deleteAddressService } from "../services/address.service"
 
 export const getProvinceController = async (req, res) => {
   try {
@@ -23,6 +23,8 @@ export const createAddressController = async (req, res) => {
       recipientsMobileNumber,
       addressLabel,
       addressDetails,
+      latitude,
+      longitude,
     } = req.body;
 
     const result = await createAddressService(
@@ -34,7 +36,9 @@ export const createAddressController = async (req, res) => {
       recipientsMobileNumber,
       addressLabel,
       addressDetails,
-      isMain)
+      isMain,
+      latitude,
+      longitude)
 
     return res.status(200).json({
       message: "Get city Success",
@@ -90,6 +94,19 @@ export const getAddressController = async (req, res) => {
     })
   } catch (err) {
     console.log(err)
+    res.status(500).send(err.message)
+  }
+}
+
+export const deleteAddressController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await deleteAddressService(id)
+    return res.status(200).json({
+      message: 'delete addrees',
+      data: result
+    })
+  } catch (err) {
     res.status(500).send(err.message)
   }
 }

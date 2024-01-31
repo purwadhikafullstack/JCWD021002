@@ -1,4 +1,4 @@
-import { LoggedInUser } from './protection.route';
+import { ProtectUserRoute, ProtectLoggedInUser } from './protection.route';
 import { Profile } from '../pages/profile';
 import { ChangeEmail } from '../pages/profile/changeEmail';
 import { ChangeEmailVerfy } from '../pages/profile/changeEmailVerify';
@@ -6,16 +6,20 @@ import { ChangePassword } from '../pages/profile/changePassword';
 import { Detail } from '../pages/profile/detail';
 import { EditProfile } from '../pages/profile/editProfile';
 import { MyAccount } from '../pages/profile/myAccount';
-import { MyAddress } from '../pages/profile/myAddress';
 import { ProfileMenu } from '../pages/profile/profileMenu';
+import { AddAddress } from '../pages/Address/addAddress';
+import { AddressList } from '../pages/Address/addressList';
+import { MyAddress } from '../pages/Address/myAddress';
 
 const routeProfile = [
   {
     path: '/profile',
     element: (
-      <LoggedInUser>
-        <Profile />
-      </LoggedInUser>
+      <ProtectLoggedInUser>
+        <ProtectUserRoute>
+          <Profile />
+        </ProtectUserRoute>
+      </ProtectLoggedInUser>
     ),
     children: [
       { index: true, element: <ProfileMenu /> },
@@ -25,50 +29,66 @@ const routeProfile = [
   {
     path: '/profile/detail/account',
     element: (
-      <LoggedInUser>
-        <MyAccount />
-      </LoggedInUser>
+      <ProtectLoggedInUser>
+        <ProtectUserRoute>
+          <MyAccount />
+        </ProtectUserRoute>
+      </ProtectLoggedInUser>
     ),
   },
   {
     path: '/profile/detail/account/edit-profile',
     element: (
-      <LoggedInUser>
-        <EditProfile />
-      </LoggedInUser>
+      <ProtectLoggedInUser>
+        <ProtectUserRoute>
+          <EditProfile />
+        </ProtectUserRoute>
+      </ProtectLoggedInUser>
     ),
   },
   {
     path: '/profile/detail/account/email-verification',
     element: (
-      <LoggedInUser>
-        <ChangeEmailVerfy />
-      </LoggedInUser>
+      <ProtectLoggedInUser>
+        <ProtectUserRoute>
+          <ChangeEmailVerfy />
+        </ProtectUserRoute>
+      </ProtectLoggedInUser>
     ),
   },
   {
     path: '/profile/detail/account/change-email',
     element: (
-      <LoggedInUser>
-        <ChangeEmail />
-      </LoggedInUser>
+      <ProtectLoggedInUser>
+        <ProtectUserRoute>
+          <ChangeEmail />
+        </ProtectUserRoute>
+      </ProtectLoggedInUser>
     ),
   },
   {
     path: '/profile/detail/account/change-password',
     element: (
-      <LoggedInUser>
-        <ChangePassword />
-      </LoggedInUser>
+      <ProtectLoggedInUser>
+        <ProtectUserRoute>
+          <ChangePassword />
+        </ProtectUserRoute>
+      </ProtectLoggedInUser>
     ),
   },
   {
     path: '/profile/detail/address',
     element: (
-      <LoggedInUser>
-        <MyAddress />
-      </LoggedInUser>
+      <ProtectLoggedInUser>
+        <ProtectUserRoute>
+          <MyAddress />
+        </ProtectUserRoute>
+      </ProtectLoggedInUser>
     ),
+    children: [
+      { index: true, element: <AddressList /> },
+      { path: 'add', element: <AddAddress /> },
+    ],
   },
 ];
 

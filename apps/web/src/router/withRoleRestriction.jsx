@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { keepLogin } from '../redux/reducer/authReducer'; 
+import { keepLogin } from '../redux/reducer/authReducer';
 
 const withRoleRestriction = (allowedRoles) => (WrappedComponent) => {
   const RoleRestrictedComponent = (props) => {
@@ -41,7 +41,15 @@ const withRoleRestriction = (allowedRoles) => (WrappedComponent) => {
       // Redirect to a different route if the role is not allowed
       // Navigate to your login page or another appropriate route
       // Example: <Navigate to="/login" />;
-      return <Navigate to="/" />;
+      let redirectToPage = '';
+      if (user.role_idrole == 3) {
+        redirectToPage = '/';
+      } else if (user.role_idrole == 2 || user.role_idrole == 1) {
+        redirectToPage = '/dashboard';
+      } else {
+        redirectToPage = '/';
+      }
+      return <Navigate to={redirectToPage} />;
     }
   };
 
@@ -49,4 +57,3 @@ const withRoleRestriction = (allowedRoles) => (WrappedComponent) => {
 };
 
 export default withRoleRestriction;
-

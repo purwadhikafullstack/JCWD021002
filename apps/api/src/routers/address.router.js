@@ -3,9 +3,9 @@ import {
   getProvinceController,
   createAddressController,
   getAddressController,
-  changeAddressController
+  changeAddressController,
+  deleteAddressController
 } from '../controllers/address.controller';
-
 
 const addressRouter = Router();
 
@@ -20,6 +20,9 @@ addressRouter.post('/createAddress', async (req, res) => {
 });
 addressRouter.patch('/changeAddress', async (req, res) => {
   await changeAddressController(req, res);
+});
+addressRouter.patch('/delete/:id', async (req, res) => {
+  await deleteAddressController(req, res);
 });
 
 

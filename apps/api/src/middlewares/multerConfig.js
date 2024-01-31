@@ -39,8 +39,8 @@ const categoriesStorage = multer.diskStorage({
   filename: (req, file, cb) => {
     const { category } = req.body;
     cb(null, `categories-${category}-${Date.now()}-${file.originalname}`);
-  },
-});
+  }
+})
 
 const paymentStorage = multer.diskStorage({
   destination: (req, res, cb) => {
@@ -57,7 +57,7 @@ const fileFilter = (req, file, cb) => {
   if (
     fileType === "png" ||
     fileType === "jpg" ||
-    fileType === "jpeg" 
+    fileType === "jpeg"
   ) {
     cb(null, true);
   } else {
@@ -106,4 +106,4 @@ module.exports = {
   uploadDiscountFile,
   uploadCategoriesFile,
   uploadPaymentFile,
-};
+}

@@ -9,19 +9,19 @@ import { useWebSize } from '../../provider.websize';
 export const ProductList = () => {
   const [product, setProduct] = useState();
   const navigate = useNavigate();
-  const {size} = useWebSize()
+  const { size } = useWebSize();
 
   function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
-  const coordinat = useSelector((state) => state.AuthReducer.location);
+  const coordinat = useSelector((state) => state.addressReducer?.address);
 
   const getProductList = async (latitude, longitude) => {
     try {
       const res = await axios.get(
         `${
           import.meta.env.VITE_API_URL
-        }/store?&page=1&pageSize=&latitude=${latitude}&longitude=${longitude}&statusStock=1`,
+        }/store?&page=1&pageSize=&latitude=${latitude}&longitude=${longitude}&statusStock=1&statusProduct=1`,
       );
       setProduct(res?.data?.data?.products);
     } catch (err) {
@@ -30,11 +30,20 @@ export const ProductList = () => {
   };
 
   useEffect(() => {
-    getProductList(coordinat.latitude, coordinat.longitude);
+    getProductList(coordinat?.latitude, coordinat?.longitude);
+    console.log(coordinat);
   }, [coordinat]);
 
   return (
-    <Flex direction={'column'} mt={'10px'} p={size == '500px' ? '0 20px' : '30px 200px'}>
+    <Flex
+      direction={'column'}
+      mt={'10px'}
+      p={
+        size == '500px'
+          ? '0 20px'
+          : { base: '0 40px', lg: '30px 100px', xl: '30px 200px' }
+      }
+    >
       <Flex w={'full'} bgColor={'white'} py={'10px'}>
         <Text fontSize={'18px'} fontWeight={600} textAlign={'center'}>
           REKOMENDASI
@@ -54,7 +63,9 @@ export const ProductList = () => {
               bgColor={'white'}
               overflow={'hidden'}
               cursor={'pointer'}
-              onClick={() => navigate(`/product-detail/${item.id}`)}
+              onClick={() =>
+                navigate(`/product-detail/${item?.ProductStocks[0]?.id}`)
+              }
             >
               <Flex w={'full'} h={'full'}>
                 <Image
