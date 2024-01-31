@@ -262,44 +262,29 @@ const Product = () => {
     <HStack mb='10px' p={4} >
         {/* <IconChevronLeft />
         <Text textAlign='left' fontWeight='bold'>Product Name</Text> */}
-        <Button backgroundColor="#f5f5f5" leftIcon={<IconChevronLeft />}>
-          Kembali
-        </Button>
-      </HStack>
-      <Flex
-        justifyContent="center"
-        pl={size == '500px' ? '0px' : '20px'}
-        pr={size == '500px' ? '0px' : '20px'}
-        flexDirection={size == '500px' ? 'column' : 'row'}
-        h={'full'}
-        alignItems={size == '500px' ? 'flex-start' : 'center'}
-      >
-        <VStack
-          width={size == '500px' ? '100%' : '30vw'}
-          position={size == '500px' ? 'relative' : 'sticky'}
-          top={size == '500px' ? '0px' : '110px'}
-          mt={size == '500px' ? '0px' : '-485px'}
-        >
-          <Box width={size == '500px' ? '80%' : '30vw'} justifyContent="center">
-            <Slider
-              {...mainSliderSettings}
-              asNavFor={thumbnailSlider}
-              ref={(slider) => setMainSlider(slider)}
-            >
-              {data?.Product?.ProductImages?.map((image, index) => (
-                <Image
-                  key={index.toString()}
-                  backgroundColor="white"
-                  src={`${import.meta.env.VITE_API_IMAGE_URL}/products/${
-                    image.imageUrl
-                  }`}
-                  objectFit="contain"
-                  height="35vh"
-                  borderRadius="10px"
-                />
-              ))}
-            </Slider>
-          </Box>
+        <Button backgroundColor='#f5f5f5' leftIcon={<IconChevronLeft />}>Kembali</Button>
+    </HStack>
+    <Flex alignItems="flex-start" pl={size == '500px' ? '0px' : '20px'} pr={size == '500px' ? '0px' : '20px'}  flexDirection={size == '500px' ? 'column' : 'row'} h={"full"}>
+      <VStack mt='20px' width={size == '500px' ? '100%' : '30vw'} position={size == '500px' ? 'relative' : 'sticky'} top={size == '500px' ? '0px' : '110px'} >
+    <Box width={size == '500px' ? '80%' : '30vw'} justifyContent='center'>
+    {data?.result?.Product?.ProductImages && (
+  <>
+    <link rel="preload" as="image" href={`${import.meta.env.VITE_API_IMAGE_URL}/products/${data?.result.Product.ProductImages[0].imageUrl}`} />
+    <Slider {...mainSliderSettings} asNavFor={thumbnailSlider} ref={(slider) => setMainSlider(slider)}>
+      {data?.result.Product.ProductImages.map((image, index) => (
+        <Image
+          key={index.toString()}
+          backgroundColor='white'
+          src={`${import.meta.env.VITE_API_IMAGE_URL}/products/${image.imageUrl}`}
+          objectFit='contain'
+          height='35vh'
+          borderRadius='10px'
+        />
+      ))}
+    </Slider>
+  </>
+)}
+        </Box>
           <Box width={size == '500px' ? '80%' : '30vw'}>
   <Slider
     {...thumbnailSliderSettings}

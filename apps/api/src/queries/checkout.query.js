@@ -7,6 +7,7 @@ import Product from '../models/product.model';
 import ProductImage from '../models/productImage.model';
 import Store from '../models/store.model';
 import Cart from '../models/cart.model';
+import City from '../models/city.model'
 
 export const findPendingOrderQuery = async (userId) => {
   try {
@@ -123,7 +124,7 @@ export const getOrderQuery = async (userId) => {
               model: ProductStock,
               include: [
                 { model: Product, include: [ProductImage] },
-                { model: Store },
+                { model: Store, include: [City] },
               ],
             },
           ],
