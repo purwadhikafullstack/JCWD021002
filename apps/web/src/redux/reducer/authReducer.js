@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { setAddress } from './addressReducer';
 
 const initialState = {
   user: {
@@ -13,7 +14,7 @@ const initialState = {
     referralCode: '',
     status: '',
     verification_status: '',
-    store_idstore:'',
+    store_idstore: '',
     googleLogin: ''
   },
   location: [],
@@ -124,9 +125,12 @@ export const keepLogin = () => {
         );
         dispatch(setUser(res?.data?.data));
         dispatch(keepLoginSuccess());
+      } else if(!token){
+        localStorage.removeItem('persist:root');
       }
     } catch (err) {
       localStorage.removeItem('token');
+      localStorage.removeItem('persist:root');
       console.log(err);
       toast(err?.response?.data);
     }

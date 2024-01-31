@@ -29,6 +29,7 @@ export const Location = ({ children }) => {
               const res = await axios.get(
                 `${import.meta.env.VITE_API_URL}/city/getCity?cityName=${city}`,
               );
+<<<<<<< Updated upstream
 
               dispatch(
                 setLocation({
@@ -37,6 +38,29 @@ export const Location = ({ children }) => {
                   longitude: longitude,
                 }),
               );
+=======
+              const dataLocation = res?.data?.data[0];
+              console.log('user location', dataLocation)
+              if (!location.id) {
+                dispatch(
+                  setAddress({
+                    city_idcity: dataLocation?.id,
+                    postalCode: dataLocation?.postalCode,
+                    recipientNames: '',
+                    recipientsMobileNumber: '',
+                    addressLabel: '',
+                    addressDetail: '',
+                    isMain: '',
+                    latitude: latitude,
+                    longitude: longitude,
+                    City: {
+                      city: city,
+                      Province: { province: dataLocation?.Province?.province },
+                    },
+                  }),
+                );
+              }
+>>>>>>> Stashed changes
             } catch (error) {
               console.error('Error getting city:', error.message);
             }

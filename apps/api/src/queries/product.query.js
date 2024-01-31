@@ -160,7 +160,6 @@ const getPaginatedAndFilteredProductsQuery = async (
   }
 };
 
-
 const getPaginatedAndFilteredProductsRealQuery = async (
   page,
   pageSize,

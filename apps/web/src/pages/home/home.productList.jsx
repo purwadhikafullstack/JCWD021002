@@ -19,7 +19,11 @@ export const ProductList = () => {
       const res = await axios.get(
         `${
           import.meta.env.VITE_API_URL
+<<<<<<< Updated upstream:apps/web/src/pages/home/productList.jsx
         }/store?&page=1&pageSize=&latitude=${latitude}&longitude=${longitude}&statusStock=1`,
+=======
+        }/store?&page=1&pageSize=&latitude=${latitude}&longitude=${longitude}&statusStock=1&statusProduct=1`,
+>>>>>>> Stashed changes:apps/web/src/pages/home/home.productList.jsx
       );
       setProduct(res?.data?.data?.products);
     } catch (err) {
@@ -28,7 +32,12 @@ export const ProductList = () => {
   };
 
   useEffect(() => {
+<<<<<<< Updated upstream:apps/web/src/pages/home/productList.jsx
     getProductList(coordinat.latitude, coordinat.longitude);
+=======
+    getProductList(coordinat?.latitude, coordinat?.longitude);
+    console.log(coordinat)
+>>>>>>> Stashed changes:apps/web/src/pages/home/home.productList.jsx
   }, [coordinat]);
 
   return (
@@ -53,7 +62,7 @@ export const ProductList = () => {
               bgColor={'white'}
               overflow={'hidden'}
               cursor={'pointer'}
-              onClick={() => navigate(`/product-detail/${item.id}`)}
+              onClick={() => navigate(`/product-detail/${item?.ProductStocks[0]?.id}`)}
             >
               <Flex w={'full'} h={'full'}>
                 <Image

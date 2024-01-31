@@ -11,6 +11,10 @@ import {
   Text,
   Button,
   Avatar,
+<<<<<<< Updated upstream
+=======
+  Text
+>>>>>>> Stashed changes
 } from '@chakra-ui/react';
 import {
   HiOutlineHome,

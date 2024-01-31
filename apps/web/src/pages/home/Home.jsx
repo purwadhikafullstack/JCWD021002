@@ -1,16 +1,24 @@
 /* eslint-disable react/prop-types */
 
+<<<<<<< Updated upstream
 import { Header } from './header';
 import { Collections } from './collections';
 import { MySwiper } from './swiper';
 import { ProductList } from './productList';
+=======
+import { Header } from '../../components/navbar/header';
+import { Collections } from './home.collections';
+import { MySwiper } from './home.swiper';
+import { ProductList } from './home.productList';
+>>>>>>> Stashed changes
 import { BottomBar } from '../../components/BottomBar';
-import { SwiperCategory } from './swiperCategory';
+import { SwiperCategory } from './home.swiperCategory';
 
 import { Flex, Text } from '@chakra-ui/react';
 import { PiGift } from 'react-icons/pi';
 import { IoIosArrowForward } from 'react-icons/io';
 import { useWebSize } from '../../provider.websize';
+import { Footer } from './home.footer';
 
 export const Home = () => {
 
@@ -33,7 +41,11 @@ export const Home = () => {
         gap={5}
         w={{ base: 'full', lg: size }}
         overflowX={'hidden'}
+<<<<<<< Updated upstream
         mb={"60px"}
+=======
+        mb={size == '500px' && '60px'}
+>>>>>>> Stashed changes
       >
         <Flex
           justify={'space-between'}
@@ -58,6 +70,8 @@ export const Home = () => {
         <Collections size={size} />
 
         <ProductList />
+
+        <Footer />
       </Flex>
       <Flex position={'fixed'} bottom={0} w={{ base: 'full', md: size }}>
         <BottomBar />

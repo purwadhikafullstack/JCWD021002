@@ -285,7 +285,11 @@ const MobileNav = ({ onOpen, ...rest }) => {
               bg={useColorModeValue('white', 'gray.900')}
               borderColor={useColorModeValue('gray.200', 'gray.700')}
             >
+<<<<<<< Updated upstream
               <MenuItem>Profile</MenuItem>
+=======
+              <MenuItem onClick={() => navigate(`/profile/detail?fromPage=${encodeURIComponent(location)}`)}>Profile</MenuItem>
+>>>>>>> Stashed changes
               <MenuItem>Settings</MenuItem>
               <MenuItem>Billing</MenuItem>
               <MenuDivider />

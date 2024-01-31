@@ -37,6 +37,12 @@ export const createAddressQuery = async (
       addressLabel: addressLabel,
       addressDetails: addressDetails,
       isMain: isMain,
+<<<<<<< Updated upstream
+=======
+      latitude: latitude,
+      longitude: longitude,
+      status: 'Active'
+>>>>>>> Stashed changes
     });
 
     return res;
