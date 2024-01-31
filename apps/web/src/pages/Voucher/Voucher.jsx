@@ -14,6 +14,7 @@ import { useSelector } from 'react-redux';
 import toRupiah from '@develoka/angka-rupiah-js';
 import SideBar from '../../components/SideBar/SideBar'
 import { useWebSize } from '../../provider.websize';
+import { PaginationControls } from '../../components/PaginationControls/PaginationControls';
 
 const MAX_VISIBLE_PAGES = 3; 
 
@@ -312,7 +313,15 @@ console.log(data);
                 </>
               ))}
           </Stack>
-         
+          <PaginationControls 
+              page= {page}
+              pageSize={pageSize}
+              selectedPage={selectedPage}
+              setPage={setPage}
+              setPageSize={setPageSize}
+              setSelectedPage={setSelectedPage}
+              data={data}
+            />
       
     </Box>
     </Box>
