@@ -5,7 +5,7 @@ import axios from 'axios';
 
 const CartTotalSelectedMotion = motion(Flex);
 
-export const CartTotalSelected = ({ user, selectedItems, showToast }) => {
+export const CartTotalSelected = ({ user, selectedItems, showToast, isScrolled, deleteCartProduct }) => {
   const control = useAnimation();
   const scrollTimeoutRef = useRef(null);
 
@@ -35,31 +35,6 @@ export const CartTotalSelected = ({ user, selectedItems, showToast }) => {
     };
   }, [control]);
 
-  console.log( `${import.meta.env.VITE_API_URL}/cart/delete-product/${user.id}`,
-  { data: { selectedItems } });
-  const deleteSelectedCartProduct = async (productId) => {
-    try {
-      const response = await axios.delete(
-        `${import.meta.env.VITE_API_URL}/cart/delete-product/${user.id}`,
-        {
-          data: { productId }, // Assuming selectedItems is an array of product IDs
-          headers: { 'Content-Type': 'application/json' }, // Specify the content type
-        }
-      );
-  
-      if (response.status === 200) {
-        showToast('success', 'Item quantity deleted successfully!');
-        await fetchCart(user.id);
-      } else {
-        console.error('Failed to delete items:', response.data);
-        showToast('error', 'Failed to delete items');
-      }
-    } catch (err) {
-      console.error('Error deleting items:', err);
-      showToast('error', 'Error deleting items');
-    }
-  };
-
   return (
     <CartTotalSelectedMotion
       backgroundColor="white"
@@ -68,18 +43,18 @@ export const CartTotalSelected = ({ user, selectedItems, showToast }) => {
       display={selectedItems.length > 0 ? 'flex' : 'none'}
       position="sticky"
       top={'10vh'}
-      boxShadow="0px 4px 4px -2px rgba(0, 0, 0, 0.1)"
+      borderBottom="1px solid rgba(128, 128, 128, 0.3)"
       zIndex="98"
       w="full"
       animate={control}
       justifyContent="space-between"
       alignItems="center"
+      boxShadow={isScrolled && control.target === 0 ? '0px 4px 4px -2px rgba(0, 0, 0, 0.1)' : 'none'}
     >
       <Text fontWeight="semibold">{selectedItems.length} produk terpilih</Text>
-      {/* <Text color='green' fontWeight='bold'>Hapus</Text> */}
       {selectedItems}
       <Button
-        onClick={()=>deleteSelectedCartProduct({selectedItems})}
+        onClick={() => deleteCartProduct(selectedItems)}
         size="xs"
         background="green.700"
         color="white"

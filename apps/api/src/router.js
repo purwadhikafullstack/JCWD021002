@@ -8,6 +8,12 @@ import { categoryRouter } from './routers/category.router';
 import { productStockRouter } from './routers/productStock.router';
 import { userRouter } from './routers/user.router';
 import { addressRouter } from './routers/address.router';
+<<<<<<< Updated upstream
+=======
+import { checkoutRouter } from './routers/checkout.router';
+import { paymentRouter } from './routers/payment.router';
+import { orderManagementRouter } from './routers/orderManagement.router';
+>>>>>>> Stashed changes
 
 const router = Router();
 
@@ -24,6 +30,12 @@ router.use('/user', userRouter);
 router.use('/products', productRouter);
 router.use('/category', categoryRouter);
 router.use('/product-stock', productStockRouter);
+<<<<<<< Updated upstream
+=======
+router.use('/checkout', checkoutRouter);
+router.use('/payment', paymentRouter);
+router.use('/order-management', orderManagementRouter);
+>>>>>>> Stashed changes
 
 // add another router here ...
 

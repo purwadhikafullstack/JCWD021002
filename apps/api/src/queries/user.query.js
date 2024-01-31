@@ -2,7 +2,7 @@ import User from '../models/user.model';
 import Store from '../models/store.model';
 import City from '../models/city.model';
 import Province from '../models/province.model';
-// import Role from '../models/role.model';
+import Role from '../models/role.model';
 import { Op } from 'sequelize';
 
 const getUserRegisterQuery = async ({
@@ -208,6 +208,19 @@ const getStoreQuery = async () => {
   }
 };
 
+const getUserRoleQuery = async (userId) => {
+  try {
+    const user = await User.findOne({
+      where: {id: userId},
+      include: [{model: Role}],
+      attributes: ['id', 'role_idrole'],
+    })
+    return user;
+  } catch (err) {
+    throw err;
+  }
+}
+
 module.exports = {
   getUserQuery,
   updateUserQuery,
@@ -216,5 +229,6 @@ module.exports = {
   findUserQuery,
   getStoreQuery,
   getUserRegisterQuery,
-  getUserLoginQuery
+  getUserLoginQuery,
+  getUserRoleQuery,
 };

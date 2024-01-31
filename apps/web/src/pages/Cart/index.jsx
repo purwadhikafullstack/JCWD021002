@@ -46,7 +46,7 @@ export const Cart = () => {
 
       const updatedCart = response?.data?.data[0]?.CartDetails || [];
       const updatedQuantities = updatedCart.reduce(
-        (q, item) => ({ ...q, [item.id]: item.quantity }),
+        (q, item) => ({ ...q, [item.productStock_idproductStock]: item.quantity }),
         {},
       );
 
@@ -64,9 +64,12 @@ export const Cart = () => {
     fetchCart(userId);
   }, [user, userId]);
 
+
+  console.log('cekk', carts);
+
   const handleCheckboxAllChange = () => {
     setSelectedItems((prevSelectedItems) => {
-      const allProductIds = carts.map((item) => item.id);
+      const allProductIds = carts.map((item) => item.productStock_idproductStock);
       return prevSelectedItems.length === allProductIds.length
         ? []
         : allProductIds;
@@ -77,7 +80,7 @@ export const Cart = () => {
     setSelectedItems((prevSelectedItems) => {
       const storeProductIds = carts
         .filter((item) => item.ProductStock.Store.id === storeId)
-        .map((item) => item.id);
+        .map((item) => item.productStock_idproductStock);
 
       const allStoreProductsSelected =
         storeProductIds.length > 0 &&
@@ -108,6 +111,27 @@ export const Cart = () => {
     });
   };
 
+  const deleteCartProduct = async (productStockId) => {
+    console.log(productStockId);
+    try {
+      const response = await axios.delete(
+        `${import.meta.env.VITE_API_URL}/cart/delete-product/${userId}`,
+        { data: { productStockId } }
+      );
+  
+      if (response.status === 200) {
+        showToast('success', 'Item quantity deleted successfully!');
+        await fetchCart(userId);
+      } else {
+        console.error('Failed to delete item:', response.data);
+        showToast('error', 'Failed to delete item');
+      }
+    } catch (err) {
+      console.error('Error deleting item:', err);
+      showToast('error', 'Error deleting item');
+    }
+  };
+
   return (
     <Box
       direction="column"
@@ -117,14 +141,19 @@ export const Cart = () => {
       transition="width 0.3s ease"
       backgroundColor="#f5f5f5"
     >
-      <CartHeader handleWebSize={handleWebSize} size={size} />
-      <CartTotalSelected
+      <CartHeader handleWebSize={handleWebSize} size={size} user={user}
+        selectedItems={selectedItems}
+        isScrolled={isScrolled}
+        deleteCartProduct={deleteCartProduct}
+        showToast={showToast} />
+      {/* <CartTotalSelected
         user={user}
         selectedItems={selectedItems}
         isScrolled={isScrolled}
         showToast={showToast}
-      />
+      /> */}
       <CartBody
+        deleteCartProduct={deleteCartProduct}
         user={user}
         setIsScrolled={setIsScrolled}
         uniqueStoreIds={[
@@ -138,6 +167,7 @@ export const Cart = () => {
         quantities={quantities}
         setQuantities={setQuantities}
         showToast={showToast}
+        isScrolled={isScrolled}
       />
       <CartFooter
         size={size}

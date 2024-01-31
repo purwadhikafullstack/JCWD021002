@@ -8,6 +8,7 @@ import {
   updateCartTotalsQuery,
   deleteCartItemQuery,
   getAllCartQuery,
+  findProductStockQuery,
 } from '../queries/cart.query';
 
 export const createCartService = async (userId, cartDetails) => {
@@ -21,7 +22,7 @@ export const createCartService = async (userId, cartDetails) => {
     const cartDetailsArray = [];
 
     for (const item of cartDetails) {
-      const productStock = await getProductStockQuery(item.productStockId);
+      const productStock = await findProductStockQuery(item.productStockId);
 
       if (!productStock) {
         throw new Error(`Invalid Product for id: ${item.productStockId}`);
@@ -83,16 +84,16 @@ export const updateCartItemQtyService = async (
   }
 };
 
-export const deleteCartItemService = async ({ userId, productId }) => {
+export const deleteCartItemService = async ({ userId, productStockId }) => {
   try {
     const cart = await findCartQuery(userId);
-    const cartDetail = await findCartDetailQuery(cart.id, productId);
+    const cartDetail = await findCartDetailQuery(cart.id, productStockId);
 
     if (!cartDetail) {
-      throw new Error(`Cart item with product id ${productId} not found`);
+      throw new Error(`Cart item with product id ${productStockId} not found`);
     }
 
-    await deleteCartItemQuery(cart, productId);
+    await deleteCartItemQuery(cart, productStockId);
     await updateCartTotalsQuery(cart);
 
     return { cart };

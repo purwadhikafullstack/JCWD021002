@@ -49,8 +49,8 @@ export const deleteCartItemController = async (req, res) => {
   try {
     // const { userId, productId } = req.params;
     const { userId } = req.params;
-    const { productId } = req.body;
-    const result = await deleteCartItemService({ userId, productId });
+    const { productStockId } = req.body;
+    const result = await deleteCartItemService({ userId, productStockId });
     return res.status(200).json({
       success: true,
       message: 'Delete Product from Cart Successfully',
