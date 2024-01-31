@@ -2,8 +2,7 @@ import {
   Flex,
   useDisclosure,
   Avatar,
-  Text
-  Box,
+  Text,
 } from '@chakra-ui/react';
 import {
   HiOutlineHome,
