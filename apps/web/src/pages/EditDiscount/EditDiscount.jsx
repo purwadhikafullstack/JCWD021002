@@ -289,7 +289,7 @@ const EditDiscount = () => {
             <RadioGroup mb='20px' value={usageType} onChange={(value) => { handleReset(); setUsageType(value); }}>
                 <Stack spacing={4} direction='row' display='flex' flexWrap='wrap'>
                     <Radio value={1}>Purchase</Radio>
-                    <Radio value={2}>Shipping</Radio>
+                    <Radio value={2} isDisabled={ distribution == null ? true : false || distribution == 1 ? true : false }>Shipping</Radio>
                 </Stack>
             </RadioGroup>
 
@@ -298,7 +298,7 @@ const EditDiscount = () => {
                 <Stack spacing={4} direction='row' display='flex' flexWrap='wrap'>
                     <Radio value={4}>Direct Discount</Radio>
                     <Radio value={5}>Minimum Amount Discount</Radio>
-                    <Radio value={6} isDisabled={usageType == 2 ? true : false}>B O G O</Radio>
+                    <Radio value={6} isDisabled={usageType == 2 || usageType == null ? true : false|| distribution == 2 ? true : false }>B O G O</Radio>
                 </Stack>
             </RadioGroup>
 
@@ -393,7 +393,7 @@ const EditDiscount = () => {
                 <Input height='30px' mt='-5px' placeholder= 'Ex. Indomie' name='productName' width={size == '500px' ? '100%' : '50%'} value={productName} onChange={(e) => setProductName(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
                 </Flex>
                 { storeId && data && productId ? (
-  <Select border='solid gray 1px' borderRadius='full' placeholder="Select option" value={productId} onChange={(e) => setProductId(e.target.value)}>
+  <Select isDisabled={ usageType == null ? true : false || usageType == 2 ? true : false } border='solid gray 1px' borderRadius='full' placeholder="Select option" value={productId} onChange={(e) => setProductId(e.target.value)}>
     {data?.products?.map((product) => (
       product?.ProductStocks?.map((stock) => (
         <option key={stock?.id} value={stock?.id}>

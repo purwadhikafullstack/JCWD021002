@@ -1,4 +1,4 @@
-export const calculateDiscountPrice = (originalPrice, discounts) => {
+export const calculateDiscountPrice = (originalPrice, discounts, originalQuantity) => {
     // Filter active discounts based on the current date
     const activeDiscounts = discounts
       ?.filter(
@@ -23,19 +23,23 @@ export const calculateDiscountPrice = (originalPrice, discounts) => {
         //     const discountValue = parseFloat(activeDiscount?.discountValue);
         //     discountedPrice = newPrice - (newPrice * discountValue) / 100;
         //   } else 
-          if (activeDiscount?.discountValue && activeDiscount?.distributionId == 1) {
+          if (activeDiscount?.discountValue && activeDiscount?.distributionId == 1 && activeDiscount?.usageRestrictionId == 1) {
             const discountValue = parseFloat(activeDiscount?.discountValue);
             discountedPrice -= (discountedPrice * discountValue) / 100;
-          } else if (activeDiscount?.discountNom && activeDiscount?.distributionId == 1) {
+          } else if (activeDiscount?.discountNom && activeDiscount?.distributionId == 1 && activeDiscount?.usageRestrictionId == 1) {
             discountedPrice -= activeDiscount?.discountNom;
           } else {return discountedPrice}
           break;
   
         case 5: // Minimum Amount Discount
           const minimumPurchase = parseFloat(activeDiscount?.minimumPurchase);
-          if (discountedPrice >= minimumPurchase && activeDiscount?.distributionId == 1) {
-            const discountValueMinAmount = parseFloat(activeDiscount?.discountValue);
-            discountedPrice -= discountValueMinAmount;
+          if ((discountedPrice * originalQuantity) >= minimumPurchase && activeDiscount?.distributionId == 1 && activeDiscount?.usageRestrictionId == 1) {
+            if (activeDiscount?.discountValue && activeDiscount?.distributionId == 1 && activeDiscount?.usageRestrictionId == 1) {
+              const discountValue = parseFloat(activeDiscount?.discountValue);
+              discountedPrice -= (discountedPrice * discountValue) / 100;
+            } else if (activeDiscount?.discountNom && activeDiscount?.distributionId == 1 && activeDiscount?.usageRestrictionId == 1) {
+              discountedPrice -= activeDiscount?.discountNom;
+            } else {return discountedPrice}
           }
           break;
   

@@ -43,6 +43,10 @@ export const init = (sequelize) => {
         type: DataTypes.STRING(255),
         allowNull: true,
       },
+      totalDiscount : {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
     },
     {
       sequelize,

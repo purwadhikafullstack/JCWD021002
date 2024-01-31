@@ -1,4 +1,4 @@
-export const calculateDiscountPrice = (originalPrice, discounts) => {
+export const calculateVoucherPrice = (originalPrice, discounts, originalQuantity) => {
     // Filter active discounts based on the current date
     const activeDiscounts = discounts
       ?.filter(
@@ -23,24 +23,28 @@ export const calculateDiscountPrice = (originalPrice, discounts) => {
         //     const discountValue = parseFloat(activeDiscount?.discountValue);
         //     discountedPrice = newPrice - (newPrice * discountValue) / 100;
         //   } else 
-          if (activeDiscount?.discountValue && activeDiscount?.distributionId == 1) {
+          if (activeDiscount?.discountValue && activeDiscount?.distributionId == 2) {
             const discountValue = parseFloat(activeDiscount?.discountValue);
             discountedPrice -= (discountedPrice * discountValue) / 100;
-          } else if (activeDiscount?.discountNom && activeDiscount?.distributionId == 1) {
+          } else if (activeDiscount?.discountNom && activeDiscount?.distributionId == 2) {
             discountedPrice -= activeDiscount?.discountNom;
           } else {return discountedPrice}
           break;
   
         case 5: // Minimum Amount Discount
-          const minimumPurchase = parseFloat(activeDiscount?.minimumPurchase);
-          if (discountedPrice >= minimumPurchase && activeDiscount?.distributionId == 1) {
-            const discountValueMinAmount = parseFloat(activeDiscount?.discountValue);
-            discountedPrice -= discountValueMinAmount;
-          }
+        const minimumPurchase = parseFloat(activeDiscount?.minimumPurchase);
+        if ((discountedPrice * originalQuantity) >= minimumPurchase && activeDiscount?.distributionId == 1 && activeDiscount?.usageRestrictionId == 1) {
+          if (activeDiscount?.discountValue && activeDiscount?.distributionId == 1 && activeDiscount?.usageRestrictionId == 1) {
+            const discountValue = parseFloat(activeDiscount?.discountValue);
+            discountedPrice -= (discountedPrice * discountValue) / 100;
+          } else if (activeDiscount?.discountNom && activeDiscount?.distributionId == 1 && activeDiscount?.usageRestrictionId == 1) {
+            discountedPrice -= activeDiscount?.discountNom;
+          } else {return discountedPrice}
+        }
           break;
   
         case 6: // B O G O
-          // if(activeDiscount?.distributionId == 1) {
+          // if(activeDiscount?.distributionId == 2) {
           // const buyQuantity = activeDiscount?.buy_quantity || 1;
           // const getQuantity = activeDiscount?.get_quantity || 1;
           // const totalQuantity = buyQuantity + getQuantity;

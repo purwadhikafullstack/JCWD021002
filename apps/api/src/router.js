@@ -16,6 +16,7 @@ import { reportRouter } from './routers/report.router';
 import { storeRouter } from './routers/store.router.js';
 import { checkoutRouter } from './routers/checkout.router';
 import { paymentRouter } from './routers/payment.router';
+import { voucherRouter } from './routers/voucher.router';
 
 const router = Router();
 
@@ -41,6 +42,7 @@ router.use('/store', storeRouter);
 router.use('/product-stock', productStockRouter);
 router.use('/checkout', checkoutRouter);
 router.use('/payment', paymentRouter);
+router.use('/voucher', voucherRouter);
 
 // add another router here ...
 

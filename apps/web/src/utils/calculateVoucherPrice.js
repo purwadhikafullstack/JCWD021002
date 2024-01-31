@@ -1,4 +1,4 @@
-export const calculateDiscountPrice = (originalPrice, discounts) => {
+export const calculateVoucherPrice = (originalPrice, discounts) => {
     // Filter active discounts based on the current date
     const activeDiscounts = discounts
       ?.filter(
@@ -23,7 +23,7 @@ export const calculateDiscountPrice = (originalPrice, discounts) => {
         //     const discountValue = parseFloat(activeDiscount?.discountValue);
         //     discountedPrice = newPrice - (newPrice * discountValue) / 100;
         //   } else 
-          if (activeDiscount?.discountValue && activeDiscount?.distributionId == 1) {
+          if (activeDiscount?.discountValue && activeDiscount?.distributionId == 2) {
             const discountValue = parseFloat(activeDiscount?.discountValue);
             discountedPrice -= (discountedPrice * discountValue) / 100;
           } else if (activeDiscount?.discountNom && activeDiscount?.distributionId == 1) {
@@ -33,21 +33,21 @@ export const calculateDiscountPrice = (originalPrice, discounts) => {
   
         case 5: // Minimum Amount Discount
           const minimumPurchase = parseFloat(activeDiscount?.minimumPurchase);
-          if (discountedPrice >= minimumPurchase && activeDiscount?.distributionId == 1) {
+          if (discountedPrice >= minimumPurchase && activeDiscount?.distributionId == 2) {
             const discountValueMinAmount = parseFloat(activeDiscount?.discountValue);
             discountedPrice -= discountValueMinAmount;
           }
           break;
   
         case 6: // B O G O
-          // if(activeDiscount?.distributionId == 1) {
-          // const buyQuantity = activeDiscount?.buy_quantity || 1;
-          // const getQuantity = activeDiscount?.get_quantity || 1;
-          // const totalQuantity = buyQuantity + getQuantity;
-          // const setsCount = Math.floor(discountedPrice / totalQuantity);
-          // const discountedPriceBOGO = setsCount * buyQuantity * discountedPrice;
-          // discountedPrice = discountedPriceBOGO / totalQuantity;
-          // }
+          if(activeDiscount?.distributionId == 2) {
+          const buyQuantity = activeDiscount?.buy_quantity || 1;
+          const getQuantity = activeDiscount?.get_quantity || 1;
+          const totalQuantity = buyQuantity + getQuantity;
+          const setsCount = Math.floor(discountedPrice / totalQuantity);
+          const discountedPriceBOGO = setsCount * buyQuantity * discountedPrice;
+          discountedPrice = discountedPriceBOGO / totalQuantity;
+          }
           break;
   
         case 7: // Voucher

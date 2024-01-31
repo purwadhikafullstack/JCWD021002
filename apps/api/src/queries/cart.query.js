@@ -171,7 +171,6 @@ export const getAllCartQuery = async (userId) => {
                 where: {
                   startDate: { [Sequelize.Op.lte]: new Date() }, // Include discounts with start date less than or equal to the current date
                   endDate: { [Sequelize.Op.gte]: new Date() },   // Include discounts with end date greater than or equal to the current date
-                  // productStock_idproductStock: productStockId, // Additional condition to match productStock_idproductStock with the main query's id
                 },
                 include: [
                   {
