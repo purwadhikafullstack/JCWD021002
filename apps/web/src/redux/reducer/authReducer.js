@@ -15,7 +15,8 @@ const initialState = {
     status: '',
     verification_status: '',
     store_idstore: '',
-    googleLogin: ''
+    googleLogin: '',
+    referralBy_iduser: '',
   },
   isLogin: false,
 };
@@ -25,7 +26,7 @@ const authReducer = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      const { id, username, email, fullname, avatar, role_idrole, referralCode, store_idstore, googleLogin } =
+      const { id, username, email, fullname, avatar, role_idrole, referralCode, store_idstore, googleLogin, referralBy_iduser } =
         action.payload;
 
       state.user = {
@@ -38,6 +39,7 @@ const authReducer = createSlice({
         referralCode,
         store_idstore,
         googleLogin,
+        referralBy_iduser,
       };
     },
     loginSuccess: (state) => {

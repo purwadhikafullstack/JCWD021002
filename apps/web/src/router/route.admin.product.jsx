@@ -32,7 +32,7 @@ const routeAdminProduct = [
   { path: '/product-detail/:id', element: <ProductDetail /> },
   { path: '/product-search', element: <ProductSearch /> },
   { path: '/product-catalogue', element: <ProductCatalogue /> },
-  { path: '/dashboard-admin', element: <AdminDashboardWithRoleCheck /> },
+  { path: '/dashboard', element: <AdminDashboardWithRoleCheck /> },
   { path: '/product-lists', element: <AdminProductListsWithRoleCheck /> },
   { path: '/category-lists', element: <AdminCategoryListsWithRoleCheck /> },
   { path: '/add-product', element: <AdminAddProductsWithRoleCheck /> },

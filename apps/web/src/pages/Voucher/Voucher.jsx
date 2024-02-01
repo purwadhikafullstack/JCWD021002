@@ -68,26 +68,22 @@ export const VoucherPage = ({ order, setDiscountVoucher, fetchOrder, }) => {
   }
 
   useEffect(() => {
-    setSearchParams({ page, pageSize, productName, categoryId });
-  }, [page, pageSize, productName, categoryId]);
+    setSearchParams({ page, pageSize, });
+  }, [page, pageSize, ]);
   
   console.log("ini data", data);
 
   useEffect(() => {
     const pageFromUrl = parseInt(searchParams.get('page')) || 1;
     const pageSizeFromUrl = parseInt(searchParams.get('pageSize')) || 10;
-    const productNameFromUrl = searchParams.get('productName') || '';
-    const categoryIdFromUrl = searchParams.get('categoryId') || '';
     setPage(pageFromUrl);
     setPageSize(pageSizeFromUrl);
-    setProductName(productNameFromUrl);
-    setCategoryId(categoryIdFromUrl);
     setSelectedPage(pageFromUrl);
   }, []);
 
   useEffect(() => {
     fetchData();
-  }, [page, pageSize, sortField, sortOrder, categoryId, productName, status]);
+  }, [page, pageSize, sortField, sortOrder, status]);
 
   console.log(data);
 
@@ -189,38 +185,7 @@ console.log(data);
 
                 </Box>
                 </Flex>
-    <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Filter</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Text>Sort Order</Text>
-            <HStack><Button leftIcon={<IconSortAscending2 />} border='solid black 1px' borderRadius='full' onClick={() => handleSortOrder("asc")} isDisabled={sortOrder == "asc" ? true : false}>Ascending</Button><Button leftIcon={<IconSortDescending2 />} border='solid black 1px' borderRadius='full' onClick={() => handleSortOrder("desc")} isDisabled={sortOrder == "desc" ? true : false}>Descending</Button></HStack>
-            <Text>Sort Field</Text>
-            <HStack><Button leftIcon={<IconAbc />} border='solid black 1px' borderRadius='full' onClick={() => handleSortField("name")} isDisabled={sortField == "name" ? true : false}>Name</Button><Button leftIcon={<IconTags />} border='solid black 1px' borderRadius='full' onClick={() => handleSortField("price")} isDisabled={sortField == "price" ? true : false}>Price</Button></HStack>
-            <Text>Category</Text>
-            <Select placeholder="Select option" value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
-            {dataCategory?.categories?.map((category) => ( 
-              <option key={category.id} value={category.id}>{category.category}</option>
-            ))}
-            </Select>
-            <Text>Status Product</Text>
-            <Select placeholder="Select option" value={status} onChange={(e) => setStatus(e.target.value)}>
-              <option value={''}>All</option>
-              <option value={parseInt(1)}>Active</option>
-              <option value={parseInt(0)}>Deactive</option>
-            </Select>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme='blue' mr={3} onClick={onClose}>
-              Close
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-
+    
             
       
 
@@ -319,8 +284,7 @@ console.log(data);
               setPage={setPage}
               setPageSize={setPageSize}
               setSelectedPage={setSelectedPage}
-              data={data}
-            />
+              data={data} />
       
     </Box>
     </Box>

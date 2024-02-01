@@ -13,6 +13,7 @@ import { DrawerShippingMethode } from './drawer.shippingMethode';
 import { IoIosArrowForward } from 'react-icons/io';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { calculateDiscountPrice } from '../../utils/calculateDiscountPrice';
 
 export const ListProductOrder = ({
   orderDetail,
@@ -108,9 +109,9 @@ export const ListProductOrder = ({
                   <Text>{item?.ProductStock?.Product?.name}</Text>
                   <Text fontWeight="semibold">
                     {item?.quantity} x{' '}
-                    {angkaRupiahJs(item?.ProductStock?.Product?.price, {
+                    {calculateDiscountPrice(item?.ProductStock?.Product?.price) ? angkaRupiahJs((calculateDiscountPrice(item?.ProductStock?.Product?.price, item?.ProductStock?.Discounts, item?.quantity)), {
                       formal: false,
-                    })}
+                    }) : null}
                   </Text>
                 </Box>
               </Flex>

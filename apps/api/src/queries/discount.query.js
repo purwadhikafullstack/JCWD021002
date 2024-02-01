@@ -181,6 +181,10 @@ const moment = require('moment');
           whereCondition.productStock_idproductStock = {
             [Op.or]: [null, productStockId],
           };
+
+          whereCondition.referralCode = {
+            [Op.or]: [null, 0],
+          };
       
           const discounts = await Discount.findAndCountAll({
             offset: offset,

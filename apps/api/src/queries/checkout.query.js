@@ -58,7 +58,7 @@ export const updateOrderDetailsQuery = async (orderId, cartItems) => {
       await OrderDetail.create(
         {
           order_idorder: orderId,
-          quantity: cartItem.quantity,
+          quantity: (calculateDiscountBOGO(cartItem.quantity, cartItem.ProductStock.Discounts)),
           subtotal: cartItem.quantity * cartItem.price,
           productStock_idproductStock: cartItem.productStock_idproductStock,
         },
