@@ -89,7 +89,7 @@ function ProductStockLists() {
       <SideBar size={size} handleWebSize={handleWebSize} />
       <Box backgroundColor="#f5f5f5" w={{ base: '100vw', md: size }} p={size == '500px' ? 0 : 5} height="fit-content" >
         <HStack mb="10px" p={0}></HStack>
-        <Box p={size == '500px' ? 0 : 5} pl={size == '500px' ? '0px' : '150px'}>
+        <Box p={size == '500px' ? 0 : 5} pl={size == '500px' ? '0px' : '150px'} mt='80px' >
           <Flex dir="row" gap="10px" p={size == '500px' ? 6 : 0} mb="20px" flexWrap="wrap" >
             <IconButton backgroundColor="#f5f5f5"leftIcon={<IconChevronLeft />} />
             <Box w={size == '500px' ? '60%' : '70%'}>

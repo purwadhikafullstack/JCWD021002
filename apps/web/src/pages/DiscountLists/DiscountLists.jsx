@@ -169,7 +169,7 @@ console.log(data);
       <Box w={{ base: '100vw', md: size }}>
           <SideBar size={size} handleWebSize={handleWebSize}/>
     <Box backgroundColor='#f5f5f5'  w={{ base: '100vw', md: size }} p='6' height='fit-content'>
-    <Box p={size == '500px' ? 0 : 5} pl={size == '500px' ? '0px' : '150px' }>
+    <Box p={size == '500px' ? 0 : 5} pl={size == '500px' ? '0px' : '150px' } mt='80px' >
     <Flex dir='row' gap='10px' mb='20px' flexWrap='wrap'>
     <Button backgroundColor='#f5f5f5' leftIcon={<IconChevronLeft />}></Button>
 

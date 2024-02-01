@@ -170,7 +170,7 @@ const EditUser = () => {
           <SideBar size={size} handleWebSize={handleWebSize}/>
       <ToastContainer position="top-center" closeOnClick pauseOnFocusLoss draggable pauseOnHover theme="colored" />
       <Box w={{ base: '98.7vw', md: size }} overflowX='hidden' height='100vh' backgroundColor='#fbfaf9' p='20px'>
-      <Box pl={size == '500px' ? '0px' : '150px' } pr={size == '500px' ? '0px' : '20px'} pt='20px' pb='20px'>
+      <Box pl={size == '500px' ? '0px' : '150px' } pr={size == '500px' ? '0px' : '20px'} pt='20px' pb='20px' mt='70px' >
         <HStack mb='10px'>
           <Button leftIcon={<IconArrowLeft />} borderRadius='full' backgroundColor='white' textColor='black' border='solid 1px black' onClick={() => navigate('/user-lists')}>Back</Button>
           <Spacer />
@@ -181,32 +181,18 @@ const EditUser = () => {
             <FormLabel>User Information (Fill in only the parts that need to be replaced/edited)</FormLabel>
             <Flex justifyContent='center' gap='20px' flexDirection={size == '500px' ? 'column' : 'row'}>
             <Box>
-            <VStack>
-                        <Avatar
-                          key={data?.avatar}
-                          name={data?.username}
-                          borderRadius={"full"}
-                          src={data && data?.avatar ? `${
-                            import.meta.env.VITE_API_IMAGE_URL
-                          }/avatar/${data?.avatar}` : "https://bit.ly/broken-link"}
-                          boxSize="150px"
-                          cursor="pointer" // Set the cursor property to "pointer"
-                          // transition="background 0.3s ease"
-                          _hover={{
-                            transform: "scale(1.1)", // Set the scale factor for the hover effect
-                          }}
-                        />
-                        </VStack>
-            </Box>
-            
-            <Box>
               <VStack>
-            {selectedImage ? <Image
-            src={selectedImage}
+             <Image
+            src={selectedImage ? selectedImage : `${
+              import.meta.env.VITE_API_IMAGE_URL
+            }/avatar/${data?.avatar}`}
             alt="Selected Image"
             boxSize="150px"
             objectFit="cover"
-            borderRadius="50%"/> : <Image src={AvatarSVG} />}
+            _hover={{
+              transform: "scale(1.1)", // Set the scale factor for the hover effect
+            }}
+            borderRadius="50%"/>
             <Box mt='-50px' mr='-90px'>
       <Input display="none" id="fileInput" 
               type="file"
@@ -230,47 +216,7 @@ const EditUser = () => {
     </VStack>
             </Box>
 
-                <Box>
-                  <VStack>
-                    {selectedImage ? (
-                      <Image
-                        src={selectedImage}
-                        alt="Selected Image"
-                        boxSize="150px"
-                        objectFit="cover"
-                        borderRadius="50%"
-                      />
-                    ) : (
-                      <Image src={AvatarSVG} />
-                    )}
-                    <Box mt="-50px" mr="-90px">
-                      <Input
-                        display="none"
-                        id="fileInput"
-                        type="file"
-                        name="image"
-                        size="md"
-                        onChange={
-                          ((event) => {
-                            setFieldImage(event.currentTarget.files[0]);
-                          },
-                          handleImageChange)
-                        }
-                      />
-                      <IconButton
-                        onClick={() =>
-                          document.getElementById('fileInput').click()
-                        }
-                        icon={<FiUpload color="white" />}
-                        variant="outline"
-                        background="blue"
-                        borderRadius="50%"
-                        colorScheme="white"
-                        border="solid white 2px"
-                      ></IconButton>
-                    </Box>
-                  </VStack>
-                </Box>
+                
               </Flex>
               <Flex
                 columnGap="10px"
