@@ -109,7 +109,7 @@ export const CheckoutFooter = ({ size, order, selectedShipping }) => {
         <Stack flexDirection="column" alignItems="center" spacing={0}>
           <Text fontSize>Total Pembayaran</Text>
           <Text fontSize='lg' fontWeight='bold' color='tomato'>
-          {order?.totalAmount ? angkaRupiahJs(order?.totalAmount, {formal: false}) : null}
+          {order?.totalAmount ? angkaRupiahJs(order?.totalAmount + order?.totalShipping, {formal: false}) : null}
           </Text>
         </Stack>
         <Button

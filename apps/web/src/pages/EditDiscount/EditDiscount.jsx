@@ -134,7 +134,7 @@ const EditDiscount = () => {
       setName(response?.data?.name);
       setDescription(response?.data?.description);
       setMax(response?.data?.discountAmount);
-      setReferral(response?.data?.referralCode);
+      setReferral(response?.data?.referralCode == true ? 1 : 0);
       setStatus(response?.data?.status == true ? 1 : 0);
       setStoreId(response?.data?.store_idstore);
         setProductId2(response?.data?.productStock_idproductStock);
@@ -215,18 +215,22 @@ const EditDiscount = () => {
   };
 
   const handleReset = () => {
+    console.log("Before reset:", { type, discValue, percent, nominal, minNom, buy, get });
+
   setType(0);
   setDiscValue(0);
   setPercent(0);
   setNominal(0);
+  setUsageType(0)
   setMinNom(undefined);
   setGet(undefined);
   setBuy(undefined);
   setMax(undefined);
   setReferral(undefined);
+  console.log("After reset:", { type, discValue, percent, nominal, minNom, buy, get });
   }
 
-  console.log(data);
+  console.log("usageType", (typeof usageType),  (typeof type), discValue, percent, nominal, minNom, buy, get);
 
   return (
     <>
@@ -278,7 +282,7 @@ const EditDiscount = () => {
 
             </Box>
             <Text fontSize='large' fontWeight='bold' mt='10px'>Distribution Discount</Text>
-            <RadioGroup mb='20px' value={distribution} onChange={(value) => { handleReset(); setDistribution(value); }}>
+            <RadioGroup mb='20px' value={distribution} onChange={(value) => { handleReset(); setDistribution(Number(value)); }}>
                 <Stack spacing={4} direction='row' display='flex' flexWrap='wrap'>
                     <Radio value={1}>Regular Discount</Radio>
                     <Radio value={2}>Voucher</Radio>
@@ -286,7 +290,7 @@ const EditDiscount = () => {
             </RadioGroup>
 
             <Text fontSize='large' fontWeight='bold'>Usage Restriction Type</Text>
-            <RadioGroup mb='20px' value={usageType} onChange={(value) => { handleReset(); setUsageType(value); }}>
+            <RadioGroup mb='20px' value={usageType} onChange={(value) => { handleReset(); setUsageType(Number(value)); }}>
                 <Stack spacing={4} direction='row' display='flex' flexWrap='wrap'>
                     <Radio value={1}>Purchase</Radio>
                     <Radio value={2} isDisabled={ distribution == null ? true : false || distribution == 1 ? true : false }>Shipping</Radio>
@@ -294,7 +298,7 @@ const EditDiscount = () => {
             </RadioGroup>
 
             <Text fontSize='large' fontWeight='bold' mt='10px'>Discount Type</Text>
-            <RadioGroup mb='20px' value={type} onChange={(value) => { handleReset(); setType(value); }}>
+            <RadioGroup mb='20px' value={type} onChange={(value) => { handleReset(); setType(Number(value)); }}>
                 <Stack spacing={4} direction='row' display='flex' flexWrap='wrap'>
                     <Radio value={4}>Direct Discount</Radio>
                     <Radio value={5}>Minimum Amount Discount</Radio>
@@ -303,7 +307,7 @@ const EditDiscount = () => {
             </RadioGroup>
 
             <Text fontSize='large' fontWeight='bold'>Discount Value Type</Text>
-            <RadioGroup isDisabled={type == 4 || type == 5 ? false : true} mb='20px' value={discValue} onChange={(value) => { setPercent(); setNominal(); setDiscValue(value); }}>
+            <RadioGroup isDisabled={type == 4 || type == 5 ? false : true} mb='20px' value={discValue} onChange={(value) => { setPercent(); setNominal(); setDiscValue(Number(value)); }}>
                 <Stack spacing={4} direction='row' display='flex' flexWrap='wrap'>
                     <Radio value={1}>Percentage</Radio>
                     <Radio value={2}>Nominal</Radio>
@@ -369,7 +373,13 @@ const EditDiscount = () => {
                 <Input mb='20px' isDisabled={distribution == 2 ? false : true} placeholder= 'Ex. 250' name='max' width={size == '500px' ? '100%' : '50%'} value={max} onChange={(e) => setMax(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
               
                 <Text fontSize='large' fontWeight='bold'>Referral Code</Text>
-                <Input mb='20px' placeholder= 'Ex. GROCERIAANNIV1' name='name' width={size == '500px' ? '100%' : '50%'} value={referral} onChange={(e) => setReferral(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
+                {/* <Input mb='20px' placeholder= 'Ex. GROCERIAANNIV1' name='name' width={size == '500px' ? '100%' : '50%'} value={referral} onChange={(e) => setReferral(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' /> */}
+                <RadioGroup mb='20px' isDisabled={distribution == 2 ? false : true} value={referral} onChange={(value) => { handleReset(); setReferral(Number(value)); }}>
+                  <Stack spacing={4} direction='row' display='flex' flexWrap='wrap'>
+                      <Radio value={1}>Yes</Radio>
+                      <Radio value={0}>No</Radio>
+                  </Stack>
+                </RadioGroup>
 
                 <Text fontSize='large' fontWeight='bold'>Status</Text>
                 <Select mb='20px' border='solid gray 1px' borderRadius='full' width={size == '500px' ? '100%' : '50%'} placeholder="Select option" value={status} onChange={(e) => setStatus(parseInt(e.target.value))}>

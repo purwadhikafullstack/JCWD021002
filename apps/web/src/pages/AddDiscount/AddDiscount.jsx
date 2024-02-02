@@ -150,18 +150,25 @@ const AddDiscount = () => {
   };
 
   const handleReset = () => {
+    console.log("Before reset:", { type, discValue, percent, nominal, minNom, buy, get });
+
   setType(0);
   setDiscValue(0);
   setPercent(0);
   setNominal(0);
+  setUsageType(0)
   setMinNom(undefined);
   setGet(undefined);
   setBuy(undefined);
   setMax(undefined);
   setReferral(undefined);
+  
+  console.log("After reset:", { type, discValue, percent, nominal, minNom, buy, get });
+
   }
 
   console.log(data);
+  console.log("ini referral", referral, usageType);
 
   return (
     <>
@@ -304,8 +311,13 @@ const AddDiscount = () => {
                 <Input mb='20px' isDisabled={distribution == 2 ? false : true} placeholder= 'Ex. 250' name='max' width={size == '500px' ? '100%' : '50%'} value={max} onChange={(e) => setMax(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
               
                 <Text fontSize='large' fontWeight='bold'>Referral Code</Text>
-                <Input mb='20px' isDisabled={distribution == 2 ? false : true} placeholder= 'Ex. GROCERIAANNIV1' name='name' width={size == '500px' ? '100%' : '50%'} value={referral} onChange={(e) => setReferral(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
-              
+                {/* <Input mb='20px'  placeholder= 'Ex. GROCERIAANNIV1' name='name' width={size == '500px' ? '100%' : '50%'} value={referral} onChange={(e) => setReferral(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' /> */}
+                <RadioGroup mb='20px' isDisabled={distribution == 2 ? false : true} value={referral} onChange={(value) => { handleReset(); setReferral(Number(value)); }}>
+                  <Stack spacing={4} direction='row' display='flex' flexWrap='wrap'>
+                      <Radio value={1}>Yes</Radio>
+                      <Radio value={0}>No</Radio>
+                  </Stack>
+                </RadioGroup>
 
             <Flex columnGap='10px' mb='20px ' flexDir={size == '500px' ? 'column' : 'row'}>
               <Box width='100%'>

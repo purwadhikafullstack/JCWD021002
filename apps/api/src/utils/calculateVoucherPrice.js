@@ -33,7 +33,7 @@ export const calculateVoucherPrice = (originalPrice, discounts, originalQuantity
   
         case 5: // Minimum Amount Discount
         const minimumPurchase = parseFloat(activeDiscount?.minimumPurchase);
-        if ((discountedPrice * originalQuantity) >= minimumPurchase && activeDiscount?.distributionId == 1 && activeDiscount?.usageRestrictionId == 1) {
+        if ((discountedPrice * originalQuantity || 1) >= minimumPurchase && activeDiscount?.distributionId == 1 && activeDiscount?.usageRestrictionId == 1) {
           if (activeDiscount?.discountValue && activeDiscount?.distributionId == 1 && activeDiscount?.usageRestrictionId == 1) {
             const discountValue = parseFloat(activeDiscount?.discountValue);
             discountedPrice -= (discountedPrice * discountValue) / 100;

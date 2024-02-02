@@ -95,6 +95,11 @@ const EditUser = () => {
       );
 
       setData(response?.data?.result);
+      setFullname(response?.data?.result?.fullname);
+      setUsername(response?.data?.result?.username);
+      setEmail(response?.data?.result?.email);
+      setStoreId(response?.data?.result?.store_idstore);
+      setStatus(response?.data?.result?.status);
     } catch (err) {
       console.log(err);
     }

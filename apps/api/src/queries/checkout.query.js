@@ -58,7 +58,7 @@ export const updateOrderDetailsQuery = async (orderId, cartItems) => {
       await OrderDetail.create(
         {
           order_idorder: orderId,
-          quantity: (calculateDiscountBOGO(cartItem.quantity, cartItem.ProductStock.Discounts)),
+          quantity: (calculateDiscountBOGO(cartItem.quantity, (cartItem.ProductStock.Discounts || []))),
           subtotal: cartItem.quantity * cartItem.price,
           productStock_idproductStock: cartItem.productStock_idproductStock,
         },
@@ -187,8 +187,8 @@ export const createOrderQuery = async (
       await OrderDetail.create(
         {
           order_idorder: order.id,
-          quantity: (calculateDiscountBOGO(cartItem.quantity, cartItem.ProductStock.Discounts)),
-          subtotal: cartItem.quantity * (calculateDiscountPrice(cartItem.price, cartItem.ProductStock.Discounts)),
+          quantity: (calculateDiscountBOGO(cartItem.quantity, (cartItem.ProductStock.Discounts || []))),
+          subtotal: cartItem.quantity * (calculateDiscountPrice(cartItem.price, (cartItem.ProductStock.Discounts || []))),
           productStock_idproductStock: cartItem.productStock_idproductStock,
         },
         { transaction: t },
