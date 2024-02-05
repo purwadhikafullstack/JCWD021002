@@ -142,6 +142,7 @@ const updateUserQuery = async (
     Object.keys(updatedValue).forEach((key) => {
       if (
         updatedValue[key] == null ||
+        updatedValue[key] == 'null' ||
         updatedValue[key] == undefined ||
         updatedValue[key] == ' ' ||
         updatedValue[key] == ''

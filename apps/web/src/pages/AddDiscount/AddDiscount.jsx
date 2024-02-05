@@ -24,10 +24,8 @@ const AddDiscount = () => {
   const [data, setData] = useState([]);
   const [fieldImage, setFieldImage] = useState(null);
   const [selectedImage, setSelectedImage] = useState('');
-  const [selectedC, setSelectedC] = useState([]);
   const navigate = useNavigate();
   const [dataStore, setDataStore] = useState([]);
-
   const [type, setType] = useState();
   const [discValue, setDiscValue] = useState();
   const [usageType, setUsageType] = useState();
@@ -46,13 +44,6 @@ const AddDiscount = () => {
   const [productName, setProductName] = useState('');
   const [productId, setProductId] = useState();
   const token = localStorage.getItem("token");
-
-
-
-
-
-
-  console.log("ini type", type);
   const [storeId, setStoreId] = useState();
 
   const fetchData = async () => {
@@ -172,7 +163,6 @@ const AddDiscount = () => {
 
   return (
     <>
-      {/* <SidebarWithHeader /> */}
       <Box w={{ base: '100vw', md: size }}>
           <SideBar size={size} handleWebSize={handleWebSize}/>
       <ToastContainer position="top-center" closeOnClick pauseOnFocusLoss draggable pauseOnHover theme="colored" />

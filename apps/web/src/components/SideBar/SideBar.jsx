@@ -233,12 +233,12 @@ const MobileNav = ({ onOpen, onClose, ...rest }) => {
       </Flex>
 
       <HStack className="navTop" spacing={{ base: '0', md: '6' }}>
-        <IconButton
+        {/* <IconButton
           size="lg"
           variant="ghost"
           aria-label="open menu"
           icon={<FiBell />}
-        />
+        /> */}
         <ResizeButton />
         <Flex alignItems={'center'}>
           <Menu>
@@ -307,8 +307,6 @@ const MobileNav = ({ onOpen, onClose, ...rest }) => {
               >
                 Profile
               </MenuItem>
-              <MenuItem>Settings</MenuItem>
-              <MenuItem>Billing</MenuItem>
               <MenuDivider />
               <MenuItem
                 onClick={() => {

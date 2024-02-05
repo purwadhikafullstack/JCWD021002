@@ -13,7 +13,7 @@ import Logo from '../../assets/Logo-Groceria-no-Bg.png';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { BiWindows } from 'react-icons/bi';
+import { PaginationControls } from '../../components/PaginationControls/PaginationControls';
 import { useWebSize } from '../../provider.websize';
 
 
@@ -29,7 +29,7 @@ export const ProductRating = ({productId}) => {
   const [sortOrder, setSortOrder] = useState("asc")
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState()
-  const [categoryId, setCategoryId] = useState();
+  const [selectedPage, setSelectedPage] = useState();
   const [productName, setProductName] = useState()
   const [cityId, setCityId] = useState("");
   const [sliderSettings, setSliderSettings] = useState({
@@ -107,7 +107,7 @@ export const ProductRating = ({productId}) => {
     <DrawerContent justifySelf='center' alignSelf='center' margin='auto' sx={size == '500px' ? {w : size} : {maxW : '35vw'}} maxH={size == '500px' ? '90vh' : 'full'}>
       <DrawerCloseButton />
       <DrawerHeader>Ulasan</DrawerHeader>
-      <DrawerBody width={{base: '100%', md: '500px'}} alignSelf='center'>
+      <DrawerBody width='500px' alignSelf='center'>
         {/* Add your detailed content here */}
         {/* For example, you can render additional information or controls */}
         <Flex flexDir='row' gap='2px' width='fit-content' flexWrap='wrap'>
@@ -145,6 +145,15 @@ export const ProductRating = ({productId}) => {
                     <Box width='100%' borderTop='solid 1px gray'></Box>
                 </>
               ))}
+              <PaginationControls 
+              page= {page}
+              pageSize={pageSize}
+              selectedPage={selectedPage}
+              setPage={setPage}
+              setPageSize={setPageSize}
+              setSelectedPage={setSelectedPage}
+              data={data}
+            />
               </Flex>
               </Box>
       </DrawerBody>

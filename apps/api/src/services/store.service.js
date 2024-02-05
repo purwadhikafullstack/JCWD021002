@@ -36,7 +36,7 @@ export const getStoreService = async (
     // Mengambil daftar toko dari query atau fungsi yang sesuai
     const stores = await getStoreQuery({ name });
     // Inisialisasi variabel untuk menyimpan ID toko terdekat
-    let storeId = 13;
+    let storeId = 1;
     let minDistance = Number.MAX_VALUE;
 
     // Mengambil store terdekat dengan user
@@ -60,6 +60,8 @@ export const getStoreService = async (
         storeId = store.dataValues.id;
       }
     }
+
+    console.log("ini di store id", storeId);
     // Mengambil produk dengan paginasi dan filter untuk toko terdekat
     const result = await getPaginatedAndFilteredProductsQuery(
       page,

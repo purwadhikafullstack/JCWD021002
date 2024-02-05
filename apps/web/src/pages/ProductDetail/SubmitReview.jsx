@@ -128,7 +128,7 @@ export const SubmitReview = ({userId, productId}) => {
                                     Ganti Ulasan
                                 </Button>
                                 </Box>
-                            ) : data?.orderResults.lenth > 0 ? (
+                            ) : data?.orderResults?.length > 0 ? (
                               <Box mt='10px' width='97%' bg='#FFFEF7' textAlign='left' p={4} rounded='lg' boxShadow="0px 1px 5px gray">
                                 <Text fontSize="lg" mb="2"></Text>
                                 <Flex flexDirection='row'>
