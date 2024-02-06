@@ -33,8 +33,8 @@ export const CartFooter = ({
         (cart) => cart.productStock_idproductStock === productStockId
       );
 
-          if (item && item.price && quantities[productStockId]) {
-            return total + calculateDiscountPrice(item?.price, item?.ProductStock?.Discounts) * quantities[productStockId];
+          if (item && item.price && quantities[selectedItems]) {
+            return total + calculateDiscountPrice(item?.price, item?.ProductStock?.Discounts) * quantities[selectedItems];
           }
 
       return total;

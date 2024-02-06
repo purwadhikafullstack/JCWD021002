@@ -84,7 +84,7 @@ export const Profile = () => {
                 value={user.referralCode}
               />
               <IoMdCopy />
-              <RedeemReferral />
+              { user?.referralBy_iduser ? null : <RedeemReferral /> }
             </Flex>
           </Flex>
         </Center>

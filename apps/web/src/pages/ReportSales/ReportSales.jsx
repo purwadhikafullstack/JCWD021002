@@ -180,7 +180,7 @@ const ReportSales = () => {
           <SideBar size={size} handleWebSize={handleWebSize}/>
       <Box w={{ base: '100vw', md: size }} height='fit-content' backgroundColor='#fbfaf9' >
       <Box p='20px'>
-        <Box pl={size == '500px' ? '0px' : '150px' }>
+        <Box pl={size == '500px' ? '0px' : '150px' } mt='80px' >
                 <Flex dir='row' gap='10px'>
                 
           <Box>

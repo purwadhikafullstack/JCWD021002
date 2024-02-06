@@ -14,10 +14,11 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { BiWindows } from 'react-icons/bi';
+import { useSelector } from 'react-redux';
 
 const MAX_VISIBLE_PAGES = 3; 
 
-export const ProductRelated = ({category}) => {
+export const ProductRelated = ({category, productId}) => {
   const [sampleData, setSampleData] = useState([]);
   const [data, setData] = useState([]);
   const [dataCategory, setDataCategory] = useState([])
@@ -28,45 +29,33 @@ export const ProductRelated = ({category}) => {
   const [pageSize, setPageSize] = useState()
   const [categoryId, setCategoryId] = useState();
   const [productName, setProductName] = useState()
-  const [cityId, setCityId] = useState("");
-  const [sliderSettings, setSliderSettings] = useState({
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    focusOnSelect: true,
-    // variableWidth: true,
-  });
-  const [quantity, setQuantity] = useState(1);
   const navigate = useNavigate();
-  const [selectedPage, setSelectedPage] = useState(page);
-  const [searchParams, setSearchParams] = useSearchParams({ page, pageSize });
+  const coordinat = useSelector((state) => state.addressReducer?.address);
+console.log("ini category id di product related", category, productId);
+console.log("ini data di pr", data);
 
-  console.log('ini categoryId',categoryId);
   const fetchData = async (category) => {
     try {
         const response = await axios.get(
-      
-      `${import.meta.env.VITE_API_URL}/products/product-lists?page=1&pageSize=10&categoryId=2&storeId=1&statusProduct=1&statusStock=1`
+      `${import.meta.env.VITE_API_URL}/store?page=1&pageSize=10&categoryId=${category}&statusProduct=1&statusStock=1&latitude=${coordinat?.latitude}&longitude=${coordinat?.longitude}`
         );
-        setData(response?.data);
+        setData(response?.data?.data);
       
   } catch (err) {
       console.log(err);
   }
   }
 
-  console.log("ini di product related", data);
+  // console.log("ini di product related", storeId);
 
 
 
 
   useEffect(() => {
-    fetchData();
-  }, [page, pageSize, sortField, sortOrder, categoryId, category, productName]);
+    fetchData(category);
+  }, [page, pageSize, sortField, sortOrder, categoryId, category, productName, coordinat]);
 
-  console.log(data);
+  console.log("ini store id di product related", category);
 
   const handleSortOrder = (order) => {
     setSortOrder(order);
@@ -118,7 +107,8 @@ function formatPriceToIDR(price) {
             
             <Flex pl='5px' pr='5px' gap='2' w='fit-content' flexDir='row' justifyContent='flex-start'>
             {data?.products &&
-              data?.products.map((item, index) => (
+              data?.products.filter((product) => product?.ProductStocks[0]?.id !== productId)
+              .map((item, index) => (
                 <>
                 
                 <Card key={item.id} w='160px'  onClick={() => handleItemClick(item.id)} bg={useColorModeValue('white', 'gray.800')}

@@ -1,4 +1,4 @@
-const { Op } = require('sequelize');
+const { Op, Sequelize } = require('sequelize');
 import Discount from '../models/discount.model';
 import DiscountType from '../models/discountType.model';
 import Product from '../models/product.model';
@@ -181,6 +181,10 @@ const moment = require('moment');
           whereCondition.productStock_idproductStock = {
             [Op.or]: [null, productStockId],
           };
+
+          whereCondition.referralCode = {
+            [Op.or]: [null, 0],
+          };
       
           const discounts = await Discount.findAndCountAll({
             offset: offset,
@@ -189,6 +193,8 @@ const moment = require('moment');
             where: {
               ...whereCondition,
               ...(storeId ? { store_idstore: storeId } : {}),
+              startDate: { [Sequelize.Op.lte]: new Date() }, // Include discounts with start date less than or equal to the current date
+              endDate: { [Sequelize.Op.gte]: new Date() },
             },
             include: [
               {

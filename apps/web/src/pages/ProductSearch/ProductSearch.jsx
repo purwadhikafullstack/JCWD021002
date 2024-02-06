@@ -8,12 +8,12 @@ import LogoGroceria from '../../assets/Groceria-no-Bg.png';
 import Logo from '../../assets/Logo-Groceria-no-Bg.png';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { useWebSize } from '../../provider.websize';
 import { PaginationControls } from '../../components/PaginationControls/PaginationControls';
 import { CardProductStock } from './CardProductStock';
 import { useSelector } from 'react-redux';
-
+import CartLoading from '../../components/Loaders/CartLoading';
 function ProductSearch() {
   const {size, handleWebSize } = useWebSize();
   const [data, setData] = useState([]);
@@ -27,33 +27,20 @@ function ProductSearch() {
   const [productName, setProductName] = useState()
   const [selectedPage, setSelectedPage] = useState(page);
   const [searchParams, setSearchParams] = useSearchParams({ page, pageSize });
-  const [storeId, setStoreId] = useState();
-  const cityId = useSelector((state) => state.AuthReducer.location?.id);
-
-  const getStoreList = async (cityId) => {
-    try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/user/store-lists?cityId=${cityId}`,
-      );
-      setStoreId(res?.data[0].id);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
+  const coordinat = useSelector((state) => state.addressReducer?.address);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const fetchData = async () => {
-    try {
+    try { setLoading(true);
       if ((productName.trim() !== '') || (categoryId !== undefined && String(categoryId).trim() !== '')) {
         const response = await axios.get(
-      
-      `${import.meta.env.VITE_API_URL}/products/product-lists?page=${page}&pageSize=${pageSize}&sortField=${sortField}&sortOrder=${sortOrder}&categoryId=${categoryId}&productName=${productName}&storeId=${storeId}&statusProduct=1&statusStock=1`
+      `${import.meta.env.VITE_API_URL}/store?page=${page}&pageSize=${pageSize}&sortField=${sortField}&sortOrder=${sortOrder}&categoryId=${categoryId}&productName=${productName}&statusProduct=1&statusStock=1&latitude=${coordinat?.latitude}&longitude=${coordinat?.longitude}`
         );
-        setData(response?.data);
+        setData(response?.data?.data);
       }
-      
   } catch (err) {
       console.log(err);
-  }
+  } finally {setLoading(false);}
   }
 
 
@@ -75,9 +62,8 @@ function ProductSearch() {
   }, []);
 
   useEffect(() => {
-    getStoreList(cityId);
     fetchData();
-  }, [page, pageSize, sortField, sortOrder, categoryId, productName, storeId, cityId, ]);
+  }, [page, pageSize, sortField, sortOrder, categoryId, productName, coordinat ]);
 
   const fetchCategory = async () => {
     try {
@@ -90,7 +76,7 @@ function ProductSearch() {
         console.log(err);
     }
 };
-
+console.log();
 useEffect(() => {
     fetchCategory();
 }, []);
@@ -120,7 +106,7 @@ useEffect(() => {
                     </InputGroup>
                             </Box>
                             <Box>
-                                <IconButton height='30px' icon={<IconShoppingCartFilled />} backgroundColor='#fcfdde' />
+                                <IconButton height='30px' icon={<IconShoppingCartFilled />} backgroundColor='#fcfdde' onClick={() => navigate('/cart')} />
                             </Box>
                             <Box>
     <Button leftIcon={<IconAdjustmentsHorizontal size='20px' />} fontSize='sm' borderRadius='full' border='solid 1px black' onClick={onOpen}>Filter</Button>
@@ -130,7 +116,7 @@ useEffect(() => {
                 
             </Box>
             <Box  p={size == '500px' ? 0 : 5} pt='5'>
-            {categoryId > 0  ? null : (
+            {data?.products?.length > 0 ? null : (
   <Flex gap='2' flexWrap='wrap' pl={10} pr={10}>
     {dataCategory?.categories?.slice(0, 5)?.map((item, index) => (
       <Button backgroundColor='white' border='solid 1px black' key={index} onClick={() => item?.id && setCategoryId(item?.id)}>
@@ -138,8 +124,9 @@ useEffect(() => {
       </Button>
     ))}
   </Flex>
-)}
-              <CardProductStock data={data} />
+)} 
+            {loading == true ? <VStack><CartLoading /></VStack> : null}
+              <Flex flexWrap='wrap' justifyContent='center'><CardProductStock data={data} /></Flex>
           <Box m='5'><PaginationControls 
               page= {page}
               pageSize={pageSize}

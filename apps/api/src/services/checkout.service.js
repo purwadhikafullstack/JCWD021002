@@ -69,7 +69,7 @@ export const checkoutService = async (userId, selectedItems) => {
     // Calculate total amount
     let subTotalProduct = selectedCartItem.reduce((total, orderItem) => {
         console.log('orderItem: ', orderItem?.price);
-      return total + (calculateDiscountPrice(orderItem?.price, orderItem?.ProductStock?.Discounts, orderItem.quantity)) * orderItem.quantity;
+      return total + (calculateDiscountPrice(orderItem?.price, (orderItem?.ProductStock?.Discounts || []), orderItem.quantity)) * orderItem.quantity;
     }, 0);
     console.log('subTotalProduct', subTotalProduct);
     let shippingCost = 5000;

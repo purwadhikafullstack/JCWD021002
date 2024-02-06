@@ -2,8 +2,6 @@
 import React from 'react';
 import axios from 'axios';
 import Slider from 'react-slick';
-import reactLogo from '../../assets/react.svg';
-import viteLogo from '/vite.svg';
 import { Text, Box, HStack, Image, Flex, Button, Spacer, VStack, Stack, Textarea, IconButton,
   useToast,
   useDisclosure,
@@ -41,7 +39,6 @@ import { useEffect, useState } from 'react';
 import { ProductRelated } from './ProductRelated';
 import { IoStarOutline, IoStar } from 'react-icons/io5';
 import { ProductRating } from './ProductRating';
-// import ImageSliderWithThumbnails from './ImageSliderWithThumbnails';
 import {
   EmailShareButton,
   FacebookShareButton,
@@ -57,6 +54,7 @@ import { useSelector } from 'react-redux';
 import { calculateDiscountPrice } from '../../utils/calculateDiscountPrice';
 import { useWebSize } from '../../provider.websize';
 import { BottomBar } from '../../components/BottomBar';
+
 
 function truncateDescription(description, maxLength) {
   if (description?.length <= maxLength) {
@@ -157,18 +155,7 @@ const Product = () => {
 
   console.log(data);
 
-  function formatPriceToIDR(price) {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-    }).format(price);
-  }
-
-  
-  console.log("ini test category", data?.Product?.ProductCategories[0]?.id);
-
-  console.log(data);
-  
+  function formatPriceToIDR(price) {return new Intl.NumberFormat('id-ID', {style: 'currency',currency: 'IDR',}).format(price);}
 
   const toast = useToast();
 
@@ -250,7 +237,6 @@ const Product = () => {
         top={0}
         bgColor='white'
         zIndex={99}
-        // top={{ base: '20px', lg: '-30px' }}
         px={'20px'}
         h={"10vh"}
         justify={"space-between"}
@@ -260,8 +246,6 @@ const Product = () => {
         <ResizeButton color={"black"}/>
       </Flex>
     <HStack mb='10px' p={4} >
-        {/* <IconChevronLeft />
-        <Text textAlign='left' fontWeight='bold'>Product Name</Text> */}
         <Button backgroundColor='#f5f5f5' leftIcon={<IconChevronLeft />}>Kembali</Button>
     </HStack>
     <Flex alignItems="flex-start" pl={size == '500px' ? '0px' : '20px'} pr={size == '500px' ? '0px' : '20px'}  flexDirection={size == '500px' ? 'column' : 'row'} h={"full"}>
@@ -398,7 +382,7 @@ const Product = () => {
       </WhatsappShareButton>
 
       {/* Add your custom copy link button */}
-      <IconButton borderRadius='full' boxSize='32px' icon={<IconLink />} onClick={() => navigator.clipboard.writeText(window.location.href)} />
+      <IconButton borderRadius='full' boxSize='32px' icon={<IconLink />} onClick={() => {navigator.clipboard.writeText(window.location.href); toast({ title: 'Link Copied', status: 'success', duration: 3000, isClosable: true, });}} />
             </Flex>
         </Box>
         
@@ -620,7 +604,7 @@ const Product = () => {
     <Box mt='10px'>
     <Text pl='20px' pb='10px' fontWeight='bold' >Produk kategori serupa</Text>
     <Box w='100%' pt='5px' pb='5px' style={{ msOverflowStyle: 'none' }} css={{ scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none', }, }} overflowX='auto'>
-     <ProductRelated store={data?.result?.Product?.ProductCategories[0]?.id} category={data?.result?.Product?.ProductCategories[0]?.id} />
+     <ProductRelated productId={Number(id)} category={data?.result?.Product?.ProductCategories[0]?.id} />
         </Box>
         </Box>
     </Box>

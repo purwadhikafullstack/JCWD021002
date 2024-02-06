@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+import React from 'react';
 import {
   Box,
   Button,
@@ -13,6 +14,7 @@ import { DrawerShippingMethode } from './drawer.shippingMethode';
 import { IoIosArrowForward } from 'react-icons/io';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { calculateDiscountPrice } from '../../utils/calculateDiscountPrice';
 
 export const ListProductOrder = ({
   orderDetail,
@@ -81,6 +83,8 @@ export const ListProductOrder = ({
     return `${formattedNormal} - ${formattedExpress}`;
   };
 
+  console.log("ini order detail", orderDetail);
+
 
   return (
     <Flex direction={'column'}>
@@ -108,10 +112,23 @@ export const ListProductOrder = ({
                   <Text>{item?.ProductStock?.Product?.name}</Text>
                   <Text fontWeight="semibold">
                     {item?.quantity} x{' '}
-                    {angkaRupiahJs(item?.ProductStock?.Product?.price, {
+                    {calculateDiscountPrice(item?.ProductStock?.Product?.price) ? angkaRupiahJs((calculateDiscountPrice(item?.ProductStock?.Product?.price, item?.ProductStock?.Discounts, item?.quantity)), {
                       formal: false,
-                    })}
+                    }) : null}
                   </Text>
+                  {item?.ProductStock?.Discounts.map((discount, index) => (
+                      <React.Fragment key={index}>
+                        {discount?.distributionId === 1 && (
+                        <>
+                          {discount?.DiscountType?.id === 4 && discount?.discountValue && ` (${discount.discountValue}% Off)`}
+                          {discount?.DiscountType?.id === 4 && discount?.discountNom && ` (${angkaRupiahJs(discount?.discountNom, {formal: false,})} Off)`}
+                          {discount?.DiscountType?.id === 5 && ` (Minimum Purchase) - ${discount?.discountValue}% Off`}
+                          {discount?.DiscountType?.id === 6 && ` (Beli ${discount?.buy_quantity} Gratis ${discount?.get_quantity})`}
+                          {index < item?.ProductStock?.Discounts?.length - 1 && ', '}
+                        </>
+                      )}
+                      </React.Fragment>
+                    ))}
                 </Box>
               </Flex>
             </>
