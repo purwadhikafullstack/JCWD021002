@@ -34,7 +34,6 @@ import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useWebSize } from '../../provider.websize';
-import { useLocation } from 'react-router-dom';
 import { VoucherPage } from '../Voucher/Voucher';
 import { useDispatch } from 'react-redux';
 import { setAddress } from '../../redux/reducer/addressReducer';

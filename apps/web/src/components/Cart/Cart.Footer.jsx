@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Button, Checkbox, Flex, Text, useToast } from '@chakra-ui/react';
 import angkaRupiahJs from '@develoka/angka-rupiah-js';
 import axios from 'axios';
@@ -32,8 +33,8 @@ export const CartFooter = ({
         (cart) => cart.productStock_idproductStock === productStockId
       );
 
-          if (item && item.price && quantities[cartDetailId]) {
-            return total + calculateDiscountPrice(item?.price, item?.ProductStock?.Discounts) * quantities[cartDetailId];
+          if (item && item.price && quantities[productStockId]) {
+            return total + calculateDiscountPrice(item?.price, item?.ProductStock?.Discounts) * quantities[productStockId];
           }
 
       return total;

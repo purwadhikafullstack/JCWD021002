@@ -32,6 +32,17 @@ const changePasswordSchema = Yup.object().shape({
       'Password must contain at least one uppercase letter and one number',
     )
     .required('password is required'),
+  newPassword: Yup.string()
+    .min(8, 'Password must be at least 8 characters')
+    .matches(
+      /^(?=.*[A-Z])(?=.*\d)/,
+      'Password must contain at least one uppercase letter and one number',
+    )
+    .required('password is required')
+    .notOneOf([Yup.ref('password'), null], 'New password must be different from the previous password'),
+  confirmPassword: Yup.string()
+    .required('Confirm Password is required')
+    .oneOf([Yup.ref('newPassword'), null], 'Passwords must match'),
 });
 
 export const ChangePassword = () => {
@@ -46,13 +57,14 @@ export const ChangePassword = () => {
 
   const userId = useSelector((state) => state.AuthReducer.user.id);
 
-  const changePassword = async (password, newPassword) => {
+  const changePassword = async (password, newPassword, confirmPassword) => {
     try {
       await axios.patch(
         `${import.meta.env.VITE_API_URL}/auth/change-password/${userId}`,
         {
           password,
           newPassword,
+          confirmPassword
         },
       );
       toast.success('Ganti Password Berhasil');
@@ -66,15 +78,20 @@ export const ChangePassword = () => {
     initialValues: {
       password: '',
       newPassword: '',
+      confirmPassword: ''
     },
     validationSchema: changePasswordSchema,
     onSubmit: async (values) => {
-      await changePassword(values.password, values.newPassword);
+      await changePassword(values.password, values.newPassword, values.confirmPassword);
     },
   });
 
   return (
-    <Flex direction={'column'} w={{ base: '100vw', md: size }} bgColor={"white"}>
+    <Flex
+      direction={'column'}
+      w={{ base: '100vw', md: size }}
+      bgColor={'white'}
+    >
       <form onSubmit={formik.handleSubmit}>
         <Flex
           align={'center'}
@@ -164,6 +181,33 @@ export const ChangePassword = () => {
                 {formik.errors.newPassword}
               </FormErrorMessage>
             )}
+          </FormControl>
+          {/* New Password */}
+          <FormControl
+            isInvalid={
+              formik.touched.confirmPassword && formik.errors.confirmPassword
+            }
+          >
+            <FormLabel>Confirm password</FormLabel>
+            <InputGroup>
+              <InputLeftElement>
+                <CiLock />
+              </InputLeftElement>
+              <Input
+                placeholder="Masukkan ulang password baru"
+                type={'password'}
+                bgColor={'#F3F4F6FF'}
+                name="confirmPassword"
+                value={formik.values.confirmPassword}
+                onChange={formik.handleChange}
+              />
+            </InputGroup>
+            {formik.touched.confirmPassword &&
+              formik.errors.confirmPassword && (
+                <FormErrorMessage position={'absolute'}>
+                  {formik.errors.confirmPassword}
+                </FormErrorMessage>
+              )}
           </FormControl>
         </Flex>
       </form>
