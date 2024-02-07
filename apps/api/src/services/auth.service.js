@@ -4,7 +4,7 @@ const {
   getUserLoginQuery,
   findUserQuery
 } = require('../queries/user.query');
-const { registerQuery, setPasswordQuery, keepLoginQuery, changePasswordQuery, updateProfileQuery, verifyQuery, resetPasswordQuery, checkTokenQuery } = require('../queries/auth.query');
+const { registerQuery, setPasswordQuery, keepLoginQuery, changePasswordQuery, updateProfileQuery, verifyQuery, resetPasswordQuery, checkTokenQuery, changeEmailQuery } = require('../queries/auth.query');
 const short = require('short-uuid');
 import bcrypt from 'bcrypt';
 import transporter from '../utils/transporter';
@@ -286,8 +286,11 @@ export const keepLoginService = async (id) => {
   }
 };
 
-export const changePasswordService = async (id, password, newPassword) => {
+export const changePasswordService = async (id, password, newPassword, confirmPassword) => {
   try {
+    if (newPassword == password) throw new Error("New password must be different from the previous password")
+    if (confirmPassword !== newPassword) throw new Error("Passwords must match")
+
     const check = await getUserRegisterQuery({ id })
 
     if (check.status !== "Active") throw new Error("Maaf email ini belum terdaftar")
@@ -325,9 +328,24 @@ export const changeEmailVerifyService = async (id, password) => {
 }
 export const changeEmailService = async (id, newEmail) => {
   try {
-    const check = await getUserRegisterQuery({ id })
-    const setPasswordLink = `${process.env.WEB_BASE_URL}/password?resetToken=${check.resetToken}`;
-    sentMail(newEmail, "changeEmailVerification.html", setPasswordLink)
+    // const check = await getUserRegisterQuery({ id })
+    const secretKey = process.env.JWT_SECRET_KEY;
+    if (!secretKey) {
+      throw new Error('JWT_SECRET_KEY is not set in the environment');
+    }
+    
+    const resetToken = jwt.sign({ newEmail }, secretKey, { expiresIn: '1hr' });
+    const setPasswordLink = `${process.env.WEB_BASE_URL}/password?resetToken=${resetToken}`;
+    
+    console.log('halo')
+    const template = 'changeEmailVerification.html'
+
+    sentMail(newEmail, template, setPasswordLink)
+
+    const res = await changeEmailQuery(id, newEmail, resetToken)
+
+    console.log(res)
+
   } catch (err) {
     throw err
   }

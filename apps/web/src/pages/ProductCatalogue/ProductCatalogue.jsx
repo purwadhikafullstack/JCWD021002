@@ -13,6 +13,7 @@ import { useWebSize } from '../../provider.websize';
 import { PaginationControls } from '../../components/PaginationControls/PaginationControls';
 import { CardProductStock } from './CardProductStock';
 import { useSelector } from 'react-redux';
+import CartLoading from '../../components/Loaders/CartLoading';
 
 function ProductCatalogue() {
   const {size, handleWebSize } = useWebSize();
@@ -28,39 +29,26 @@ function ProductCatalogue() {
   const [selectedPage, setSelectedPage] = useState(page);
   const [searchParams, setSearchParams] = useSearchParams({ page, pageSize });
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [storeId, setStoreId] = useState();
-  const cityId = useSelector((state) => state.AuthReducer.location?.id);
-
-  const getStoreList = async (cityId) => {
-    try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/user/store-lists?cityId=${cityId}`,
-      );
-      setStoreId(res?.data[0].id);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
+  const coordinat = useSelector((state) => state.addressReducer?.address);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const fetchData = async () => {
-    try {
+    try { setLoading(true);
       if ((productName.trim() !== '') || (categoryId !== undefined && String(categoryId).trim() !== '')) {
         const response = await axios.get(
-      
-      `${import.meta.env.VITE_API_URL}/products/product-lists?page=${page}&pageSize=${pageSize}&sortField=${sortField}&sortOrder=${sortOrder}&categoryId=${categoryId}&productName=${productName}&storeId=${storeId}&statusProduct=1&statusStock=1`
+      `${import.meta.env.VITE_API_URL}/store?page=${page}&pageSize=${pageSize}&sortField=${sortField}&sortOrder=${sortOrder}&categoryId=${categoryId}&productName=${productName}&statusProduct=1&statusStock=1&latitude=${coordinat?.latitude}&longitude=${coordinat?.longitude}`
         );
-        setData(response?.data);
+        setData(response?.data?.data);
       }
-      
   } catch (err) {
       console.log(err);
-  }
+  } finally { setLoading(false); }
   }
 
 
   useEffect(() => {
     setSearchParams({ page, pageSize, productName, categoryId });
-  }, [page, pageSize, productName, categoryId]);
+  }, [page, pageSize, productName, categoryId,]);
   
 
   useEffect(() => {
@@ -76,9 +64,8 @@ function ProductCatalogue() {
   }, []);
 
   useEffect(() => {
-    getStoreList(cityId)
     fetchData();
-  }, [page, pageSize, sortField, sortOrder, categoryId, productName, storeId, cityId, ]);
+  }, [page, pageSize, sortField, sortOrder, categoryId, productName, coordinat]);
 
   const fetchCategory = async () => {
     try {
@@ -121,7 +108,7 @@ useEffect(() => {
                     </InputGroup>
                             </Box>
                             <Box>
-                                <IconButton height='30px' icon={<IconShoppingCartFilled />} backgroundColor='#fcfdde' />
+                                <IconButton height='30px' icon={<IconShoppingCartFilled />} backgroundColor='#fcfdde' onClick={() => navigate('/cart')} />
                             </Box>
                             </Flex>
                 <Flex width='100%' bgGradient='linear(to-r, #f2ffed, #fcfdde)'>
@@ -147,6 +134,7 @@ useEffect(() => {
             </Flex>
             </Box>
             <Box  p={size == '500px' ? 0 : 5} pt='5'>
+            {loading == true ? <VStack><CartLoading /></VStack> : null}
               <CardProductStock data={data} />
           <Box m='5'><PaginationControls 
               page= {page}

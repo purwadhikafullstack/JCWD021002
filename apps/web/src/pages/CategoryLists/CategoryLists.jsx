@@ -139,7 +139,7 @@ const CategoryLists = () => {
       <SideBar size={size} handleWebSize={handleWebSize} />
       <Box w={{ base: '98.7vw', md: size }} height='fit-content' backgroundColor='#fbfaf9'>
       <Box p='50px'>
-        <Box pl={size == '500px' ? '0px' : '150px' } >
+        <Box pl={size == '500px' ? '0px' : '150px' } mt='80px' >
           <HStack mb='10px'>
             <Button leftIcon={<IconPlus />} backgroundColor='#286043' textColor='white' border='solid 1px #286043' onClick={onOpen}>Add Category</Button>
             <Spacer /> 

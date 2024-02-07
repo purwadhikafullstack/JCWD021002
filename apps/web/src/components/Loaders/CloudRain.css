@@ -1,0 +1,198 @@
+body {
+    background: #00416a;
+  }
+  
+  .container {
+    width: 500px;
+    height: 500px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -250px;
+    margin-left: -250px;
+  }
+  
+  #cloud {
+    width: 175px;
+    height: 60px;
+    background: #ccc; /* Set a base grey color */
+    background-image: linear-gradient(to bottom, #ccc 5%, #999 100%); /* Grey gradient */
+    position: relative;
+    margin: 120px auto 20px;
+    border-radius: 50px;
+    animation: mover 3.5s infinite alternate;
+  }
+  
+  #cloud:after,
+  div#cloud:before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    background: #ccc; /* Set a base grey color */
+  }
+  
+  #cloud:after {
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
+    top: -25px;
+    left: 25px;
+  }
+  
+  #cloud:before {
+    width: 90px;
+    height: 90px;
+    border-radius: 100px;
+    top: -45px;
+    right: 25px;
+  }
+  
+  .shadow {
+    width: 175px;
+    position: absolute;
+    bottom: -80px;
+    background: black;
+    z-index: -1;
+    border-radius: 50%;
+    box-shadow: 0px 0px 25px 8px rgba(0, 0, 0, 0.4);
+  }
+  
+  /* ... (other styles remain unchanged) */
+  
+
+.rain {
+  position : absolute;
+  height : 80%;
+  width : 100%;
+  color: #002266;
+}
+
+.drop {
+    position: absolute;
+    background: linear-gradient(#241c97, #7f7ebd);
+    opacity: 2;
+    top: 25px;
+  }
+  
+  /* Adjust the width and height to make the raindrops slightly larger */
+  .drop {
+    width: 100%; /* Adjust the width */
+    height: 100%; /* Adjust the height */
+  }
+
+.d1 {
+  left : 97%;
+  width : 1%;
+  height : 5%;
+  animation : fall .94s linear 0.69s infinite;
+}
+
+.d2 {
+  left : 18%;
+  width : 1%;
+  height : 5%;
+  animation : fall .98s linear 0.57s infinite;
+}
+.d3 {
+  left : 38%;
+  width : 1%;
+  height : 5%;
+  animation : fall .66s linear .60s infinite;
+}
+
+.d4 {
+  left : 64%;
+  width : 1%;
+  height : 5%;
+  animation : fall .69s linear .76s infinite;
+}
+
+.d5 {
+  left : 95%;
+  width : 1%;
+  height : 5%;
+  animation : fall .75s linear .56s infinite;
+}
+
+.d6 {
+  left : 65%;
+  width : 1%;
+  height : 5%;
+  animation : fall .75s linear .92s infinite;
+}
+
+.d7 {
+  left : 19%;
+  width : 1%;
+  height : 5%;
+  animation : fall .92s linear .72s infinite;
+}
+
+.d8 {
+  left : 55%;
+  width : 1%;
+  height : 5%;
+  animation : fall .84s linear .99s infinite;
+}
+
+.d9 {
+  left : 35%;
+  width : 1%;
+  height : 5%;
+  animation : fall .79s linear .53s infinite;
+}
+
+.d10 {
+  left : 83%;
+  width : 1%;
+  height : 5%;
+  animation : fall .82s linear .97s infinite;
+}
+
+.d11 {
+  left : 8%;
+  width : 1%;
+  height : 5%;
+  animation : fall .75s linear .56s infinite;
+}
+
+.d12 {
+  left : 1%;
+  width : 1%;
+  height : 5%;
+  animation : fall .60s linear .59s infinite;
+}
+
+.d13 {
+  left : 13%;
+  width : 1%;
+  height : 5%;
+  animation : fall .5s linear .5s infinite;
+}
+
+.d14 {
+  left : 13%;
+  width : 1%;
+  height : 5%;
+  animation : fall .80s linear .63s infinite;
+}
+
+.d15 {
+  left : 13%;
+  width : 1%;
+  height : 5%;
+  animation : fall .68s linear .75s infinite;
+}
+
+@-webkit-keyframes fall {
+	to {margin-top:150px; opacity:0;}
+}
+@keyframes fall {
+	to {margin-top:150px; opacity:0;}
+}
+
+@-webkit-keyframes mover {
+    0% { transform: translateY(1rem); }
+    100% { transform: translateY(2.6rem); }
+}
+	

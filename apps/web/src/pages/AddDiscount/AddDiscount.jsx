@@ -24,10 +24,8 @@ const AddDiscount = () => {
   const [data, setData] = useState([]);
   const [fieldImage, setFieldImage] = useState(null);
   const [selectedImage, setSelectedImage] = useState('');
-  const [selectedC, setSelectedC] = useState([]);
   const navigate = useNavigate();
   const [dataStore, setDataStore] = useState([]);
-
   const [type, setType] = useState();
   const [discValue, setDiscValue] = useState();
   const [usageType, setUsageType] = useState();
@@ -46,13 +44,6 @@ const AddDiscount = () => {
   const [productName, setProductName] = useState('');
   const [productId, setProductId] = useState();
   const token = localStorage.getItem("token");
-
-
-
-
-
-
-  console.log("ini type", type);
   const [storeId, setStoreId] = useState();
 
   const fetchData = async () => {
@@ -150,28 +141,34 @@ const AddDiscount = () => {
   };
 
   const handleReset = () => {
+    console.log("Before reset:", { type, discValue, percent, nominal, minNom, buy, get });
+
   setType(0);
   setDiscValue(0);
   setPercent(0);
   setNominal(0);
+  setUsageType(0)
   setMinNom(undefined);
   setGet(undefined);
   setBuy(undefined);
   setMax(undefined);
   setReferral(undefined);
+  
+  console.log("After reset:", { type, discValue, percent, nominal, minNom, buy, get });
+
   }
 
   console.log(data);
+  console.log("ini referral", referral, usageType);
 
   return (
     <>
-      {/* <SidebarWithHeader /> */}
       <Box w={{ base: '100vw', md: size }}>
           <SideBar size={size} handleWebSize={handleWebSize}/>
       <ToastContainer position="top-center" closeOnClick pauseOnFocusLoss draggable pauseOnHover theme="colored" />
       <Box w={{ base: '98.7vw', md: size }} overflowX='hidden' height='100vh' backgroundColor='#fbfaf9' p='20px'>
       
-      <Box pl={size == '500px' ? '0px' : '150px' } pr={size == '500px' ? '0px' : '20px'} pt='20px' pb='20px'>
+      <Box pl={size == '500px' ? '0px' : '150px' } pr={size == '500px' ? '0px' : '20px'} pt='20px' pb='20px' mt='70px' >
         <HStack mb='10px'>
           <Button leftIcon={<IconArrowLeft />} borderRadius='full' backgroundColor='white' textColor='black' border='solid 1px black' onClick={() => navigate('/discount-lists')}>Back</Button>
           <Spacer />
@@ -304,8 +301,13 @@ const AddDiscount = () => {
                 <Input mb='20px' isDisabled={distribution == 2 ? false : true} placeholder= 'Ex. 250' name='max' width={size == '500px' ? '100%' : '50%'} value={max} onChange={(e) => setMax(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
               
                 <Text fontSize='large' fontWeight='bold'>Referral Code</Text>
-                <Input mb='20px' isDisabled={distribution == 2 ? false : true} placeholder= 'Ex. GROCERIAANNIV1' name='name' width={size == '500px' ? '100%' : '50%'} value={referral} onChange={(e) => setReferral(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
-              
+                {/* <Input mb='20px'  placeholder= 'Ex. GROCERIAANNIV1' name='name' width={size == '500px' ? '100%' : '50%'} value={referral} onChange={(e) => setReferral(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' /> */}
+                <RadioGroup mb='20px' isDisabled={distribution == 2 ? false : true} value={referral} onChange={(value) => { handleReset(); setReferral(Number(value)); }}>
+                  <Stack spacing={4} direction='row' display='flex' flexWrap='wrap'>
+                      <Radio value={1}>Yes</Radio>
+                      <Radio value={0}>No</Radio>
+                  </Stack>
+                </RadioGroup>
 
             <Flex columnGap='10px' mb='20px ' flexDir={size == '500px' ? 'column' : 'row'}>
               <Box width='100%'>

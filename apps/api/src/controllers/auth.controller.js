@@ -109,9 +109,9 @@ export const keepLoginController = async (req, res) => {
 export const changePasswordController = async (req, res) => {
   try {
     const { id } = req.params;
-    const { password, newPassword } = req.body
+    const { password, newPassword, confirmPassword } = req.body
 
-    const result = await changePasswordService(id, password, newPassword)
+    const result = await changePasswordService(id, password, newPassword, confirmPassword)
 
     return res.status(200).json({
       message: 'Change Password Success',

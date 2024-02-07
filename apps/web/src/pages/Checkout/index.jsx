@@ -34,7 +34,6 @@ import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useWebSize } from '../../provider.websize';
-import { useLocation } from 'react-router-dom';
 import { VoucherPage } from '../Voucher/Voucher';
 import { useDispatch } from 'react-redux';
 import { setAddress } from '../../redux/reducer/addressReducer';
@@ -56,6 +55,7 @@ export const Checkout = () => {
   const address = useSelector((state) => state.addressReducer?.address);
   const dispatch = useDispatch();
   const [selectedShipping, setSelectedshipping] = useState();
+  const [userAddress, setUserAddress] = useState();
 
   const location = useLocation();
   const isCartShipment = location.pathname === '/cart/shipment';
@@ -384,8 +384,8 @@ export const Checkout = () => {
             <Flex flexDirection="column" background="white" color="gray.600">
               <Text fontSize="sm">Subtotal Untuk Produk (10 Barang)</Text>
               <Text fontSize="sm">Subtotal Untuk Pengiriman</Text>
-              <Text fontSize="sm">Total Diskon Untuk Pengiriman</Text>
-              <Text fontSize="sm">Voucher Diskon</Text>
+              <Text fontSize="sm">Voucher Diskon Untuk Pengiriman</Text>
+              <Text fontSize="sm">Voucher Diskon Untuk Produk</Text>
             </Flex>
             <Flex
               flexDirection="column"
@@ -394,7 +394,7 @@ export const Checkout = () => {
               color="gray.600"
             >
               <Text fontSize="sm">
-                {angkaRupiahJs(1000000, { formal: false })}
+              { order?.totalAmount ? angkaRupiahJs(order?.totalAmount, { formal: false }) : angkaRupiahJs(0, { formal: false }) }
               </Text>
               <Text fontSize="sm">
                 {selectedShipping && angkaRupiahJs(selectedShipping?.cost[0]?.value, {
@@ -402,7 +402,10 @@ export const Checkout = () => {
                 })}
               </Text>
               <Text fontSize="sm">
-                - {angkaRupiahJs(24000, { formal: false })}
+                 { order?.totalShipping ? angkaRupiahJs(order?.totalShipping, { formal: false }) : angkaRupiahJs(0, { formal: false }) }
+              </Text>
+              <Text fontSize="sm">
+                - { order?.totalShippingDiscount ? angkaRupiahJs(order?.totalShippingDiscount, { formal: false }) : angkaRupiahJs(0, { formal: false }) }
               </Text>
               <Text fontSize="sm">
                 - { order?.totalDiscount ? angkaRupiahJs(order?.totalDiscount, { formal: false }) : angkaRupiahJs(0, { formal: false }) }
