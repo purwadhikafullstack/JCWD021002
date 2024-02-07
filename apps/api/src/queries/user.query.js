@@ -29,17 +29,17 @@ const getUserRegisterQuery = async ({
   }
 };
 
-const getUserQuery = async (page, pageSize, sortOrder, username, roleId) => {
+const getUserQuery = async (page, pageSize, roleId, username) => {
   try {
     const offset = (page - 1) * (pageSize || 0);
 
     const whereConditions = {};
-
+console.log("ini role id", roleId)
     if (roleId > 1) {
       whereConditions.role_idrole = roleId;
     } else {
       whereConditions.role_idrole = {
-        [Op.notIn]: [1] // Exclude role_idrole = 1 (assuming 1 is admin role)
+        [Op.notIn]: [1] 
       };
     }
 

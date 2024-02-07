@@ -233,7 +233,7 @@ console.log(data);
                 <>
                 
                 <Card key={item.id} w='450px' minHeight='250px' maxHeight='270px' bg={useColorModeValue('white', 'gray.800')}
-            boxShadow='0px 1px 5px gray' border={item?.status == 1 ? 'solid 2px green' : 'solid 2px red'} onClick={() => navigate(`/product-detail-admin/${item?.id}`)} _hover={{ cursor: 'pointer' }}>
+            boxShadow='0px 1px 5px gray' border={item?.status == 1 ? 'solid 2px green' : 'solid 2px red'} onClick={() => navigate(`/discount-detail/${item?.id}`)} _hover={{ cursor: 'pointer' }}>
               <Image
                       key={item?.banner}
                       src={item?.banner ? `http://localhost:8000/uploads/discounts/${item?.banner}` : (LogoGroceria)}
@@ -246,7 +246,7 @@ console.log(data);
                     />
                   <CardBody>
                     <Stack mt='-3' spacing='0'>
-                    <Flex justifyContent='center' flexDirection='row' zIndex='99' bgColor='white' w='fit-content' pl='2px' pr='5px' ml='-20px' borderRadius='10px' mt='-30px' flexWrap='wrap'>
+                    <Flex justifyContent='center' flexDirection='row' zIndex='2' bgColor='white' w='fit-content' pl='2px' pr='5px' ml='-20px' borderRadius='10px' mt='-30px' flexWrap='wrap'>
                           <Text  color={item?.status == 1 ? "green" : "red"}>{item?.status == 1 ? (<IconCircleCheckFilled />) : (<IconCircleXFilled />)}</Text>
                           <Text color={item?.status == 1 ? 'green' : 'red'} fontWeight='bold'>
                           {item?.status == 1 ? 'Active' : 'Deactive'}

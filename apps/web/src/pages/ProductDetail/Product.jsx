@@ -20,9 +20,11 @@ import { Text, Box, HStack, Image, Flex, Button, Spacer, VStack, Stack, Textarea
   DrawerContent,
   DrawerCloseButton,
   Divider,
-  Icon,
+  Input,
+  InputGroup,
+  InputLeftElement,
 } from '@chakra-ui/react';
-import { IconChevronLeft, IconLink, IconStarFilled } from '@tabler/icons-react';
+import { IconChevronRight, IconLink, IconSearch, IconShoppingCartFilled, IconStarFilled } from '@tabler/icons-react';
 import { CiShoppingCart } from 'react-icons/ci';
 import { BsCartPlus } from 'react-icons/bs';
 import { HiOutlineShoppingCart } from 'react-icons/hi2';
@@ -54,6 +56,7 @@ import { useSelector } from 'react-redux';
 import { calculateDiscountPrice } from '../../utils/calculateDiscountPrice';
 import { useWebSize } from '../../provider.websize';
 import { BottomBar } from '../../components/BottomBar';
+import { Footer } from '../home/home.footer';
 
 
 function truncateDescription(description, maxLength) {
@@ -71,6 +74,7 @@ const Product = () => {
   const [data, setData] = useState([]);
   const [showFullDescription, setShowFullDescription] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const navigate = useNavigate();
   const [mainSlider, setMainSlider] = useState(null);
   const [thumbnailSlider, setThumbnailSlider] = useState(null);
   const [mainSliderIndex, setMainSliderIndex] = useState();
@@ -111,7 +115,9 @@ const Product = () => {
   };
 
   const handleIncrement = () => {
-    setQuantity(quantity + 1);
+    if (quantity < data?.result?.stock) {
+      setQuantity(quantity + 1);
+    }
   };
 
   const handleDecrement = () => {
@@ -215,6 +221,8 @@ const Product = () => {
     });
   };
 
+  console.log(data);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
@@ -235,7 +243,7 @@ const Product = () => {
 
         position={'sticky'}
         top={0}
-        bgColor='white'
+        bgGradient='linear(to-r, #f2ffed, #fcfdde)'
         zIndex={99}
         px={'20px'}
         h={"10vh"}
@@ -243,11 +251,35 @@ const Product = () => {
         align={"center"}
       >
         <Image src={LogoGroceria} h={'30px'} />
+        <Flex bgGradient='linear(to-r, #f2ffed, #fcfdde)' dir='row' gap='10px'>
+                {/* <Button height='30px' bgGradient='linear(to-r, #f2ffed, #fcfdde)' leftIcon={<IconChevronLeft />}></Button> */}
+                            <Box w='fit-content'>
+                            <InputGroup >
+                        <InputLeftElement height='30px' pointerEvents='none'>
+                        <IconSearch width='30px' color='black' />
+                        </InputLeftElement>
+                        <Input onClick={() => window.open("/product-search", "_blank")} size='sm' type='text' backgroundColor='white' placeholder='Cari beragam kebutuhan harian' width={size == '500px' ? '170px' : '70vw'} borderRadius='full' />
+                    </InputGroup>
+                            </Box>
+                            <Box>
+                                <IconButton height='30px' icon={<IconShoppingCartFilled />} backgroundColor='#fcfdde' onClick={() => {isLogin ? navigate('/cart') : navigate('/login')}} />
+                            </Box>
+
+                            </Flex>
         <ResizeButton color={"black"}/>
       </Flex>
-    <HStack mb='10px' p={4} >
-        <Button backgroundColor='#f5f5f5' leftIcon={<IconChevronLeft />}>Kembali</Button>
-    </HStack>
+    <Flex flexDirection='row' overflowX='auto' ml='20px' mr='20px' mt='20px' mb='10px' p={4} borderRadius='full' fontSize='small' boxShadow="0px 0px 2px gray" bgColor='white' >
+        {/* <Button backgroundColor='#f5f5f5' leftIcon={<IconChevronLeft />}>Kembali</Button> */}
+        <Link to="/">
+    <Text color='#00c689' fontWeight='bold' >Home</Text>
+  </Link>
+  <IconChevronRight />
+  {data?.result?.Product?.ProductCategories?.map((item) => (
+              <Text color='#00c689' fontWeight='bold' >{item?.category},</Text>
+        ))}
+  <IconChevronRight />
+  <Text color='#00c689' fontWeight='bold' >{data?.result?.Product?.name}</Text>
+    </Flex>
     <Flex alignItems="flex-start" pl={size == '500px' ? '0px' : '20px'} pr={size == '500px' ? '0px' : '20px'}  flexDirection={size == '500px' ? 'column' : 'row'} h={"full"}>
       <VStack mt='20px' width={size == '500px' ? '100%' : '30vw'} position={size == '500px' ? 'relative' : 'sticky'} top={size == '500px' ? '0px' : '110px'} >
     <Box width={size == '500px' ? '80%' : '30vw'} justifyContent='center'>
@@ -423,6 +455,7 @@ const Product = () => {
                     background="green.700"
                     color="white"
                     icon={<FiPlus />}
+                    isDisabled={quantity > data?.result?.stock}
                   />
                 </HStack>
                 <Text ml="40px" fontWeight="bold">
@@ -607,6 +640,7 @@ const Product = () => {
      <ProductRelated productId={Number(id)} category={data?.result?.Product?.ProductCategories[0]?.id} />
         </Box>
         </Box>
+        <Footer />
     </Box>
   );
 }

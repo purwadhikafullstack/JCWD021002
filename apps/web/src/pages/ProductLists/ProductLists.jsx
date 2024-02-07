@@ -4,7 +4,7 @@ import Slider from 'react-slick';
 import reactLogo from '../../assets/react.svg';
 import viteLogo from '/vite.svg';
 import { Text, Box, HStack, Image, Flex, Button, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useDisclosure, Select, Stack, Card, Divider, CardFooter, ButtonGroup, useColorModeValue, CardBody, Heading, InputGroup, InputLeftElement, Spacer, IconButton } from '@chakra-ui/react';
-import { IconChevronLeft, IconCircleXFilled, IconCirclePlus, IconTrashXFilled, IconSquareRoundedPlusFilled, IconPlus } from '@tabler/icons-react';
+import { IconChevronLeft, IconCircleXFilled, IconCirclePlus, IconTrashXFilled, IconSquareRoundedPlusFilled, IconPlus, IconProgressCheck } from '@tabler/icons-react';
 import { IconSearch, IconAdjustmentsHorizontal, IconChevronRight, IconEditCircle, IconTrashX, IconInfoCircle, IconLayoutGrid, IconList, IconSortAscending2, IconSortDescending2, IconAbc, IconTags, IconCircleCheckFilled} from '@tabler/icons-react'
 import star from '../ProductDetail/star-svgrepo-com.svg';
 import { ResizeButton } from '../../components/ResizeButton';
@@ -18,6 +18,8 @@ import { useWebSize } from '../../provider.websize';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { PaginationControls } from '../../components/PaginationControls/PaginationControls';
+import { handleActivateProduct } from './services/serviceActivateProduct';
+import { handleDeleteProduct } from './services/serviceDeleteProduct';
 
 function ProductLists() {
 
@@ -31,6 +33,7 @@ function ProductLists() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [addToStockModalIsOpen, setAddToStockModalIsOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [activateModalOpen, setActivateModalOpen] = useState(false);
   const [sortField, setSortField] = useState("name");
   const [sortOrder, setSortOrder] = useState("asc")
   const [page, setPage] = useState();
@@ -52,24 +55,7 @@ function ProductLists() {
   console.log('ini categoryId',categoryId);
   console.log("data suer :", user);
 
-  const handleDeleteProductStock = async () => {
-    try {
-      // You can replace this URL with your actual API endpoint for adding stock
-      const response = await axios.patch(
-        `${import.meta.env.VITE_API_URL}/products/product-soft-delete/${selectedProduct?.id}`,
-        {headers: {
-          Authorization: `Bearer ${token}`,
-        }}
-      );
-      // Handle the response as needed
-      console.log(response);
-      setDeleteModalOpen(false);
-      fetchData(); // Close the modal after successful addition
-    } catch (error) {
-      console.error(error);
-      // Handle error as needed
-    }
-  };
+
 
   const handleAddToStock = async () => {
     try {
@@ -143,6 +129,7 @@ function ProductLists() {
     setSortField(order);
     // onClose();
   };
+  console.log(data)
 
   const handleProductName = (value) => {
     setProductName(value);
@@ -205,7 +192,7 @@ function formatPriceToIDR(price) {
     </HStack>
     <Box p={size == '500px' ? 0 : 5} pl={size == '500px' ? '0px' : '150px' } mt='80px' >
     <Flex dir='row' gap='10px' p={size == '500px' ? 6 : 0} mb='20px' flexWrap='wrap'>
-    <Button backgroundColor='#f5f5f5' leftIcon={<IconChevronLeft />}></Button>
+    {/* <Button backgroundColor='#f5f5f5' leftIcon={<IconChevronLeft />}></Button> */}
 
                 <Box w={size == '500px' ? '60%' : '70%'}>
                 <InputGroup >
@@ -252,7 +239,7 @@ function formatPriceToIDR(price) {
         </ModalContent>
       </Modal>
       <Flex flexDir='row' flexWrap='wrap' mb='10px'>
-            <Button ml={size == '500px' ? '20px' : '0px'} leftIcon={<IconPlus />} backgroundColor='#286043' textColor='white' border='solid 1px #286043' onClick={() => navigate('/add-product')}>Add Product</Button>
+            <Button ml={size == '500px' ? '20px' : '0px'} leftIcon={<IconPlus />} backgroundColor='#286043' textColor='white' border='solid 1px #286043' isDisabled={user?.role_idrole == 1 ? false : true} onClick={() => navigate('/add-product')}>Add Product</Button>
             <Spacer />
             
             </Flex>
@@ -294,7 +281,16 @@ function formatPriceToIDR(price) {
                       <Flex flexWrap='wrap' column='row' justifyContent='center'>
                             <IconButton  icon={<IconSquareRoundedPlusFilled />} isDisabled={item?.status == 0 ? true : false} variant='ghost' colorScheme='green' onClick={(event) => { setSelectedProduct(item); setAddToStockModalIsOpen(true); event.stopPropagation(); }} />
                             {user?.role_idrole == 1 ? <IconButton  icon={<IconEditCircle />} variant='ghost' colorScheme='blue' onClick={(event) => { navigate(`/edit-product/${item?.id}`); event.stopPropagation(); }} /> : (null) }
-                            {user?.role_idrole == 1 ? <IconButton  icon={<IconTrashXFilled />} variant='ghost' colorScheme='red' onClick={(event) => { setSelectedProduct(item); setDeleteModalOpen(true); event.stopPropagation(); }} /> : (null) }
+                            {user?.role_idrole == 1 ? (item?.status == 1 ? 
+                        <IconButton  icon={<IconTrashXFilled />} variant='ghost' colorScheme='red' onClick={(event) => { setSelectedProduct(item); setDeleteModalOpen(true); event.stopPropagation(); }} /> : 
+                      <IconButton
+                            icon={<IconProgressCheck />}
+                            variant="ghost"
+                            colorScheme="blue"
+                            onClick={(event) => {
+                              setSelectedProduct(item);
+                              setActivateModalOpen(true);
+                              event.stopPropagation();}} />) : (null) }
                       </Flex>
                       <Flex justifyContent='center' flexDirection='row' flexWrap='wrap'>
                           <Text  color={item?.status == 1 ? "green" : "red"}>{item?.status == 1 ? (<IconCircleCheckFilled />) : (<IconCircleXFilled />)}</Text>
@@ -385,8 +381,8 @@ function formatPriceToIDR(price) {
           <Text>Deactive this product from all store ?</Text>
         </ModalBody>
         <ModalFooter>
-          <Button isDisabled={selectedProduct?.status == true ? false : true } colorScheme="blue" mr={3} onClick={handleDeleteProductStock}>
-            {selectedProduct?.status == true ? 'Deactive Product' : 'Product was deactive'}
+          <Button isDisabled={selectedProduct?.status == true ? false : true } colorScheme="blue" mr={3} onClick={() => {handleDeleteProduct(selectedProduct, token ) .then(() => { setDeleteModalOpen(false); fetchData(); }) .catch((error) => { console.error('Error in handleEditToStock:', error);});} }>
+            Deactive Product
           </Button>
           <Button colorScheme="red" onClick={() => setDeleteModalOpen(false)}>
             Cancel
@@ -394,6 +390,26 @@ function formatPriceToIDR(price) {
         </ModalFooter>
         </ModalContent>
       </Modal>
+      <Modal isOpen={activateModalOpen} onClose={() => setActivateModalOpen(false)}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Activate Product</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <Text fontWeight="bold">Name Product</Text>
+                <Text>{selectedProduct.name}</Text>
+                <Text>Activate this product ?</Text>
+              </ModalBody>
+              <ModalFooter>
+                <Button colorScheme="blue" mr={3} onClick={() => {handleActivateProduct(selectedProduct, token ) .then(() => { setActivateModalOpen(false); fetchData(); }) .catch((error) => { console.error('Error in handleEditToStock:', error);});} }>
+                  Activate to Stock
+                </Button>
+                <Button colorScheme="red" onClick={() => setActivateModalOpen(false)}>
+                  Cancel
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
     </Box>
     </Box>
     </Box>

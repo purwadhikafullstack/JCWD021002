@@ -123,9 +123,9 @@ const getDetailProductController = async (req, res) => {
   const updateProductController = async (req, res) => {
     try {
         const {id, name, description, price, status, category, massProduct, massId, packagingId} = req.body;
-        const fileNames = req.files.map(file => file.filename);
+        const fileNames = req?.files?.map(file => file.filename);
         console.log("Uploaded Files:", fileNames);
-        console.log("ini di controller",id, status);
+        console.log("ini di controller",id, name, description, price, status, category, massProduct, massId, packagingId);
         await updateProductService(id, name, description, price, status, category, fileNames, massProduct, massId, packagingId)
         res.status(201).json({message: 'Product updated successfully'})
     } catch (err) {

@@ -390,7 +390,7 @@ const moment = require('moment');
         
               // Remove properties with null values
               Object.keys(updatedValue).forEach((key) => {
-                if (updatedValue[key] == null || updatedValue[key] == 'null' || updatedValue[key] == undefined ||  updatedValue[key] == undefined) {
+                if (updatedValue[key] == null || updatedValue[key] == 'null' || updatedValue[key] == undefined ||  updatedValue[key] == 'undefined' || updatedValue[key] == ' ' || updatedValue[key] == '') {
                   delete updatedValue[key];
                 }
               });

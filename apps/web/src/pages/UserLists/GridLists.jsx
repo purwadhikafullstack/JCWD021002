@@ -17,6 +17,7 @@ import {
 
   IconEditCircle,
     IconFlagStar,
+    IconProgressCheck,
   IconTrashX,
 } from '@tabler/icons-react';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
@@ -99,11 +100,6 @@ export const GridLists = ({ dataUser, handleDeleteUser, navigate }) => {
                         gap={'8px'}
                       >
                         <Flex alignItems={'center'} gap={'8px'}>
-                          <Icon
-                            as={FaStar}
-                            color={'#F2C139'}
-                            fontSize={'24px'}
-                          />
                           <Text fontSize={'14px'} fontWeight={'400'}>
                             {item?.username}
                           </Text>
@@ -129,19 +125,28 @@ export const GridLists = ({ dataUser, handleDeleteUser, navigate }) => {
                           </Text>
                         </Flex>
                         <Flex alignItems={'center'} gap={'8px'}>
-                          {/* <IconButton  icon={<IconInfoCircle />} variant='ghost' colorScheme='blue' onClick={() => navigate(`/detail-user/${item?.id}`)} /> */}
-                          <IconButton
-                            icon={<IconEditCircle />}
-                            variant="ghost"
-                            colorScheme="blue"
-                            onClick={() => navigate(`/edit-user/${item?.id}`)}
-                          />
-                          <IconButton
-                            icon={<IconTrashX />}
-                            variant="ghost"
-                            colorScheme="red"
-                            onClick={() => handleDeleteUser(item)}
-                          />
+                        <IconButton
+                      icon={<IconEditCircle />}
+                      variant="ghost"
+                      colorScheme="blue"
+                      onClick={() => navigate(`/edit-user/${item?.id}`)}
+                      isDisabled={item?.status === 'Active' ? false : true}
+                    />
+                    {item?.status === 'Active' ? (
+                      <IconButton
+                        icon={<IconTrashX />}
+                        variant="ghost"
+                        colorScheme="red"
+                        onClick={() => handleDeleteUser(item)}
+                      />
+                    ) : (
+                      <IconButton
+                        icon={<IconProgressCheck />}
+                        variant="ghost"
+                        colorScheme="blue"
+                        onClick={() => handleDeleteUser(item)}
+                      />
+                    )}
                         </Flex>
                       </Flex>
                     </Flex>

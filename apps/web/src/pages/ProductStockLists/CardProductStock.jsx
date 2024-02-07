@@ -23,7 +23,7 @@ export const CardProductStock = ({data, setSelectedProductStock, setStockAmount,
             justifyContent={size == '500px' ? 'center' : 'flex-start'}
           >
             {data?.products &&
-              data?.products.map((item, index) => (
+              data?.products?.map((item, index) => (
                 <>
                   <Card
                     key={item.id}
@@ -66,8 +66,11 @@ export const CardProductStock = ({data, setSelectedProductStock, setStockAmount,
                         <Text fontSize='xs' fontWeight='bold'>{item?.averageRating?.toFixed(1) || 0.0}/5.0 ({item?.totalReviews})</Text>
                         </Flex>
 
-                        <Text fontWeight="bold" color="orangered" mb="10px">
+                        <Text fontWeight="bold" color="orangered">
                           {toRupiah(item.price)}
+                        </Text>
+                        <Text fontWeight="bold" color="blue" mb="10px">
+                          Stock : {item?.ProductStocks[0]?.stock}
                         </Text>
                         <Flex
                           flexWrap="wrap"

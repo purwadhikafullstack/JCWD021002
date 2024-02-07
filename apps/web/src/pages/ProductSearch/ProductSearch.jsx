@@ -126,7 +126,7 @@ useEffect(() => {
   </Flex>
 )} 
             {loading == true ? <VStack><CartLoading /></VStack> : null}
-              <Flex flexWrap='wrap' justifyContent='center'><CardProductStock data={data} /></Flex>
+              <Flex flexWrap='wrap' justifyContent='center'>{loading == false ? <CardProductStock data={data} /> : null}</Flex>
           <Box m='5'><PaginationControls 
               page= {page}
               pageSize={pageSize}
