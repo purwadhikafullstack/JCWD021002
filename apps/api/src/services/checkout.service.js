@@ -13,6 +13,7 @@ import {
   updateOrderDetailsQuery,
   updateOrderTotalAmountQuery,
   getOrderQuery,
+  addTotalShippingQuery,
 } from '../queries/checkout.query';
 import { calculateDiscountPrice } from '../utils/calculateDiscountPrice';
 
@@ -161,5 +162,13 @@ export const shippingCostService = async (key, origin, destination, weight, cour
     return res.data
   } catch (err) {
     throw err
+  }
+}
+
+export const addTotalShippingService = async (shippingCost, orderId) => {
+  try {
+    return await addTotalShippingQuery(shippingCost, orderId);
+  } catch (err) {
+    throw err;
   }
 }

@@ -261,7 +261,7 @@ console.log(dataFilter);
                     />
                   <CardBody>
                     <Stack mt='-3' spacing='0'>
-                    <Flex justifyContent='center' flexDirection='row' zIndex='2' bgColor='white' w='fit-content' pl='2px' pr='5px' ml='-20px' borderRadius='10px' mt='-30px' flexWrap='wrap'>
+                    <Flex justifyContent='center' flexDirection='row' bgColor='white' w='fit-content' pl='2px' pr='5px' ml='-20px' borderRadius='10px' mt='-30px' flexWrap='wrap'>
                           <Text  color={item?.status == 1 ? "green" : "red"}>{item?.status == 1 ? (<IconCircleCheckFilled />) : (<IconCircleXFilled />)}</Text>
                           <Text color={item?.status == 1 ? 'green' : 'red'} fontWeight='bold'>{item?.status == 1 ? 'Active' : 'Deactive'}</Text><Text fontWeight='bold'> | {item?.DiscountDistribution?.type}</Text>
                       </Flex>

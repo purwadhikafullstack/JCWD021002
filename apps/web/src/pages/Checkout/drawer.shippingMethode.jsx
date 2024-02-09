@@ -23,7 +23,7 @@ import BebasOngkir from '../../assets/bebas_ongkir.png';
 // import { useSelector } from 'react-redux';
 import angkaRupiahJs from '@develoka/angka-rupiah-js';
 import { FaCheck } from 'react-icons/fa';
-
+import { addTotalShipping } from './services/addTotalShipping';
 export const DrawerShippingMethode = ({
   orderDetail,
   isOpen,
@@ -32,12 +32,15 @@ export const DrawerShippingMethode = ({
   setSelectedshipping,
   selectedShipping,
   shipping,
-  dateEstimate
+  dateEstimate,
+  orderId,
 }) => {
   const [selectedActive, setSelectedActive] = useState();
+  const token = localStorage.getItem("token");
 
   const handleSelectShipping = (item) => {
     setSelectedshipping(item);
+    addTotalShipping(item?.cost[0]?.value, orderId, token)
     onClose();
   };
 

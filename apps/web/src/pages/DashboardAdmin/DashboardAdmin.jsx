@@ -1,5 +1,5 @@
 import { Box, Button, HStack, Icon, Input, InputGroup, InputLeftAddon, InputLeftElement, Spacer, Text, Image, IconButton, Card, CardBody, Stack, Heading, Divider, CardFooter, ButtonGroup, useDisclosure, Modal, ModalOverlay, ModalHeader, ModalContent, ModalCloseButton, ModalBody, ModalFooter, VStack, useColorModeValue, Select, FormLabel, Flex } from "@chakra-ui/react"
-import { IconGraphFilled,IconBuildingStore, } from '@tabler/icons-react'
+import { IconGraphFilled,IconBuildingStore, IconBox, } from '@tabler/icons-react'
 import { useEffect, useState } from "react"
 import axios from 'axios'
 import { useNavigate } from "react-router-dom"
@@ -150,10 +150,11 @@ percentageTotalTransactions = percentageChanges.totalTransactions.toFixed(2) + '
     </Flex>
     <FormLabel mt='5px'>Products</FormLabel>
     <Flex flexDirection={size == '500px' ? 'column' : 'row'} mt='10px' p='10px' rowGap='10px' columnGap='10px'>
-        <Box width={size == '500px' ? '100%' : '40%'} bgColor='#3da5f4' textColor='white' p="20px" boxShadow='0px 1px 5px gray' borderRadius='10px'>
-            <FormLabel>All Products</FormLabel>
-            <Text fontSize='larger' fontWeight='bold' mb='5px'>{salesData[0]?.allProduct}</Text>
-        </Box>
+    <Box width={size == '500px' ? '100%' : '40%'} position='relative' bgColor='#3da5f4' textColor='white' p="20px" boxShadow='0px 1px 5px gray' borderRadius='10px' >
+        <FormLabel>All Products</FormLabel>
+        <Text fontSize='larger' fontWeight='bold' mb='5px'>{salesData[0]?.allProduct}</Text>
+        <Box zIndex={2} mt='-80px' right={0} position='absolute'><IconBox opacity='0.5' size='100px' /></Box>
+    </Box>
         <Box width={size == '500px' ? '100%' : '30%'} bgColor='#00c689' textColor='white' p="20px" boxShadow='0px 1px 5px gray' borderRadius='10px'>
         <FormLabel>Active Products</FormLabel>
         <Text fontSize='larger' fontWeight='bold' mb='5px'>{salesData[0]?.allProductActive}</Text>
