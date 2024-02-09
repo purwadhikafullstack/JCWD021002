@@ -232,7 +232,7 @@ const DiscountDetail = () => {
               
             <Box width={size == '500px' ? '100%' : '60%'} pb='50px'>
             <Text fontSize='large' fontWeight='bold'>Description</Text>
-                <Text>{description}</Text>
+                <div dangerouslySetInnerHTML={{ __html: description }} />
             </Box>
                 <Text fontSize='large' fontWeight='bold'>Remaining Discount</Text>
                 <Text>{max}</Text>
