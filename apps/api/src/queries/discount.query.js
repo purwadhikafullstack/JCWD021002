@@ -162,6 +162,10 @@ const moment = require('moment');
           whereCondition.referralCode = {
             [Op.or]: [null, 0],
           };
+
+          whereCondition.discountAmount = {
+            [Op.not]: [0],
+          };
       
           const discounts = await Discount.findAndCountAll({
             offset: offset,

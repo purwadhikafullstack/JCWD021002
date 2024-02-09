@@ -103,12 +103,12 @@ export const ProductRating = ({productId}) => {
         <Flex flexDir='row' gap='2px' width='fit-content' flexWrap='wrap'>
         <Button width='fit-content' onClick={() => setSortOrder('desc')} leftIcon={<IconListTree />}>Terbaru</Button>
         <Button width='fit-content' onClick={() => setSortOrder('asc')} leftIcon={<IconListTree />}>Terlama</Button>
-        <Button leftIcon={<IconStarFilled />} onClick={() => setRating('') } >All</Button>
-        <Button leftIcon={<IconStarFilled />} onClick={() => setRating(5) } >5</Button>
-        <Button leftIcon={<IconStarFilled />} onClick={() => setRating(4) } >4</Button>
-        <Button leftIcon={<IconStarFilled />} onClick={() => setRating(3) } >3</Button>
-        <Button leftIcon={<IconStarFilled />} onClick={() => setRating(2) } >2</Button>
-        <Button leftIcon={<IconStarFilled />} onClick={() => setRating(1) } >1</Button>
+        <Button leftIcon={<IconStarFilled style={{ color: rating == '' ? '#fdd835' : 'black' }} />} onClick={() => setRating('') } >All</Button>
+        <Button leftIcon={<IconStarFilled style={{ color: rating == 5 ? '#fdd835' : 'black' }} />} onClick={() => setRating(5) } >5</Button>
+        <Button leftIcon={<IconStarFilled style={{ color: rating == 4 ? '#fdd835' : 'black' }} />} onClick={() => setRating(4) } >4</Button>
+        <Button leftIcon={<IconStarFilled style={{ color: rating == 3 ? '#fdd835' : 'black' }} />} onClick={() => setRating(3) } >3</Button>
+        <Button leftIcon={<IconStarFilled style={{ color: rating == 2 ? '#fdd835' : 'black' }} />} onClick={() => setRating(2) } >2</Button>
+        <Button leftIcon={<IconStarFilled style={{ color: rating == 1 ? '#fdd835' : 'black' }} />} onClick={() => setRating(1) } >1</Button>
         
         </Flex>
         <Box mt='10px' width='97%' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">

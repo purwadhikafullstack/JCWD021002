@@ -222,11 +222,11 @@ console.log(data);
           </Button>
     <Drawer isOpen={isDrawerOpen} onClose={handleDrawerClose} placement="bottom">
         <DrawerOverlay />
-        <DrawerContent height='90vh' margin='auto' width='500px'>
+        <DrawerContent height='90vh' margin='auto' w={{ base: '100vw', md: size }}>
             <DrawerCloseButton />
             <DrawerHeader>Voucher</DrawerHeader>
-            <DrawerBody w='500px' >
-            <Box backgroundColor='#f5f5f5'  w={'500px'} p='6' height='fit-content'>
+            <DrawerBody p={0} w={{ base: '100vw', md: size }} >
+            <Box backgroundColor='#f5f5f5'  w={{ base: '100vw', md: size }} p='6' height='fit-content'>
     <Box>
 
                 <Tabs>
@@ -272,13 +272,14 @@ console.log(data);
             </TabList>
             <TabPanels>
               <TabPanel>
+                
               <Stack spacing='4' direction='row' flexWrap='wrap' justifyContent={size == '500px' ? 'center' : 'flex-start'}>
       
             {data?.discounts &&
               data?.discounts.map((item, index) => (
                 <>
                 
-                <Card key={item.id} w='450px' minHeight='250px' maxHeight='270px' bg={useColorModeValue('white', 'gray.800')}
+                <Card key={item.id} minHeight='250px' maxHeight='270px' bg={useColorModeValue('white', 'gray.800')}
             boxShadow='0px 1px 5px gray' border={item?.status == 1 ? 'solid 2px green' : 'solid 2px red'} _hover={{ cursor: 'pointer' }}>
               <Image
                       key={item?.banner}

@@ -40,7 +40,7 @@ const AddDiscount = () => {
   const [name, setName] = useState();
   const [description, setDescription] = useState();
   const [max, setMax] = useState();
-  const [referral, setReferral] = useState();
+  const [referral, setReferral] = useState(0);
   const [productName, setProductName] = useState('');
   const [productId, setProductId] = useState();
   const token = localStorage.getItem("token");
@@ -100,6 +100,7 @@ const AddDiscount = () => {
       formData.append("usageRestrictionId", usageType);
       formData.append("referralCode", referral);
       formData.append("discountNom", nominal);
+      formData.append("discountValue", percent);
       formData.append("name", name);
       formData.append("description", description);
       formData.append("productStock_idproductStock", productId);
@@ -152,7 +153,7 @@ const AddDiscount = () => {
   setGet(undefined);
   setBuy(undefined);
   setMax(undefined);
-  setReferral(undefined);
+  setReferral(0);
   
   console.log("After reset:", { type, discValue, percent, nominal, minNom, buy, get });
 
@@ -226,7 +227,7 @@ const AddDiscount = () => {
             </RadioGroup>
 
             <Text fontSize='large' fontWeight='bold' mt='10px'>Discount Type</Text>
-            <RadioGroup mb='20px' value={type} onChange={(value) => { handleReset(); setType(value); }}>
+            <RadioGroup mb='20px' value={type} onChange={(value) => { setType(value); }}>
                 <Stack spacing={4} direction='row' display='flex' flexWrap='wrap'>
                     <Radio value='4' isDisabled={usageType == null ? true : false}>Direct Discount</Radio>
                     <Radio value='5' isDisabled={usageType == null ? true : false}>Minimum Amount Discount</Radio>

@@ -1,5 +1,5 @@
 import { calculateVoucherPrice } from '../utils/calculateVoucherPrice';
-import { findReferralQuery, updateOrderTotalShippingVoucherQuery, findVoucherReferralQuery, giveVoucherQuery, updateOrderDetailsVoucherQuery, updateOrderTotalAmountVoucherQuery, usedReferralQuery, voucherUserListsQuery, findVoucherUserNotUsed, softDeleteVoucherUser } from '../queries/voucher.query';
+import { findReferralQuery, updateOrderTotalShippingVoucherQuery, findVoucherReferralQuery, giveVoucherQuery, updateOrderDetailsVoucherQuery, updateOrderTotalAmountVoucherQuery, usedReferralQuery, voucherUserListsQuery, findVoucherUserNotUsed, softDeleteVoucherUser, subtractVoucherQuery } from '../queries/voucher.query';
 
 export const useVoucherService = async (order, voucher, userId) => {
     try {
@@ -23,7 +23,7 @@ export const useVoucherService = async (order, voucher, userId) => {
                 const result1 = await findVoucherUserNotUsed(voucher?.id, userId);
             if(result1) {
                 await softDeleteVoucherUser(voucher?.id, userId);
-            }
+            } else { await subtractVoucherQuery(voucher?.id)}
 
                 // Perform any additional logic or return res2 as needed
                 return subtractions;
@@ -41,7 +41,7 @@ export const useVoucherService = async (order, voucher, userId) => {
             const result1 = await findVoucherUserNotUsed(voucher?.id, userId);
             if(result1) {
                 await softDeleteVoucherUser(voucher?.id, userId);
-            }
+            } else { await subtractVoucherQuery(voucher?.id)}
 
             // Do additional logic if needed
             return subtractions;
@@ -52,6 +52,7 @@ export const useVoucherService = async (order, voucher, userId) => {
         // Now you can proceed with your logic using totalAmount and totalAmountOrder
 
     } catch (err) {
+        console.log(err);
         throw err;
     }
 }
@@ -76,7 +77,7 @@ export const useShippingVoucherService = async (order, voucher, userId) => {
             const result1 = await findVoucherUserNotUsed(voucher?.id, userId);
             if(result1) {
                 await softDeleteVoucherUser(voucher?.id, userId);
-            }
+            } else { await subtractVoucherQuery(voucher?.id)}
 
 
             return subtractions;

@@ -31,7 +31,7 @@ export const ListProductOrder = ({
   const shippingCost = async (origin, destination) => {
     try {
       const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/checkout//sippingCost`,
+        `${import.meta.env.VITE_API_URL}/checkout/shippingCost`,
         {
           key: 'bfd51194adb513bfe32b3825a7acf0e5',
           origin: origin,

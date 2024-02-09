@@ -24,7 +24,7 @@ checkoutRouter.get('/pre-checkout', async (req, res) => {
 checkoutRouter.post('/', async (req, res) => {
   await checkoutController(req, res);
 });
-checkoutRouter.post('/sippingCost', async (req, res) => {
+checkoutRouter.post('/shippingCost', async (req, res) => {
   await shippingCostController(req, res);
 });
 
