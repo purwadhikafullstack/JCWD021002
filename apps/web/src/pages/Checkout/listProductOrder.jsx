@@ -34,8 +34,8 @@ export const ListProductOrder = ({
         `${import.meta.env.VITE_API_URL}/checkout/shippingCost`,
         {
           key: 'bfd51194adb513bfe32b3825a7acf0e5',
-          origin: 469,
-          destination: 105,
+          origin: origin,
+          destination: destination,
           weight: 1000,
           courier: 'jne',
         },
