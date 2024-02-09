@@ -14,9 +14,11 @@ import { CardProductStock } from './CardProductStock';
 import { FilterModal } from './FilterModal';
 import { EditModal } from './EditModal';
 import { handleActivateProductStock } from './services/serviceActivateStock';
+import { useWebSize } from '../../provider.websize';
 
-function ProductStockLists({ size, handleWebSize }) {
+function ProductStockLists() {
   const { user, isLogin } = useSelector((state) => state.AuthReducer);
+  const {size, handleWebSize } = useWebSize();
   const [userStore, setUserStore] = useState(user?.store_idstore);
   const [data, setData] = useState([]);
   const [dataStore, setDataStore] = useState([]);
@@ -81,15 +83,14 @@ function ProductStockLists({ size, handleWebSize }) {
     fetchCategory(setDataCategory);
     fetchStore(setDataStore);
   }, []);
-  
+  console.log(data)
   return (
     <Box w={{ base: '100vw', md: size }} overflowX="hidden">
       <SideBar size={size} handleWebSize={handleWebSize} />
       <Box backgroundColor="#f5f5f5" w={{ base: '100vw', md: size }} p={size == '500px' ? 0 : 5} height="fit-content" >
         <HStack mb="10px" p={0}></HStack>
-        <Box p={size == '500px' ? 0 : 5} pl={size == '500px' ? '0px' : '150px'}>
+        <Box p={size == '500px' ? 0 : 5} pl={size == '500px' ? '0px' : '150px'} mt='80px' >
           <Flex dir="row" gap="10px" p={size == '500px' ? 6 : 0} mb="20px" flexWrap="wrap" >
-            <IconButton backgroundColor="#f5f5f5"leftIcon={<IconChevronLeft />} />
             <Box w={size == '500px' ? '60%' : '70%'}>
               <InputGroup>
                 <InputLeftElement pointerEvents="none">
@@ -131,8 +132,7 @@ function ProductStockLists({ size, handleWebSize }) {
         stockAmount={stockAmount}
         setStockAmount={setStockAmount}
         handleCancel={() => setEditToStockModalIsOpen(false)}
-        dataStore={dataStore}
-      />
+        dataStore={dataStore} fetchData={fetchData} />
           <Modal isOpen={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
             <ModalOverlay />
             <ModalContent>

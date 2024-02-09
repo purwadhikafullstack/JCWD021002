@@ -1,4 +1,4 @@
-import React from 'react';
+/* eslint-disable react/prop-types */
 import { useNavigate } from 'react-router-dom';
 import { Flex, IconButton, Heading, Box } from '@chakra-ui/react';
 import { IconChevronLeft } from '@tabler/icons-react';

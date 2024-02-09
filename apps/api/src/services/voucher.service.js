@@ -1,7 +1,7 @@
 import { calculateVoucherPrice } from '../utils/calculateVoucherPrice';
-import { findReferralQuery, findVoucherQuery, findVoucherReferralQuery, giveVoucherQuery, updateOrderDetailsVoucherQuery, updateOrderTotalAmountVoucherQuery, usedReferralQuery } from '../queries/voucher.query';
+import { findReferralQuery, updateOrderTotalShippingVoucherQuery, findVoucherReferralQuery, giveVoucherQuery, updateOrderDetailsVoucherQuery, updateOrderTotalAmountVoucherQuery, usedReferralQuery, voucherUserListsQuery, findVoucherUserNotUsed, softDeleteVoucherUser, subtractVoucherQuery } from '../queries/voucher.query';
 
-export const useVoucherService = async (order, voucher) => {
+export const useVoucherService = async (order, voucher, userId) => {
     try {
 
         // Assuming you have an array of OrderDetail items in order.OrderDetails
@@ -20,6 +20,10 @@ export const useVoucherService = async (order, voucher) => {
                 
                 // Update the current OrderDetail with the voucher information
                 const res2 = await updateOrderDetailsVoucherQuery(order.id, orderDetail.id, totalAmount2, orderDetail?.subTotal, subtractions );
+                const result1 = await findVoucherUserNotUsed(voucher?.id, userId);
+            if(result1) {
+                await softDeleteVoucherUser(voucher?.id, userId);
+            } else { await subtractVoucherQuery(voucher?.id)}
 
                 // Perform any additional logic or return res2 as needed
                 return subtractions;
@@ -34,14 +38,54 @@ export const useVoucherService = async (order, voucher) => {
 
             // Update the order total amount (replace this with your actual update logic)
             const result = await updateOrderTotalAmountVoucherQuery(order.id, totalAmountOrder, subtractions);
+            const result1 = await findVoucherUserNotUsed(voucher?.id, userId);
+            if(result1) {
+                await softDeleteVoucherUser(voucher?.id, userId);
+            } else { await subtractVoucherQuery(voucher?.id)}
 
             // Do additional logic if needed
             return subtractions;
         }
 
+        
+
         // Now you can proceed with your logic using totalAmount and totalAmountOrder
 
     } catch (err) {
+        console.log(err);
+        throw err;
+    }
+}
+
+export const useShippingVoucherService = async (order, voucher, userId) => {
+    try {
+
+        console.log("ini shipping voucher service", order, voucher);
+
+        // Assuming you have an array of OrderDetail items in order.OrderDetails
+        const arrayOfObjects = await [voucher];
+        let totalShippingOrder;
+
+            // If there is no match, calculate totalAmountOrder
+            totalShippingOrder = calculateVoucherPrice(order.totalShipping, arrayOfObjects);
+            const subtractions = (order?.totalShipping - totalShippingOrder);
+
+            // Update the order total amount (replace this with your actual update logic)
+            const result = await updateOrderTotalShippingVoucherQuery(order.id, totalShippingOrder, subtractions);
+
+            // Do additional logic if needed
+            const result1 = await findVoucherUserNotUsed(voucher?.id, userId);
+            if(result1) {
+                await softDeleteVoucherUser(voucher?.id, userId);
+            } else { await subtractVoucherQuery(voucher?.id)}
+
+
+            return subtractions;
+
+        // Now you can proceed with your logic using totalAmount and totalAmountOrder
+
+    } catch (err) {
+        console.log(err);
         throw err;
     }
 }
@@ -66,4 +110,13 @@ export const redeemReferralService = async ( idSelf, referral, ) => {
         throw err;
     }
 }
+
+    export const voucherUserListsService = async (userId, page, pageSize) => {
+        try {
+            const result = await voucherUserListsQuery(userId, page, pageSize);
+            return result
+        } catch (err) {
+            throw err;
+        }
+    }
 

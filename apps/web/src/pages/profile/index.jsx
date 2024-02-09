@@ -11,6 +11,7 @@ import { Avatar } from '@chakra-ui/react';
 import { IoMdCopy } from 'react-icons/io';
 import toast from 'react-hot-toast';
 import { Outlet } from 'react-router-dom';
+import { RedeemReferral } from '../RedeemReferral/RedeemReferral';
 
 export const Profile = () => {
   const {size } = useWebSize()
@@ -83,6 +84,7 @@ export const Profile = () => {
                 value={user.referralCode}
               />
               <IoMdCopy />
+              { user?.referralBy_iduser ? null : <RedeemReferral /> }
             </Flex>
           </Flex>
         </Center>

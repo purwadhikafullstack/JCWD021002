@@ -28,6 +28,7 @@ export function EditModal({
   setStockAmount,
   handleCancel,
   dataStore,
+  fetchData,
 }) {
   const { user, isLogin } = useSelector((state) => state.AuthReducer);
   const token = localStorage.getItem('token');
@@ -35,19 +36,18 @@ export function EditModal({
   return (
     <Modal
             isOpen={editToStockModalIsOpen}
-            onClose={() => setEditToStockModalIsOpen(false)}
+            onClose={handleCancel}
           >
             {/* ... (other modal content) */}
             <ModalOverlay />
             <ModalContent>
               <ModalHeader>Edit Product Stock</ModalHeader>
-
               <ModalCloseButton />
               <ModalBody>
                 <Text fontWeight="bold">Name Product</Text>
                 <Text>{selectedProductStock.name}</Text>
-                <Text fontWeight="bold">Store</Text>
-                <Select
+                {/* <Text fontWeight="bold">Store</Text> */}
+                {/* <Select
                   placeholder="Select store"
                   value={selectedStore}
                   onChange={(e) => setSelectedStore(e.target.value)}
@@ -58,7 +58,7 @@ export function EditModal({
                       {store.name}
                     </option>
                   ))}
-                </Select>
+                </Select> */}
                 <Text fontWeight="bold">Stock Amount</Text>
                 <Input
                   type="number"
@@ -80,6 +80,7 @@ export function EditModal({
       .then(() => {
         // handleEditToStock was successful, now you can call handleCancel
         handleCancel();
+        fetchData();
       })
       .catch((error) => {
         // handleEditToStock encountered an error, you can handle the error here

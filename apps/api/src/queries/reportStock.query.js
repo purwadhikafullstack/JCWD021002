@@ -60,8 +60,14 @@ const getStockByDateQuery = async (startDate, endDate, productId, storeId, sortO
         [Sequelize.col('Store.name'), 'storeName'],
         [Sequelize.col('Store->City->Province.province'), 'province'],
         [Sequelize.col('Store->City.city'), 'city'],
+        [Sequelize.col('User.id'), 'userId'],
+        [Sequelize.col('User.username'), 'username'],
       ],
       include: [
+        {
+          model: User,
+          attributes: ['username'],
+        },
         {
           model: ProductStock,
           attributes: [],
@@ -90,7 +96,7 @@ const getStockByDateQuery = async (startDate, endDate, productId, storeId, sortO
         }
       ],
       where: whereConditions,
-      group: ['productStock_idproductStock', 'ProductStock->Product.id', 'Store.id'],
+      group: ['productStock_idproductStock', 'ProductStock->Product.id', 'Store.id', 'User.id'],
       raw: true,
       order: [[{model: Store}, 'name', sortOrder]],
       offset: offset,
@@ -108,6 +114,7 @@ const getStockByDateQuery = async (startDate, endDate, productId, storeId, sortO
           productStockId: entry.productStockId,
           productId: entry['ProductStock.Product.id'],
           productName: entry['ProductStock.Product.name'],
+          username: entry['User.username'],
           storeId: entry['Store.id'],
           storeName: entry['Store.name'],
           province: entry['Store.City.Province.province'],

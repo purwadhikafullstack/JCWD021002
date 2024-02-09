@@ -3,7 +3,7 @@ import Store from '../models/store.model';
 import City from '../models/city.model';
 import Province from '../models/province.model';
 import Role from '../models/role.model';
-import { Op, where } from 'sequelize';
+import { Op, Sequelize, where } from 'sequelize';
 
 const getUserRegisterQuery = async ({
   id = null,
@@ -29,9 +29,10 @@ const getUserRegisterQuery = async ({
   }
 };
 
-const getUserQuery = async (page, pageSize, sortOrder, username, roleId) => {
+const getUserQuery = async (page, pageSize, roleId, username, sortOrder) => {
   try {
     const offset = (page - 1) * (pageSize || 0);
+    console.log("ini sortOrder", sortOrder);
 
     const whereConditions = {};
 
@@ -39,19 +40,13 @@ const getUserQuery = async (page, pageSize, sortOrder, username, roleId) => {
       whereConditions.role_idrole = roleId;
     } else {
       whereConditions.role_idrole = {
-        [Op.notIn]: [1] // Exclude role_idrole = 1 (assuming 1 is admin role)
+        [Op.notIn]: [1],
       };
     }
-
-    console.log("ini roleId", roleId);
-    console.log("ini wherecondition", whereConditions);
-
-    
 
     if (username) {
       whereConditions.username = { [Op.like]: `%${username}%` };
     }
-
 
     const allUsers = await User.findAll({
       offset: offset,
@@ -70,10 +65,22 @@ const getUserQuery = async (page, pageSize, sortOrder, username, roleId) => {
               ],
             },
           ],
+          required: false,
         },
       ],
-      order: [[{model : City}, 'name', 'asc']],
-      order: [['status', 'asc']],
+      // order: [{ model: City }, 'name', 'asc'],
+      // order: sortOrder === 'asc'
+      // ? [['status', 'asc'], ['username', 'asc']]
+      // : [['status', 'asc'], ['username', 'desc']],
+
+      order: [
+        [
+          Sequelize.literal('(CASE WHEN "store_idstore" IS NOT NULL AND "role_idrole" = 2 THEN "Store.City.name" ELSE NULL END)'),
+          'ASC',
+        ],
+        ['status', 'ASC'],
+        ['username', sortOrder],
+      ],
     });
 
     const totalUsers = await User.count({
@@ -142,6 +149,7 @@ const updateUserQuery = async (
     Object.keys(updatedValue).forEach((key) => {
       if (
         updatedValue[key] == null ||
+        updatedValue[key] == 'null' ||
         updatedValue[key] == undefined ||
         updatedValue[key] == ' ' ||
         updatedValue[key] == ''

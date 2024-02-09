@@ -5,7 +5,7 @@ import { FiUpload } from "react-icons/fi";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Box, Button, HStack, Input, InputGroup, Spacer, Text, Image, IconButton, VStack, Flex, FormLabel, InputRightElement, Select } from "@chakra-ui/react";
-import { IconArrowLeft, IconArrowRight, IconEye, IconEyeOff } from '@tabler/icons-react';
+import { IconArrowLeft, IconUserPlus, IconEye, IconEyeOff } from '@tabler/icons-react';
 import AvatarSVG from './icon-default-avatar.svg';
 import { useWebSize } from '../../provider.websize';
 import SideBar from '../../components/SideBar/SideBar';
@@ -99,11 +99,11 @@ const AddUser = () => {
           <SideBar size={size} handleWebSize={handleWebSize}/>
       <ToastContainer position="top-center" closeOnClick pauseOnFocusLoss draggable pauseOnHover theme="colored" />
       <Box w={{ base: '100vw', md: size }} overflowX='hidden' height='100vh' backgroundColor='#fbfaf9' p='20px'>
-      <Box pl={size == '500px' ? '0px' : '150px' } pr={size == '500px' ? '0px' : '20px'} pt='20px' pb='20px'>
+      <Box pl={size == '500px' ? '0px' : '150px' } pr={size == '500px' ? '0px' : '20px'} pt='20px' pb='20px' mt='70px' >
         <HStack mb='10px'>
           <Button leftIcon={<IconArrowLeft />} borderRadius='full' backgroundColor='white' textColor='black' border='solid 1px black' onClick={() => navigate('/user-lists')}>Back</Button>
           <Spacer />
-          <Button rightIcon={<IconArrowRight />} borderRadius='full' backgroundColor='#286043' textColor='white' border='solid 1px #286043' onClick={() => addProduct()}>Add Item</Button>
+          <Button rightIcon={<IconUserPlus />} borderRadius='full' backgroundColor='#286043' textColor='white' border='solid 1px #286043' onClick={() => addProduct()}>Add User</Button>
         </HStack>
         <Box borderRadius='10px' p='20px' backgroundColor='white' boxShadow='0px 1px 5px gray'>
           <form>

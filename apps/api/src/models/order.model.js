@@ -43,6 +43,14 @@ export const init = (sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
+      totalShippingDiscount : {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      totalShipping : {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
     },
     {
       sequelize,

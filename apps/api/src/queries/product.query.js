@@ -77,8 +77,10 @@ const getPaginatedAndFilteredProductsQuery = async (
 
     const productStockIds = productStocks.map((stock) => stock.id)
     const productIds = productStocks.map((stock) => stock.product_idproduct);
+    console.log("ini data di productStockIds", productStockIds);
+    console.log("ini data di productIds", productIds);
 
-    const products = await Product.findAll({
+    const products = await Product.findAndCountAll({
       attributes: {
         include: [
           [Sequelize.literal('(SELECT AVG(rating) FROM RatingAndReview WHERE RatingAndReview.product_idproduct = Product.id)'), 'averageRating'],
@@ -86,7 +88,7 @@ const getPaginatedAndFilteredProductsQuery = async (
         ],
       },
       offset: offset,
-      limit: pageSize ? pageSize : undefined,
+      limit: pageSize ? pageSize : 0,
       order: [[sortField, sortOrder]],
       where: {
         ...whereCondition,
@@ -117,47 +119,12 @@ const getPaginatedAndFilteredProductsQuery = async (
         {
           model: Packaging,
         },
-        // {
-        //   separate: true,
-        //   model: RatingsAndReviews,
-        //   where: { product_idproduct: productIds },
-        //   attributes: [
-        //     'product_idproduct',
-        //     [Sequelize.fn('AVG', Sequelize.col('rating')), 'averageRating'],
-        //     [Sequelize.fn('COUNT', Sequelize.col('rating')), 'totalReviews'],
-        //   ],
-        //   group: ['product_idproduct'],
-        // },
       ],
     });
 
-    const totalProducts = await Product.count({
-      where: {
-        ...whereCondition,
-        id: productIds, // Filter based on the associated ProductStocks
-        ...(statusProduct ? { status: statusProduct } : {}),
-      },
-      required: true,
-      include: [
-        {
-          model: ProductCategory,
-          through: { attributes: [] },
-          where: categoryId ? { id: categoryId } : {},
-        },
-        {
-          separate: true,
-          model: ProductStock,
-          where: {
-            id: productStockIds,
-            // Add other conditions for ProductStock here
-          },
-        },
-      ],
-    });
-
-    const totalPages = Math.ceil(totalProducts / (pageSize || totalProducts));
+    const totalPages = Math.ceil(products?.count / (pageSize || products?.count));
     return {
-      products,
+      products: products.rows,
       totalPages,
     };
   } catch (err) {
@@ -492,7 +459,7 @@ const updateProductQuery = async (
 
     // Remove properties with null values
     Object.keys(updatedValue).forEach((key) => {
-      if (updatedValue[key] == null || updatedValue[key] == undefined || updatedValue[key] == "undefined") {
+      if (updatedValue[key] == null || updatedValue[key] == undefined || updatedValue[key] == "undefined" || updatedValue[key] == "null" || updatedValue[key] == "" || updatedValue[key] == " ") {
         delete updatedValue[key];
       }
     });
@@ -509,7 +476,7 @@ const updateProductQuery = async (
       // Handle invalid input values
     }
   } catch (err) {
-    console.error(err);
+    console.log(err);
     throw err;
   }
 };

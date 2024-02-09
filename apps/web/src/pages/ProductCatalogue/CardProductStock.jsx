@@ -1,23 +1,27 @@
-import { Stack,Flex, Card, CardBody, Button, Heading, Image, Text, useColorModeValue } from "@chakra-ui/react"
+import { Stack,Flex, Card, CardBody, Button, Heading, Image, Text, useColorModeValue, Grid, FormLabel, Box, VStack } from "@chakra-ui/react"
 import { useWebSize } from '../../provider.websize';
 import toRupiah from '@develoka/angka-rupiah-js';
 import star from '../ProductDetail/star-svgrepo-com.svg';
 import { useNavigate } from "react-router-dom";
+import Flashlight from '../../components/Flashlight404NotFound/Flashlight';
 
 export const CardProductStock = ({data}) => {
   const navigate = useNavigate();
-    const { size, handleWebSize } = useWebSize
-    console.log("ini di card", data);
+    const { size, handleWebSize } = useWebSize();
 
     return (
         <>
-        
-        <Stack direction='row' flexWrap='wrap' justifyContent={size == '500px' ? 'center' : 'flex-start'}>
-        <Flex flexWrap='wrap' pl='5px' pr='5px' gap='2' justifyContent='center'>
+        {data?.products && data?.products.length > 0 ? (
+        <Stack direction='row' flexWrap='wrap' p='10px' justifyContent={size == '500px' ? 'center' : 'flex-start'}>
+        <Grid
+        templateColumns={size == '500px' ? 'repeat(2, 1fr)' : 'repeat(5, 1fr)'}
+        w={'fit-content'}
+        gap={5}
+      >
         {data?.products &&
           data?.products?.map((item, index) => (
             <>
-            <Card key={item.id} w='160px' maxW={'216px'}  onClick={() => handleItemClick(item.id)} bg={useColorModeValue('white', 'gray.800')}
+            <Card key={item.id} onClick={() => handleItemClick(item.id)} bg={useColorModeValue('white', 'gray.800')}
         boxShadow='0px 1px 5px gray'>
           <Image
                   key={item?.ProductImages[0]?.imageUrl}
@@ -57,9 +61,14 @@ export const CardProductStock = ({data}) => {
             </Card>
             </>
           ))}
-          </Flex>
+          </Grid>
       </Stack>
-    
+    ) : (
+      <VStack>
+        <Text fontSize='6xl'>404</Text>
+        <Text>Product Not Found</Text>
+      </VStack>
+    )}
         </>
     )
 }

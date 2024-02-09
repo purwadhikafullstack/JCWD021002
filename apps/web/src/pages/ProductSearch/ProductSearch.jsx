@@ -5,15 +5,15 @@ import { IconChevronLeft, IconShoppingCartFilled } from '@tabler/icons-react';
 import { IconSearch, IconAdjustmentsHorizontal, IconChevronRight, IconArrowRight, IconArrowLeft, IconLayoutGrid, IconList, IconSortAscending2, IconSortDescending2, IconAbc, IconTags} from '@tabler/icons-react'
 import { ResizeButton } from '../../components/ResizeButton';
 import LogoGroceria from '../../assets/Groceria-no-Bg.png';
-import Logo from '../../assets/Logo-Groceria-no-Bg.png';
+import { AiFillHome } from "react-icons/ai";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { useWebSize } from '../../provider.websize';
 import { PaginationControls } from '../../components/PaginationControls/PaginationControls';
 import { CardProductStock } from './CardProductStock';
 import { useSelector } from 'react-redux';
-
+import CartLoading from '../../components/Loaders/CartLoading';
 function ProductSearch() {
   const {size, handleWebSize } = useWebSize();
   const [data, setData] = useState([]);
@@ -27,33 +27,20 @@ function ProductSearch() {
   const [productName, setProductName] = useState()
   const [selectedPage, setSelectedPage] = useState(page);
   const [searchParams, setSearchParams] = useSearchParams({ page, pageSize });
-  const [storeId, setStoreId] = useState();
-  const cityId = useSelector((state) => state.AuthReducer.location?.id);
-
-  const getStoreList = async (cityId) => {
-    try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/user/store-lists?cityId=${cityId}`,
-      );
-      setStoreId(res?.data[0].id);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
+  const coordinat = useSelector((state) => state.addressReducer?.address);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const fetchData = async () => {
-    try {
+    try { setLoading(true);
       if ((productName.trim() !== '') || (categoryId !== undefined && String(categoryId).trim() !== '')) {
         const response = await axios.get(
-      
-      `${import.meta.env.VITE_API_URL}/products/product-lists?page=${page}&pageSize=${pageSize}&sortField=${sortField}&sortOrder=${sortOrder}&categoryId=${categoryId}&productName=${productName}&storeId=${storeId}&statusProduct=1&statusStock=1`
+      `${import.meta.env.VITE_API_URL}/store?page=${page}&pageSize=${pageSize}&sortField=${sortField}&sortOrder=${sortOrder}&categoryId=${categoryId}&productName=${productName}&statusProduct=1&statusStock=1&latitude=${coordinat?.latitude}&longitude=${coordinat?.longitude}`
         );
-        setData(response?.data);
+        setData(response?.data?.data);
       }
-      
   } catch (err) {
       console.log(err);
-  }
+  } finally {setLoading(false);}
   }
 
 
@@ -75,9 +62,8 @@ function ProductSearch() {
   }, []);
 
   useEffect(() => {
-    getStoreList(cityId);
     fetchData();
-  }, [page, pageSize, sortField, sortOrder, categoryId, productName, storeId, cityId, ]);
+  }, [page, pageSize, sortField, sortOrder, categoryId, productName, coordinat ]);
 
   const fetchCategory = async () => {
     try {
@@ -90,13 +76,14 @@ function ProductSearch() {
         console.log(err);
     }
 };
-
+console.log();
 useEffect(() => {
     fetchCategory();
 }, []);
   
   return (
-    <Box overflowX='hidden' backgroundColor='#f5f5f5' w={{ base: '100vw', md: size }} height='fit-content'>
+    <Box overflowX='hidden' backgroundColor='#f5f5f5' w={{ base: '100vw', md: size }} height='100vh'>
+                <Box position='sticky' top={0} zIndex={99}>
                 <Flex
                     position={'relative'}
                     px={'20px'}
@@ -109,28 +96,30 @@ useEffect(() => {
                     <ResizeButton webSize={size} handleWebSize={handleWebSize} color={"black"}/>
                 </Flex>
                     <Box>
-                <Flex bgGradient='linear(to-r, #f2ffed, #fcfdde)' dir='row' gap='10px' pb='10px'>
-                <Button height='30px' bgGradient='linear(to-r, #f2ffed, #fcfdde)' leftIcon={<IconChevronLeft />}></Button>
+                <Flex bgGradient='linear(to-r, #f2ffed, #fcfdde)' pl='2px' dir='row' gap='10px' pb='10px'>
+                <IconButton height='30px' bgGradient='linear(to-r, #f2ffed, #fcfdde)' onClick={() => navigate(-1)} icon={<IconChevronLeft />} />
                             <Box w='fit-content'>
                             <InputGroup >
                         <InputLeftElement height='30px' pointerEvents='none'>
                         <IconSearch width='30px' color='black' />
                         </InputLeftElement>
-                        <Input size='sm' type='text' backgroundColor='white' placeholder='Cari beragam kebutuhan harian' width={size == '500px' ? '290px' : '70vw'} value={productName} borderRadius='full' onChange={(e) => {setProductName(e.target.value); setPage(1);}} />
+                        <Input size='sm' type='text' backgroundColor='white' placeholder='Cari beragam kebutuhan harian' width={size == '500px' ? '260px' : '70vw'} value={productName} borderRadius='full' onChange={(e) => {setProductName(e.target.value); setPage(1);}} />
                     </InputGroup>
                             </Box>
                             <Box>
-                                <IconButton height='30px' icon={<IconShoppingCartFilled />} backgroundColor='#fcfdde' />
+                                <IconButton height='30px' icon={<IconShoppingCartFilled />} backgroundColor='#fcfdde' onClick={() => navigate('/cart')} />
                             </Box>
                             <Box>
-    <Button leftIcon={<IconAdjustmentsHorizontal size='20px' />} fontSize='sm' borderRadius='full' border='solid 1px black' onClick={onOpen}>Filter</Button>
+                            <IconButton height='30px' icon={<IconAdjustmentsHorizontal />} backgroundColor='#fcfdde' onClick={onOpen} />
+
 
                 </Box>
                             </Flex>
+                            </Box>
                 
             </Box>
             <Box  p={size == '500px' ? 0 : 5} pt='5'>
-            {categoryId > 0  ? null : (
+            { productName != '' || categoryId > 0 ? null : (
   <Flex gap='2' flexWrap='wrap' pl={10} pr={10}>
     {dataCategory?.categories?.slice(0, 5)?.map((item, index) => (
       <Button backgroundColor='white' border='solid 1px black' key={index} onClick={() => item?.id && setCategoryId(item?.id)}>
@@ -138,9 +127,9 @@ useEffect(() => {
       </Button>
     ))}
   </Flex>
-)}
-              <CardProductStock data={data} />
-          <Box m='5'><PaginationControls 
+)} 
+            <Flex flexWrap='wrap' justifyContent='center'> {loading ? ( <VStack> <CartLoading /> </VStack> ) : ( (productName || categoryId) && <CardProductStock data={data} /> )} </Flex>
+          <Box m='5'>{data?.products?.length != 0 ? <PaginationControls 
               page= {page}
               pageSize={pageSize}
               selectedPage={selectedPage}
@@ -148,7 +137,7 @@ useEffect(() => {
               setPageSize={setPageSize}
               setSelectedPage={setSelectedPage}
               data={data}
-            /></Box>
+            /> : null}</Box>
   <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>

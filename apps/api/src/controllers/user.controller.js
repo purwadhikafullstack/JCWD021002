@@ -14,8 +14,9 @@ const getUserController = async (req, res) => {
         const pageSize = parseInt(req.query.pageSize) || null;
         const roleId = req.query.roleId || null;
         const username = req.query.username || null;
+        const sortOrder = req.query.sortOrder || 'asc';
 
-        const result = await getUserService(page, pageSize, roleId, username);
+        const result = await getUserService(page, pageSize, roleId, username, sortOrder);
 
         return res.status(200).json(result);
     } catch (err) {

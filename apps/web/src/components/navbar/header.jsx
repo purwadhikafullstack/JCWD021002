@@ -51,10 +51,18 @@ export const Header = () => {
               <Image src={LogoGroceria} h={'30px'} />
             </Link>
             <Flex gap={3}>
-              <Text>Home</Text>
-              <Text>Home</Text>
-              <Text>Home</Text>
-              <Text>Home</Text>
+              <Link to={'/'}>
+                <Text>Home</Text>
+              </Link>
+              <Link to={'/product-catalogue'}>
+                <Text>Product</Text>
+              </Link>
+              <Link to={'/about'}>
+                <Text>About</Text>
+              </Link>
+              <Link to={'/contact'}>
+                <Text>Contact</Text>
+              </Link>
             </Flex>
           </Flex>
           <Flex gap={5}>

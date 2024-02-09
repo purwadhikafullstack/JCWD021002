@@ -240,8 +240,8 @@ export const Checkout = () => {
             <Flex flexDirection="column" color="gray.600">
               <Text fontSize="sm">Subtotal Untuk Produk (10 Barang)</Text>
               <Text fontSize="sm">Subtotal Untuk Pengiriman</Text>
-              <Text fontSize="sm">Total Diskon Untuk Pengiriman</Text>
-              <Text fontSize="sm">Voucher Diskon</Text>
+              <Text fontSize="sm">Voucher Diskon Untuk Pengiriman</Text>
+              <Text fontSize="sm">Voucher Diskon Untuk Produk</Text>
             </Flex>
             <Flex
               flexDirection="column"
@@ -250,7 +250,7 @@ export const Checkout = () => {
               color="gray.600"
             >
               <Text fontSize="sm">
-                {angkaRupiahJs(1000000, { formal: false })}
+              { order?.totalAmount ? angkaRupiahJs(order?.totalAmount, { formal: false }) : angkaRupiahJs(0, { formal: false }) }
               </Text>
               <Text fontSize="sm">
                 {selectedShipping && angkaRupiahJs(selectedShipping?.cost[0]?.value, {
@@ -258,7 +258,10 @@ export const Checkout = () => {
                 })}
               </Text>
               <Text fontSize="sm">
-                - {angkaRupiahJs(24000, { formal: false })}
+                 { order?.totalShipping ? angkaRupiahJs(order?.totalShipping, { formal: false }) : angkaRupiahJs(0, { formal: false }) }
+              </Text>
+              <Text fontSize="sm">
+                - { order?.totalShippingDiscount ? angkaRupiahJs(order?.totalShippingDiscount, { formal: false }) : angkaRupiahJs(0, { formal: false }) }
               </Text>
               <Text fontSize="sm">
                 - { order?.totalDiscount ? angkaRupiahJs(order?.totalDiscount, { formal: false }) : angkaRupiahJs(0, { formal: false }) }

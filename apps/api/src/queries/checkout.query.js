@@ -7,41 +7,24 @@ import Product from '../models/product.model';
 import ProductImage from '../models/productImage.model';
 import Store from '../models/store.model';
 import Cart from '../models/cart.model';
-import City from '../models/city.model'
 import Discount from '../models/discount.model';
-import UsageRestriction from '../models/usageRestriction.model';
 import DiscountType from '../models/discountType.model';
 import DiscountDistribution from '../models/discountDistribution.model';
-import {calculateDiscountBOGO} from '../utils/calculateDiscountBOGO'
+import UsageRestriction from '../models/usageRestriction.model';
 import { calculateDiscountPrice } from '../utils/calculateDiscountPrice';
+import { calculateDiscountBOGO } from '../utils/calculateDiscountBOGO';
+import City from '../models/city.model'
 
-
-export const findNewOrderQuery = async (userId) => {
+export const findPendingOrderQuery = async (userId) => {
   try {
-    const result = await Order.findOne({
+    const pendingOrder = await Order.findOne({
       where: {
         user_iduser: userId,
-        status: 'new_order',
-        paymentStatus: null,
+        status: 'pending',
       },
-      include: [
-        {
-          model: OrderDetail,
-          include: [
-            {
-              model: ProductStock,
-              include: [
-                { model: Product, include: [ProductImage] },
-                { model: Discount},
-              ],
-            },
-          ],
-        },
-        { model: Store, include: [City] },
-      ],
     });
 
-    return result;
+    return pendingOrder;
   } catch (err) {
     throw err;
   }
@@ -75,7 +58,7 @@ export const updateOrderDetailsQuery = async (orderId, cartItems) => {
       await OrderDetail.create(
         {
           order_idorder: orderId,
-          quantity: cartItem.quantity,
+          quantity: (calculateDiscountBOGO(cartItem.quantity, (cartItem.ProductStock.Discounts || []))),
           subtotal: cartItem.quantity * cartItem.price,
           productStock_idproductStock: cartItem.productStock_idproductStock,
         },
@@ -137,8 +120,7 @@ export const getOrderQuery = async (userId) => {
   return Order.findAll({
     where: {
       user_iduser: userId,
-      status: 'new_order',
-      paymentStatus: '',
+      status: 'pending',
     },
     include: [
         {
@@ -149,6 +131,28 @@ export const getOrderQuery = async (userId) => {
               include: [
                 { model: Product, include: [ProductImage] },
                 { model: Store, include: [City] },
+                {
+                  separate: true,
+                  model: Discount,
+                  where: {
+                    startDate: { [Sequelize.Op.lte]: new Date() }, // Include discounts with start date less than or equal to the current date
+                    endDate: { [Sequelize.Op.gte]: new Date() },   // Include discounts with end date greater than or equal to the current date
+                  },
+                  include: [
+                    {
+                      model: UsageRestriction,
+                    },
+                    {
+                      model: DiscountType,
+                    },
+                    {
+                      model: DiscountDistribution,
+                    },
+                    {
+                      model: Store,
+                    },
+                  ],
+                },
               ],
             },
           ],
@@ -157,42 +161,11 @@ export const getOrderQuery = async (userId) => {
   });
 };
 
-export const getOrderCustomerQuery = async (userId, status, paymentStatus, startDate, endDate) => {
-  return Order.findAll({
-    where: {
-      [Op.and]: [
-        { user_iduser: userId },
-        status ? { status: status } : {},
-        paymentStatus ? { paymentStatus: paymentStatus } : {},
-        startDate ? { orderDate: { [Op.gte]: new Date(`${startDate}T00:00:00.000Z`) } } : {},
-        endDate ? { orderDate: { [Op.lte]: new Date(`${endDate}T23:59:59.999Z`) } } : {},
-      ],
-    },
-    include: [
-      {
-        model: OrderDetail,
-        include: [
-          {
-            model: ProductStock,
-            include: [
-              { model: Product, include: [ProductImage] },
-              { model: Store, include: [City] },
-            ],
-          },
-        ],
-      },
-    ],
-  });
-};
-
-
-
 export const createOrderQuery = async (
   userId,
   storeId,
   totalAmount,
   cartItems,
-  quantity,
 ) => {
   const t = await Order.sequelize.transaction();
 
@@ -201,8 +174,11 @@ export const createOrderQuery = async (
       {
         user_iduser: userId,
         store_idstore: storeId,
-        status: 'new_order',
+        status: 'pending',
         totalAmount,
+        orderDate: new Date(),
+        paymentMethod: 'credit card',
+        codeTransaction: '123ABC',
       },
       { transaction: t },
     );
@@ -211,8 +187,8 @@ export const createOrderQuery = async (
       await OrderDetail.create(
         {
           order_idorder: order.id,
-          quantity: (calculateDiscountBOGO(quantity ? quantity : cartItem?.quantity , cartItem?.ProductStock?.Discounts)),
-          subtotal: cartItem.quantity * (calculateDiscountPrice(cartItem.price, cartItem.ProductStock.Discounts)),
+          quantity: (calculateDiscountBOGO(cartItem.quantity, (cartItem.ProductStock.Discounts || []))),
+          subtotal: cartItem.quantity * (calculateDiscountPrice(cartItem.price, (cartItem.ProductStock.Discounts || []))),
           productStock_idproductStock: cartItem.productStock_idproductStock,
         },
         { transaction: t },
@@ -228,18 +204,22 @@ export const createOrderQuery = async (
   }
 };
 
-export const findOrderCustomerQuery = async (userId, orderId) => {
-  try {
-      const order = await Order.findOne({
-          where: {
-              id: orderId,
-              user_iduser: userId, 
-          },
-      });
+export const clearCartQuery = async (cartId, selectedItems) => {
+  const t = await CartDetail.sequelize.transaction();
 
-      return order;
+  try {
+    await CartDetail.destroy({
+      where: {
+        cart_idcart: cartId,
+        productStock_idproductStock: selectedItems,
+      },
+      transaction: t,
+    });
+
+    await t.commit();
   } catch (err) {
-      throw err;
+    await t.rollback();
+    throw err;
   }
 };
 
@@ -248,7 +228,7 @@ export const findOrderQuery = async (orderId) => {
       const order = await Order.findByPk(orderId, {
           include: [{
               model: OrderDetail,
-              as: 'OrderDetails',
+              as: 'OrderDetails', // Use the correct alias defined in your association
           }],
       });
 

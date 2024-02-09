@@ -7,6 +7,10 @@ export default class Discount extends Model {
     this.belongsTo(models.DiscountType, { foreignKey: 'type' });
     this.belongsTo(models.DiscountDistribution, { foreignKey: 'distributionId' });
     this.belongsTo(models.Store, { foreignKey: 'store_idstore' });
+    this.belongsToMany(models.User, {
+      through: 'VoucherUser',
+      foreignKey: 'voucher_idvoucher',
+    });
   }
 }
 

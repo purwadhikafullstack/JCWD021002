@@ -113,7 +113,7 @@ const PackagingLists = () => {
       <Box w={{ base: '98.7vw', md: size }} height='100vh' backgroundColor='#fbfaf9'>
       <ToastContainer position="top-center" closeOnClick pauseOnFocusLoss draggable pauseOnHover theme="colored" />
       <Box p='50px'>
-        <Box pl={size == '500px' ? '0px' : '150px' } >
+        <Box pl={size == '500px' ? '0px' : '150px' } mt='80px' >
           <HStack mb='10px'>
             <Button leftIcon={<IconPlus />} isDisabled={ user?.role_idrole == 1 ? false : true } backgroundColor='#286043' textColor='white' border='solid 1px #286043' onClick={onOpen}>Add Packaging</Button>
             <Modal isOpen={isOpen} onClose={onClose}>

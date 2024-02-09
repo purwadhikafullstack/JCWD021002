@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
-// import { SidebarWithHeader } from '../../components/SideBar/SideBar';
 import { FiUpload } from "react-icons/fi";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,7 +12,6 @@ import {
 import {
   IconPlus, IconArrowLeft, IconDiscount, IconX, IconArrowRight, IconEye, IconEyeOff
 } from '@tabler/icons-react';
-import AvatarSVG from './icon-default-avatar.svg';
 import SideBar from '../../components/SideBar/SideBar';
 import { useSelector } from "react-redux";
 import { useWebSize } from '../../provider.websize';
@@ -26,10 +24,8 @@ const AddDiscount = () => {
   const [data, setData] = useState([]);
   const [fieldImage, setFieldImage] = useState(null);
   const [selectedImage, setSelectedImage] = useState('');
-  const [selectedC, setSelectedC] = useState([]);
   const navigate = useNavigate();
   const [dataStore, setDataStore] = useState([]);
-
   const [type, setType] = useState();
   const [discValue, setDiscValue] = useState();
   const [usageType, setUsageType] = useState();
@@ -44,17 +40,10 @@ const AddDiscount = () => {
   const [name, setName] = useState();
   const [description, setDescription] = useState();
   const [max, setMax] = useState();
-  const [referral, setReferral] = useState();
+  const [referral, setReferral] = useState(0);
   const [productName, setProductName] = useState('');
   const [productId, setProductId] = useState();
   const token = localStorage.getItem("token");
-
-
-
-
-
-
-  console.log("ini type", type);
   const [storeId, setStoreId] = useState();
 
   const fetchData = async () => {
@@ -111,6 +100,7 @@ const AddDiscount = () => {
       formData.append("usageRestrictionId", usageType);
       formData.append("referralCode", referral);
       formData.append("discountNom", nominal);
+      formData.append("discountValue", percent);
       formData.append("name", name);
       formData.append("description", description);
       formData.append("productStock_idproductStock", productId);
@@ -152,28 +142,34 @@ const AddDiscount = () => {
   };
 
   const handleReset = () => {
+    console.log("Before reset:", { type, discValue, percent, nominal, minNom, buy, get });
+
   setType(0);
   setDiscValue(0);
   setPercent(0);
   setNominal(0);
+  setUsageType(0)
   setMinNom(undefined);
   setGet(undefined);
   setBuy(undefined);
   setMax(undefined);
-  setReferral(undefined);
+  setReferral(0);
+  
+  console.log("After reset:", { type, discValue, percent, nominal, minNom, buy, get });
+
   }
 
   console.log(data);
+  console.log("ini referral", referral, usageType);
 
   return (
     <>
-      {/* <SidebarWithHeader /> */}
       <Box w={{ base: '100vw', md: size }}>
           <SideBar size={size} handleWebSize={handleWebSize}/>
       <ToastContainer position="top-center" closeOnClick pauseOnFocusLoss draggable pauseOnHover theme="colored" />
       <Box w={{ base: '98.7vw', md: size }} overflowX='hidden' height='100vh' backgroundColor='#fbfaf9' p='20px'>
       
-      <Box pl={size == '500px' ? '0px' : '150px' } pr={size == '500px' ? '0px' : '20px'} pt='20px' pb='20px'>
+      <Box pl={size == '500px' ? '0px' : '150px' } pr={size == '500px' ? '0px' : '20px'} pt='20px' pb='20px' mt='70px' >
         <HStack mb='10px'>
           <Button leftIcon={<IconArrowLeft />} borderRadius='full' backgroundColor='white' textColor='black' border='solid 1px black' onClick={() => navigate('/discount-lists')}>Back</Button>
           <Spacer />
@@ -225,17 +221,17 @@ const AddDiscount = () => {
             <Text fontSize='large' fontWeight='bold'>Usage Restriction Type</Text>
             <RadioGroup mb='20px' value={usageType} onChange={(value) => { handleReset(); setUsageType(value); }}>
                 <Stack spacing={4} direction='row' display='flex' flexWrap='wrap'>
-                    <Radio value='1' isDisabled={distribution == null ? true : false}>Purchase</Radio>
-                    <Radio value='2' isDisabled={distribution == null ? true : false}>Shipping</Radio>
+                    <Radio value='1' isDisabled={distribution == null ? true : false} >Purchase</Radio>
+                    <Radio value='2' isDisabled={ distribution == null ? true : false || distribution == 1 ? true : false }>Shipping</Radio>
                 </Stack>
             </RadioGroup>
 
             <Text fontSize='large' fontWeight='bold' mt='10px'>Discount Type</Text>
-            <RadioGroup mb='20px' value={type} onChange={(value) => { handleReset(); setType(value); }}>
+            <RadioGroup mb='20px' value={type} onChange={(value) => { setType(value); }}>
                 <Stack spacing={4} direction='row' display='flex' flexWrap='wrap'>
                     <Radio value='4' isDisabled={usageType == null ? true : false}>Direct Discount</Radio>
                     <Radio value='5' isDisabled={usageType == null ? true : false}>Minimum Amount Discount</Radio>
-                    <Radio value='6' isDisabled={usageType == 2 || usageType == null ? true : false}>B O G O</Radio>
+                    <Radio value='6' isDisabled={usageType == 2 || usageType == null ? true : false || distribution == 2 ? true : false }>B O G O</Radio>
                 </Stack>
             </RadioGroup>
 
@@ -306,8 +302,13 @@ const AddDiscount = () => {
                 <Input mb='20px' isDisabled={distribution == 2 ? false : true} placeholder= 'Ex. 250' name='max' width={size == '500px' ? '100%' : '50%'} value={max} onChange={(e) => setMax(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
               
                 <Text fontSize='large' fontWeight='bold'>Referral Code</Text>
-                <Input mb='20px' isDisabled={distribution == 2 ? false : true} placeholder= 'Ex. GROCERIAANNIV1' name='name' width={size == '500px' ? '100%' : '50%'} value={referral} onChange={(e) => setReferral(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
-              
+                {/* <Input mb='20px'  placeholder= 'Ex. GROCERIAANNIV1' name='name' width={size == '500px' ? '100%' : '50%'} value={referral} onChange={(e) => setReferral(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' /> */}
+                <RadioGroup mb='20px' isDisabled={distribution == 2 ? false : true} value={referral} onChange={(value) => { handleReset(); setReferral(Number(value)); }}>
+                  <Stack spacing={4} direction='row' display='flex' flexWrap='wrap'>
+                      <Radio value={1}>Yes</Radio>
+                      <Radio value={0}>No</Radio>
+                  </Stack>
+                </RadioGroup>
 
             <Flex columnGap='10px' mb='20px ' flexDir={size == '500px' ? 'column' : 'row'}>
               <Box width='100%'>
@@ -324,7 +325,7 @@ const AddDiscount = () => {
                 <FormLabel>Product</FormLabel>
                 <Input height='30px' mt='-5px' placeholder= 'Ex. Indomie' name='productName' width={size == '500px' ? '100%' : '50%'} value={productName} onChange={(e) => setProductName(e.target.value)} type='text' border='solid gray 1px' borderRadius='full' />
                 </Flex>
-              <Select border='solid gray 1px' borderRadius='full' placeholder="Select option" value={productId} onChange={(e) => setProductId(e.target.value)}>
+              <Select isDisabled={ usageType == null ? true : false || usageType == 2 ? true : false } border='solid gray 1px' borderRadius='full' placeholder="Select option" value={productId} onChange={(e) => setProductId(e.target.value)}>
             {data?.products?.map((item) => ( 
               <option key={item?.id} value={item?.ProductStocks[0].id}>{item?.name}</option>
             ))}

@@ -40,7 +40,7 @@ const getSalesByDateQuery = async (startDate, endDate, storeId, categoryId, prod
                 { orderDate: { [Op.lte]: new Date(`${endDate}T23:59:59.999Z`) } },
                 // { store_idstore: storeId ? storeId : { [Op.ne]: null } },
                 storeId ? { store_idstore: storeId } : {},
-                { status: { [Op.not]: "Pending" } },
+                { status: { [Op.not]: "new_order" } },
               ],
             },
           },
@@ -50,19 +50,6 @@ const getSalesByDateQuery = async (startDate, endDate, storeId, categoryId, prod
                 include: [
                   {
                     model: Product,
-                    // include: [
-                    //   {
-                    //     model: ProductCategory_has_Product,
-                    //     attributes: [],
-                    //     include: [
-                    //       {
-                    //         model: ProductCategory,
-                    //         where: { id: categoryId ? categoryId : { [Op.ne]: null } },
-                    //         attributes: [], // Exclude ProductCategory columns from the main query
-                    //       },
-                    //     ],
-                    //   },
-                    // ],
                     where: { id: productId ? productId : { [Op.ne]: null } },
                     attributes: [], // Exclude Product columns from the main query
                   },
@@ -85,6 +72,21 @@ const getSalesByDateQuery = async (startDate, endDate, storeId, categoryId, prod
         dialect: 'mysql', // Set the dialect explicitly
       });
 
+      const resProduct = await Product.findAndCountAll();
+      const resProductActive = await Product.findAndCountAll({where: {status: 1}});
+      const resProductDeactive = await Product.findAndCountAll({where: {status: 0}});
+      const resAdminStore = await User.findAndCountAll({where: {role_idrole: 2, status: 1}});
+      const resUser = await User.findAndCountAll({where: {role_idrole: 3, status: 1}});
+      const resStore = await Store.findAndCountAll();
+      const resStoreActive = await Store.findAndCountAll({where: {status: 'active'}});
+      const resStoreDeactive = await Store.findAndCountAll({where: {status: 'deactive'}});
+      const resStock = await ProductStock.findAndCountAll({where: {store_idstore: storeId}});
+      const resTotalStock = await ProductStock.findOne({
+        attributes: [
+          [Sequelize.fn('sum', Sequelize.col('stock')), 'totalStock'],
+        ],
+      });
+
       const aggregatedData = {
         totalSales: 0,
         totalQuantity: 0,
@@ -94,6 +96,16 @@ const getSalesByDateQuery = async (startDate, endDate, storeId, categoryId, prod
         storeName: null,
         productId: null,
         productName: null,
+        allProduct: resProduct?.count,
+        allProductActive: resProductActive?.count,
+        allProductDeactive: resProductDeactive?.count,
+        allAdminStore: resAdminStore?.count,
+        allUser: resUser?.count,
+        allStore: resStore?.count,
+        allStoreActive: resStoreActive?.count,
+        allStoreDeactive: resStoreDeactive?.count,
+        allStock: resStock?.count,
+        allTotalStock: resTotalStock,
       };
   
       salesData.forEach((item) => {
@@ -105,7 +117,6 @@ const getSalesByDateQuery = async (startDate, endDate, storeId, categoryId, prod
         aggregatedData.storeName =  storeId ? item.storeName : null;
         aggregatedData.productId = productId ? item.productId : null;
         aggregatedData.productName = productId ? item.productName : null;
-        // aggregatedData.categoryId = categoryId ? item.categoryId : null;
       });
   
       // masih error di categoryId
@@ -231,8 +242,6 @@ const createSalesReportQuery = async (
           where: storeId ? { store_idstore: storeId } : {},
     })
 
-    console.log(productStockQuery);
-
     const productStockIds = productStockQuery.map((product) => product.id);
 
     const res = await OrderDetail.findAndCountAll({
@@ -247,11 +256,11 @@ const createSalesReportQuery = async (
             include: [
               {
                 model: User,
-                attributes: [],
+                attributes: ['username'],
               },
               {
                 model: Store,
-                attributes: [],
+                attributes: ['name'],
               },
             ],
             where: {
@@ -259,7 +268,7 @@ const createSalesReportQuery = async (
                 [Op.gte]: new Date(`${startDate}T00:00:00.000Z`),
                 [Op.lte]: new Date(`${endDate}T23:59:59.999Z`),
               },
-              status: { [Op.not]: "Pending" },
+              status: { [Op.not]: "new_order" },
             },
           },
           {

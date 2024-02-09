@@ -1,4 +1,4 @@
-const { Op } = require('sequelize');
+const { Op, Sequelize } = require('sequelize');
 import Discount from '../models/discount.model';
 import DiscountType from '../models/discountType.model';
 import Product from '../models/product.model';
@@ -9,16 +9,17 @@ import Store from '../models/store.model'
 const moment = require('moment');
     
       const getPaginatedAndFilteredDiscountQuery = async (
-                page,
-                pageSize,
-                sortField,
-                sortOrder,
-                discountName,
-                typeId,
-                usageRestrictionId,
-                productName,
-                status,
-                storeId,
+        page,
+        pageSize,
+        sortField,
+        sortOrder,
+        discountName,
+        typeId,
+        usageRestrictionId,
+        productName,
+        status,
+        storeId,
+        distributionId,
       ) => {
         try {
           console.log(
@@ -33,6 +34,7 @@ const moment = require('moment');
                 productName,
                 status,
                 storeId,
+                distributionId,
           );
 
           const offset = (page - 1) * (pageSize || 0);
@@ -50,25 +52,42 @@ const moment = require('moment');
               [Op.eq]: `${status}`,
             };
           }
+          console.log("ini data di query", discountName)
 
-          const discounts = await Discount.findAll({
+          if (usageRestrictionId > 0) {
+            whereCondition.usageRestrictionId = usageRestrictionId
+          }
+
+          if (typeId > 0) {
+            whereCondition.type = typeId
+          }
+
+          if (distributionId > 0) {
+            whereCondition.distributionId = distributionId
+          }
+
+          const discounts = await Discount.findAndCountAll({
             offset: offset,
             limit: pageSize ? pageSize : undefined,
             order: [[sortField, sortOrder]],
             where: {
               ...whereCondition,
               ...(storeId ? { store_idstore: storeId } : {}),
+              // ...(typeId ? { type: typeId } : {}),
+              // ...(usageRestrictionId ? { usageRestrictionId: usageRestrictionId } : {}),
             },
             include: [
               {
                 required: true,
                 model: DiscountType,
-                where: typeId ? { id: typeId } : {},
+              },
+              {
+                required: true,
+                model: DiscountDistribution,
               },
               {
                 required: true,
                 model: UsageRestriction,
-                where: usageRestrictionId ? { id: usageRestrictionId } : {}
               },
               {
                 model: ProductStock,
@@ -84,40 +103,10 @@ const moment = require('moment');
             ],
           });
 
-          const totalDiscounts = await Discount.count({
-            where: {
-              ...whereCondition,
-              ...(storeId ? { store_idstore: storeId } : {}),
-            },
-            include: [
-              {
-                required: true,
-                model: DiscountType,
-                where: typeId ? { id: typeId } : {},
-              },
-              {
-                required: true,
-                model: UsageRestriction,
-                where: usageRestrictionId ? { id: usageRestrictionId } : {}
-              },
-              {
-                model: ProductStock,
-                include: [
-                  {
-                    model: Product,
-                    where: productName ? { name: {
-                      [Op.like]: `%${productName}%`,
-                    } } : {}
-                  }
-                ]
-              }
-            ],
-          });
-
-          const totalPages = Math.ceil(totalDiscounts / (pageSize || totalDiscounts));
+          const totalPages = Math.ceil(discounts?.count / (pageSize || discounts?.count));
 
           return {
-            discounts,
+            discounts: discounts?.rows,
             totalPages,
           };
         } catch (err) {
@@ -140,19 +129,7 @@ const moment = require('moment');
                 productStockId,
       ) => {
         try {
-          console.log(
-            'query',
-                page,
-                pageSize,
-                sortField,
-                sortOrder,
-                discountName,
-                typeId,
-                usageRestrictionId,
-                productName,
-                status,
-                storeId,
-          );
+          
 
           const offset = (page - 1) * (pageSize || 0);
 
@@ -181,6 +158,14 @@ const moment = require('moment');
           whereCondition.productStock_idproductStock = {
             [Op.or]: [null, productStockId],
           };
+
+          whereCondition.referralCode = {
+            [Op.or]: [null, 0],
+          };
+
+          whereCondition.discountAmount = {
+            [Op.not]: [0],
+          };
       
           const discounts = await Discount.findAndCountAll({
             offset: offset,
@@ -189,6 +174,8 @@ const moment = require('moment');
             where: {
               ...whereCondition,
               ...(storeId ? { store_idstore: storeId } : {}),
+              startDate: { [Sequelize.Op.lte]: new Date() }, // Include discounts with start date less than or equal to the current date
+              endDate: { [Sequelize.Op.gte]: new Date() },
             },
             include: [
               {
@@ -384,7 +371,7 @@ const moment = require('moment');
         
               // Remove properties with null values
               Object.keys(updatedValue).forEach((key) => {
-                if (updatedValue[key] == null || updatedValue[key] == 'null' || updatedValue[key] == undefined ||  updatedValue[key] == undefined) {
+                if (updatedValue[key] == null || updatedValue[key] == 'null' || updatedValue[key] == undefined ||  updatedValue[key] == 'undefined' || updatedValue[key] == ' ' || updatedValue[key] == '') {
                   delete updatedValue[key];
                 }
               });
@@ -399,10 +386,22 @@ const moment = require('moment');
         }
     }
 
+    const getFilterDiscountQuery = async () => {
+      try {
+        const type = await DiscountType.findAll();
+        const restriction = await UsageRestriction.findAll();
+        const distribution = await DiscountDistribution.findAll();
+        return {type, restriction, distribution};
+      } catch (err) {
+        throw err;
+      }
+    }
+
     module.exports = {
         addDiscountQuery,
         getPaginatedAndFilteredDiscountQuery,
         updateDiscountQuery,
         getDetailDiscountQuery,
         getPaginatedAndFilteredVoucherQuery,
+        getFilterDiscountQuery,
     }

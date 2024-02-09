@@ -24,9 +24,9 @@ export const init = (sequelize) => {
         primaryKey: true,
         allowNull: false,
       },
-      used: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false, 
+      amount: {
+        type: DataTypes.INTEGER,
+        allowNull: true, 
       },
     },
     {

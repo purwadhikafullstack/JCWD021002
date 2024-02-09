@@ -13,6 +13,8 @@ import { useWebSize } from '../../provider.websize';
 import { PaginationControls } from '../../components/PaginationControls/PaginationControls';
 import { CardProductStock } from './CardProductStock';
 import { useSelector } from 'react-redux';
+import CartLoading from '../../components/Loaders/CartLoading';
+import { AiFillHome } from "react-icons/ai";
 
 function ProductCatalogue() {
   const {size, handleWebSize } = useWebSize();
@@ -28,39 +30,25 @@ function ProductCatalogue() {
   const [selectedPage, setSelectedPage] = useState(page);
   const [searchParams, setSearchParams] = useSearchParams({ page, pageSize });
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [storeId, setStoreId] = useState();
-  const cityId = useSelector((state) => state.AuthReducer.location?.id);
-
-  const getStoreList = async (cityId) => {
-    try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/user/store-lists?cityId=${cityId}`,
-      );
-      setStoreId(res?.data[0].id);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
+  const coordinat = useSelector((state) => state.addressReducer?.address);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const fetchData = async () => {
-    try {
+    try { setLoading(true);
       if ((productName.trim() !== '') || (categoryId !== undefined && String(categoryId).trim() !== '')) {
         const response = await axios.get(
-      
-      `${import.meta.env.VITE_API_URL}/products/product-lists?page=${page}&pageSize=${pageSize}&sortField=${sortField}&sortOrder=${sortOrder}&categoryId=${categoryId}&productName=${productName}&storeId=${storeId}&statusProduct=1&statusStock=1`
+      `${import.meta.env.VITE_API_URL}/store?page=${page}&pageSize=${pageSize}&sortField=${sortField}&sortOrder=${sortOrder}&categoryId=${categoryId}&productName=${productName}&statusProduct=1&statusStock=1&latitude=${coordinat?.latitude}&longitude=${coordinat?.longitude}`
         );
-        setData(response?.data);
+        setData(response?.data?.data);
       }
-      
   } catch (err) {
       console.log(err);
+  } finally { setLoading(false); }
   }
-  }
-
 
   useEffect(() => {
     setSearchParams({ page, pageSize, productName, categoryId });
-  }, [page, pageSize, productName, categoryId]);
+  }, [page, pageSize, productName, categoryId,]);
   
 
   useEffect(() => {
@@ -76,9 +64,8 @@ function ProductCatalogue() {
   }, []);
 
   useEffect(() => {
-    getStoreList(cityId)
     fetchData();
-  }, [page, pageSize, sortField, sortOrder, categoryId, productName, storeId, cityId, ]);
+  }, [page, pageSize, sortField, sortOrder, categoryId, productName, coordinat]);
 
   const fetchCategory = async () => {
     try {
@@ -97,7 +84,8 @@ useEffect(() => {
 }, []);
   
   return (
-    <Box overflowX='hidden' backgroundColor='#f5f5f5' w={{ base: '100vw', md: size }} height='fit-content'>
+    <Box overflowX='hidden' backgroundColor='#f5f5f5' w={{ base: '100vw', md: size }} height='100vh' maxHeight='fit-content'>
+                <Box position='sticky' top={0} zIndex={99}>
                 <Flex
                     position={'relative'}
                     px={'20px'}
@@ -111,7 +99,7 @@ useEffect(() => {
                 </Flex>
                     <Box>
                 <Flex bgGradient='linear(to-r, #f2ffed, #fcfdde)' dir='row' gap='10px' pb='10px'>
-                <Button height='30px' bgGradient='linear(to-r, #f2ffed, #fcfdde)' leftIcon={<IconChevronLeft />}></Button>
+                <IconButton height='30px' bgGradient='linear(to-r, #f2ffed, #fcfdde)' onClick={() => window.history.back()} icon={<IconChevronLeft />} />
                             <Box w='fit-content'>
                             <InputGroup >
                         <InputLeftElement height='30px' pointerEvents='none'>
@@ -121,7 +109,7 @@ useEffect(() => {
                     </InputGroup>
                             </Box>
                             <Box>
-                                <IconButton height='30px' icon={<IconShoppingCartFilled />} backgroundColor='#fcfdde' />
+                                <IconButton height='30px' icon={<IconShoppingCartFilled />} backgroundColor='#fcfdde' onClick={() => navigate('/cart')} />
                             </Box>
                             </Flex>
                 <Flex width='100%' bgGradient='linear(to-r, #f2ffed, #fcfdde)'>
@@ -129,7 +117,7 @@ useEffect(() => {
                 {dataCategory?.categories?.map((item, index) => (
                 <VStack cursor="pointer" onClick={() => item?.id && setCategoryId(item?.id)} width='60px'>
                     <Avatar border={categoryId == item?.id ? 'solid 3px green' : null} src={item?.imageUrl ? `${import.meta.env.VITE_API_IMAGE_URL}/categories/${item?.imageUrl}` : Logo} />
-                    <Text backgroundColor={categoryId == item?.id ? 'green' : null} pl='3px' pr='3px' borderRadius='10px' textColor={categoryId == item?.id ? 'white' : 'black'} textAlign='center' flexWrap='wrap' fontSize='xs'>{item?.category}</Text>
+                    <Text backgroundColor={categoryId == item?.id ? 'green' : null} pl='3px' pr='3px' borderRadius='10px' textColor={categoryId == item?.id ? 'white' : 'black'} textAlign='center' flexWrap='wrap' maxHeight='40px' fontSize='xs'>{item?.category}</Text>
                 </VStack>
                 ))}
             </Flex>
@@ -146,9 +134,10 @@ useEffect(() => {
                 </Button>
             </Flex>
             </Box>
+            </Box>
             <Box  p={size == '500px' ? 0 : 5} pt='5'>
-              <CardProductStock data={data} />
-          <Box m='5'><PaginationControls 
+            <Flex flexWrap='wrap' justifyContent='center'> {loading ? ( <VStack> <CartLoading /> </VStack> ) : ( (productName || categoryId) && <CardProductStock data={data} /> )} </Flex>
+          <Box m='5'>{data?.products?.length != 0 ? <PaginationControls 
               page= {page}
               pageSize={pageSize}
               selectedPage={selectedPage}
@@ -156,7 +145,7 @@ useEffect(() => {
               setPageSize={setPageSize}
               setSelectedPage={setSelectedPage}
               data={data}
-            /></Box>
+            /> : null}</Box>
   <Drawer size='xs' placement='top' width='50vw' onClose={() => setIsDrawerOpen(false)} isOpen={isDrawerOpen}>
         <DrawerOverlay />
         <DrawerContent margin='auto' width={size == "500px" ? "500px" : "100vw"}>
