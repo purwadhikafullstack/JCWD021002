@@ -4,7 +4,17 @@ const {
      updateDiscountService,
      getDetailDiscountService,
      getPaginatedAndFilteredVoucherService,
+     getFilterDiscountService,
 } = require('../services/discount.service')
+
+        const getFilterDiscountController = async (req, res) => {
+            try {
+                const result = await getFilterDiscountService();
+                return res.status(200).json(result);
+            } catch (err) {
+            return res.status(500).json({ error: 'Internal Server Error' });
+            }
+        }
 
         const getPaginatedAndFilteredDiscountController = async (req, res) => {
             try {
@@ -18,6 +28,7 @@ const {
             const productName = req.query.productName || null;
             const storeId = req.query.storeId || null;
             const status = req.query.status || null;
+            const distributionId = req.query.distributionId || null;
 
             console.log(
                 'controller',
@@ -44,6 +55,7 @@ const {
                 productName,
                 status,
                 storeId,
+                distributionId
                     );
         
         
@@ -225,4 +237,5 @@ const {
         updatedDiscountController,
         getDetailDiscountController,
         getPaginatedAndFilteredVoucherController,
+        getFilterDiscountController,
     }

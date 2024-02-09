@@ -105,7 +105,6 @@ const getPaginatedRatingQuery = async (page, pageSize, rating, sortOrder, produc
         return {
             ratings: censoredRatings,
             totalPages,
-            sortField: 'reviewDate', // Assuming we're always sorting by reviewDate
         };
     } catch (err) {
         console.error('Error in getPaginatedRatingQuery:', err);

@@ -14,6 +14,7 @@ import { PaginationControls } from '../../components/PaginationControls/Paginati
 import { CardProductStock } from './CardProductStock';
 import { useSelector } from 'react-redux';
 import CartLoading from '../../components/Loaders/CartLoading';
+import { AiFillHome } from "react-icons/ai";
 
 function ProductCatalogue() {
   const {size, handleWebSize } = useWebSize();
@@ -84,7 +85,7 @@ useEffect(() => {
 }, []);
   
   return (
-    <Box overflowX='hidden' backgroundColor='#f5f5f5' w={{ base: '100vw', md: size }} height='fit-content'>
+    <Box overflowX='hidden' backgroundColor='#f5f5f5' w={{ base: '100vw', md: size }} height='100vh' maxHeight='fit-content'>
                 <Flex
                     position={'relative'}
                     px={'20px'}
@@ -98,7 +99,7 @@ useEffect(() => {
                 </Flex>
                     <Box>
                 <Flex bgGradient='linear(to-r, #f2ffed, #fcfdde)' dir='row' gap='10px' pb='10px'>
-                <Button height='30px' bgGradient='linear(to-r, #f2ffed, #fcfdde)' leftIcon={<IconChevronLeft />}></Button>
+                <IconButton height='30px' bgGradient='linear(to-r, #f2ffed, #fcfdde)' icon={<AiFillHome />} />
                             <Box w='fit-content'>
                             <InputGroup >
                         <InputLeftElement height='30px' pointerEvents='none'>
@@ -134,8 +135,7 @@ useEffect(() => {
             </Flex>
             </Box>
             <Box  p={size == '500px' ? 0 : 5} pt='5'>
-            {loading == true ? <VStack><CartLoading /></VStack> : null}
-              <CardProductStock data={data} />
+            {loading == true ? <VStack><CartLoading /></VStack> : <CardProductStock data={data} />}
           <Box m='5'><PaginationControls 
               page= {page}
               pageSize={pageSize}

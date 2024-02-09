@@ -1,8 +1,8 @@
 import ExcelJS from 'exceljs';
 
-export const exportToExcel = async (data) => {
+export const exportToExcel = async (data, startDate, endDate) => {
     const exportData = data?.data || [];
-  
+    console.log(data)
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('StockReport');
   
@@ -10,7 +10,8 @@ export const exportToExcel = async (data) => {
     const formattedData = exportData.map((item) => ({
       'Store Name': item.storeName,
       'Location': `${item.city}, ${item.province}`,
-      'ProductName': item.productName,
+      'Product Name': item.productName,
+      'Username': item.username,
       'Total Additions': item.totalAdditions,
       'Total Subtractions': item.totalSubtractions,
       'Final Stock': item.finalStock,
