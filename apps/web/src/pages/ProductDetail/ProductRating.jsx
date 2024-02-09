@@ -28,20 +28,8 @@ export const ProductRating = ({productId}) => {
   const [rating, setRating] = useState('');
   const [sortOrder, setSortOrder] = useState("asc")
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState()
-  const [selectedPage, setSelectedPage] = useState();
-  const [productName, setProductName] = useState()
-  const [cityId, setCityId] = useState("");
-  const [sliderSettings, setSliderSettings] = useState({
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    focusOnSelect: true,
-    // variableWidth: true,
-  });
-  const [quantity, setQuantity] = useState(1);
+  const [pageSize, setPageSize] = useState(1)
+  const [selectedPage, setSelectedPage] = useState(page);
   const navigate = useNavigate();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -59,7 +47,9 @@ export const ProductRating = ({productId}) => {
   }
   }
 
-  console.log("ini di product related", data);
+  console.log("ini rating", data);
+  console.log("ini rating", data?.totalPages);
+
 
 
 
@@ -102,7 +92,7 @@ export const ProductRating = ({productId}) => {
               <VStack width='100%' justifyItems='center'>
               <Button hidden={data?.ratings?.length != 0 ? false : true} onClick={() => {setIsDrawerOpen(true)}}>Lihat Selengkapnya </Button>
               </VStack>
-              <Drawer  placement="bottom" onClose={() => setIsDrawerOpen(false)} size='xs' isOpen={isDrawerOpen}>
+              <Drawer  placement="bottom" onClose={() => {setPageSize(1); setIsDrawerOpen(false);}} size='xs' isOpen={isDrawerOpen}>
     <DrawerOverlay />
     <DrawerContent justifySelf='center' alignSelf='center' margin='auto' sx={size == '500px' ? {w : size} : {maxW : '35vw'}} maxH={size == '500px' ? '90vh' : 'full'}>
       <DrawerCloseButton />
@@ -113,12 +103,12 @@ export const ProductRating = ({productId}) => {
         <Flex flexDir='row' gap='2px' width='fit-content' flexWrap='wrap'>
         <Button width='fit-content' onClick={() => setSortOrder('desc')} leftIcon={<IconListTree />}>Terbaru</Button>
         <Button width='fit-content' onClick={() => setSortOrder('asc')} leftIcon={<IconListTree />}>Terlama</Button>
-        <Button leftIcon={<IconStarFilled />} onClick={() => setRating('') } >All</Button>
-        <Button leftIcon={<IconStarFilled />} onClick={() => setRating(5) } >5</Button>
-        <Button leftIcon={<IconStarFilled />} onClick={() => setRating(4) } >4</Button>
-        <Button leftIcon={<IconStarFilled />} onClick={() => setRating(3) } >3</Button>
-        <Button leftIcon={<IconStarFilled />} onClick={() => setRating(2) } >2</Button>
-        <Button leftIcon={<IconStarFilled />} onClick={() => setRating(1) } >1</Button>
+        <Button leftIcon={<IconStarFilled style={{ color: rating == '' ? '#fdd835' : 'black' }} />} onClick={() => setRating('') } >All</Button>
+        <Button leftIcon={<IconStarFilled style={{ color: rating == 5 ? '#fdd835' : 'black' }} />} onClick={() => setRating(5) } >5</Button>
+        <Button leftIcon={<IconStarFilled style={{ color: rating == 4 ? '#fdd835' : 'black' }} />} onClick={() => setRating(4) } >4</Button>
+        <Button leftIcon={<IconStarFilled style={{ color: rating == 3 ? '#fdd835' : 'black' }} />} onClick={() => setRating(3) } >3</Button>
+        <Button leftIcon={<IconStarFilled style={{ color: rating == 2 ? '#fdd835' : 'black' }} />} onClick={() => setRating(2) } >2</Button>
+        <Button leftIcon={<IconStarFilled style={{ color: rating == 1 ? '#fdd835' : 'black' }} />} onClick={() => setRating(1) } >1</Button>
         
         </Flex>
         <Box mt='10px' width='97%' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
@@ -159,7 +149,7 @@ export const ProductRating = ({productId}) => {
       </DrawerBody>
       <DrawerFooter>
         {/* You can add buttons or controls in the footer if needed */}
-        <Button colorScheme="blue" onClick={() => setIsDrawerOpen(false)}>
+        <Button colorScheme="blue" onClick={() => {setPageSize(1); setIsDrawerOpen(false);}}>
           Tutup
         </Button>
       </DrawerFooter>

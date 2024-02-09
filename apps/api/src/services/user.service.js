@@ -10,9 +10,9 @@ const {
 const bcrypt = require("bcrypt");
 
 
-const getUserService = async (page, pageSize, roleId, username) => {
+const getUserService = async (page, pageSize, roleId, username, sortOrder) => {
     try {
-        const res = await getUserQuery(page, pageSize, roleId, username)
+        const res = await getUserQuery(page, pageSize, roleId, username, sortOrder)
 
         return res;
     } catch (err) {

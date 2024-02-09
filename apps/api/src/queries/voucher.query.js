@@ -186,3 +186,15 @@ export const updateOrderTotalAmountVoucherQuery = async (orderId, totalAmount, t
         throw err;
     }
 };
+
+export const subtractVoucherQuery = async (voucherId) => {
+    try {
+        return await Discount.update({
+            discountAmount: Sequelize.literal(`discountAmount - 1`),
+        }, {
+            where: {id: voucherId},
+        })
+    } catch (err) {
+        throw err;
+    }
+}

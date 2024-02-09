@@ -31,7 +31,7 @@ import { useSelector } from 'react-redux';
 import { calculateDiscountPrice } from '../../utils/calculateDiscountPrice';
 import { useWebSize } from '../../provider.websize';
 import toRupiah from '@develoka/angka-rupiah-js'
-
+import SideBar from '../../components/SideBar/SideBar';
 
 function truncateDescription(description, maxLength) {
   if (description?.length <= maxLength) {
@@ -42,7 +42,7 @@ function truncateDescription(description, maxLength) {
 
 const Product = () => {
   const {size, handleWebSize } = useWebSize();
-
+  const navigate = useNavigate();
     const {id} = useParams();
   const { user, isLogin } = useSelector((state) => state.AuthReducer);
     const [rating, setRating] = useState(0);
@@ -125,32 +125,18 @@ console.log(data);
   console.log(size);
   console.log("ini data now", data);
   return (
+    <Box w={{ base: '100vw', md: size }}>
+          <SideBar size={size} handleWebSize={handleWebSize}/>
     <Box backgroundColor='#f5f5f5' p='0'
     pb='110px'
+    pt='90px'
+    pl={size == '500px' ? 0 : '165px'}
     w={{ base: '100vw', md: size }}
     h={'fit-content'}
     transition="width 0.3s ease">
-      <Flex
-
-        position={'sticky'}
-        top={0}
-        bgColor='white'
-        zIndex={99}
-        // top={{ base: '20px', lg: '-30px' }}
-        px={'20px'}
-        h={"10vh"}
-        justify={"space-between"}
-        align={"center"}
-      >
-        <Image src={LogoGroceria} h={'30px'} />
-        <ResizeButton color={"black"}/>
-      </Flex>
-    <HStack mb='10px' p={4} >
-        {/* <IconChevronLeft />
-        <Text textAlign='left' fontWeight='bold'>Product Name</Text> */}
-        <Button backgroundColor='#f5f5f5' leftIcon={<IconChevronLeft />}>Kembali</Button>
-    </HStack>
-    <Flex alignItems="flex-start" pl={size == '500px' ? '0px' : '20px'} pr={size == '500px' ? '0px' : '20px'}  flexDirection={size == '500px' ? 'column' : 'row'} h={"full"}>
+      
+        <Button backgroundColor='#f5f5f5' onClick={() => navigate(-1)} leftIcon={<IconChevronLeft />}>Kembali</Button>
+    <Flex gap='10' alignItems="flex-start" pl={size == '500px' ? '0px' : '20px'} pr={size == '500px' ? '0px' : '20px'}  flexDirection={size == '500px' ? 'column' : 'row'} h={"full"}>
       <VStack mt='20px' width={size == '500px' ? '100%' : '30vw'} position={size == '500px' ? 'relative' : 'sticky'} top={size == '500px' ? '0px' : '110px'} >
     <Box width={size == '500px' ? '80%' : '30vw'} justifyContent='center'>
     {data?.result?.ProductImages && (
@@ -230,54 +216,20 @@ console.log(data);
         ))}
         </Flex>
         </Box>
-        
-        
-    
-    
-    
-    <Box mt='10px' width='97%' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
+        <Box mt='10px' width='97%' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
             <Text fontSize='larger' fontWeight='bold'>Penilaian & Ulasan</Text>
             <Flex mb='10px' flexDirection='row' gap='5px'>
             <Image boxSize='25px' src={star} />
-            <Text fontWeight='bold'>{data?.subquery?.averageRating ? data?.subquery?.averageRating?.toFixed(1) : 0}/5.0</Text>
+            <Text fontWeight='bold'>{data?.subquery?.averageRating?.toFixed(1)}/5.0</Text>
             <Text >({data?.subquery?.totalReviews})</Text>
             </Flex>
-            {data?.subquery?.totalReviews > 1 ? 
-            <Flex flexWrap="wrap" columnGap='5px'>
-            <Image width='30px' src={star} />
-            <Text fontWeight='bold'>{data?.subquery?.averageRating?.toFixed(1)}/5.0</Text>
-            <Text>{data?.subquery?.totalReviews} Ulasan</Text>
-            </Flex> : null}
             <ProductRating productId={data?.result?.id} />
         </Box>
-        <Box mt='10px' width='97%' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
-          <Text>Bagikan</Text>
-            <Flex  flexWrap='wrap' flexDirection='row' columnGap='5px'>
-            <EmailShareButton url={window.location.href}>
-        <EmailIcon size={32} round />
-      </EmailShareButton>
-
-      <FacebookShareButton url={window.location.href}>
-        <FacebookIcon size={32} round />
-      </FacebookShareButton>
-
-      <TwitterShareButton url={window.location.href}>
-        <TwitterIcon size={32} round />
-      </TwitterShareButton>
-
-      <WhatsappShareButton url={window.location.href}>
-        <WhatsappIcon size={32} round />
-      </WhatsappShareButton>
-
-      {/* Add your custom copy link button */}
-      <IconButton borderRadius='full' boxSize='32px' icon={<IconLink />} onClick={() => navigator.clipboard.writeText(window.location.href)} />
-            </Flex>
-        </Box>
-        
         </VStack>
         
     </Flex>
     
+    </Box>
     </Box>
     
   );

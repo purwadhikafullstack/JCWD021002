@@ -4,20 +4,12 @@ import {
   Box,
   Button,
   Text,
-  Spacer,
-  VStack,
-  FormLabel,
+  Spacer, FormLabel,
   useDisclosure,
   Modal,
   ModalOverlay,
   ModalHeader,
-  ModalContent,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-  Input,
-  Flex,
-  Select,
+  ModalContent, ModalCloseButton, ModalBody, ModalFooter, Input, Flex, Select,
 } from '@chakra-ui/react';
 import {
   IconAdjustmentsHorizontal,
@@ -34,20 +26,16 @@ const ReportSales = () => {
   const {size, handleWebSize } = useWebSize();
   const { user, isLogin } = useSelector((state) => state.AuthReducer);
   const [data, setData] = useState([]);
-  const [dataUser, setDataUser] = useState([]);
   const [sortOrder, setSortOrder] = useState('asc');
   const [page, setPage] = useState();
   const [pageSize, setPageSize] = useState();
   const [totalPage, setTotalPage] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const navigate = useNavigate();
   const [selectedPage, setSelectedPage] = useState(page);
   const [roleId, setRoleId] = useState('');
   const [username, setUsername] = useState();
   const [searchParams, setSearchParams] = useSearchParams({ page, pageSize });
-  const [viewType, setViewType] = useState('table'); // 'grid' or 'table'
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
   const [categoryId, setCategoryId] = useState('');
@@ -70,8 +58,6 @@ const ReportSales = () => {
     }
   };
 
-      console.log("ini data store",dataStore);
-
   useEffect(() => {
     fetchStore();
     if (user?.store_idstore) {
@@ -80,30 +66,6 @@ const ReportSales = () => {
   }, []);
 
 
-  const handleDeleteOrder = (user) => {
-    setSelectedUser(user);
-    setDeleteModalOpen(true);
-  };
-
-  const confirmDeleteUser = async () => {
-    try {
-      const result = await axios.patch(
-        `${import.meta.env.VITE_API_URL}user/update-user`,
-        {
-          id: selectedUser?.id,
-          status: 'Deactive',
-        },
-      );
-
-      if (result) {
-        alert('User deactive successful');
-        setDeleteModalOpen(false);
-        fetchReportSales();
-      }
-    } catch (err) {
-      alert('User used in another data');
-    }
-  };
 
   const fetchCategory = async () => {
     try {
@@ -116,8 +78,6 @@ const ReportSales = () => {
       console.log(err);
     }
   };
-
-  console.log(dataCategory);
 
   useEffect(() => {
     fetchCategory();
@@ -135,8 +95,6 @@ const ReportSales = () => {
       console.log(err);
   }
   }
-
-
   useEffect(() => {
       fetchDataProduct()
   }, [productName, categoryId]);
@@ -174,7 +132,6 @@ const ReportSales = () => {
     fetchReportSales();
   }, [page, pageSize, startDate, endDate, categoryId, storeId, productId]);
 
-
   return (
     <Box w={{ base: '100vw', md: size }} overflowX='hidden'>
           <SideBar size={size} handleWebSize={handleWebSize}/>
@@ -182,11 +139,9 @@ const ReportSales = () => {
       <Box p='20px'>
         <Box pl={size == '500px' ? '0px' : '150px' } mt='80px' >
                 <Flex dir='row' gap='10px'>
-                
           <Box>
           <Box>
     <Button leftIcon={<IconAdjustmentsHorizontal />} borderRadius='full' border='solid 1px black' onClick={onOpen}>Filter</Button>
-
                 </Box>
     <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -216,7 +171,6 @@ const ReportSales = () => {
             ))}
             </Select>
           </ModalBody>
-
           <ModalFooter>
             <Button colorScheme='blue' mr={3} onClick={onClose}>
               Close
@@ -231,58 +185,10 @@ const ReportSales = () => {
         <Text>-</Text>
       <Input value={endDate} onChange={(e) => setEndDate(e.target.value)} width='fit-content' type='date' />
             <Spacer />
-            <Button
-  borderRadius="full"
-  backgroundColor="#286043"
-  textColor="white"
-  border="solid 1px #286043"
-  onClick={() => exportToExcel(data, startDate, endDate)}
->
-  Export to Excel
-</Button>
+            <Button borderRadius="full" backgroundColor="#286043" textColor="white" border="solid 1px #286043" onClick={() => exportToExcel(data, startDate, endDate)} >Export to Excel</Button>
             </Flex>
-          <TableLists data={data} handleDeleteOrder={handleDeleteOrder} navigate={navigate} />
-            
-            {deleteModalOpen && (
-              <Modal
-                isOpen={deleteModalOpen}
-                onClose={() => setDeleteModalOpen(false)}
-              >
-                <ModalOverlay />
-                <ModalContent>
-                  <ModalHeader>Delete User</ModalHeader>
-                  <ModalCloseButton />
-                  <ModalBody>
-                    <Text>
-                      Are you sure you want to delete the User "
-                      {selectedUser?.username}"?
-                    </Text>
-                    <VStack></VStack>
-                  </ModalBody>
-                  <ModalFooter>
-                    <Button
-                      colorScheme="blue"
-                      mr={3}
-                      onClick={() => setDeleteModalOpen(false)}
-                    >
-                      Cancel
-                    </Button>
-                    <Button colorScheme="red" onClick={confirmDeleteUser}>
-                      Delete
-                    </Button>
-                  </ModalFooter>
-                </ModalContent>
-              </Modal>
-            )}
-            <PaginationControls 
-              page= {page}
-              pageSize={pageSize}
-              selectedPage={selectedPage}
-              setPage={setPage}
-              setPageSize={setPageSize}
-              setSelectedPage={setSelectedPage}
-              data={data}
-            />
+          <TableLists data={data}/>
+            <PaginationControls  page= {page} pageSize={pageSize} selectedPage={selectedPage} setPage={setPage} setPageSize={setPageSize} setSelectedPage={setSelectedPage} data={data} />
           </Box>
         </Box>
       </Box>

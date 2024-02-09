@@ -141,7 +141,7 @@ const CategoryLists = () => {
       <Box p='50px'>
         <Box pl={size == '500px' ? '0px' : '150px' } mt='80px' >
           <HStack mb='10px'>
-            <Button leftIcon={<IconPlus />} backgroundColor='#286043' textColor='white' border='solid 1px #286043' onClick={onOpen}>Add Category</Button>
+            <Button leftIcon={<IconPlus />} backgroundColor='#286043' textColor='white' border='solid 1px #286043' isDisabled={user?.role_idrole == 1 ? false : true} onClick={onOpen}>Add Category</Button>
             <Spacer /> 
             <Button leftIcon={<IconSortAscendingLetters />} border="solid black 1px" borderRadius="full" onClick={() => setSortOrder('asc')} isDisabled={sortOrder == 'asc' ? true : false} fontSize='small' > Ascending </Button>
             <Button leftIcon={<IconSortDescendingLetters />} border="solid black 1px" borderRadius="full" onClick={() => setSortOrder('desc')} isDisabled={sortOrder == 'desc' ? true : false} fontSize='small' > Descending </Button>
