@@ -4,19 +4,29 @@ const {
     updateDiscountQuery,
     getDetailDiscountQuery,
     getPaginatedAndFilteredVoucherQuery,
-} = require('../queries/discount.query')
+    getFilterDiscountQuery,
+} = require('../queries/discount.query');
+
+    const getFilterDiscountService = async () => {
+        try {
+            return await getFilterDiscountQuery();
+        } catch (err) {
+            throw err;
+        }
+    }
 
     const getPaginatedAndFilteredDiscountService = async (
-                page,
-                pageSize,
-                sortField,
-                sortOrder,
-                discountName,
-                typeId,
-                usageRestrictionId,
-                productName,
-                status,
-                storeId,
+        page,
+        pageSize,
+        sortField,
+        sortOrder,
+        discountName,
+        typeId,
+        usageRestrictionId,
+        productName,
+        status,
+        storeId,
+        distributionId,
     ) => {
         try {
             const result = await getPaginatedAndFilteredDiscountQuery(
@@ -30,6 +40,7 @@ const {
                 productName,
                 status,
                 storeId,
+                distributionId,
                     )
 
                     return result;
@@ -185,4 +196,5 @@ const {
         updateDiscountService,
         getDetailDiscountService,
         getPaginatedAndFilteredVoucherService,
+        getFilterDiscountService,
     }

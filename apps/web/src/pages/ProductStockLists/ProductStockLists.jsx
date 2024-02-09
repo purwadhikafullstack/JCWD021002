@@ -132,7 +132,7 @@ function ProductStockLists() {
         stockAmount={stockAmount}
         setStockAmount={setStockAmount}
         handleCancel={() => setEditToStockModalIsOpen(false)}
-        dataStore={dataStore} />
+        dataStore={dataStore} fetchData={fetchData} />
           <Modal isOpen={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
             <ModalOverlay />
             <ModalContent>

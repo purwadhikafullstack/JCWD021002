@@ -273,10 +273,17 @@ const Product = () => {
         <Link to="/">
     <Text color='#00c689' fontWeight='bold' >Home</Text>
   </Link>
-  <IconChevronRight />
-  {data?.result?.Product?.ProductCategories?.map((item) => (
-              <Text color='#00c689' fontWeight='bold' >{item?.category},</Text>
-        ))}
+  {size === '500px' ? null : (
+  <>
+    <IconChevronRight />
+    {data?.result?.Product?.ProductCategories?.map((item, index) => (
+      <React.Fragment key={index}>
+        <Link to={`/product-catalogue?categoryId=${item?.id}`}><Text color='#00c689' fontWeight='bold'>{item?.category}</Text></Link>
+        {index < data.result.Product.ProductCategories.length - 1 && ','}
+      </React.Fragment>
+    ))}
+  </>
+)}
   <IconChevronRight />
   <Text color='#00c689' fontWeight='bold' >{data?.result?.Product?.name}</Text>
     </Flex>
@@ -285,13 +292,13 @@ const Product = () => {
     <Box width={size == '500px' ? '80%' : '30vw'} justifyContent='center'>
     {data?.result?.Product?.ProductImages && (
   <>
-    <link rel="preload" as="image" href={`${import.meta.env.VITE_API_IMAGE_URL}/products/${data?.result.Product.ProductImages[0].imageUrl}`} />
+    <link rel="preload" as="image" href={`${import.meta.env.VITE_API_IMAGE_URL}/products/${data?.result.Product?.ProductImages[0]?.imageUrl}`} />
     <Slider {...mainSliderSettings} asNavFor={thumbnailSlider} ref={(slider) => setMainSlider(slider)}>
       {data?.result.Product.ProductImages.map((image, index) => (
         <Image
           key={index.toString()}
           backgroundColor='white'
-          src={`${import.meta.env.VITE_API_IMAGE_URL}/products/${image.imageUrl}`}
+          src={`${import.meta.env.VITE_API_IMAGE_URL}/products/${image?.imageUrl}`}
           objectFit='contain'
           height='35vh'
           borderRadius='10px'
@@ -386,12 +393,6 @@ const Product = () => {
             <Text fontWeight='bold'>{data?.subquery?.averageRating?.toFixed(1)}/5.0</Text>
             <Text >({data?.subquery?.totalReviews})</Text>
             </Flex>
-            {data?.subquery?.totalReviews > 1 ? 
-            <Flex flexWrap="wrap" columnGap='5px'>
-            <Image width='30px' src={star} />
-            <Text fontWeight='bold'>{data?.subquery?.averageRating?.toFixed(1)}/5.0</Text>
-            <Text>{data?.subquery?.totalReviews} Ulasan</Text>
-            </Flex> : null}
             <ProductRating productId={data?.result?.Product?.id} />
         </Box>
         <Box mt='10px' width='97%' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">

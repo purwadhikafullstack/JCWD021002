@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Box, Button, Text, Spacer, VStack, useDisclosure, Modal, ModalOverlay, ModalHeader, ModalContent, ModalCloseButton, ModalBody, ModalFooter, Input, Flex, Select, InputGroup, InputLeftElement, } from '@chakra-ui/react';
-import { IconPlus, IconSearch, } from '@tabler/icons-react';
+import { IconPlus, IconSearch, IconSortAscendingLetters, IconSortDescendingLetters, } from '@tabler/icons-react';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import SideBar from '../../components/SideBar/SideBar';
 import { GridLists } from './GridLists';
@@ -72,7 +72,7 @@ const UserLists = () => {
   const fetchUser = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/user/user-lists?page=${page}&pageSize=${pageSize}&roleId=${roleId}&username=${username}`,
+        `http://localhost:8000/api/user/user-lists?page=${page}&pageSize=${pageSize}&roleId=${roleId}&username=${username}&sortOrder=${sortOrder}`,
       );
 
       console.log('API Request URL:', response.config.url);
@@ -100,7 +100,7 @@ const UserLists = () => {
 
   useEffect(() => {
     fetchUser();
-  }, [page, pageSize, username, roleId]);
+  }, [page, pageSize, username, roleId, sortOrder]);
 
   return (
     <Box w={{ base: '100vw', md: size }} overflowX='hidden'>
@@ -109,7 +109,7 @@ const UserLists = () => {
       <Box w={{ base: '100vw', md: size }} height='fit-content' backgroundColor='#fbfaf9' >
       <Box p='20px'>
         <Box pl={size == '500px' ? '0px' : '150px' } mt='80px' >
-                <Flex dir='row' gap='10px'>
+                <Flex flexWrap='wrap' dir='row' gap='10px'>
                 <Box w='60%'>
                 <InputGroup mb='20px'>
             <InputLeftElement pointerEvents='none'>
@@ -131,15 +131,13 @@ const UserLists = () => {
               <option value="3">User</option>
             </Select>
           </Box>
+          <Button leftIcon={<IconSortAscendingLetters />} border="solid black 1px" borderRadius="full" onClick={() => setSortOrder('asc')} isDisabled={sortOrder == 'asc' ? true : false} fontSize='small' > Ascending </Button>
+            <Button leftIcon={<IconSortDescendingLetters />} border="solid black 1px" borderRadius="full" onClick={() => setSortOrder('desc')} isDisabled={sortOrder == 'desc' ? true : false} fontSize='small' > Descending </Button>
                 </Flex>
-          <Flex flexDir='row' flexWrap='wrap' mb='10px'>
+          <Flex flexDir='row' flexWrap='wrap' mt='10px' mb='10px'>
             <Button leftIcon={<IconPlus />} backgroundColor='#286043' textColor='white' border='solid 1px #286043' onClick={() => navigate('/add-user')}>Add Admin Store</Button>
             <Spacer />
-            <Button
-            onClick={handleSwitchView}
-            borderRadius='full'
-            border='solid 1px black'
-          >
+            <Button onClick={handleSwitchView} borderRadius='full' border='solid 1px black' >
             Switch View
           </Button>
             </Flex>
@@ -148,7 +146,6 @@ const UserLists = () => {
         ) : (
           <GridLists dataUser={dataUser} handleDeleteUser={handleDeleteUser} navigate={navigate} />
         )}
-            
             {deleteModalOpen && (
               <Modal
                 isOpen={deleteModalOpen}

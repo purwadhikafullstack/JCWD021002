@@ -158,8 +158,6 @@ const EditDiscount = () => {
 
   const addProduct = async () => {
     try {
-        
-
       let formData = new FormData();
       formData.append("id", id)
       formData.append("distributionId", distribution);

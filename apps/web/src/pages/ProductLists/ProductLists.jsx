@@ -3,7 +3,7 @@ import axios from 'axios';
 import Slider from 'react-slick';
 import reactLogo from '../../assets/react.svg';
 import viteLogo from '/vite.svg';
-import { Text, Box, HStack, Image, Flex, Button, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useDisclosure, Select, Stack, Card, Divider, CardFooter, ButtonGroup, useColorModeValue, CardBody, Heading, InputGroup, InputLeftElement, Spacer, IconButton } from '@chakra-ui/react';
+import { Text, Box, HStack, Image, Flex, Button, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useDisclosure, Select, Stack, Card, Divider, Grid, ButtonGroup, useColorModeValue, CardBody, Heading, InputGroup, InputLeftElement, Spacer, IconButton } from '@chakra-ui/react';
 import { IconChevronLeft, IconCircleXFilled, IconCirclePlus, IconTrashXFilled, IconSquareRoundedPlusFilled, IconPlus, IconProgressCheck } from '@tabler/icons-react';
 import { IconSearch, IconAdjustmentsHorizontal, IconChevronRight, IconEditCircle, IconTrashX, IconInfoCircle, IconLayoutGrid, IconList, IconSortAscending2, IconSortDescending2, IconAbc, IconTags, IconCircleCheckFilled} from '@tabler/icons-react'
 import star from '../ProductDetail/star-svgrepo-com.svg';
@@ -26,8 +26,6 @@ function ProductLists() {
   const {size, handleWebSize } = useWebSize();
   const { user, isLogin } = useSelector((state) => state.AuthReducer);
   const [userStore, setUserStore] = useState(user?.store_idstore);
-
-  const [sampleData, setSampleData] = useState([]);
   const [data, setData] = useState([]);
   const [dataStore, setDataStore] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -54,6 +52,7 @@ function ProductLists() {
 
   console.log('ini categoryId',categoryId);
   console.log("data suer :", user);
+  console.log("ini data storeId user", selectedStore, user.store_idstore)
 
 
 
@@ -76,7 +75,7 @@ function ProductLists() {
       setAddToStockModalIsOpen(false); // Close the modal after successful addition
     } catch (error) {
       console.error(error);
-      toast.error("Product already in stock");
+      if(selectedStore || user.store_idstore == null || undefined) { toast.warning("Please fill all input"); } else { toast.error("Product already in stock"); }
       // Handle error as needed
     }
   };
@@ -246,13 +245,17 @@ function formatPriceToIDR(price) {
 
       
 
-      <Stack spacing='4' direction='row' flexWrap='wrap' justifyContent={size == '500px' ? 'center' : 'flex-start'}>
-      
+      <Stack spacing='4' direction='row' flexWrap='wrap' p='10px' justifyContent={size == '500px' ? 'center' : 'flex-start'}>
+      <Grid
+        templateColumns={size == '500px' ? 'repeat(2, 1fr)' : 'repeat(5, 1fr)'}
+        w={'fit-content'}
+        gap={5}
+      >
             {data?.products &&
               data?.products.map((item, index) => (
                 <>
                 
-                <Card key={item.id} maxW={size == '500px' ? '40%' : '17%'} bg={useColorModeValue('white', 'gray.800')}
+                <Card key={item.id} bg={useColorModeValue('white', 'gray.800')}
             boxShadow='0px 1px 5px gray' border={item?.status == 1 ? 'solid 2px green' : 'solid 2px red'} onClick={() => navigate(`/product-detail-admin/${item?.id}`)} _hover={{ cursor: 'pointer' }}>
               <Image
                       key={item?.ProductImages[0]?.imageUrl}
@@ -307,16 +310,16 @@ function formatPriceToIDR(price) {
                 </Card>
                 </>
               ))}
+              </Grid>
           </Stack>
-          <PaginationControls 
+          <Box pl='10px' pr='10px'><PaginationControls 
               page= {page}
               pageSize={pageSize}
               selectedPage={selectedPage}
               setPage={setPage}
               setPageSize={setPageSize}
               setSelectedPage={setSelectedPage}
-              data={data}
-            />
+              data={data} /></Box>
     
   <Modal isOpen={addToStockModalIsOpen} onClose={() => setAddToStockModalIsOpen(false)}>
         {/* ... (other modal content) */}
@@ -402,7 +405,7 @@ function formatPriceToIDR(price) {
               </ModalBody>
               <ModalFooter>
                 <Button colorScheme="blue" mr={3} onClick={() => {handleActivateProduct(selectedProduct, token ) .then(() => { setActivateModalOpen(false); fetchData(); }) .catch((error) => { console.error('Error in handleEditToStock:', error);});} }>
-                  Activate to Stock
+                  Activate Product
                 </Button>
                 <Button colorScheme="red" onClick={() => setActivateModalOpen(false)}>
                   Cancel

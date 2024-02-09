@@ -242,8 +242,6 @@ const createSalesReportQuery = async (
           where: storeId ? { store_idstore: storeId } : {},
     })
 
-    console.log(productStockQuery);
-
     const productStockIds = productStockQuery.map((product) => product.id);
 
     const res = await OrderDetail.findAndCountAll({
@@ -258,11 +256,11 @@ const createSalesReportQuery = async (
             include: [
               {
                 model: User,
-                attributes: [],
+                attributes: ['username'],
               },
               {
                 model: Store,
-                attributes: [],
+                attributes: ['name'],
               },
             ],
             where: {

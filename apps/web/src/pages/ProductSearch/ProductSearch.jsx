@@ -5,7 +5,7 @@ import { IconChevronLeft, IconShoppingCartFilled } from '@tabler/icons-react';
 import { IconSearch, IconAdjustmentsHorizontal, IconChevronRight, IconArrowRight, IconArrowLeft, IconLayoutGrid, IconList, IconSortAscending2, IconSortDescending2, IconAbc, IconTags} from '@tabler/icons-react'
 import { ResizeButton } from '../../components/ResizeButton';
 import LogoGroceria from '../../assets/Groceria-no-Bg.png';
-import Logo from '../../assets/Logo-Groceria-no-Bg.png';
+import { AiFillHome } from "react-icons/ai";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
@@ -95,21 +95,22 @@ useEffect(() => {
                     <ResizeButton webSize={size} handleWebSize={handleWebSize} color={"black"}/>
                 </Flex>
                     <Box>
-                <Flex bgGradient='linear(to-r, #f2ffed, #fcfdde)' dir='row' gap='10px' pb='10px'>
-                <Button height='30px' bgGradient='linear(to-r, #f2ffed, #fcfdde)' leftIcon={<IconChevronLeft />}></Button>
+                <Flex bgGradient='linear(to-r, #f2ffed, #fcfdde)' pl='2px' dir='row' gap='10px' pb='10px'>
+                <IconButton height='30px' bgGradient='linear(to-r, #f2ffed, #fcfdde)' icon={<AiFillHome />} />
                             <Box w='fit-content'>
                             <InputGroup >
                         <InputLeftElement height='30px' pointerEvents='none'>
                         <IconSearch width='30px' color='black' />
                         </InputLeftElement>
-                        <Input size='sm' type='text' backgroundColor='white' placeholder='Cari beragam kebutuhan harian' width={size == '500px' ? '290px' : '70vw'} value={productName} borderRadius='full' onChange={(e) => {setProductName(e.target.value); setPage(1);}} />
+                        <Input size='sm' type='text' backgroundColor='white' placeholder='Cari beragam kebutuhan harian' width={size == '500px' ? '260px' : '70vw'} value={productName} borderRadius='full' onChange={(e) => {setProductName(e.target.value); setPage(1);}} />
                     </InputGroup>
                             </Box>
                             <Box>
                                 <IconButton height='30px' icon={<IconShoppingCartFilled />} backgroundColor='#fcfdde' onClick={() => navigate('/cart')} />
                             </Box>
                             <Box>
-    <Button leftIcon={<IconAdjustmentsHorizontal size='20px' />} fontSize='sm' borderRadius='full' border='solid 1px black' onClick={onOpen}>Filter</Button>
+                            <IconButton height='30px' icon={<IconAdjustmentsHorizontal />} backgroundColor='#fcfdde' onClick={onOpen} />
+
 
                 </Box>
                             </Flex>

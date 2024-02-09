@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import { useNavigate, useParams } from "react-router-dom";
-// import { SidebarWithHeader } from '../../components/SideBar/SideBar';
 import { FiUpload } from "react-icons/fi";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -17,8 +16,6 @@ import SideBar from '../../components/SideBar/SideBar';
 import { useSelector } from "react-redux";
 import { useWebSize } from '../../provider.websize';
 
-
-
 function formatPriceToIDR(price) {
   return new Intl.NumberFormat('id-ID', {
     style: 'currency',
@@ -33,10 +30,8 @@ const DiscountDetail = () => {
   const [data, setData] = useState([]);
   const [fieldImage, setFieldImage] = useState(null);
   const [selectedImage, setSelectedImage] = useState('');
-  const [selectedC, setSelectedC] = useState([]);
   const navigate = useNavigate();
   const [dataStore, setDataStore] = useState([]);
-
   const [type, setType] = useState();
   const [discValue, setDiscValue] = useState();
   const [usageType, setUsageType] = useState();
@@ -58,8 +53,6 @@ const DiscountDetail = () => {
   const [editData, setEditData] = useState();
   const [status, setStatus] = useState();
   const [storeId, setStoreId] = useState();
-  const token = localStorage.getItem("token");
-  const theme = useTheme();
   const fetchStore = async () => {
     try {
       const response = await axios.get(
@@ -74,8 +67,6 @@ const DiscountDetail = () => {
     }
   };
 
-      console.log("ini data store",productId2, productId);
-
   useEffect(() => {
     fetchStore();
   }, []);
@@ -86,7 +77,6 @@ const DiscountDetail = () => {
             `${import.meta.env.VITE_API_URL}/products/product-lists?page=${1}&pageSize=&sortField=name&sortOrder=asc&categoryId=&productName=${productName}&storeId=${user?.store_idstore ? user?.store_idstore : storeId}&statusProduct=1&statusStock=1`
           );
           setData(response?.data);
-
   } catch (err) {
       console.log(err);
   }
@@ -100,23 +90,17 @@ const DiscountDetail = () => {
   }, [productName, storeId]);
 
   useEffect(() => {
-    // Update productId when data or storeId changes
     if (data?.products && data.products.length > 0 && storeId) {
       const defaultProductId = data.products[0]?.ProductStocks[0]?.id;
       setProductId(productId2);
     }
   }, [data, storeId]);
-
-  console.log(editData)
-
   useEffect(() => {
-
   const fetchDiscountDetails = async (id) => {
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}discount/discount-detail/${id}`
       );
-
       setEditData(response?.data);
       setDistribution(response?.data?.distributionId);
       setUsageType(response?.data?.usageRestrictionId);
@@ -141,25 +125,18 @@ const DiscountDetail = () => {
             import.meta.env.VITE_API_IMAGE_URL
           }/discounts/${response?.data?.banner}`);
       }
-      
-
     } catch (err) {
       console.log(err);
     }
   };
-
     fetchDiscountDetails(id);
   }, [id]);
-
-  const textColor = useColorModeValue('black', 'white');
-
   return (
     <>
       <Box w={{ base: '100vw', md: size }}>
           <SideBar size={size} handleWebSize={handleWebSize}/>
           <ToastContainer position="top-center" closeOnClick pauseOnFocusLoss draggable pauseOnHover theme="colored" />
       <Box w={{ base: '98.7vw', md: size }} overflowX='hidden' height='100vh' backgroundColor='#fbfaf9' p='20px'>
-      
       <Box pl={size == '500px' ? '0px' : '150px' } pr={size == '500px' ? '0px' : '20px'} pt='20px' pb='20px' mt='70px' >
         <HStack mb='10px'>
           <Button leftIcon={<IconArrowLeft />} borderRadius='full' backgroundColor='white' textColor='black' border='solid 1px black' onClick={() => navigate('/discount-lists')}>Back</Button>
@@ -178,16 +155,11 @@ const DiscountDetail = () => {
             objectFit="cover"
             borderRadius="10px"/> : <Box bgColor='#ebf5ff' p='20px' display='flex' justifyContent='center' width='350px' borderRadius='10px'><IconDiscount color='#0049cc' size='100px' /></Box> }
     </VStack>
-    
-
             </Box>
             <Text fontSize='large' fontWeight='bold' mt='10px'>Distribution Discount</Text>
             {distribution == 1 ? <Text>Regular Discount</Text> : <Text>Voucher</Text>}
-
             <Text fontSize='large' fontWeight='bold'>Usage Restriction Type</Text>
             {usageType == 1 ? <Text>Purchase</Text> : <Text>Shipping</Text>}
-            
-
             <Text fontSize='large' fontWeight='bold' mt='10px'>Discount Type</Text>
             <Text>
                 {type === 4
@@ -207,9 +179,6 @@ const DiscountDetail = () => {
         ? "Nominal"
         : ""}
     </Text>
-
-            
-
             <Flex columnGap='10px' mb='20px' flexDir={size == '500px' ? 'column' : 'row'}>
               <Box width='100%'>
                 <Text fontSize='large' fontWeight='bold'>Discount Value</Text>
@@ -228,7 +197,6 @@ const DiscountDetail = () => {
         : ""}
     </Text>
               </Box>
-              
             </Flex>
 
             <Flex columnGap='10px' mb='20px' flexDir={size == '500px' ? 'column' : 'row'}>

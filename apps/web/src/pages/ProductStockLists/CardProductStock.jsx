@@ -1,4 +1,4 @@
-import { Stack,Flex, Card, CardBody, IconButton, Heading, Image, Text, useColorModeValue } from "@chakra-ui/react";
+import { Stack,Flex, Card, CardBody, IconButton, Heading, Image, Text, useColorModeValue, Grid } from "@chakra-ui/react";
 import { 
     IconEditCircle,
     IconCircleCheckFilled,
@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 
 export const CardProductStock = ({data, setSelectedProductStock, setStockAmount, setEditToStockModalIsOpen, setDeleteModalOpen, setActivateModalOpen}) => {
     const navigate = useNavigate();
-    const { size, handleWebSize } = useWebSize;
+    const { size, handleWebSize } = useWebSize();
 
     return (
         <>
@@ -20,14 +20,19 @@ export const CardProductStock = ({data, setSelectedProductStock, setStockAmount,
             spacing="4"
             direction="row"
             flexWrap="wrap"
+            p='10px'
             justifyContent={size == '500px' ? 'center' : 'flex-start'}
           >
+            <Grid
+        templateColumns={size == '500px' ? 'repeat(2, 1fr)' : 'repeat(5, 1fr)'}
+        w={'fit-content'}
+        gap={5}
+      >
             {data?.products &&
               data?.products?.map((item, index) => (
                 <>
                   <Card
                     key={item.id}
-                    maxW={size == '500px' ? '40%' : '17%'}
                     bg={useColorModeValue('white', 'gray.800')}
                     boxShadow="0px 1px 5px gray"
                     border={
@@ -149,6 +154,7 @@ export const CardProductStock = ({data, setSelectedProductStock, setStockAmount,
                   </Card>
                 </>
               ))}
+              </Grid>
           </Stack>
         </>
     )

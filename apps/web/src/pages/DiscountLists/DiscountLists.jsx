@@ -4,7 +4,7 @@ import Slider from 'react-slick';
 import reactLogo from '../../assets/react.svg';
 import viteLogo from '/vite.svg';
 import { Text, Box, HStack, Image, Flex, Button, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useDisclosure, Select, Stack, Card, Divider, CardFooter, ButtonGroup, useColorModeValue, CardBody, Heading, InputGroup, InputLeftElement, Spacer, IconButton } from '@chakra-ui/react';
-import { IconChevronLeft, IconCircleXFilled, IconCirclePlus, IconTrashXFilled, IconSquareRoundedPlusFilled, IconClock, IconPlus } from '@tabler/icons-react';
+import { IconChevronLeft, IconCircleXFilled, IconCirclePlus, IconTrashXFilled, IconSquareRoundedPlusFilled, IconClock, IconPlus, IconProgressCheck } from '@tabler/icons-react';
 import { IconSearch, IconAdjustmentsHorizontal, IconChevronRight, IconEditCircle, IconTrashX, IconInfoCircle, IconLayoutGrid, IconList, IconSortAscending2, IconSortDescending2, IconAbc, IconTags, IconCircleCheckFilled} from '@tabler/icons-react'
 import LogoGroceria from '../../assets/Groceria-no-Bg.png';
 import 'slick-carousel/slick/slick.css';
@@ -31,12 +31,15 @@ function DiscountLists() {
   const [page, setPage] = useState();
   const [pageSize, setPageSize] = useState()
   const [categoryId, setCategoryId] = useState();
-  const [productName, setProductName] = useState()
-  const [dataCategory, setDataCategory] = useState([])
+  const [discountName, setDiscountName] = useState()
+  const [dataCategory, setDataCategory] = useState([]);
+  const [dataFilter, setDataFilter] = useState([]);
   const navigate = useNavigate();
   const [selectedPage, setSelectedPage] = useState(page);
   const [searchParams, setSearchParams] = useSearchParams({ page, pageSize });
-
+  const [typeId, setTypeId] = useState();
+  const [restrictionId, setRestrictionId] = useState();
+  const [distributionId, setDistributionId] = useState();
   const [status, setStatus] = useState(1);
 
   const [selectedProduct, setSelectedProduct] = useState([]);
@@ -44,17 +47,14 @@ function DiscountLists() {
   const [stockAmount, setStockAmount] = useState(1);
   const token = localStorage.getItem("token");
 
-  console.log('ini categoryId',categoryId);
-
   const handleDeleteDiscount = async () => {
-    try {
+    try { let formData = new FormData();
+      formData.append("id", selectedProduct?.id)
+      formData.append("status", (selectedProduct?.status == true ? 0 : 1 ));
       // You can replace this URL with your actual API endpoint for adding stock
       const response = await axios.patch(
         `${import.meta.env.VITE_API_URL}/discount/edit-discount`,
-        {
-          id: selectedProduct?.id,
-          status: 0,
-        },
+        formData,
         {headers: {
           Authorization: `Bearer ${token}`,
         }}
@@ -64,7 +64,7 @@ function DiscountLists() {
       setDeleteModalOpen(false);
       fetchData(); // Close the modal after successful addition
     } catch (error) {
-      console.error(error);
+      console.log(error);
       // Handle error as needed
     }
   };
@@ -74,7 +74,7 @@ function DiscountLists() {
   const fetchData = async () => {
     try {
         const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/discount/discount-lists?page=${page}&pageSize=${pageSize}&typeId&discountName&usageRestrictionId&productName=${productName}&status&sortOrder=`
+          `${import.meta.env.VITE_API_URL}/discount/discount-lists?page=${page}&pageSize=${pageSize}&discountName=${discountName}&usageRestrictionId=${restrictionId}&productName=&status=${status}&sortOrder=${sortOrder}&typeid=${typeId}&distributionId=${distributionId}`
         );
         setData(response?.data);
       
@@ -88,25 +88,29 @@ function DiscountLists() {
 
 
   useEffect(() => {
-    setSearchParams({ page, pageSize, productName, categoryId });
-  }, [page, pageSize, productName, categoryId]);
+    setSearchParams({ page, pageSize, discountName, typeId, restrictionId, distributionId });
+  }, [page, pageSize, discountName, typeId, restrictionId, distributionId ]);
   
 
   useEffect(() => {
     const pageFromUrl = parseInt(searchParams.get('page')) || 1;
     const pageSizeFromUrl = parseInt(searchParams.get('pageSize')) || 10;
-    const productNameFromUrl = searchParams.get('productName') || '';
-    const categoryIdFromUrl = searchParams.get('categoryId') || '';
+    const discountNameFromUrl = searchParams.get('discountName') || '';
+    const typeIdfromUrl = searchParams.get('typeId') || '';
+    const restrictionIdfromUrl = searchParams.get('restrictionId') || '';
+    const distributionIdfromUrl = searchParams.get('distributionId') || '';
     setPage(pageFromUrl);
     setPageSize(pageSizeFromUrl);
-    setProductName(productNameFromUrl);
-    setCategoryId(categoryIdFromUrl);
+    setDiscountName(discountNameFromUrl);
+    setTypeId(typeIdfromUrl);
+    setRestrictionId(restrictionIdfromUrl);
+    setDistributionId(distributionIdfromUrl);
     setSelectedPage(pageFromUrl);
   }, []);
 
   useEffect(() => {
     fetchData();
-  }, [page, pageSize, sortField, sortOrder, categoryId, productName, status]);
+  }, [page, pageSize, sortField, sortOrder, categoryId, discountName, status, restrictionId, typeId, distributionId]);
 
   console.log(data);
 
@@ -120,18 +124,19 @@ function DiscountLists() {
     // onClose();
   };
 
-  const handleProductName = (value) => {
-    setProductName(value);
+  const handleDiscountName = (value) => {
+    setDiscountName(value);
     setPage(1);
   };
+  console.log("ini disocunt name", discountName)
 
-  const fetchCategory = async () => {
+  const fetchFilter = async () => {
     try {
         const response = await axios.get(
-            `${import.meta.env.VITE_API_URL}/category/category-lists`
+            `${import.meta.env.VITE_API_URL}/discount/discount-filter`
         );
         console.log(response?.data);
-        setDataCategory(response?.data);
+        setDataFilter(response?.data);
     } catch (err) {
         console.log(err);
     }
@@ -141,10 +146,10 @@ console.log('ini category',dataCategory);
 
 
 useEffect(() => {
-    fetchCategory();
+    fetchFilter();
 }, []);
 
-console.log(data);
+console.log(dataFilter);
 
   
   const fetchStore = async () => {
@@ -178,7 +183,7 @@ console.log(data);
             <InputLeftElement pointerEvents='none'>
               <IconSearch color='black' />
             </InputLeftElement>
-            <Input type='text' backgroundColor='white' placeholder='Search in Groceria' width='50vw' value={productName} borderRadius='10px' borderColor='solid grey 1px' onChange={(e) => handleProductName(e.target.value)} />
+            <Input type='text' backgroundColor='white' placeholder='Search in Groceria' width='50vw' value={discountName} borderRadius='10px' borderColor='solid grey 1px' onChange={(e) => handleDiscountName(e.target.value)} />
           </InputGroup>
                 </Box>
                 <Box>
@@ -195,18 +200,28 @@ console.log(data);
             <Text>Sort Order</Text>
             <HStack><Button leftIcon={<IconSortAscending2 />} border='solid black 1px' borderRadius='full' onClick={() => handleSortOrder("asc")} isDisabled={sortOrder == "asc" ? true : false}>Ascending</Button><Button leftIcon={<IconSortDescending2 />} border='solid black 1px' borderRadius='full' onClick={() => handleSortOrder("desc")} isDisabled={sortOrder == "desc" ? true : false}>Descending</Button></HStack>
             <Text>Sort Field</Text>
-            <HStack><Button leftIcon={<IconAbc />} border='solid black 1px' borderRadius='full' onClick={() => handleSortField("name")} isDisabled={sortField == "name" ? true : false}>Name</Button><Button leftIcon={<IconTags />} border='solid black 1px' borderRadius='full' onClick={() => handleSortField("price")} isDisabled={sortField == "price" ? true : false}>Price</Button></HStack>
-            <Text>Category</Text>
-            <Select placeholder="Select option" value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
-            {dataCategory?.categories?.map((category) => ( 
-              <option key={category.id} value={category.id}>{category.category}</option>
-            ))}
-            </Select>
+            <HStack><Button leftIcon={<IconAbc />} border='solid black 1px' borderRadius='full' onClick={() => handleSortField("name")} isDisabled={sortField == "name" ? true : false}>Name</Button><Button leftIcon={<IconTags />} border='solid black 1px' borderRadius='full' onClick={() => handleSortField("endDate")} isDisabled={sortField == "endDate" ? true : false}>Date</Button></HStack>
             <Text>Status Product</Text>
             <Select placeholder="Select option" value={status} onChange={(e) => setStatus(e.target.value)}>
               <option value={''}>All</option>
               <option value={parseInt(1)}>Active</option>
               <option value={parseInt(0)}>Deactive</option>
+            </Select>
+            <Text>Discount Type</Text>
+            <Select placeholder="Select option" value={typeId} onChange={(e) => setTypeId(Number(e.target.value))}>
+            {dataFilter?.type?.map((item) => ( 
+              <option key={item.id} value={item.id}>{item.type}</option>
+            ))}
+            </Select><Text>Usage Restriction</Text>
+            <Select placeholder="Select option" value={restrictionId} onChange={(e) => setRestrictionId(Number(e.target.value))}>
+            {dataFilter?.restriction?.map((item) => ( 
+              <option key={item.id} value={item.id}>{item.restriction}</option>
+            ))}
+            </Select><Text>Discount Distribution</Text>
+            <Select placeholder="Select option" value={distributionId} onChange={(e) => setDistributionId(Number(e.target.value))}>
+            {dataFilter?.distribution?.map((item) => ( 
+              <option key={item.id} value={item.id}>{item.type}</option>
+            ))}
             </Select>
           </ModalBody>
 
@@ -248,10 +263,7 @@ console.log(data);
                     <Stack mt='-3' spacing='0'>
                     <Flex justifyContent='center' flexDirection='row' zIndex='2' bgColor='white' w='fit-content' pl='2px' pr='5px' ml='-20px' borderRadius='10px' mt='-30px' flexWrap='wrap'>
                           <Text  color={item?.status == 1 ? "green" : "red"}>{item?.status == 1 ? (<IconCircleCheckFilled />) : (<IconCircleXFilled />)}</Text>
-                          <Text color={item?.status == 1 ? 'green' : 'red'} fontWeight='bold'>
-                          {item?.status == 1 ? 'Active' : 'Deactive'}
-                          </Text>
-                          {/* <IconButton  icon={<IconInfoCircle />} variant='ghost' colorScheme='blue' onClick={() => navigate(`/product-detail-admin/${item?.id}`)} /> */}
+                          <Text color={item?.status == 1 ? 'green' : 'red'} fontWeight='bold'>{item?.status == 1 ? 'Active' : 'Deactive'}</Text><Text fontWeight='bold'> | {item?.DiscountDistribution?.type}</Text>
                       </Flex>
                     <Heading size='sm' width='200px' isTruncated>{item.name}</Heading>
                       {/* <Text isTruncated maxW='200px'>
@@ -311,14 +323,11 @@ console.log(data);
                       <Flex flexWrap='wrap' column='row' justifyContent='center'>
                             {/* <IconButton  icon={<IconSquareRoundedPlusFilled />} isDisabled={item?.status == 0 ? true : false} variant='ghost' colorScheme='green' onClick={(event) => { setSelectedProduct(item); setAddToStockModalIsOpen(true); event.stopPropagation(); }} /> */}
                             {user?.role_idrole == 1 || user?.store_idstore == item?.store_idstore ? <IconButton  icon={<IconEditCircle />} variant='ghost' colorScheme='blue' onClick={(event) => { navigate(`/edit-discount/${item?.id}`); event.stopPropagation(); }} /> : (null) }
-                            {user?.role_idrole == 1 || user?.store_idstore == item?.store_idstore ? <IconButton  icon={<IconTrashXFilled />} variant='ghost' colorScheme='red' onClick={(event) => { setSelectedProduct(item); setDeleteModalOpen(true); event.stopPropagation(); }} /> : (null) }
+                            {user?.role_idrole == 1 || user?.store_idstore == item?.store_idstore ? <IconButton  icon={item?.status == true ? <IconTrashXFilled /> : <IconProgressCheck />} variant='ghost' colorScheme={item?.status == true ? 'red' : 'blue'} onClick={(event) => { setSelectedProduct(item); setDeleteModalOpen(true); event.stopPropagation(); }} /> : (null) }
                       </Flex>
                       
                     </Stack>
                   </CardBody>
-                  {/* <CardFooter>
-                      
-                  </CardFooter> */}
                 </Card>
                 </>
               ))}
@@ -336,17 +345,17 @@ console.log(data);
         {/* ... (other modal content) */}
         <ModalOverlay />
         <ModalContent>
-        <ModalHeader>Deactive Discount</ModalHeader>
+        <ModalHeader>{selectedProduct?.status == true ? 'Deactive Discount' : 'Activate Discount'}</ModalHeader>
 
           <ModalCloseButton />
         <ModalBody>
         <Text fontWeight='bold'>Name Discount</Text>
         <Text> {selectedProduct?.name}</Text>
-          <Text>Deactive this discount ?</Text>
+          <Text>{selectedProduct?.status == true ? 'Deactive this discount?' : 'Activate this discount?'}</Text>
         </ModalBody>
         <ModalFooter>
-          <Button isDisabled={selectedProduct?.status == true ? false : true } colorScheme="blue" mr={3} onClick={handleDeleteDiscount}>
-            {selectedProduct?.status == true ? 'Deactive Discount' : 'Discount was deactive'}
+          <Button colorScheme="blue" mr={3} onClick={handleDeleteDiscount}>
+            {selectedProduct?.status == true ? 'Deactive Discount' : 'Activate Discount'}
           </Button>
           <Button colorScheme="red" onClick={() => setDeleteModalOpen(false)}>
             Cancel

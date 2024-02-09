@@ -120,7 +120,6 @@ const ReportStock = () => {
                 <Text>Report All</Text>
               </Tab>
             </TabList>
-
             <TabPanels>
               <TabPanel>
               <Flex dir='row' gap='10px'>
@@ -172,7 +171,7 @@ const ReportStock = () => {
               <Text>-</Text>
             <Input value={endDate} onChange={(e) => setEndDate(e.target.value)} width='fit-content' type='date' />
                   <Spacer />
-                  <Button borderRadius="full" backgroundColor="#286043" textColor="white" border="solid 1px #286043" onClick={() => exportToExcel(data)}>Export to Excel</Button>
+                  <Button borderRadius="full" backgroundColor="#286043" textColor="white" border="solid 1px #286043" onClick={() => exportToExcel(data, startDate, endDate)}>Export to Excel</Button>
                   </Flex>
                 <TableLists data={data} navigate={navigate} />
                   <PaginationControls 
@@ -198,5 +197,4 @@ const ReportStock = () => {
     </Box>
   );
 };
-
 export default ReportStock;
