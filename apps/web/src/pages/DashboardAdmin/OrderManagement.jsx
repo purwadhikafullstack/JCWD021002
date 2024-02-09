@@ -23,7 +23,7 @@ import { TransactionHeader } from '../../components/Transaction/Transaction.Head
 import angkaRupiahJs from '@develoka/angka-rupiah-js';
 import { HiOutlineShoppingBag } from 'react-icons/hi2';
 import { PaymentDrawer } from '../../components/Transaction/Transaction.Payment';
-import Sidebar from '../../components/SideBar/SideBar';
+import SideBar from '../../components/SideBar/SideBar';
 
 const TabItem = ({ label, status, onClick }) => (
   <Tab
@@ -428,8 +428,8 @@ export const OrderManagement = () => {
       );
 
       toast({
-        title: 'Order Accepted',
-        description: 'Terima Pesanan Berhasil',
+        title: 'Order Cancel',
+        description: 'Order dibatalkan',
         status: 'success',
         duration: 3000,
         isClosable: true,
@@ -440,8 +440,8 @@ export const OrderManagement = () => {
       console.error('Error accepting order', err);
 
       toast({
-        title: 'Error Accepting Order',
-        description: 'Terjadi kesalahan saat menerima pesanan.',
+        title: 'Error to cancel Order',
+        description: 'Terjadi kesalahan saat pesanan dibatalkan.',
         status: 'error',
         duration: 5000,
         isClosable: true,
@@ -454,13 +454,15 @@ export const OrderManagement = () => {
       flexDirection="column"
       p="0"
       w={{ base: '100vw', md: size }}
+      overflowX="hidden"
       h="fit-content"
       transition="width 0.3s ease"
       backgroundColor="#f5f5f5"
       display="flex"
     >
-      <TransactionHeader />
-      <Box w={{ base: '100vw', md: size }} h="100vh" background="white">
+    <SideBar size={size} handleWebSize={handleWebSize} />
+      {/* <TransactionHeader /> */}
+      <Box w={{ base: 'full', md: size }} pl={size === '500px' ? 0 : '170px'} pt={'100px'} h="100vh" background="white">
         {user.role_idrole === 1 && (
           <Select
             placeholder="Pilih Gudang"

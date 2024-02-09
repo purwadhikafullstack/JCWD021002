@@ -10,21 +10,37 @@ import Cart from '../models/cart.model';
 import Discount from '../models/discount.model';
 import DiscountType from '../models/discountType.model';
 import DiscountDistribution from '../models/discountDistribution.model';
-import UsageRestriction from '../models/usageRestriction.model';
 import { calculateDiscountPrice } from '../utils/calculateDiscountPrice';
 import { calculateDiscountBOGO } from '../utils/calculateDiscountBOGO';
 import City from '../models/city.model'
+import UsageRestriction from '../models/usageRestriction.model';
 
-export const findPendingOrderQuery = async (userId) => {
+export const findNewOrderQuery = async (userId) => {
   try {
-    const pendingOrder = await Order.findOne({
+    const result = await Order.findOne({
       where: {
         user_iduser: userId,
-        status: 'pending',
+        status: 'new_order',
+        paymentStatus: null,
       },
+      include: [
+        {
+          model: OrderDetail,
+          include: [
+            {
+              model: ProductStock,
+              include: [
+                { model: Product, include: [ProductImage] },
+                { model: Discount},
+              ],
+            },
+          ],
+        },
+        { model: Store, include: [City] },
+      ],
     });
 
-    return pendingOrder;
+    return result;
   } catch (err) {
     throw err;
   }
@@ -120,7 +136,8 @@ export const getOrderQuery = async (userId) => {
   return Order.findAll({
     where: {
       user_iduser: userId,
-      status: 'pending',
+      status: 'new_order',
+      paymentStatus: '',
     },
     include: [
         {
@@ -161,11 +178,42 @@ export const getOrderQuery = async (userId) => {
   });
 };
 
+export const getOrderCustomerQuery = async (userId, status, paymentStatus, startDate, endDate) => {
+  return Order.findAll({
+    where: {
+      [Op.and]: [
+        { user_iduser: userId },
+        status ? { status: status } : {},
+        paymentStatus ? { paymentStatus: paymentStatus } : {},
+        startDate ? { orderDate: { [Op.gte]: new Date(`${startDate}T00:00:00.000Z`) } } : {},
+        endDate ? { orderDate: { [Op.lte]: new Date(`${endDate}T23:59:59.999Z`) } } : {},
+      ],
+    },
+    include: [
+      {
+        model: OrderDetail,
+        include: [
+          {
+            model: ProductStock,
+            include: [
+              { model: Product, include: [ProductImage] },
+              { model: Store, include: [City] },
+            ],
+          },
+        ],
+      },
+    ],
+  });
+};
+
+
+
 export const createOrderQuery = async (
   userId,
   storeId,
   totalAmount,
   cartItems,
+  quantity,
 ) => {
   const t = await Order.sequelize.transaction();
 
@@ -174,11 +222,8 @@ export const createOrderQuery = async (
       {
         user_iduser: userId,
         store_idstore: storeId,
-        status: 'pending',
+        status: 'new_order',
         totalAmount,
-        orderDate: new Date(),
-        paymentMethod: 'credit card',
-        codeTransaction: '123ABC',
       },
       { transaction: t },
     );
@@ -204,31 +249,27 @@ export const createOrderQuery = async (
   }
 };
 
-export const clearCartQuery = async (cartId, selectedItems) => {
-  const t = await CartDetail.sequelize.transaction();
-
+export const findOrderCustomerQuery = async (userId, orderId) => {
   try {
-    await CartDetail.destroy({
-      where: {
-        cart_idcart: cartId,
-        productStock_idproductStock: selectedItems,
-      },
-      transaction: t,
-    });
+      const order = await Order.findOne({
+          where: {
+              id: orderId,
+              user_iduser: userId, 
+          },
+      });
 
-    await t.commit();
+      return order;
   } catch (err) {
-    await t.rollback();
-    throw err;
+      throw err;
   }
-};
+}
 
 export const findOrderQuery = async (orderId) => {
   try {
       const order = await Order.findByPk(orderId, {
           include: [{
               model: OrderDetail,
-              as: 'OrderDetails', // Use the correct alias defined in your association
+              as: 'OrderDetails',
           }],
       });
 
@@ -268,5 +309,3 @@ export const cancelOrder = async (order) => {
     throw err;
   }
 };
-
-// export const 

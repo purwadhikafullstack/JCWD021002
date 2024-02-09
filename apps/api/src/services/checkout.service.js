@@ -1,114 +1,130 @@
 import axios from 'axios';
-import { findCartQuery } from '../queries/cart.query';
+import { clearCartQuery, findCartQuery } from '../queries/cart.query';
 import {
   createOrderQuery,
-  clearCartQuery,
   getSelectedCartItemsQuery,
   cancelOrderQuery,
   getOrderWithDetails,
   findOrderQuery,
   updatePaymentStatusQuery,
   updateCartDetailsQuery,
-  findPendingOrderQuery,
+  findNewOrderQuery,
   updateOrderDetailsQuery,
   updateOrderTotalAmountQuery,
   getOrderQuery,
+  getOrderCustomerQuery,
+  updateOrderStatusQuery,
 } from '../queries/checkout.query';
+import {getUserRoleQuery, getDetailUserQuery} from '../queries/user.query';
 import { calculateDiscountPrice } from '../utils/calculateDiscountPrice';
+import { getOrderDetailsQuery } from '../queries/orderManagement.query';
 
-export const getOrderService = async (userId) => {
+export const getOrderCustomerService = async (userId, status, paymentStatus, startDate, endDate) => {
   try {
-    const pendingOrder = await findPendingOrderQuery(userId)
-    if (!pendingOrder) throw new Error('Order not found');
+    const user = await getUserRoleQuery(userId);
+    console.log(user);
 
-    const result = await getOrderQuery(pendingOrder.user_iduser);
-    return result;
+    if (!user || user?.role_idrole !== 3) {
+      throw new Error('Access Denied. The user is not customer.');
+    }
+
+    const order = await getOrderCustomerQuery(user?.id, status, paymentStatus, startDate, endDate);
+    return order;
   } catch (err) {
     throw err;
   }
-}
+};
 
-export const preCheckoutService = async (userId, selectedItems) => {
-  const cart = await findCartQuery(userId);
+export const preCheckoutService = async (userId) => {
+  console.log('userId: ',userId);
+  try {
+    const order = await findNewOrderQuery(userId)
+    if (!order) throw new Error('Order not found');
 
-  if (!cart) {
-    throw new Error('Cart not found for the user');
+    // const result = await getOrderQuery(order.user_iduser);
+    return order;
+  } catch (err) {
+    throw err;
   }
-
-  const cartItems = await getSelectedCartItemsQuery(cart.id, selectedItems);
-
-  if (!cartItems || cartItems.length === 0) {
-    throw new Error('No valid items in the cart for pre-checkout.');
-  }
-
-  const totalAmount = cartItems.reduce((total, cartItem) => {
-    return total + (cartItem?.price || 0) * cartItem.quantity;
-  }, 0);
-
-  console.log('cartItems: ', cartItems);
-  return { cartItems, totalAmount };
 };
 
 export const checkoutService = async (userId, selectedItems) => {
-    // Find the user's cart
+  try {
     const cart = await findCartQuery(userId);
-  
-    // If cart doesn't exist, throw an error
+
     if (!cart) {
       throw new Error('Cart not found for the user.');
     }
-  
-    // Get cart items corresponding to the selected items
-    const selectedCartItem = await getSelectedCartItemsQuery(cart.id, selectedItems);
-  
-    // Check if there are valid items in the cart for checkout
+
+    const selectedCartItem = await getSelectedCartItemsQuery(
+      cart.id,
+      selectedItems,
+    );
+
     if (!selectedCartItem || selectedCartItem.length === 0) {
       throw new Error('No valid items in the cart for checkout.');
     }
-    console.log("ini selected cart item", selectedCartItem);
-    // Calculate total amount
+
     let subTotalProduct = selectedCartItem.reduce((total, orderItem) => {
+      // return (
+      //   total +
+      //   calculateDiscountPrice(
+      //     orderItem?.price,
+      //     orderItem?.ProductStock?.Discounts || [],
+      //     orderItem.quantity,
+      //   ) *
+      //     orderItem.quantity
+      // );
         console.log('orderItem: ', orderItem?.price);
       return total + (calculateDiscountPrice(orderItem?.price, (orderItem?.ProductStock?.Discounts || []), orderItem.quantity)) * orderItem.quantity;
     }, 0);
-    console.log('subTotalProduct', subTotalProduct);
+
     let shippingCost = 5000;
-  
-    // let totalAmount = subTotalProduct + shippingCost;
-  
-    // Check if there is an existing pending order for the user
-    const pendingOrder = await findPendingOrderQuery(userId);
-  
-    if (pendingOrder) {
-      // If a pending order exists, update the cart details and totalAmount
-      await updateOrderDetailsQuery(pendingOrder.id, selectedCartItem);
-      await updateOrderTotalAmountQuery(pendingOrder.id, subTotalProduct);
-      
-      return { order: pendingOrder, selectedCartItem };
+    let totalAmount = subTotalProduct + shippingCost;
+
+    const newOrder = await findNewOrderQuery(userId);
+
+    if (newOrder) {
+      await updateOrderDetailsQuery(newOrder.id, selectedCartItem);
+      await updateOrderTotalAmountQuery(newOrder.id, subTotalProduct);
+
+      // Clear the cart after successful payment and get the updated cart
+      const updatedCart = await clearCartQuery(cart.id, selectedCartItem[0]?.productStock_idproductStock);
+
+      // Update the total quantity in the cart
+      if (updatedCart) {
+        selectedCartItem.forEach(item => {
+          updatedCart.totalQuantity -= item.quantity;
+        });
+        await updatedCart.save();
+      }
+
+      return { order: newOrder, selectedCartItem };
     } else {
-      // If no pending order exists, create a new order
       const order = await createOrderQuery(
         userId,
         selectedCartItem[0]?.ProductStock.store_idstore,
-        // totalAmount,
         subTotalProduct,
         selectedCartItem,
-        );
-        
-        // Mark the cart as used in the order
-        // await markCartAsUsedQuery(cart.id, order.id);
-  
+      );
+
+      // Clear the cart after successful payment and get the updated cart
+      const updatedCart = await clearCartQuery(cart.id, selectedCartItem[0]?.productStock_idproductStock);
+
+      // Update the total quantity in the cart
+      if (updatedCart) {
+        selectedCartItem.forEach(item => {
+          updatedCart.totalQuantity -= item.quantity;
+        });
+        await updatedCart.save();
+      }
+
       return { order };
     }
-  };
-
-  export const beliSekarangService = async (userId, productStockId, quantity) => {
-    try {
-      
-    } catch (err) {
-      throw err;
-    }
+  } catch (err) {
+    throw err;
   }
+};
 
 export const updatePaymentStatusService = async (orderId, paymentProof) => {
   console.log(orderId, paymentProof);
@@ -123,32 +139,62 @@ export const updatePaymentStatusService = async (orderId, paymentProof) => {
   return updatedOrder;
 };
 
-export const cancelOrderService = async (orderId) => {
-  const order = await cancelOrderQuery.getOrderWithDetails(orderId);
+export const cancelOrderCustomerService = async (userId, orderId) => {
+  const user = await getDetailUserQuery(userId);
+  if(!user || user.role_idrole !== 3) throw new Error('User not found')
 
-  if (!order) {
-    throw new Error('Order not found.');
+  const order = await findOrderQuery(orderId);
+  console.log(order);
+  if(!order) throw new Error('Order not found');
+
+  if(order.status === 'new_order' && order.paymentStatus === 'settlement') {
+    throw new Error(`User can't to cancel order`);
+  } else if(order.status === 'new_order' && order.paymentStatus === 'pending') {
+    await updateOrderStatusQuery(order.id, 'cancel');
+  } else {
+    throw new Error('Error cancel')
   }
-
-  // Validate if the order can be canceled
-  if (!order.canCancelOrder()) {
-    throw new Error('Order cannot be canceled at this time.');
-  }
-
-  // Process the order cancellation
-  await cancelOrderQuery.cancelOrder(order);
 
   return { message: 'Order canceled successfully.' };
 };
 
-
-export const shippingCostService = async (key, origin, destination, weight, courier) => {
+export const finishOrderCustomerService = async (userId, orderId) => {
   try {
+    const user = await getUserRoleQuery(userId);
+    const order = await findOrderQuery(orderId);
 
+    if (!user || !order) {
+      throw new Error('User or order not found.');
+    }
+
+    if (user.role_idrole !== 3) {
+      throw new Error('User does not have the Customer role.');
+    }
+
+    if (order.status !== 'delivery' || order.paymentStatus !== 'settlement') {
+      throw new Error(`User can't finish the order.`);
+    }
+
+    await updateOrderStatusQuery(order.id, 'done');
+
+    return { message: 'Order finished successfully.' };
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const shippingCostService = async (
+  key,
+  origin,
+  destination,
+  weight,
+  courier,
+) => {
+  try {
     const headers = {
       'Content-Type': 'application/json',
-      'key': key,
-    }
+      key: key,
+    };
 
     const data = {
       origin,
@@ -157,9 +203,13 @@ export const shippingCostService = async (key, origin, destination, weight, cour
       courier,
     };
 
-    const res = await axios.post('https://api.rajaongkir.com/starter/cost', data, {headers})
-    return res.data
+    const res = await axios.post(
+      'https://api.rajaongkir.com/starter/cost',
+      data,
+      { headers },
+    );
+    return res.data;
   } catch (err) {
-    throw err
+    throw err;
   }
-}
+};

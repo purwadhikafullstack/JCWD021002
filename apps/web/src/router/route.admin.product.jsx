@@ -14,6 +14,7 @@ import ProductCatalogue from '../pages/ProductCatalogue/ProductCatalogue';
 import ReportSales from '../pages/ReportSales/ReportSales';
 import ReportStock from '../pages/ReportStock/ReportStock';
 import withRoleRestriction from './withRoleRestriction';
+import { OrderManagement } from '../pages/DashboardAdmin/OrderManagement';
 
 const AdminDashboardWithRoleCheck = withRoleRestriction([1, 2])(DashboardAdmin);
 const AdminAddProductsWithRoleCheck = withRoleRestriction([1, 2])(AddProduct);
@@ -26,6 +27,7 @@ const AdminProductListsWithRoleCheck = withRoleRestriction([1, 2])(ProductLists)
 const AdminProductStockListsWithRoleCheck = withRoleRestriction([1, 2])(ProductStockLists);
 const AdminReportSalesWithRoleCheck = withRoleRestriction([1, 2])(ReportSales);
 const AdminReportStockWithRoleCheck = withRoleRestriction([1, 2])(ReportStock);
+const AdminOrderManagementWithRoleCheck = withRoleRestriction([1, 2])(OrderManagement);
 
 
 const routeAdminProduct = [
@@ -43,6 +45,7 @@ const routeAdminProduct = [
   { path: '/product-stock-lists', element: <AdminProductStockListsWithRoleCheck /> },
   { path: '/sales-report', element: <AdminReportSalesWithRoleCheck /> },
   { path: '/stock-report', element: <AdminReportStockWithRoleCheck /> },
+  { path: '/order-management', element: <AdminOrderManagementWithRoleCheck /> },
 ];
 
 export default routeAdminProduct;

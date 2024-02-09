@@ -316,7 +316,7 @@ export const mutateStockService = async (
   };
   
   const cancelAcceptedOrder = async (order) => {
-    await updateOrderStatusQuery(order.id, 'cancelled');
+    await updateOrderStatusQuery(order.id, 'cancel');
   
     const orderDetails = await getOrderDetailsQuery(order.id);
   
