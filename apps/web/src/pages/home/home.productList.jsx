@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useWebSize } from '../../provider.websize';
 
 export const ProductList = () => {
-  const [product, setProduct] = useState();
+  const [data, setData] = useState();
   const navigate = useNavigate();
   const { size } = useWebSize();
 
@@ -23,7 +23,7 @@ export const ProductList = () => {
           import.meta.env.VITE_API_URL
         }/store?&page=1&pageSize=&latitude=${latitude}&longitude=${longitude}&statusStock=1&statusProduct=1`,
       );
-      setProduct(res?.data?.data?.products);
+      setData(res?.data?.data);
     } catch (err) {
       console.log(err);
     }
@@ -54,7 +54,7 @@ export const ProductList = () => {
         w={'fit-content'}
         gap={5}
       >
-        {product?.map((item, index) => {
+        {data?.products?.map((item, index) => {
           return (
             <Card
               display={'flex'}

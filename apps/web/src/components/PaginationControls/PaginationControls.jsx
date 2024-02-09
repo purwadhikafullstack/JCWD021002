@@ -64,7 +64,7 @@ export const PaginationControls = ({
                     <option value={15}>15</option>
                     <option value={20}>20</option>
                     <option value={30}>30</option>
-                    <option>All</option>
+                    <option >All</option>
                   </Select>
                 </HStack>
               </Box>

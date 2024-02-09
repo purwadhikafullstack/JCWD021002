@@ -88,7 +88,7 @@ const getPaginatedAndFilteredProductsQuery = async (
         ],
       },
       offset: offset,
-      limit: pageSize ? pageSize : 0,
+      limit: pageSize || undefined,
       order: [[sortField, sortOrder]],
       where: {
         ...whereCondition,
