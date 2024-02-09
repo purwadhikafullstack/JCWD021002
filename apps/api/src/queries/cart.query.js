@@ -210,7 +210,12 @@ export const clearCartQuery = async (cartId, productStockId) => {
       transaction: t,
     });
 
+    // Fetch and return the updated cart
+    const updatedCart = await Cart.findByPk(cartId, { transaction: t });
+
     await t.commit();
+
+    return updatedCart;
   } catch (err) {
     await t.rollback();
     throw err;

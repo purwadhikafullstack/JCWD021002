@@ -45,6 +45,7 @@ import {
   IconPackage,
   IconDiscount,
   IconPackages,
+  IconShoppingCartCog,
 } from '@tabler/icons-react';
 import LogoIcon from '../../assets/Groceria-no-Bg.png';
 // import { useAppSelector } from "../../redux/hook";
@@ -64,6 +65,7 @@ const LinkItems = [
     to: '/dashboard',
   },
   { name: 'Product', icon: IconBox, to: '/product-lists' },
+  { name: 'Order Management', icon: IconShoppingCartCog, to: '/order-management' },
   { name: 'Stock', icon: IconPackages, to: '/product-stock-lists' },
   { name: 'Sales Report', icon: IconReportMoney, to: '/sales-report' },
   { name: 'Stock Report', icon: IconReportAnalytics, to: '/stock-report' },

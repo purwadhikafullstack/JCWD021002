@@ -17,6 +17,7 @@ import axios from 'axios';
 import { calculateDiscountPrice } from '../../utils/calculateDiscountPrice';
 
 export const ListProductOrder = ({
+  order,
   orderDetail,
   selectedItem,
   selectedShipping,
@@ -87,16 +88,88 @@ export const ListProductOrder = ({
 
 
   return (
-    <Flex direction={'column'}>
-      {Object.keys(orderDetail)?.map((storeId) => (
+    <Flex direction={'column'} w='full'>
+      {/* {order.map((item, index) => ( */}
+        <Stack p={4} pl={5} pr={5} background="white">
+        <Text>{order?.Store?.name}</Text>
+        {/* <Text>{item?.id}</Text> */}
+        {orderDetail.map((item, index) => (
+
+            <Flex key={index} gap={2}>
+              <Image
+                w="4em"
+                h="4em"
+                backgroundColor="white"
+                src={`${import.meta.env.VITE_API_IMAGE_URL}/products/${
+                  item?.ProductStock?.Product?.ProductImages[0]?.imageUrl
+                }`}
+                alt={item?.ProductStock?.Product?.name}
+                objectFit="cover"
+                rounded={10}
+              />
+              <Box>
+                <Text>{item?.ProductStock?.Product?.name}</Text>
+                <Text fontWeight="semibold">
+                  {item?.quantity} x{' '}
+                  {angkaRupiahJs(item?.ProductStock?.Product?.price, {
+                    formal: false,
+                  })}
+                </Text>
+              </Box>
+            </Flex>
+        ))}
+        <Button
+          rightIcon={<IoIosArrowForward color="gray.600" />}
+          variant="outline"
+          // _hover={{ color: 'black', opacity: 0.9 }}
+          // transition='color 0.3s ease-in-out, opacity 0.3s ease-in-out'
+          fontWeight="medium"
+          justifyContent="space-between"
+          onClick={() =>
+            handleChoseShipping(
+              order?.Store?.city_idcity,
+              selectedItem?.city_idcity,
+            )
+          }
+          h={'fit-content'}
+          p={'10px 10px'}
+        >
+          {selectedShipping?.service ? (
+            <Flex justify={'space-between'} w={'full'} align={'center'}>
+              <Flex direction={'column'} gap={2} textAlign={'start'}>
+                <Text>
+                  {
+                    selectedShipping?.description.split(' ')[
+                      selectedShipping?.description.split(' ').length - 1
+                    ]
+                  }
+                </Text>
+                <Text fontSize={'12px'} fontWeight={400}>
+                  Estimasi tiba {
+                    dateEstimate(selectedShipping.cost[0].etd)
+                  }
+                </Text>
+              </Flex>
+
+              <Box as="span" marginLeft={1}>
+                {angkaRupiahJs(selectedShipping?.cost[0]?.value, {
+                  dot: '.',
+                  floatingPoint: 0,
+                })}
+              </Box>
+            </Flex>
+          ) : (
+            <Text>Pilih Pengiriman</Text>
+          )}
+        </Button>
+      </Stack>
+      {/* ))} */}
+      {/* {Object.keys(orderDetail)?.map((storeId) => (
         <Stack key={storeId} p={4} pl={5} pr={5} background="white">
           <Text>{orderDetail[storeId][0]?.ProductStock?.Store.name}</Text>
           {orderDetail[storeId].map((item, index) => (
             <>
               <Flex gap={2} key={index}>
-                {/* {`${import.meta.env.VITE_API_IMAGE_URL}/products/${
-                item.?.ProductStock?.Product.ProductImages[0].imageUrl
-              }`} */}
                 <Image
                   w="4em"
                   h="4em"
@@ -132,8 +205,8 @@ export const ListProductOrder = ({
                 </Box>
               </Flex>
             </>
-          ))}
-          <Button
+          ))} */}
+          {/* <Button
             rightIcon={<IoIosArrowForward color="gray.600" />}
             variant="outline"
             // _hover={{ color: 'black', opacity: 0.9 }}
@@ -178,7 +251,7 @@ export const ListProductOrder = ({
             )}
           </Button>
         </Stack>
-      ))}
+      ))} */}
       <DrawerShippingMethode
         isOpen={isOpen}
         onClose={onClose}

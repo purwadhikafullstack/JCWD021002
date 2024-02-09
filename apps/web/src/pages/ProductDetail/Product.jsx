@@ -177,18 +177,13 @@ const Product = () => {
         },
       );
 
-      if (response.status === 200) {
         console.log('Item added to cart successfully!');
         showToast('success', 'Item added to cart successfully!');
 
         setCartTotalQuantity(cartTotalQuantity + quantity);
-      } else {
-        console.error('Failed to add item to cart:', response.data);
-        showToast('error', 'Failed to add item to cart');
-      }
     } catch (err) {
-      console.error('Product not found. Please choose a valid product', err);
-      showToast('error', 'Product not found. Please choose a valid product');
+      console.error('Insufficient product stock. Please choose another product available in stock', err);
+      showToast('error', 'Insufficient product stock. Please choose another product available in stock');
     }
   };
 
@@ -334,7 +329,7 @@ const Product = () => {
   </Slider>
   </Box>
   </VStack>
-        <VStack width={size == '500px' ? '100%' : '50vw'}>
+        <VStack width={size == '500px' ? '100%' : '50vw'} pl='20px'>
         <Box mt='20px' width='97%' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
             <Text fontSize='x-large' fontWeight='bold' color='tomato'>{formatPriceToIDR(calculateDiscountPrice(data?.result?.Product?.price, data?.result?.Discounts))}</Text>
             {data?.result?.Discounts && data?.result?.Discounts.length > 0 && (

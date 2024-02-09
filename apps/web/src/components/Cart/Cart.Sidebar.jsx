@@ -1,12 +1,11 @@
-/* eslint-disable react/prop-types */
-import { Button, Checkbox, Flex, Text, useToast } from '@chakra-ui/react';
+import { Button, Checkbox, Flex, Heading, Text, useToast } from '@chakra-ui/react';
 import angkaRupiahJs from '@develoka/angka-rupiah-js';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { calculateDiscountPrice } from '../../utils/calculateDiscountPrice';
 
-export const CartFooter = ({
+export const CartSidebar = ({
   size,
   userId,
   carts,
@@ -33,9 +32,9 @@ export const CartFooter = ({
         (cart) => cart.productStock_idproductStock === productStockId
       );
 
-          if (item && item.price && quantities[selectedItems]) {
-            return total + calculateDiscountPrice(item?.price, item?.ProductStock?.Discounts) * quantities[selectedItems];
-          }
+      if (item && item.price && quantities[productStockId]) {
+        return total + calculateDiscountPrice(item?.price, item?.ProductStock?.Discounts) * quantities[productStockId];
+      }
 
       return total;
     }, 0);
@@ -74,15 +73,22 @@ export const CartFooter = ({
   };
 
   return (
-    <Flex position='fixed' bottom={0} w={{ base: '100%', md: size }}>
       <Flex
-        justify='space-between'
-        w='full'
-        bgColor='white'
+        rounded={size === '500px' ? 0 : 10}
+        // w='full'
+        // w={{ base: '100vw', md: size }}
+        bg='red'
+        w={size === '500px' ? size : '20em'}
+        position='sticky'
+        h='fit-content'
+        flexDirection={size === '500px' ? 'row' : 'column'}
+        gap={4}
+        bgColor="white"
+        boxShadow={size === '500px' ? "0px -4px 4px -2px rgba(0, 0, 0, 0.1)" : 0}
         p={4}
-        boxShadow='0px -4px 4px -2px rgba(0, 0, 0, 0.1)'
       >
         <Checkbox
+          hidden={size === '500px' ? false : true}
           colorScheme='green'
           isChecked={isAllSelected}
           onChange={() => handleCheckboxAllChange()}
@@ -90,14 +96,33 @@ export const CartFooter = ({
         >
           Semua
         </Checkbox>
-
-        <Flex gap={2} alignItems='center' h='full'>
-          <Text>Total</Text>
-          <Text fontSize='lg' fontWeight='bold' color='tomato'>
-            {angkaRupiahJs(totalPrice, { formal: false })}
-          </Text>
+{/* <Box px={200} pt={3} hidden={size == '500px' ? true : false}> */}
+            <Heading size="sm" hidden={size == '500px' ? true : false} >Ringkasan Belanja</Heading>
+          {/* </Box> */}
+        <Flex
+          w='full'
+          flexDirection={size === '500px' ? 'row' : 'column'}
+          gap={2}
+          alignItems='center'
+          h='full'
+          
+        >
+          <Flex
+            w='full'
+            justifyContent={size == '500px' ? 'flex-end' : 'space-between'}
+            alignItems='center'
+            h='full'
+            gap={2}
+          >
+            <Text>Total</Text>
+            <Text fontSize='lg' fontWeight='bold' color='tomato'>
+              {angkaRupiahJs(totalPrice, { formal: false })}
+            </Text>
+          </Flex>
           <Button
-            isDisabled={!selectedItems || selectedItems.length === 0 }
+            w='full'
+            h='2.5em'
+            isDisabled={!selectedItems || selectedItems.length === 0}
             background='green.700'
             color='white'
             onClick={handleCheckout}
@@ -108,6 +133,5 @@ export const CartFooter = ({
           </Button>
         </Flex>
       </Flex>
-    </Flex>
   );
 };
