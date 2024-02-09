@@ -101,7 +101,7 @@ export const FormLogin = ({ fromPage }) => {
               </InputLeftElement>
               <Input
                 placeholder="Enter email or username"
-                bgColor={'#F3F4F6FF'}
+                bgColor={'transparent'}
                 name="emailOrUsername"
                 value={formik.values.emailOrUsername}
                 onChange={formik.handleChange}
@@ -126,7 +126,7 @@ export const FormLogin = ({ fromPage }) => {
               <Input
                 placeholder="Enter password"
                 type={show ? 'text' : 'password'}
-                bgColor={'#F3F4F6FF'}
+                bgColor={'transparent'}
                 name="password"
                 value={formik.values.password}
                 onChange={formik.handleChange}

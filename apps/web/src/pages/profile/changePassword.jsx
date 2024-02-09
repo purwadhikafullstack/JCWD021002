@@ -123,7 +123,7 @@ export const ChangePassword = () => {
           </Button>
         </Flex>
 
-        <Flex direction={'column'} gap={5} px={'30px'}>
+        <Flex direction={'column'} gap={size == '500px' ? 5 : '40px'} px={size == '500px' ? '30px' : '200px'}>
           <FormControl
             isInvalid={formik.touched.password && formik.errors.password}
           >

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import '../../scrollbar.css';
@@ -54,6 +55,7 @@ import { useLocation, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { ResizeButton } from '../../components/ResizeButton';
 import { useWebSize } from '../../provider.websize';
+import { FaStore } from 'react-icons/fa';
 
 const LinkItems = [
   {
@@ -73,7 +75,7 @@ const LinkItems = [
 
 const SuperAdminLinkItems = [
   { name: 'Admin', icon: IconPasswordUser, to: '/user-lists' },
-  { name: 'Store', icon: IconPasswordUser, to: '/store' },
+  { name: 'Store', icon: FaStore, to: '/store' },
 ];
 
 const SidebarContent = ({ onClose, ...rest }) => {
@@ -194,6 +196,7 @@ const MobileNav = ({ onOpen, onClose, ...rest }) => {
     }
   };
   const location = useLocation()?.pathname;
+  const roleId = useSelector((state) => state.AuthReducer?.user?.role_idrole);
   return (
     <Flex
       className="mobile-nav-container"
@@ -298,6 +301,23 @@ const MobileNav = ({ onOpen, onClose, ...rest }) => {
               bg={useColorModeValue('white', 'gray.900')}
               borderColor={useColorModeValue('gray.200', 'gray.700')}
             >
+              {roleId == 1 ? (
+                <>
+                  <MenuItem
+                    onClick={() =>
+                      navigate(
+                        `/`,
+                      )
+                    }
+                  >
+                    Home
+                  </MenuItem>
+                  <MenuDivider />
+                </>
+              ) : (
+                <></>
+              )}
+
               <MenuItem
                 onClick={() =>
                   navigate(
