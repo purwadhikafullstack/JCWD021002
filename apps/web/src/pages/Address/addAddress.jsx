@@ -8,7 +8,6 @@ import {
   Input,
   Text,
   Switch,
-  Button,
   Select,
 } from '@chakra-ui/react';
 // import { useWebSize } from '../../provider.websize';
@@ -18,6 +17,7 @@ import HereGeocodingApp from '../profile/HereGeocodingApp';
 import { useNavigate, useLocation, useOutletContext } from 'react-router-dom';
 import { AddressAutoComplate } from '../../components/AddressAutoComplate/addressAutoComplate';
 import { MyButton } from '../../components/Button';
+import { useWebSize } from '../../provider.websize';
 
 export const AddAddress = () => {
   const [province, setProvince] = useState();
@@ -25,7 +25,7 @@ export const AddAddress = () => {
   const [provinceId, setProvinceId] = useState();
   const [cityId, setCityId] = useState();
   const [isChecked, setIsChecked] = useState(false);
-  // const { size } = useWebSize();
+  const { size } = useWebSize();
   const navigate = useNavigate();
   const userId = useSelector((state) => state.AuthReducer?.user?.id);
   const [address, setAddress] = useState();
@@ -57,7 +57,7 @@ export const AddAddress = () => {
       console.log(err);
     }
   };
-  
+
   const getCity = async (provinceId) => {
     try {
       const res = await axios.get(
@@ -173,7 +173,7 @@ export const AddAddress = () => {
       <Flex
         w={'full'}
         mt={'80px'}
-        px={'30px'}
+        px={size == '500px' ? '30px' : '200px'}
         direction={'column'}
         justify={'space-between'}
         h={'90%'}

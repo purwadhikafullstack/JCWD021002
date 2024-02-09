@@ -1,8 +1,7 @@
-import { Flex, useDisclosure, Avatar, Text } from '@chakra-ui/react';
+import { Flex, useDisclosure, Avatar } from '@chakra-ui/react';
 import {
   HiOutlineHome,
   HiHome,
-  HiOutlineShoppingCart,
   HiShoppingCart,
 } from 'react-icons/hi2';
 import { MdFavorite, MdFavoriteBorder } from 'react-icons/md';

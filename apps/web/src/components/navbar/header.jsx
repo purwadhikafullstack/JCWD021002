@@ -20,7 +20,7 @@ import { ResizeButton } from '../ResizeButton';
 import { Link, useNavigate } from 'react-router-dom';
 import { useWebSize } from '../../provider.websize';
 import LogoGroceria from '../../assets/Groceria-no-Bg.png';
-import { DrawerLocation } from './drawerLocation';
+import { MenuLocation } from './menuLocation';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutSuccess } from '../../redux/reducer/authReducer';
 import { useLocation } from 'react-router-dom';
@@ -49,8 +49,13 @@ export const Header = () => {
   console.log({ isLogin });
   return (
     <Flex
-      bgColor={size == '500px' ? 'colors.primary' : 'transparent'}
-      h={size == '500px' ? 'fit-content' : '120px'}
+      // bgColor={size == '500px' ? 'colors.primary' : 'colors.secondary'}
+      sx={
+        size == '500px'
+          ? { bgColor: 'colors.primary' }
+          : { bgGradient: 'linear(to-r, #f2ffed, #fcfdde)' }
+      }
+      h={size == '500px' ? 'fit-content' : '100px'}
       direction={'column'}
       p={size == '500px' ? '20px' : '10px 30px'}
       pb={size == '500px' ? 5 : 0}
@@ -62,10 +67,10 @@ export const Header = () => {
         justify={'space-between'}
         h={'full'}
         direction={size == '500px' ? 'row' : 'column-reverse'}
-        gap={size == '500px' ? 0 : 2}
+        // gap={size == '500px' ? 0 : 2}
       >
         <Flex w={'100%'}>
-          <DrawerLocation />
+          <MenuLocation />
         </Flex>
         <Flex
           gap={5}

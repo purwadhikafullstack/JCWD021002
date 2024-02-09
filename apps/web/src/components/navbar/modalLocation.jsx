@@ -1,19 +1,19 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
   useDisclosure,
   Button,
-  Drawer,
-  DrawerBody,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerOverlay,
-  DrawerContent,
   Flex,
   Text,
   IconButton,
 } from '@chakra-ui/react';
-import { useWebSize } from '../../provider.websize';
 import { useDispatch, useSelector } from 'react-redux';
 import '../../scrollbar.css';
 import { CiCirclePlus } from 'react-icons/ci';
@@ -22,9 +22,7 @@ import { setAddress } from '../../redux/reducer/addressReducer';
 import { useNavigate } from 'react-router-dom';
 import { LoginModal } from '../LoginModal';
 
-export const DrawerLoc = ({ isOpen, onClose, address, onOpen }) => {
-  const btnRef = React.useRef();
-  const { size } = useWebSize();
+export const ModalLocatiom = ({ isOpen, onClose, address }) => {
   const [selectedItem, setSelectedItem] = useState();
   const [active, setActive] = useState();
   const dispatch = useDispatch();
@@ -41,27 +39,16 @@ export const DrawerLoc = ({ isOpen, onClose, address, onOpen }) => {
     onClose();
     dispatch(setAddress(selectedItem));
   };
-
   return (
     <>
-      <Drawer
-        isOpen={isOpen}
-        placement="bottom"
-        onClose={onClose}
-        finalFocusRef={btnRef}
-      >
-        <DrawerOverlay />
-        <DrawerContent
-          w={size}
-          m={'auto'}
-          h={'90vh'}
-          borderRadius={'14px 14px 0 0'}
-          className="hide-scrollbar"
-          // bgColor={'colors.secondary'}
-        >
-          <DrawerHeader>Pilih Alamat Pengiriman</DrawerHeader>
+      {/* <Button onClick={onOpen}>Open Modal</Button> */}
 
-          <DrawerBody>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Pilih Alamat Pengiriman</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
             <Flex w={'full'} direction={'column'} gap={5}>
               {address?.map((item, index) => {
                 return (
@@ -156,10 +143,7 @@ export const DrawerLoc = ({ isOpen, onClose, address, onOpen }) => {
                 color={'colors.primary'}
                 onClick={
                   isLogin
-                    ? () =>
-                        navigate('/profile/detail/address/add?fromPage=/', {
-                          state: { onOpen: onOpen },
-                        })
+                    ? () => navigate('/profile/detail/address/add?fromPage=/')
                     : onMoldaOpen
                 }
               >
@@ -168,10 +152,10 @@ export const DrawerLoc = ({ isOpen, onClose, address, onOpen }) => {
               </Button>
               {/* </Link> */}
             </Flex>
-          </DrawerBody>
-          <LoginModal isOpen={isModalOpen} onClose={onModalClose} />
+            <LoginModal isOpen={isModalOpen} onClose={onModalClose} />
+          </ModalBody>
 
-          <DrawerFooter bgColor={'white'} boxShadow={'dark-lg'}>
+          <ModalFooter>
             <Button
               bgColor={'colors.primary'}
               color={'white'}
@@ -180,9 +164,9 @@ export const DrawerLoc = ({ isOpen, onClose, address, onOpen }) => {
             >
               Pilih Alamat
             </Button>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
   );
 }
