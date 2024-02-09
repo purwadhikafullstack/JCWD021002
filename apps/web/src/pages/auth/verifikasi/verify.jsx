@@ -92,7 +92,7 @@ export const Verify = () => {
         </Link>
         <ResizeButton color={'black'} />
       </Flex>
-      <Flex p={'30px'}>
+      <Flex px={size == '500px' ? '30px' : '200px'} width={'100%'}>
         <form onSubmit={formik.handleSubmit}>
           <FormControl
             display={'flex'}

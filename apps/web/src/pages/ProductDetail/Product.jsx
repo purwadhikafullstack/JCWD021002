@@ -36,7 +36,7 @@ import { ResizeButton } from '../../components/ResizeButton';
 import LogoGroceria from '../../assets/Groceria-no-Bg.png';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { useNavigate, Link, useParams } from 'react-router-dom';
+import { useNavigate, Link, useParams, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { ProductRelated } from './ProductRelated';
 import { IoStarOutline, IoStar } from 'react-icons/io5';
@@ -78,6 +78,7 @@ const Product = () => {
   const [mainSlider, setMainSlider] = useState(null);
   const [thumbnailSlider, setThumbnailSlider] = useState(null);
   const [mainSliderIndex, setMainSliderIndex] = useState();
+  const pageLocation = useLocation().pathname
 
   const mainSliderSettings = {
     dots: false,
@@ -607,7 +608,7 @@ const Product = () => {
               <Text textAlign={'center'}>
                 Hanya satu langkah lagi! Silakan login untuk melanjutkan.
               </Text>
-              <Link to={'/login'}>
+              <Link to={`/login?fromPage=${pageLocation}`}>
                 <Button
                   variant="ghost"
                   bgColor="colors.primary"

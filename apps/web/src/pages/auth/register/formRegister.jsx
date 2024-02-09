@@ -87,7 +87,7 @@ export const FormRegister = () => {
       <Flex direction={'column'} gap={10} h={'fit-content'}>
         <Flex direction={'column'} gap={'40px'}>
           <FormControl
-            bgColor={'#F3F4F6FF'}
+            bgColor={'transparent'}
             borderRadius={'4px'}
             pt={'5px'}
             isInvalid={formik.touched.username && formik.errors.username}
@@ -114,7 +114,7 @@ export const FormRegister = () => {
           </FormControl>
 
           <FormControl
-            bgColor={'#F3F4F6FF'}
+            bgColor={'transparent'}
             borderRadius={'4px'}
             pt={'5px'}
             isInvalid={formik.touched.email && formik.errors.email}

@@ -31,7 +31,7 @@ export const findNewOrderQuery = async (userId) => {
               model: ProductStock,
               include: [
                 { model: Product, include: [ProductImage] },
-                { model: Discount},
+                { model: Discount },
               ],
             },
           ],
@@ -96,7 +96,7 @@ export const getSelectedCartItemsQuery = async (cartId, selectedItems) => {
     where: {
       cart_idcart: cartId,
       productStock_idproductStock: selectedItems,
-        // productStock_idproductStock: selectedItems,
+      // productStock_idproductStock: selectedItems,
     },
     include: [
       {
@@ -140,41 +140,41 @@ export const getOrderQuery = async (userId) => {
       paymentStatus: '',
     },
     include: [
-        {
-          model: OrderDetail,
-          include: [
-            {
-              model: ProductStock,
-              include: [
-                { model: Product, include: [ProductImage] },
-                { model: Store, include: [City] },
-                {
-                  separate: true,
-                  model: Discount,
-                  where: {
-                    startDate: { [Sequelize.Op.lte]: new Date() }, // Include discounts with start date less than or equal to the current date
-                    endDate: { [Sequelize.Op.gte]: new Date() },   // Include discounts with end date greater than or equal to the current date
-                  },
-                  include: [
-                    {
-                      model: UsageRestriction,
-                    },
-                    {
-                      model: DiscountType,
-                    },
-                    {
-                      model: DiscountDistribution,
-                    },
-                    {
-                      model: Store,
-                    },
-                  ],
+      {
+        model: OrderDetail,
+        include: [
+          {
+            model: ProductStock,
+            include: [
+              { model: Product, include: [ProductImage] },
+              { model: Store, include: [City] },
+              {
+                separate: true,
+                model: Discount,
+                where: {
+                  startDate: { [Sequelize.Op.lte]: new Date() }, // Include discounts with start date less than or equal to the current date
+                  endDate: { [Sequelize.Op.gte]: new Date() },   // Include discounts with end date greater than or equal to the current date
                 },
-              ],
-            },
-          ],
-        },
-      ],
+                include: [
+                  {
+                    model: UsageRestriction,
+                  },
+                  {
+                    model: DiscountType,
+                  },
+                  {
+                    model: DiscountDistribution,
+                  },
+                  {
+                    model: Store,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
   });
 };
 
@@ -251,31 +251,31 @@ export const createOrderQuery = async (
 
 export const findOrderCustomerQuery = async (userId, orderId) => {
   try {
-      const order = await Order.findOne({
-          where: {
-              id: orderId,
-              user_iduser: userId, 
-          },
-      });
+    const order = await Order.findOne({
+      where: {
+        id: orderId,
+        user_iduser: userId,
+      },
+    });
 
-      return order;
+    return order;
   } catch (err) {
-      throw err;
+    throw err;
   }
 }
 
 export const findOrderQuery = async (orderId) => {
   try {
-      const order = await Order.findByPk(orderId, {
-          include: [{
-              model: OrderDetail,
-              as: 'OrderDetails',
-          }],
-      });
+    const order = await Order.findByPk(orderId, {
+      include: [{
+        model: OrderDetail,
+        as: 'OrderDetails',
+      }],
+    });
 
-      return order;
+    return order;
   } catch (err) {
-      throw err;
+    throw err;
   }
 };
 

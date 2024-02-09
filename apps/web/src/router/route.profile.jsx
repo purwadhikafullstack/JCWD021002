@@ -1,7 +1,7 @@
 import { ProtectUserRoute, ProtectLoggedInUser } from './protection.route';
 import { Profile } from '../pages/profile';
 import { ChangeEmail } from '../pages/profile/changeEmail';
-import { ChangeEmailVerfy } from '../pages/profile/changeEmailVerify';
+import { ChangeEmailVerfy } from '../components/varifikasiEmail/emailVerify';
 import { ChangePassword } from '../pages/profile/changePassword';
 import { Detail } from '../pages/profile/detail';
 import { EditProfile } from '../pages/profile/editProfile';

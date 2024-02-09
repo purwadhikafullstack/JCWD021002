@@ -23,6 +23,8 @@ export const ProductList = () => {
           import.meta.env.VITE_API_URL
         }/store?&page=1&pageSize=&latitude=${latitude}&longitude=${longitude}&statusStock=1&statusProduct=1`,
       );
+      console.log({ longitude });
+      console.log({ latitude });
       setProduct(res?.data?.data?.products);
     } catch (err) {
       console.log(err);
@@ -31,7 +33,7 @@ export const ProductList = () => {
 
   useEffect(() => {
     getProductList(coordinat?.latitude, coordinat?.longitude);
-    console.log(coordinat);
+    console.log('coor', coordinat);
   }, [coordinat]);
 
   return (
@@ -44,7 +46,12 @@ export const ProductList = () => {
           : { base: '0 40px', lg: '30px 100px', xl: '30px 200px' }
       }
     >
-      <Flex w={'full'} bgColor={'white'} py={'10px'}>
+      <Flex
+        w={'full'}
+        bgColor={'white'}
+        p={size == '500px' ? '10px 10px' : '20px 20px'}
+        borderRadius={'10px 10px 0 0'}
+      >
         <Text fontSize={'18px'} fontWeight={600} textAlign={'center'}>
           REKOMENDASI
         </Text>
