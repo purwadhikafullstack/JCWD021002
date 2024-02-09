@@ -24,7 +24,7 @@ import { MenuLocation } from './menuLocation';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutSuccess } from '../../redux/reducer/authReducer';
 import { useLocation } from 'react-router-dom';
-import { CartIcon } from '../Cart/Cart.Icon';
+import { CartIcon } from '../Cart/Cart.CartIcon';
 import { logout } from '../../config/firebase-config';
 import toast from 'react-hot-toast';
 import DeleteAlert from '../DeleteAlert';
@@ -120,7 +120,10 @@ export const Header = () => {
               </Link>
             </Flex>
             <Flex display={size == '500px' ? 'none' : 'flex'} align={'center'}>
-              <CartIcon transform={'translate(70%, 110%)'} />
+              {/* <CartIcon transform={'translate(70%, 110%)'} /> */}
+              <Link to={'/cart'}>
+                <CartIcon />
+              </Link>
             </Flex>
             <ResizeButton
               color={size == '500px' ? 'white' : 'colors.primary'}

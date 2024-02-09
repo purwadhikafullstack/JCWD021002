@@ -3,6 +3,7 @@ import { Box, Icon, Text } from '@chakra-ui/react';
 import { HiOutlineShoppingCart, HiShoppingCart } from 'react-icons/hi2';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const calculateTotalQuantity = (carts) => {
   return carts.reduce((total, cartItem) => total + cartItem.totalQuantity, 0);
@@ -12,10 +13,12 @@ export const CartIcon = () => {
   const user = useSelector((state) => state.AuthReducer.user);
   const token = localStorage.getItem('token');
   const [carts, setCarts] = useState([]);
-
+  const navigate = useNavigate();
   const fetchCarts = async (userId) => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/cart/${userId}`);
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/cart/${userId}`,
+      );
       setCarts(response?.data?.data);
     } catch (err) {
       console.error(err);
@@ -41,18 +44,18 @@ export const CartIcon = () => {
           bg="red.500"
           color="white"
           borderRadius="full"
-          w={5}
-          h={5}
-          padding={3}
+          w={'18px'}
+          h={'18px'}
+          padding={1}
           display="flex"
           justifyContent="center"
           alignItems="center"
           fontSize="sm"
+          cursor={'pointer'}
         >
-          <Text>{totalQuantity}</Text>
+          <Text fontSize={'12px'}>{totalQuantity}</Text>
         </Box>
       )}
     </Box>
   );
 };
-
