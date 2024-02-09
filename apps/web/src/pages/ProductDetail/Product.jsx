@@ -4,7 +4,18 @@ import axios from 'axios';
 import Slider from 'react-slick';
 import reactLogo from '../../assets/react.svg';
 import viteLogo from '/vite.svg';
-import { Text, Box, HStack, Image, Flex, Button, Spacer, VStack, Stack, Textarea, IconButton,
+import {
+  Text,
+  Box,
+  HStack,
+  Image,
+  Flex,
+  Button,
+  Spacer,
+  VStack,
+  Stack,
+  Textarea,
+  IconButton,
   useToast,
   useDisclosure,
   Modal,
@@ -66,9 +77,9 @@ function truncateDescription(description, maxLength) {
 }
 
 const Product = () => {
-  const {size, handleWebSize } = useWebSize();
+  const { size, handleWebSize } = useWebSize();
   const [cartTotalQuantity, setCartTotalQuantity] = useState(0);
-    const {id} = useParams();
+  const { id } = useParams();
   const { user, isLogin } = useSelector((state) => state.AuthReducer);
   const [data, setData] = useState([]);
   const [showFullDescription, setShowFullDescription] = useState(false);
@@ -76,6 +87,7 @@ const Product = () => {
   const [mainSlider, setMainSlider] = useState(null);
   const [thumbnailSlider, setThumbnailSlider] = useState(null);
   const [mainSliderIndex, setMainSliderIndex] = useState();
+  const navigate = useNavigate();
 
   const mainSliderSettings = {
     dots: false,
@@ -164,16 +176,20 @@ const Product = () => {
     }).format(price);
   }
 
-  
-  console.log("ini test category", data?.Product?.ProductCategories[0]?.id);
+  console.log('ini test category', data?.Product?.ProductCategories[0]?.id);
 
   console.log(data);
-  
 
   const toast = useToast();
 
+  const showToastAndConsoleError = (type, message) => {
+    console.error(message);
+    showToast(type, message);
+  };
+
   const handleAddToCart = async () => {
-    console.log("ini data id di cart", id, quantity);
+    console.log('ini data id di cart', id, quantity);
+
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/cart`,
@@ -183,39 +199,36 @@ const Product = () => {
         },
       );
 
-      if (response.status === 200) {
-        console.log('Item added to cart successfully!');
+     
         showToast('success', 'Item added to cart successfully!');
-
         setCartTotalQuantity(cartTotalQuantity + quantity);
-      } else {
-        console.error('Failed to add item to cart:', response.data);
-        showToast('error', 'Failed to add item to cart');
-      }
+     
     } catch (err) {
-      console.error('Product not found. Please choose a valid product', err);
-      showToast('error', 'Product not found. Please choose a valid product');
+        showToastAndConsoleError(
+          'error',
+          'Insufficient product stock. Please choose another product available in stock',
+        );
     }
   };
 
   const handleBeliSekarang = async () => {
-      try {
-        await axios.post(`${import.meta.env.VITE_API_URL}/checkout`, {
-          userId: user.id,
-          selectedItems: id,
-        });
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/checkout`, {
+        userId: user.id,
+        selectedItems: id,
+      });
 
-        navigate('/beli-sekarang');
-      } catch (error) {
-        console.error('Checkout failed:', error);
-        toast({
-          title: 'Checkout failed',
-          description: 'An error occurred during the checkout process.',
-          status: 'error',
-          duration: 3000,
-          isClosable: true,
-        });
-      }
+      navigate('/beli-sekarang');
+    } catch (error) {
+      console.error('Checkout failed:', error);
+      toast({
+        title: 'Checkout failed',
+        description: 'An error occurred during the checkout process.',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    }
   };
 
   const showToast = (status, description) => {
@@ -239,175 +252,319 @@ const Product = () => {
   }, [isLogin, onClose, user, id]);
 
   return (
-    <Box backgroundColor='#f5f5f5' p='0'
-    pb='110px'
-    w={{ base: '100vw', md: size }}
-    h={'fit-content'}
-    transition="width 0.3s ease">
+    <Box
+      backgroundColor="#f5f5f5"
+      p="0"
+      pb="110px"
+      w={{ base: '100vw', md: size }}
+      h={'fit-content'}
+      transition="width 0.3s ease"
+    >
       <Flex
-
         position={'sticky'}
         top={0}
-        bgColor='white'
+        bgColor="white"
         zIndex={99}
         // top={{ base: '20px', lg: '-30px' }}
         px={'20px'}
-        h={"10vh"}
-        justify={"space-between"}
-        align={"center"}
+        h={'10vh'}
+        justify={'space-between'}
+        align={'center'}
       >
         <Image src={LogoGroceria} h={'30px'} />
-        <ResizeButton color={"black"}/>
+        <ResizeButton color={'black'} />
       </Flex>
-    <HStack mb='10px' p={4} >
+      <HStack mb="10px" p={4}>
         {/* <IconChevronLeft />
         <Text textAlign='left' fontWeight='bold'>Product Name</Text> */}
-        <Button backgroundColor='#f5f5f5' leftIcon={<IconChevronLeft />}>Kembali</Button>
-    </HStack>
-    <Flex alignItems="flex-start" pl={size == '500px' ? '0px' : '20px'} pr={size == '500px' ? '0px' : '20px'}  flexDirection={size == '500px' ? 'column' : 'row'} h={"full"}>
-      <VStack mt='20px' width={size == '500px' ? '100%' : '30vw'} position={size == '500px' ? 'relative' : 'sticky'} top={size == '500px' ? '0px' : '110px'} >
-    <Box width={size == '500px' ? '80%' : '30vw'} justifyContent='center'>
-    {data?.result?.Product?.ProductImages && (
-  <>
-    <link rel="preload" as="image" href={`${import.meta.env.VITE_API_IMAGE_URL}/products/${data?.result.Product.ProductImages[0].imageUrl}`} />
-    <Slider {...mainSliderSettings} asNavFor={thumbnailSlider} ref={(slider) => setMainSlider(slider)}>
-      {data?.result.Product.ProductImages.map((image, index) => (
-        <Image
-          key={index.toString()}
-          backgroundColor='white'
-          src={`${import.meta.env.VITE_API_IMAGE_URL}/products/${image.imageUrl}`}
-          objectFit='contain'
-          height='35vh'
-          borderRadius='10px'
-        />
-      ))}
-    </Slider>
-  </>
-)}
-        </Box>
-          <Box width={size == '500px' ? '80%' : '30vw'}>
-  <Slider
-    {...thumbnailSliderSettings}
-    asNavFor={mainSlider}
-    ref={(slider) => setThumbnailSlider(slider)}
-  >
-    {data?.result?.Product?.ProductImages?.map((image, index) => {
-      return (
-        <Box key={index} p='1px' borderRadius='10px'> {/* Add margin to create gap between thumbnails */}
-          <Image
-          border={`solid 3px ${index === mainSliderIndex ? 'blue' : 'transparent'}`}
-          backgroundColor='white'
-          boxSize='50px'
-          objectFit='cover'
-          borderRadius='10px'
-          mr='2px'
-          onClick={() => setMainSliderIndex(index)}
-          src={`${import.meta.env.VITE_API_IMAGE_URL}/products/${image?.imageUrl}`}
-          alt={`Thumbnail ${index + 1}`}
-          />
-        </Box>
-    );
-    })}
-  </Slider>
-  </Box>
-  </VStack>
-        <VStack width={size == '500px' ? '100%' : '50vw'}>
-        <Box mt='20px' width='97%' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
-            <Text fontSize='x-large' fontWeight='bold' color='tomato'>{formatPriceToIDR(calculateDiscountPrice(data?.result?.Product?.price, data?.result?.Discounts))}</Text>
-            {data?.result?.Discounts && data?.result?.Discounts.length > 0 && (
-    <>
-      <Text color='grey' fontSize='xs' fontWeight='bold'>
-  <s>{ calculateDiscountPrice(data?.result?.Product?.price, data?.result?.Discounts) == data?.result?.Product?.price ? null : formatPriceToIDR(data?.result?.Product?.price)}</s>
-  {data?.result?.Discounts.map((discount, index) => (
-    <React.Fragment key={index}>
-      {discount.distributionId === 1 && (
-      <>
-        {discount.DiscountType?.id === 4 && discount.discountValue && ` (${discount.discountValue}% Off)`}
-        {discount.DiscountType?.id === 4 && discount.discountNom && ` (${formatPriceToIDR(discount.discountNom)} Off)`}
-        {discount.DiscountType?.id === 5 && ` (Minimum Purchase) - ${discount.discountValue}% Off`}
-        {discount.DiscountType?.id === 6 && ` (Beli ${discount.buy_quantity} Gratis ${discount.get_quantity})`}
-        {index < data.result.Discounts.length - 1 && ', '}
-      </>
-    )}
-    </React.Fragment>
-  ))}
-</Text>
-
-    </>
-  )}
-            <Text fontWeight='bold'>{data?.result?.Product?.name}</Text>
-            <Text >{data?.result?.Product?.massProduct} {data?.result?.Product?.Mass?.name} / {data?.result?.Product?.Packaging?.name} </Text>
-        </Box>
-        <Box justifyContent='center' mt='10px' width='97%' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
-            <Text fontSize='larger' fontWeight='bold'>Deskripsi</Text>
-            <Box w='100%' pl='20px' pr='20px'>
-            {showFullDescription ? (
-    <div dangerouslySetInnerHTML={{ __html: data?.result?.Product?.description }} style={{ wordWrap: 'break-word' }} />
-  ) : (
-    <>
-      <div dangerouslySetInnerHTML={{ __html: truncateDescription(data?.result?.Product?.description, 200) }} style={{ wordWrap: 'break-word' }} />
-      {truncateDescription(data?.result?.Product?.description, 200) !== data?.result?.Product?.description &&
-        <Text textColor="teal" cursor='pointer' onClick={() => setShowFullDescription(true)}>
-          Baca Selengkapnya
-        </Text>}
-    </>
-  )}
-            </Box>
-            <Text fontSize='larger' fontWeight='bold'>Kategori</Text>
-            <Flex flexWrap="wrap" columnGap='5px'>
-        {data?.result?.Product?.ProductCategories?.map((item) => (
-          <Box key={item?.category?.id} borderRadius="full" mb='5px' pl="10px" pr='10px' pt='5px' pb='5px' border="solid #1B4332FF 1px" bgColor='#F3FBF8FF'>
-              <Text color='green'>{item?.category}</Text>
+        <Button backgroundColor="#f5f5f5" leftIcon={<IconChevronLeft />}>
+          Kembali
+        </Button>
+      </HStack>
+      <Flex
+        alignItems="flex-start"
+        pl={size == '500px' ? '0px' : '20px'}
+        pr={size == '500px' ? '0px' : '20px'}
+        flexDirection={size == '500px' ? 'column' : 'row'}
+        h={'full'}
+      >
+        <VStack
+          mt="20px"
+          width={size == '500px' ? '100%' : '30vw'}
+          position={size == '500px' ? 'relative' : 'sticky'}
+          top={size == '500px' ? '0px' : '110px'}
+        >
+          <Box width={size == '500px' ? '80%' : '30vw'} justifyContent="center">
+            {data?.result?.Product?.ProductImages && (
+              <>
+                <link
+                  rel="preload"
+                  as="image"
+                  href={`${import.meta.env.VITE_API_IMAGE_URL}/products/${
+                    data?.result.Product.ProductImages[0].imageUrl
+                  }`}
+                />
+                <Slider
+                  {...mainSliderSettings}
+                  asNavFor={thumbnailSlider}
+                  ref={(slider) => setMainSlider(slider)}
+                >
+                  {data?.result.Product.ProductImages.map((image, index) => (
+                    <Image
+                      key={index.toString()}
+                      backgroundColor="white"
+                      src={`${import.meta.env.VITE_API_IMAGE_URL}/products/${
+                        image.imageUrl
+                      }`}
+                      objectFit="contain"
+                      height="35vh"
+                      borderRadius="10px"
+                    />
+                  ))}
+                </Slider>
+              </>
+            )}
           </Box>
-        ))}
-        </Flex>
-        </Box>
-    <SubmitReview userId={user?.id} productId={data?.result?.Product?.id} />
-    <Box mt='10px' width='97%' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
-            <Text fontSize='larger' fontWeight='bold'>Penilaian & Ulasan</Text>
-            <Flex mb='10px' flexDirection='row' gap='5px'>
-            <Image boxSize='25px' src={star} />
-            <Text fontWeight='bold'>{data?.subquery?.averageRating?.toFixed(1)}/5.0</Text>
-            <Text >({data?.subquery?.totalReviews})</Text>
+          <Box width={size == '500px' ? '80%' : '30vw'}>
+            <Slider
+              {...thumbnailSliderSettings}
+              asNavFor={mainSlider}
+              ref={(slider) => setThumbnailSlider(slider)}
+            >
+              {data?.result?.Product?.ProductImages?.map((image, index) => {
+                return (
+                  <Box key={index} p="1px" borderRadius="10px">
+                    {' '}
+                    {/* Add margin to create gap between thumbnails */}
+                    <Image
+                      border={`solid 3px ${
+                        index === mainSliderIndex ? 'blue' : 'transparent'
+                      }`}
+                      backgroundColor="white"
+                      boxSize="50px"
+                      objectFit="cover"
+                      borderRadius="10px"
+                      mr="2px"
+                      onClick={() => setMainSliderIndex(index)}
+                      src={`${import.meta.env.VITE_API_IMAGE_URL}/products/${
+                        image?.imageUrl
+                      }`}
+                      alt={`Thumbnail ${index + 1}`}
+                    />
+                  </Box>
+                );
+              })}
+            </Slider>
+          </Box>
+        </VStack>
+        <VStack width={size == '500px' ? '100%' : '50vw'}>
+          <Box
+            mt="20px"
+            width="97%"
+            bg="#FFFEF7"
+            textAlign="left"
+            p={4}
+            rounded="lg"
+            boxShadow="0px 1px 5px gray"
+          >
+            <Text fontSize="x-large" fontWeight="bold" color="tomato">
+              {formatPriceToIDR(
+                calculateDiscountPrice(
+                  data?.result?.Product?.price,
+                  data?.result?.Discounts,
+                ),
+              )}
+            </Text>
+            {data?.result?.Discounts && data?.result?.Discounts.length > 0 && (
+              <>
+                <Text color="grey" fontSize="xs" fontWeight="bold">
+                  <s>
+                    {calculateDiscountPrice(
+                      data?.result?.Product?.price,
+                      data?.result?.Discounts,
+                    ) == data?.result?.Product?.price
+                      ? null
+                      : formatPriceToIDR(data?.result?.Product?.price)}
+                  </s>
+                  {data?.result?.Discounts.map((discount, index) => (
+                    <React.Fragment key={index}>
+                      {discount.distributionId === 1 && (
+                        <>
+                          {discount.DiscountType?.id === 4 &&
+                            discount.discountValue &&
+                            ` (${discount.discountValue}% Off)`}
+                          {discount.DiscountType?.id === 4 &&
+                            discount.discountNom &&
+                            ` (${formatPriceToIDR(discount.discountNom)} Off)`}
+                          {discount.DiscountType?.id === 5 &&
+                            ` (Minimum Purchase) - ${discount.discountValue}% Off`}
+                          {discount.DiscountType?.id === 6 &&
+                            ` (Beli ${discount.buy_quantity} Gratis ${discount.get_quantity})`}
+                          {index < data.result.Discounts.length - 1 && ', '}
+                        </>
+                      )}
+                    </React.Fragment>
+                  ))}
+                </Text>
+              </>
+            )}
+            <Text fontWeight="bold">{data?.result?.Product?.name}</Text>
+            <Text>
+              {data?.result?.Product?.massProduct}{' '}
+              {data?.result?.Product?.Mass?.name} /{' '}
+              {data?.result?.Product?.Packaging?.name}{' '}
+            </Text>
+          </Box>
+          <Box
+            justifyContent="center"
+            mt="10px"
+            width="97%"
+            bg="#FFFEF7"
+            textAlign="left"
+            p={4}
+            rounded="lg"
+            boxShadow="0px 1px 5px gray"
+          >
+            <Text fontSize="larger" fontWeight="bold">
+              Deskripsi
+            </Text>
+            <Box w="100%" pl="20px" pr="20px">
+              {showFullDescription ? (
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: data?.result?.Product?.description,
+                  }}
+                  style={{ wordWrap: 'break-word' }}
+                />
+              ) : (
+                <>
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: truncateDescription(
+                        data?.result?.Product?.description,
+                        200,
+                      ),
+                    }}
+                    style={{ wordWrap: 'break-word' }}
+                  />
+                  {truncateDescription(
+                    data?.result?.Product?.description,
+                    200,
+                  ) !== data?.result?.Product?.description && (
+                    <Text
+                      textColor="teal"
+                      cursor="pointer"
+                      onClick={() => setShowFullDescription(true)}
+                    >
+                      Baca Selengkapnya
+                    </Text>
+                  )}
+                </>
+              )}
+            </Box>
+            <Text fontSize="larger" fontWeight="bold">
+              Kategori
+            </Text>
+            <Flex flexWrap="wrap" columnGap="5px">
+              {data?.result?.Product?.ProductCategories?.map((item) => (
+                <Box
+                  key={item?.category?.id}
+                  borderRadius="full"
+                  mb="5px"
+                  pl="10px"
+                  pr="10px"
+                  pt="5px"
+                  pb="5px"
+                  border="solid #1B4332FF 1px"
+                  bgColor="#F3FBF8FF"
+                >
+                  <Text color="green">{item?.category}</Text>
+                </Box>
+              ))}
             </Flex>
-            {data?.subquery?.totalReviews > 1 ? 
-            <Flex flexWrap="wrap" columnGap='5px'>
-            <Image width='30px' src={star} />
-            <Text fontWeight='bold'>{data?.subquery?.averageRating?.toFixed(1)}/5.0</Text>
-            <Text>{data?.subquery?.totalReviews} Ulasan</Text>
-            </Flex> : null}
+          </Box>
+          <SubmitReview
+            userId={user?.id}
+            productId={data?.result?.Product?.id}
+          />
+          <Box
+            mt="10px"
+            width="97%"
+            bg="#FFFEF7"
+            textAlign="left"
+            p={4}
+            rounded="lg"
+            boxShadow="0px 1px 5px gray"
+          >
+            <Text fontSize="larger" fontWeight="bold">
+              Penilaian & Ulasan
+            </Text>
+            <Flex mb="10px" flexDirection="row" gap="5px">
+              <Image boxSize="25px" src={star} />
+              <Text fontWeight="bold">
+                {data?.subquery?.averageRating?.toFixed(1)}/5.0
+              </Text>
+              <Text>({data?.subquery?.totalReviews})</Text>
+            </Flex>
+            {data?.subquery?.totalReviews > 1 ? (
+              <Flex flexWrap="wrap" columnGap="5px">
+                <Image width="30px" src={star} />
+                <Text fontWeight="bold">
+                  {data?.subquery?.averageRating?.toFixed(1)}/5.0
+                </Text>
+                <Text>{data?.subquery?.totalReviews} Ulasan</Text>
+              </Flex>
+            ) : null}
             <ProductRating productId={data?.result?.Product?.id} />
-        </Box>
-        <Box mt='10px' width='97%' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
-          <Text>Bagikan</Text>
-            <Flex  flexWrap='wrap' flexDirection='row' columnGap='5px'>
-            <EmailShareButton url={window.location.href}>
-        <EmailIcon size={32} round />
-      </EmailShareButton>
+          </Box>
+          <Box
+            mt="10px"
+            width="97%"
+            bg="#FFFEF7"
+            textAlign="left"
+            p={4}
+            rounded="lg"
+            boxShadow="0px 1px 5px gray"
+          >
+            <Text>Bagikan</Text>
+            <Flex flexWrap="wrap" flexDirection="row" columnGap="5px">
+              <EmailShareButton url={window.location.href}>
+                <EmailIcon size={32} round />
+              </EmailShareButton>
 
-      <FacebookShareButton url={window.location.href}>
-        <FacebookIcon size={32} round />
-      </FacebookShareButton>
+              <FacebookShareButton url={window.location.href}>
+                <FacebookIcon size={32} round />
+              </FacebookShareButton>
 
-      <TwitterShareButton url={window.location.href}>
-        <TwitterIcon size={32} round />
-      </TwitterShareButton>
+              <TwitterShareButton url={window.location.href}>
+                <TwitterIcon size={32} round />
+              </TwitterShareButton>
 
-      <WhatsappShareButton url={window.location.href}>
-        <WhatsappIcon size={32} round />
-      </WhatsappShareButton>
+              <WhatsappShareButton url={window.location.href}>
+                <WhatsappIcon size={32} round />
+              </WhatsappShareButton>
 
-      {/* Add your custom copy link button */}
-      <IconButton borderRadius='full' boxSize='32px' icon={<IconLink />} onClick={() => navigator.clipboard.writeText(window.location.href)} />
+              {/* Add your custom copy link button */}
+              <IconButton
+                borderRadius="full"
+                boxSize="32px"
+                icon={<IconLink />}
+                onClick={() =>
+                  navigator.clipboard.writeText(window.location.href)
+                }
+              />
             </Flex>
-        </Box>
-        
+          </Box>
         </VStack>
         {size == '500px' ? (
           <></>
         ) : (
           <Box
-          top={size == '500px' ? '0px' : '110px'} mt='20px' position='sticky'  p='0px 20px 0px 20px' height='fit-content'
+            top={size == '500px' ? '0px' : '110px'}
+            mt="20px"
+            position="sticky"
+            p="0px 20px 0px 20px"
+            height="fit-content"
           >
             <Box
               width="20vw"
@@ -442,7 +599,14 @@ const Product = () => {
                   />
                 </HStack>
                 <Text ml="40px" fontWeight="bold">
-                  Total : {formatPriceToIDR(quantity * calculateDiscountPrice(data?.result?.Product?.price, data?.result?.Discounts))}
+                  Total :{' '}
+                  {formatPriceToIDR(
+                    quantity *
+                      calculateDiscountPrice(
+                        data?.result?.Product?.price,
+                        data?.result?.Discounts,
+                      ),
+                  )}
                 </Text>
                 <Button
                   onClick={isLogin ? handleAddToCart : onOpen}
@@ -457,11 +621,11 @@ const Product = () => {
             </Box>
           </Box>
         )}
-    </Flex>
-    {size == '500px' ? (
+      </Flex>
+      {size == '500px' ? (
         <Flex dir="column" w={{ base: '100vw', md: size }}>
           <Flex
-          zIndex={99}
+            zIndex={99}
             position="fixed"
             justifyContent="space-between"
             boxShadow={'0px -8px 8px -14px rgba(0,0,0,1)'}
@@ -524,7 +688,13 @@ const Product = () => {
                 )}
                 <Box>
                   <Text fontSize="lg" fontWeight="bold" color="tomato">
-                  {formatPriceToIDR(quantity * calculateDiscountPrice(data?.result?.Product?.price, data?.result?.Discounts))}
+                    {formatPriceToIDR(
+                      quantity *
+                        calculateDiscountPrice(
+                          data?.result?.Product?.price,
+                          data?.result?.Discounts,
+                        ),
+                    )}
                   </Text>
                   <Text fontSize="sm">Stock: {data?.result?.stock}</Text>
                 </Box>
@@ -617,14 +787,29 @@ const Product = () => {
           </ModalContent>
         </Modal>
       )}
-    <Box mt='10px'>
-    <Text pl='20px' pb='10px' fontWeight='bold' >Produk kategori serupa</Text>
-    <Box w='100%' pt='5px' pb='5px' style={{ msOverflowStyle: 'none' }} css={{ scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none', }, }} overflowX='auto'>
-     <ProductRelated store={data?.result?.Product?.ProductCategories[0]?.id} category={data?.result?.Product?.ProductCategories[0]?.id} />
+      <Box mt="10px">
+        <Text pl="20px" pb="10px" fontWeight="bold">
+          Produk kategori serupa
+        </Text>
+        <Box
+          w="100%"
+          pt="5px"
+          pb="5px"
+          style={{ msOverflowStyle: 'none' }}
+          css={{
+            scrollbarWidth: 'none',
+            '&::-webkit-scrollbar': { display: 'none' },
+          }}
+          overflowX="auto"
+        >
+          <ProductRelated
+            store={data?.result?.Product?.ProductCategories[0]?.id}
+            category={data?.result?.Product?.ProductCategories[0]?.id}
+          />
         </Box>
-        </Box>
+      </Box>
     </Box>
   );
-}
+};
 
 export default Product;

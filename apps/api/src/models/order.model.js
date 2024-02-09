@@ -29,19 +29,15 @@ export const init = (sequelize) => {
       },
       orderDate: {
         type: DataTypes.DATE,
-        allowNull: false,
       },
       paymentMethod: {
         type: DataTypes.STRING(45),
-        allowNull: false,
       },
-      codeTransaction: {
-        type: DataTypes.STRING(45),
-        allowNull: false,
-      },
-      image: {
+      paymentCode: {
         type: DataTypes.STRING(255),
-        allowNull: true,
+      },
+      paymentStatus: {
+        type: DataTypes.STRING(255),
       },
       totalDiscount : {
         type: DataTypes.INTEGER,

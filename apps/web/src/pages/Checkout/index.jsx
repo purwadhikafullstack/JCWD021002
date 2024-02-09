@@ -16,6 +16,8 @@ import {
   DrawerContent,
   useDisclosure,
   Heading,
+  VStack,
+  Divider,
 } from '@chakra-ui/react';
 import { PiMapPinFill } from 'react-icons/pi';
 import { FaCheck } from 'react-icons/fa';
@@ -28,34 +30,40 @@ import { Link, useLocation } from 'react-router-dom';
 
 import Voucher from '../../assets/voucher.png';
 import { CheckoutHeader } from '../../components/Checkout/Checkout.Header';
-import { CheckoutFooter } from '../../components/Checkout/Checkout.Footer';
+import { CheckoutSidebar } from '../../components/Checkout/Checkout.Sidebar';
 import angkaRupiahJs from '@develoka/angka-rupiah-js';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useWebSize } from '../../provider.websize';
-import { useLocation } from 'react-router-dom';
 import { VoucherPage } from '../Voucher/Voucher';
 import { useDispatch } from 'react-redux';
 import { setAddress } from '../../redux/reducer/addressReducer';
 import { groupBy } from 'lodash';
 import { ListProductOrder } from './listProductOrder';
 import '../../scrollbar.css';
+import { CheckoutAddress } from '../../components/Checkout/Checkout.Address';
 
 export const Checkout = () => {
   const [selectedItem, setSelectedItem] = useState();
   const [active, setActive] = useState();
   const user = useSelector((state) => state.AuthReducer.user);
-  const userId = user?.id;
+  console.log('User:', user); // Add this line to check the user object
+  const [userAddress, setUserAddress] = useState();
+  const userId = user?.id; // Use optional chaining to avoid errors if user is undefined
+  console.log('UserID:', userId); // Ad
   const [heading, setHeading] = useState(null);
   const [order, setOrder] = useState([]);
+  console.log('order', order);
   const [orderDetail, setOrderDetail] = useState([]);
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const { size, handleWebSize } = useWebSize();
   const [discountVoucher, setDiscountVoucher] = useState(0);
   const address = useSelector((state) => state.addressReducer?.address);
   const dispatch = useDispatch();
   const [selectedShipping, setSelectedshipping] = useState();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  
 
   const location = useLocation();
   const isCartShipment = location.pathname === '/cart/shipment';
@@ -82,24 +90,27 @@ export const Checkout = () => {
       //     console.warn('User ID not available. Skipping cart fetch.');
       //     return;
       //   }
-
+      console.log( `${import.meta.env.VITE_API_URL}/checkout/pre-checkout/${userId}`);
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/checkout/${userId}`,
+        `${import.meta.env.VITE_API_URL}/checkout/pre-checkout/${userId}`,
       );
 
-      console.log(
-        'Cart API Response:',
-        response?.data?.data[0]?.OrderDetails || [],
-      );
+      // console.log(
+      //   'Cart API Response:',
+      //   response?.data?.data?.OrderDetails || [],
+      // );
 
       //   console.log(response);
 
-      setOrder(response.data.data[0]);
-      const groupedProduct = groupBy(
-        response?.data?.data[0]?.OrderDetails || [],
-        'ProductStock.store_idstore',
-      );
-      setOrderDetail(groupedProduct);
+      setOrder(response?.data?.data);
+      console.log('order: ', response?.data?.data);
+      // const groupedProduct = groupBy(
+      //     response?.data?.data[0]?.OrderDetails || [],
+      //     'Store.id',
+      //   );
+      // setOrderDetail(groupedProduct);
+      setOrderDetail(response?.data?.data?.OrderDetails);
+        // console.log('orderDetail: ', response?.data?.data?.OrderDetails);
     } catch (err) {
       //   console.warn('Cart not found for user:', userId);
       console.error('Error fetching cart:', err);
@@ -131,236 +142,68 @@ export const Checkout = () => {
   return (
     <Box
       p="0"
+      // w='full'
       w={{ base: '100vw', md: size }}
-      h={'fit-content'}
+      h={'100vh'}
       transition="width 0.3s ease"
       backgroundColor="#f5f5f5"
       className="hide-scrollbar"
     >
       <CheckoutHeader heading={heading} handleWebSize={handleWebSize} size={size} />
+     <>
+     
+     <Heading hidden={size == '500px'} px={175} py={5} size="md">
+            Checkout
+          </Heading>
+          <Flex
+            w={{ base: '100vw', md: size }}
+            gap={5}
+            alignItems="flex-start"
+            px={size === '500px' ? 0 : 175}
+            flexDirection={size == '500px' ? 'column' : 'row'}
+            h={'full'}
+          >
 
-      <Flex
-        flexDirection="column"
+      {/* <Flex
+        // size={size}
+        flexDirection={size == '500px' ? 'column' : 'row'}
+        justifyContent='space-between'
+        // justifyContent={size == '500px' ? 'normal' : 'space-between'}
         w="full"
         h="100vh"
         overflowY="auto"
         position="relative"
         gap={3}
-      >
-        <Stack
-          p={4}
-          pl={5}
-          pr={2}
-          background="white"
-          cursor="pointer"
-          onClick={onOpenAddressDrawer}
-        >
-          <Text>Alamat Pengiriman</Text>
-          {address?.addressLine ? (
-            <Flex flexDirection="column">
-              <Flex alignItems="center" gap={1}>
-                <Icon as={PiMapPinFill} boxSize={5} color="green.600" />
-                <Text fontWeight="semibold">{address?.recipientNames}</Text>
-              </Flex>
-              <Flex
-                justifyContent="space-between"
-                alignItems="center"
-                pr={0}
-                mr={0}
-              >
-                <Text flexWrap="wrap" pl={5}>
-                  {address?.addressLine}, {address?.postalCode}
-                  {/* Jl. Perum Sari Boga no.6 Kec. Sukasari, Kab. Bandung Barat Bandung
-              44465 */}
-                </Text>
-                <IconButton
-                  variant="ghost"
-                  _hover={{ color: 'black', opacity: 0.9 }}
-                  transition="color 0.3s ease-in-out, opacity 0.3s ease-in-out"
-                  color="gray.600"
-                  icon={<IoIosArrowForward />}
-                />
-              </Flex>
-            </Flex>
-          ) : (
-            <Flex flexDirection="column">
-              <Flex
-                justifyContent="space-between"
-                alignItems="center"
-                pr={0}
-                mr={0}
-              >
-                <Flex alignItems="center" gap={1}>
-                  <Icon as={PiMapPinFill} boxSize={5} color="green.600" />
-                  <Text flexWrap="wrap" pl={5}>
-                    Pilih alamat pengiriman
-                  </Text>
-                </Flex>
-                <IconButton
-                  variant="ghost"
-                  _hover={{ color: 'black', opacity: 0.9 }}
-                  transition="color 0.3s ease-in-out, opacity 0.3s ease-in-out"
-                  color="gray.600"
-                  icon={<IoIosArrowForward />}
-                />
-              </Flex>
-            </Flex>
-          )}
+        // p={size == '500px' ? 0 : 5}
+      > */}
+              <Stack w='full' overflowY='auto' position='relative'>
+        {/* <VStack w='full' spacing={3} > */}
 
-          {/* Drawer for Address */}
-          <Drawer
-            placement="right"
-            isOpen={addressDrawerIsOpen}
-            onClose={onCloseAddressDrawer}
-            size="md"
-          >
-            <DrawerOverlay />
-            {/* <DrawerContent width="500px" mx="auto"> */}
-
-            <DrawerContent
-              w="500px"
-              h="full"
-              mx="auto"
-              pos="absolute"
-              left={0}
-              transform="translateX(-50%)"
-            >
-              <DrawerHeader borderBottom="2px solid green" textAlign="center">
-                <Flex justifyContent="space-between" alignItems="center">
-                  <Flex gap={0} alignItems="center">
-                    <IconButton
-                      variant="ghost"
-                      icon={<IconChevronLeft />}
-                      onClick={onCloseAddressDrawer}
-                      _hover={{ color: 'gray.600', opacity: 0.9 }}
-                      transition="color 0.3s ease-in-out, opacity 0.3s ease-in-out"
-                    />
-                    <Heading size="sm">Daftar Alamat</Heading>
-                  </Flex>
-                  <Link
-                    to={`/profile/detail/address/add?fromPage=${encodeURIComponent(
-                      location,
-                    )}`}
-                  >
-                    <Text fontSize="md" color="green.700">
-                      Tambah Alamat
-                    </Text>
-                  </Link>
-                </Flex>
-              </DrawerHeader>
-              <DrawerBody
-                pt={5}
-                display={'flex'}
-                flexDirection={'column'}
-                gap={5}
-              >
-                {userAddress?.map((item, index) => {
-                  return (
-                    <Flex
-                      key={index}
-                      w="full"
-                      pt={5}
-                      px={4}
-                      pb={4}
-                      //   pr={4}
-                      borderWidth={1}
-                      //   borderColor="green.600"
-                      borderColor="gray"
-                      //   color="green.600"
-                      rounded={12}
-                      spacing={4}
-                      onClick={() => {
-                        setSelectedItem(item);
-                        // setCityIdUser()
-                        if (active != item?.id) {
-                          setActive(item?.id);
-                        } else if (active == item?.id) {
-                          setActive();
-                        }
-                      }}
-                      direction={'column'}
-                      gap={5}
-                      cursor={'pointer'}
-                    >
-                      <Flex justify={'space-between'}>
-                        <Box>
-                          <Text fontWeight="semibold">
-                            {item?.recipientNames}
-                          </Text>
-                          <Text fontSize="sm">
-                            {item?.recipientsMobileNumber}
-                          </Text>
-                          <Text flexWrap="wrap" fontSize="sm">
-                            {item?.addressLine}
-                          </Text>
-                        </Box>
-                        <IconButton
-                          isRound={true}
-                          variant="outline"
-                          // colorScheme="teal"
-                          aria-label="Done"
-                          fontSize="10px"
-                          icon={
-                            selectedItem ? (
-                              active == item.id ? (
-                                <FaCheck />
-                              ) : (
-                                <></>
-                              )
-                            ) : location.id == item.id ? (
-                              <FaCheck />
-                            ) : active == item?.id ? (
-                              <FaCheck />
-                            ) : (
-                              <></>
-                            )
-                          }
-                          color={'teal'}
-                          border={'1px solid teal'}
-                          size={'xs'}
-                        />
-                      </Flex>
-
-                      <Button
-                        w="full"
-                        colorScheme="green"
-                        color="black"
-                        fontWeight="semibold"
-                        borderColor="gray"
-                        rounded={10}
-                        variant="outline"
-                      >
-                        Ubah Alamat
-                      </Button>
-                    </Flex>
-                  );
-                })}
-              </DrawerBody>
-              <DrawerFooter>
-                <Button
-                  w="full"
-                  background="green.700"
-                  color="white"
-                  _hover={{ background: 'green.900', opacity: 0.9 }}
-                  transition="color 0.3s ease-in-out, opacity 0.3s ease-in-out"
-                  onClick={() => handleSelectAddress(selectedItem)}
-                >
-                  Pilih Alamat
-                </Button>
-              </DrawerFooter>
-            </DrawerContent>
-          </Drawer>
-        </Stack>
+        <CheckoutAddress 
+        address={address}
+        // onOpenAddressDrawer={onOpenAddressDrawer}
+        />
+        {/* {order?.Store?.name} */}
+        {/* {order.map((item, index) => (
+          <Box key={index}>
+            {item.id}
+          </Box>
+        ) )} */}
 
         <ListProductOrder
+          order={order}
           orderDetail={orderDetail}
           selectedItem={selectedItem}
           selectedShipping={selectedShipping}
           setSelectedshipping={setSelectedshipping}
           address={address}
         />
+        {/* </VStack> */}
+        </Stack>
+
 
         <HStack
+        w='full'
           cursor="pointer"
           justifyContent="space-between"
           h="3.5em"
@@ -369,6 +212,7 @@ export const Checkout = () => {
           pr={1}
           //   spacing={0}
           background="white"
+          hidden={size == '500px' ? false : true}
         >
           <Flex alignItems="center" gap={2}>
             <Icon as={Image} src={Voucher} w={'43px'} h="22px" />
@@ -378,10 +222,22 @@ export const Checkout = () => {
         </HStack>
 
         {/* {order.length > 0 ? (order.map ((item, index) => ( */}
-        <Stack p={4} pl={5} pr={5} spacing={0} background="white" pb={20}>
-          <Text>Rincian Pembayaran</Text>
+        
+        <Flex
+          w={size === '500px' ? size : '40em'}
+          bg='white'
+        rounded={size === '500px' ? 0 : 10}
+          flexDirection='column'
+              position={size == '500px' ? 'unset' : 'sticky'}
+              top={size == '500px' ? undefined : '85px'}
+              bottom={0}
+            >
+              {/* hai */}
+        {/* <Box w='30em'> */}
+        <Stack p={4} px={5} spacing={0} h='fit-content'>
+          <Text fontWeight='bold'>Rincian Pembayaran</Text>
           <Flex w="full" justifyContent="space-between">
-            <Flex flexDirection="column" background="white" color="gray.600">
+            <Flex flexDirection="column" color="gray.600">
               <Text fontSize="sm">Subtotal Untuk Produk (10 Barang)</Text>
               <Text fontSize="sm">Subtotal Untuk Pengiriman</Text>
               <Text fontSize="sm">Total Diskon Untuk Pengiriman</Text>
@@ -390,7 +246,7 @@ export const Checkout = () => {
             <Flex
               flexDirection="column"
               alignItems="flex-end"
-              background="white"
+              // background="white"
               color="gray.600"
             >
               <Text fontSize="sm">
@@ -409,16 +265,55 @@ export const Checkout = () => {
               </Text>
             </Flex>
           </Flex>
+          
         </Stack>
-        {/* ))} */}
-      </Flex>
-
-      <CheckoutFooter
+        <Divider 
+          hidden={size == '500px' ? true : false}
+        />
+        <HStack
+        w='full'
+          cursor="pointer"
+          justifyContent="space-between"
+          h="3.5em"
+          p={4}
+          pl={5}
+          pr={1}
+          //   spacing={0}
+          background="white"
+          hidden={size == '500px' ? true : false}
+        >
+          <Flex alignItems="center" gap={2}>
+            <Icon as={Image} src={Voucher} w={'43px'} h="22px" />
+            <Text>Voucher Groceria</Text>
+          </Flex>
+          <VoucherPage order={order} setDiscountVoucher={setDiscountVoucher} fetchOrder={fetchOrder} />
+        </HStack>
+        <Flex
+          // w='full'
+          bg='white'
+          flexDirection='column'
+              position={size == '500px' ? 'fixed' : 'sticky'}
+              top={size == '500px' ? undefined : '85px'}
+              bottom={0}
+            >
+      <CheckoutSidebar
         handleWebSize={handleWebSize}
         size={size}
         order={order}
         selectedShipping={selectedShipping}
       />
+      </Flex>
+        {/* </Box> */}
+        </Flex>
+        {/* ))} */}
+      </Flex>
+          {/* </Flex> */}
+     </>
+
+      
+      {/* <HStack>
+        @2004, Groceria. All Rights Reserved
+      </HStack> */}
     </Box>
   );
 };

@@ -24,6 +24,7 @@ export const CartItemList = ({
   setQuantities,
   showToast,
   deleteCartProduct,
+  size
 }) => {
   const handleCheckboxChange = (cartDetailId) => {
     setSelectedItems((prevSelectedItems) =>
@@ -84,12 +85,14 @@ export const CartItemList = ({
   }
 
   return (
-    <Flex key={item.id} flexDirection='row' gap={2}>
+    <Flex w='full' key={item.id} flexDirection='row' gap={2}>
       <Checkbox
         colorScheme='green'
         isChecked={selectedItems.includes(item.productStock_idproductStock)}
         onChange={() => handleCheckboxChange(item.productStock_idproductStock)}
       />
+      <Flex w='full' gap={2} justifyContent='space-between' >
+
       <Image
         w={'10vw'}
         height='15vh'
@@ -101,28 +104,31 @@ export const CartItemList = ({
         objectFit='contain'
         borderRadius='10px'
       />
-      <Stack spacing={1}>
+      <Flex flexDirection={size === '500px' ? 'column' : 'row'} justifyContent='space-between' gap={0} w='full'>
+
         <Text>{item.ProductStock.Product.name}</Text>
+        {/* <Text hidden={size === '500px' ? true : false} >{item.ProductStock.Product.name}</Text> */}
+      <Stack flexDirection='column'>
         <Text fontSize='md' fontWeight='bold' color='tomato'>
         {formatPriceToIDR(calculateDiscountPrice(item?.price, item?.ProductStock?.Discounts))}
         </Text>
-        <Flex gap={1} border='1px' borderColor='gray.200'>
+        <Flex border='1px' w='fit-content' h='fit-content' borderColor='gray.200'>
           <IconButton
             onClick={() =>
               quantities[item.productStock_idproductStock] !== 1
-                ? handleDecrement(
-                    item.productStock_idproductStock
-                  )
+              ? handleDecrement(
+                item.productStock_idproductStock
+                )
                 : handleDeleteProduct(
-                    item.productStock_idproductStock
+                  item.productStock_idproductStock
                   )
-            }
-            h='30px'
-            borderRadius={0}
-            variant='outline'
-            color='black'
-            icon={
-              quantities[item.productStock_idproductStock] === 1 ? (
+                }
+                h='30px'
+                borderRadius={0}
+                variant='outline'
+                color='black'
+                icon={
+                  quantities[item.productStock_idproductStock] === 1 ? (
                 <RiDeleteBinLine />
               ) : (
                 <HiMinusSmall />
@@ -142,9 +148,11 @@ export const CartItemList = ({
             color='black'
             fontSize='18px'
             icon={<FiPlus />}
-          />
+            />
         </Flex>
       </Stack>
+            </Flex>
+            </Flex>
     </Flex>
   );
 };

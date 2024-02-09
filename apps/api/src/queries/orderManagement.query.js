@@ -5,23 +5,47 @@ import Product from '../models/product.model';
 import ProductImage from '../models/productImage.model';
 import Store from '../models/store.model';
 import Journal from '../models/journal.model';
+import User from '../models/user.model';
 const { Op } = require('sequelize');
 
-export const getAllOrderQuery = async (storeId) => {
+export const getOrderbyAdminQuery = async (adminStoreId, status, paymentStatus) => {
   const whereCondition = {};
 
-  if (storeId) {
-    whereCondition.store_idstore = {
-      [Op.like]: `%${storeId}%`,
+  if (status) {
+    whereCondition.status = {
+      [Op.like]: `%${status}%`, 
+    };
+  }
+  if (paymentStatus) {
+    whereCondition.paymentStatus = {
+      [Op.like]: `%${paymentStatus}%`, 
     };
   }
   console.log(whereCondition);
 
   return Order.findAll({
     // where: whereCondition,
-    where: storeId ? { store_idstore: storeId } : {},
-
+    where: [
+    adminStoreId ? { store_idstore: adminStoreId } : {},
+    status ? { status: status } : {},
+    paymentStatus ? { paymentStatus: paymentStatus } : {},
+    ],
     include: [
+      {
+        model: User,
+        // include: [
+        //   {
+        //     model: ProductStock,
+        //     include: [
+        //       { model: Product, include: [ProductImage] },
+        //       { model: Store },
+        //     ],
+        //   },
+        // ],
+      },
+      {
+        model: Store,
+      },
       {
         model: OrderDetail,
         include: [
@@ -29,7 +53,7 @@ export const getAllOrderQuery = async (storeId) => {
             model: ProductStock,
             include: [
               { model: Product, include: [ProductImage] },
-              { model: Store },
+              // { model: Store },
             ],
           },
         ],
@@ -134,3 +158,21 @@ export const createStockJournalQuery = async (
     throw err;
   }
 };
+
+export const getDeliveredOrdersQuery = async () => {
+  try {
+    const deliveredOrders = await Order.findAll({
+      where: {
+        status: 'delivery',
+        paymentStatus: 'settlement',
+      },
+    });
+
+    return deliveredOrders;
+  } catch (error) {
+    console.error('Error fetching delivered orders:', error);
+    throw error;
+  }
+};
+
+

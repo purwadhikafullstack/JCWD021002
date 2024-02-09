@@ -197,7 +197,7 @@ const AddDiscount = () => {
               size="md"
               onChange={(event) => {
                 setFieldImage(event.currentTarget.files[0]);
-              }, handleImageChange}
+              handleImageChange}}
             />
       <IconButton
         onClick={() => document.getElementById('fileInput').click()}

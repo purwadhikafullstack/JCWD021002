@@ -1,11 +1,16 @@
 import { Router } from 'express';
-import { acceptOrderController, cancelOrderController, getAllOrderController, mutateStockController, sendUserOrderController } from '../controllers/orderManagement.controller';
+import { acceptOrderController, cancelOrderController, getAllOrderController, getAllStoreController, getOrderbyAdminController, mutateStockController, sendUserOrderController } from '../controllers/orderManagement.controller';
 
 export const orderManagementRouter = Router();
 
 // GET
-orderManagementRouter.get('/', async (req, res) => {
-  await getAllOrderController(req, res);
+orderManagementRouter.get('/all-store', async (req, res) => {
+  await getAllStoreController(req, res);
+});
+
+// POST
+orderManagementRouter.post('/:userId', async (req, res) => {
+  await getOrderbyAdminController(req, res);
 });
 
 //PATCH

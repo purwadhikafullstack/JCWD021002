@@ -66,15 +66,15 @@ export const Home = () => {
 
         <Footer />
       </Flex>
-      <Flex
+      {/* <Flex
         position={'fixed'}
         bottom={0}
         w={{ base: 'full', md: size }}
         display={size == '500px' ? 'flex' : 'none'}
         zIndex={10}
-      >
+      > */}
         <BottomBar />
-      </Flex>
+      {/* </Flex> */}
     </Flex>
   );
 };
