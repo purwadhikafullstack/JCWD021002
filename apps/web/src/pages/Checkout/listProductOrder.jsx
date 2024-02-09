@@ -188,7 +188,7 @@ export const ListProductOrder = ({
         orderDetail={orderDetail}
         shipping={shipping}
         dateEstimate={dateEstimate}
-        orderId={orderDetail["1"][0]?.order_idorder}
+        orderId={orderDetail["1"]?.[0]?.order_idorder}
       />
     </Flex>
   );
