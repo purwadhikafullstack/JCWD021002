@@ -42,7 +42,7 @@ export const TableLists = ({ data, handleDeleteOrder, navigate }) => {
               <Tbody>
                 {data?.data?.map((orderDetail, index) => (
                   <Tr key={index}>
-                    <Td>{orderDetail.Order?.codeTransaction}</Td>
+                    <Td>{orderDetail.Order?.paymentCode}</Td>
                     <Td>{orderDetail.quantity}</Td>
                     <Td>{orderDetail.subtotal}</Td>
                     <Td>{orderDetail.ProductStock?.Product?.name}</Td>
