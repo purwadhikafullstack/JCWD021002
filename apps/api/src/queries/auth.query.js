@@ -133,18 +133,20 @@ export const checkTokenQuery = async (resetToken) => {
   }
 }
 
-// export const resetPasswordQuery = async (userId, password) => {
-//   try {
-//     const res = await User.update({
-//       password: password,
-//       resetTokenUsed: 1
-//     }, {
-//       where: {
-//         id: userId
-//       }
-//     })
-//     return res
-//   } catch (err) {
-//     throw err
-//   }
-// }
+export const changeEmailQuery = async (id, newEmail, resetToken) => {
+  try {
+    console.log('query',id, newEmail, resetToken)
+    const res = await User.update({
+      email: newEmail,
+      resetToken: resetToken,
+      resetTokenUsed: 0
+    }, {
+      where: {
+        id: id
+      }
+    })
+    return res
+  } catch (err) {
+    throw err
+  }
+}
