@@ -10,6 +10,8 @@ const useVoucherController = async (req, res) => {
         const result = await useVoucherService( order, voucher, id );
         return res.status(201).json({message: 'Order updated successfully', data: result})
     } catch (err) {
+        console.log(err)
+
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 }

@@ -200,6 +200,7 @@ export const Checkout = () => {
               selectedShipping={selectedShipping}
               setSelectedshipping={setSelectedshipping}
               address={address}
+              fetchOrder={fetchOrder}
             />
             {/* </VStack> */}
           </Stack>
@@ -259,12 +260,6 @@ export const Checkout = () => {
                     {order?.totalAmount
                       ? angkaRupiahJs(order?.totalAmount, { formal: false })
                       : angkaRupiahJs(0, { formal: false })}
-                  </Text>
-                  <Text fontSize="sm">
-                    {selectedShipping &&
-                      angkaRupiahJs(selectedShipping?.cost[0]?.value, {
-                        formal: false,
-                      })}
                   </Text>
                   <Text fontSize="sm">
                     {order?.totalShipping

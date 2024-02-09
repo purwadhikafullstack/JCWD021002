@@ -309,3 +309,19 @@ export const cancelOrder = async (order) => {
     throw err;
   }
 };
+
+export const addTotalShippingQuery = async (shippingCost, orderId) => {
+  try {
+    return await Order.update({
+      totalShipping: shippingCost
+    }, {
+      where: {
+        id: orderId
+      }
+    })
+  } catch (err) {
+    throw err;
+  }
+}
+
+// export const 

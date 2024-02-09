@@ -6,6 +6,7 @@ import {
   getOrderService,
   beliSekarangService,
   shippingCostService,
+  addTotalShippingService,
   getOrderCustomerService,
   cancelOrderCustomerService,
   finishOrderCustomerService
@@ -133,3 +134,12 @@ export const shippingCostController = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+export const addTotalShippingController = async (req, res) => {
+  try {
+    const { shippingCost, orderId } = req.body
+    const result = await addTotalShippingService( shippingCost, orderId );
+    res.status(200).json({ message: 'Order updated successfully.' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}

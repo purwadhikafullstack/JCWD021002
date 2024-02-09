@@ -169,8 +169,7 @@ export const CheckoutSidebar = ({ size, order, selectedShipping }) => {
         >
           <Text fontSize="11pt">Total Belanja</Text>
           <Text fontSize="lg" fontWeight="bold" color="tomato">
-            Rp. 1000000
-            {/* {order?.totalAmount ? angkaRupiahJs(order?.totalAmount, {formal: false}) : null} */}
+            {order?.totalAmount ? angkaRupiahJs(order?.totalAmount + order?.totalShipping, {formal: false}) : null}
           </Text>
         </Flex>
         <Divider hidden={size === '500px' ? true : false} />

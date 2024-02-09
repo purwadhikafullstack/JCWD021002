@@ -23,6 +23,7 @@ export const ListProductOrder = ({
   selectedShipping,
   setSelectedshipping,
   address,
+  fetchOrder,
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [storeId, setStoreId] = useState();
@@ -35,8 +36,8 @@ export const ListProductOrder = ({
         `${import.meta.env.VITE_API_URL}/checkout/shippingCost`,
         {
           key: 'bfd51194adb513bfe32b3825a7acf0e5',
-          origin: origin,
-          destination: destination,
+          origin: 469,
+          destination: 105,
           weight: 1000,
           courier: 'jne',
         },
@@ -261,6 +262,8 @@ export const ListProductOrder = ({
         orderDetail={orderDetail}
         shipping={shipping}
         dateEstimate={dateEstimate}
+        orderId={orderDetail[0]?.order_idorder}
+        fetchOrder={fetchOrder}
       />
     </Flex>
   );

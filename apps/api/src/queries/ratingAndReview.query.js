@@ -68,7 +68,7 @@ const getPaginatedRatingQuery = async (page, pageSize, rating, sortOrder, produc
                 },
                 {
                     model: Order,
-                    attributes: ['id', 'codeTransaction'], // Add the attributes you want to retrieve from the User model
+                    attributes: ['id', 'paymentCode'], // Add the attributes you want to retrieve from the User model
                 },
             ],
         };
@@ -136,7 +136,7 @@ const getDetailRatingQuery = async (id, productId) => {
             include: [
                 {
                     model: Order,
-                    attributes: ['orderDate', 'codeTransaction']
+                    attributes: ['orderDate', 'paymentCode']
                 }
             ]
         });
@@ -149,7 +149,7 @@ const getDetailRatingQuery = async (id, productId) => {
             include: [
                 {
                     model: Order,
-                    attributes: ['id', 'codeTransaction', 'orderDate'],
+                    attributes: ['id', 'paymentCode', 'orderDate'],
                     required: true,
                     where: {
                         user_iduser: id

@@ -94,7 +94,7 @@ export const ProductRating = ({productId}) => {
               </VStack>
               <Drawer  placement="bottom" onClose={() => {setPageSize(1); setIsDrawerOpen(false);}} size='xs' isOpen={isDrawerOpen}>
     <DrawerOverlay />
-    <DrawerContent justifySelf='center' alignSelf='center' margin='auto' sx={size == '500px' ? {w : size} : {maxW : '35vw'}} maxH={size == '500px' ? '90vh' : 'full'}>
+    <DrawerContent justifySelf='center' alignSelf='center' margin='auto' w='500px' sx={size == '500px' ? {w : size} : {maxW : '35vw'}} maxH={size == '500px' ? '90vh' : 'full'}>
       <DrawerCloseButton />
       <DrawerHeader>Ulasan</DrawerHeader>
       <DrawerBody width='500px' alignSelf='center'>

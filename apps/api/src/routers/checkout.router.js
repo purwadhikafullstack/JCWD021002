@@ -5,9 +5,11 @@ import {
   getSelectedCartItemsController,
   preCheckoutController,
   uploadPaymentProofController,
-  shippingCostController
+  shippingCostController,
+  addTotalShippingController
 } from '../controllers/checkout.controller';
 import { uploadPaymentFile } from '../middlewares/multerConfig';
+import { verifyToken } from '../middlewares/auth';
 
 export const checkoutRouter = Router();
 
@@ -38,5 +40,13 @@ checkoutRouter.patch(
   uploadPaymentFile,
   async (req, res) => {
     await uploadPaymentProofController(req, res);
+  },
+);
+
+checkoutRouter.patch(
+  '/add-total-shipping-cost',
+  verifyToken,
+  async (req, res) => {
+    await addTotalShippingController(req, res);
   },
 );

@@ -12,6 +12,7 @@ import {
   updateOrderDetailsQuery,
   updateOrderTotalAmountQuery,
   getOrderQuery,
+  addTotalShippingQuery,
   getOrderCustomerQuery,
   updateOrderStatusQuery,
 } from '../queries/checkout.query';
@@ -212,4 +213,13 @@ export const shippingCostService = async (
   } catch (err) {
     throw err;
   }
-};
+}
+
+export const addTotalShippingService = async (shippingCost, orderId) => {
+  try {
+    return await addTotalShippingQuery(shippingCost, orderId);
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
