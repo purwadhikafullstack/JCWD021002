@@ -46,7 +46,6 @@ function ProductCatalogue() {
   } finally { setLoading(false); }
   }
 
-
   useEffect(() => {
     setSearchParams({ page, pageSize, productName, categoryId });
   }, [page, pageSize, productName, categoryId,]);
