@@ -6,19 +6,30 @@ import { useWebSize } from '../../provider.websize';
 import { BottomBar } from '../../components/BottomBar';
 import { ResizeButton } from '../../components/ResizeButton';
 
-import { Center, Flex, Input, Text } from '@chakra-ui/react';
+import {
+  Center,
+  Flex,
+  Input,
+  Text,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+} from '@chakra-ui/react';
 import { Avatar } from '@chakra-ui/react';
 import { IoMdCopy } from 'react-icons/io';
 import toast from 'react-hot-toast';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { RedeemReferral } from '../RedeemReferral/RedeemReferral';
 
 export const Profile = () => {
-  const {size } = useWebSize()
+  const { size } = useWebSize();
 
-  const user = useSelector((state) => state.AuthReducer.user);
+  const user = useSelector((state) => state.AuthReducer?.user);
+  const roleId = useSelector((state) => state.AuthReducer?.user?.role_idrole);
 
   const textRef = useRef(null);
+  const location = useLocation();
+  const fromPage = new URLSearchParams(location?.search).get('fromPage');
 
   const copyTextToClipboard = async (text) => {
     try {
@@ -31,18 +42,25 @@ export const Profile = () => {
   };
 
   return (
-    <Flex w={{base: "100vw", md: size}} minH={'100vh'} direction={'column'} bgColor={"white"}>
+    <Flex
+      w={{ base: '100vw', md: size }}
+      minH={'100vh'}
+      direction={'column'}
+      bgColor={'white'}
+    >
       <Flex
         bgColor={'colors.secondary'}
         w={'full'}
         direction={'column'}
-        p={'20px'}
         gap={5}
+        p={
+          size == '500px'
+            ? '20px'
+            : { base: '20px 40px', lg: '20px 100px', xl: '20px 200px' }
+        }
       >
         <Flex w={'full'} justify={'end'}>
-          <ResizeButton
-            color={'colors.primary'}
-          />
+          <ResizeButton color={'colors.primary'} />
         </Flex>
         <Center w={'full'} flexDirection={'column'} gap={5}>
           {user?.avatar ? (
@@ -50,7 +68,9 @@ export const Profile = () => {
               size={'xl'}
               bgColor="#DAF1E8FF"
               color={'colors.primary'}
-              src={`${import.meta.env.VITE_API_IMAGE_URL}/avatar/${user?.avatar}`}
+              src={`${import.meta.env.VITE_API_IMAGE_URL}/avatar/${
+                user?.avatar
+              }`}
             />
           ) : (
             <Avatar
@@ -89,7 +109,36 @@ export const Profile = () => {
           </Flex>
         </Center>
       </Flex>
-      <Flex p={'35px'} h={'full'} w={'full'} direction={'column'} gap={5}>
+      <Flex
+        h={'full'}
+        w={'full'}
+        direction={'column'}
+        gap={5}
+        p={
+          size == '500px'
+            ? '35px'
+            : { base: '35px 40px', lg: '35px 100px', xl: '35px 200px' }
+        }
+      >
+        <Breadcrumb fontSize={'14px'} fontWeight={600}>
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              href={fromPage ? fromPage : roleId == 3 ? '/' : '/dashboard'}
+            >
+              Home
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+
+          <BreadcrumbItem>
+            <BreadcrumbLink href={roleId == 3 ? '/profile' : '#'}>
+              Profile
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+
+          {/* <BreadcrumbItem isCurrentPage>
+            <BreadcrumbLink href="#">Breadcrumb</BreadcrumbLink>
+          </BreadcrumbItem> */}
+        </Breadcrumb>
         <Outlet />
       </Flex>
 

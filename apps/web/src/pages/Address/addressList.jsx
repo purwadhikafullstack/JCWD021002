@@ -9,6 +9,7 @@ import { CiCirclePlus } from 'react-icons/ci';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import DeleteAlert from '../../components/DeleteAlert';
 import toast from 'react-hot-toast';
+import { useWebSize } from '../../provider.websize';
 
 export const AddressList = () => {
   const [selectedItem, setSelectedItem] = useState();
@@ -17,6 +18,7 @@ export const AddressList = () => {
   const userId = useSelector((state) => state.AuthReducer?.user?.id);
   const navigate = useNavigate();
   const [update, setUpdate] = useOutletContext();
+  const { size } = useWebSize();
 
   const getAddress = async (userId) => {
     try {
@@ -40,17 +42,15 @@ export const AddressList = () => {
 
   const handleDeleteAddress = async (id) => {
     try {
-      await axios.patch(
-        `${import.meta.env.VITE_API_URL}/address/delete/${id}`,
-      );
+      await axios.patch(`${import.meta.env.VITE_API_URL}/address/delete/${id}`);
       setUpdate(true);
-      toast.success('Alamat berhasi di hapus')
+      toast.success('Alamat berhasi di hapus');
     } catch (err) {
       console.log(err);
     }
   };
   return (
-    <Flex direction={'column'} px={'30px'}>
+    <Flex direction={'column'} px={size == '500px' ? '30px' : '200px'}>
       <Flex w={'full'} direction={'column'} gap={5} mt={'80px'}>
         {address?.map((item, index) => {
           return (
@@ -95,7 +95,7 @@ export const AddressList = () => {
                 )}
               </Flex>
 
-              <Box w={'25%'} display={'flex'} p={'15px'}>
+              <Box w={'25%'} display={'flex'} p={'15px'} justifyContent={'end'}>
                 <Flex
                   gap={1}
                   fontSize={'12px'}
@@ -117,14 +117,14 @@ export const AddressList = () => {
                   <DeleteAlert
                     btnValue={'delete'}
                     titleValue={'Hapus Store'}
-                    mainValue={`Apakah kamu yakin ingin menhapus alamatberikut: ${item?.addressLine}?`}
+                    mainValue={`Apakah anda yakin ingin menghapus alamat berikut: ${item?.addressLine}?`}
                     deleteAction={() => handleDeleteAddress(item?.id)}
                     style={{
                       color: 'colors.tertiary',
                       fontWeight: 400,
                       p: '2.5px 8px',
-                      borderRadius:'5px',
-                      size: 'xm'
+                      borderRadius: '5px',
+                      size: 'xm',
                     }}
                     buttonActionValue={'Delete'}
                   />

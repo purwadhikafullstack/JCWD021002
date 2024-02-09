@@ -60,6 +60,7 @@ export const MyAccount = () => {
         </Flex>
       </Flex>
 
+      {/* avatar */}
       <Flex align={'center'} justify={'center'} px={'30px'}>
         {user?.avatar ? (
           <Avatar
@@ -77,8 +78,14 @@ export const MyAccount = () => {
           />
         )}
       </Flex>
-
-      <Flex w={'full'} direction={'column'} px={'30px'}>
+      {/* list menu */}
+      <Flex
+        w={'full'}
+        direction={'column'}
+        px={size == '500px' ? '30px' : { base: '40px', lg: '100px', xl: '200px' }}
+        gap={size == '500px' ? 3 : '25px'}
+        pt={size == '500px' ? '0' : '50px'}
+      >
         <Flex
           w={'full'}
           justify={'space-between'}
@@ -102,7 +109,7 @@ export const MyAccount = () => {
         <Link
           to={
             user.googleLogin == 0
-              ? '/profile/detail/account/email-verification'
+              ? `/profile/detail/account/email-verification?fromPage=${encodeURIComponent('/account')}`
               : '#'
           }
         >

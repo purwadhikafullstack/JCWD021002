@@ -12,11 +12,11 @@ import { uploadPaymentFile } from '../middlewares/multerConfig';
 export const checkoutRouter = Router();
 
 // GET
-checkoutRouter.get('/:userId', async (req, res) => {
+checkoutRouter.get('/get-order/:userId', async (req, res) => {
   await getOrderController(req, res);
 });
 
-checkoutRouter.get('/pre-checkout', async (req, res) => {
+checkoutRouter.get('/pre-checkout/:userId', async (req, res) => {
   await preCheckoutController(req, res);
 });
 

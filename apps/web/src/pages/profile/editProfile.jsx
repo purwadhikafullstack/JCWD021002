@@ -31,18 +31,21 @@ export const EditProfile = () => {
   const user = useSelector((state) => state.AuthReducer.user);
   const [selectedImage, setSelectedImage] = useState(null);
   const dispatch = useDispatch();
-  const {size } = useWebSize()
+  const { size } = useWebSize();
 
   const editProfile = async (username, fullname) => {
     try {
       const formData = new FormData();
       formData.append('username', username);
       formData.append('fullname', fullname);
-      formData.append('avatar', selectedImage)
+      formData.append('avatar', selectedImage);
 
-      await axios.patch(`${import.meta.env.VITE_API_URL}/auth/update-profile/${user?.id}`, formData)
+      await axios.patch(
+        `${import.meta.env.VITE_API_URL}/auth/update-profile/${user?.id}`,
+        formData,
+      );
 
-      dispatch(keepLogin())
+      dispatch(keepLogin());
       toast.success('Update data success');
     } catch (err) {
       toast.error(err.response?.data);
@@ -57,7 +60,7 @@ export const EditProfile = () => {
     },
     validationSchema: editProfileSchema,
     onSubmit: (values) => {
-      editProfile(values.username, values.fullname);
+      editProfile(values.username, values.fullname, user?.avatar);
     },
   });
 
@@ -75,10 +78,13 @@ export const EditProfile = () => {
   }, [formik.values]);
 
   return (
-    <form onSubmit={formik.handleSubmit} style={{ height: '100vh',  backgroundColor: "white" }}>
+    <form
+      onSubmit={formik.handleSubmit}
+      style={{ height: '100vh', backgroundColor: 'white' }}
+    >
       <Flex
         direction={'column'}
-        w={{base: "100vw",md: size}}
+        w={{ base: '100vw', md: size }}
         h={'full'}
         align={'center'}
         gap={'50px'}
@@ -102,7 +108,7 @@ export const EditProfile = () => {
             </Text>
           </Flex>
           <Flex>
-            <Button type="submit" value={"submit"} variant={'unstyled'}>
+            <Button type="submit" value={'submit'} variant={'unstyled'}>
               Save
             </Button>
           </Flex>
@@ -115,7 +121,12 @@ export const EditProfile = () => {
           h={'60%'}
           gap={'50px'}
           justify={'center'}
-          px={'30px'}
+          // px={'30px'}
+          px={
+            size == '500px'
+              ? '30px'
+              : { base: '40px', lg: '100px', xl: '200px' }
+          }
         >
           <Flex
             align={'center'}
@@ -134,7 +145,9 @@ export const EditProfile = () => {
               src={
                 selectedImage
                   ? URL.createObjectURL(selectedImage)
-                  : `${import.meta.env.VITE_API_IMAGE_URL}/avatar/${user?.avatar}`
+                  : `${import.meta.env.VITE_API_IMAGE_URL}/avatar/${
+                      user?.avatar
+                    }`
               }
             />
             <Input
@@ -169,7 +182,12 @@ export const EditProfile = () => {
             </Flex>
           </Flex>
 
-          <Flex direction={'column'} w={'full'} gap={5}>
+          <Flex
+            direction={size == '500px' ? 'column' : 'row'}
+            w={'full'}
+            mt={size == '500px' ? 0 : '50px'}
+            gap={size == '500px' ? 5 : '35px'}
+          >
             <FormControl>
               <FormLabel>Full name</FormLabel>
               <Input

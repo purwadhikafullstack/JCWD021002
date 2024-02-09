@@ -76,7 +76,7 @@ export const getStoreService = async (
       statusStock,
     );
 
-
+    console.log({result})
     return result;
   } catch (err) {
     throw err;

@@ -1,3 +1,4 @@
+import Order from '../models/order.model';
 import User from '../models/user.model';
 import { generateMidtransToken } from '../utils/midtrans';
 
@@ -20,3 +21,10 @@ export const paymentGatewayQuery = async (userId, orderId, totalPrice, shippingC
       throw err
     }
   }
+
+  export const updatePaymentOrderQuery = async (orderId, paymentMethod, paymentCode, paymentStatus) => {
+    return await Order.update(
+      { paymentMethod: paymentMethod, paymentCode: paymentCode, paymentStatus: paymentStatus },
+      { where: { id: orderId } },
+    );
+  };

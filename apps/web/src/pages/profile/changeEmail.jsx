@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -21,6 +21,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 import { useWebSize } from '../../provider.websize';
+import { keepLogin } from '../../redux/reducer/authReducer';
 
 const changeEmailSchema = Yup.object().shape({
   newEmail: Yup.string()
@@ -33,8 +34,9 @@ const changeEmailSchema = Yup.object().shape({
 
 export const ChangeEmail = () => {
   const navigate = useNavigate();
-  const {size } = useWebSize()
+  const { size } = useWebSize();
   const userId = useSelector((state) => state.AuthReducer.user.id);
+  const dispatch = useDispatch();
 
   const changeEmail = async (newEmail) => {
     try {
@@ -45,6 +47,7 @@ export const ChangeEmail = () => {
         },
       );
       toast.success('Ganti Email Berhasil');
+      dispatch(keepLogin());
       navigate('/profile/detail/account');
     } catch (err) {
       toast.error(err?.response?.data);
@@ -62,7 +65,11 @@ export const ChangeEmail = () => {
   });
 
   return (
-    <Flex direction={'column'} w={{base: "100vw",md: size}} bgColor={"white"}>
+    <Flex
+      direction={'column'}
+      w={{ base: '100vw', md: size }}
+      bgColor={'white'}
+    >
       <form onSubmit={formik.handleSubmit}>
         <Flex
           align={'center'}
@@ -84,7 +91,11 @@ export const ChangeEmail = () => {
           </Flex>
         </Flex>
 
-        <Flex direction={'column'} gap={5} px={'30px'}>
+        <Flex
+          direction={'column'}
+          gap={5}
+          px={size == '500px' ? '30px' : '200px'}
+        >
           <FormControl
             isInvalid={formik.touched.newEmail && formik.errors.newEmail}
           >
@@ -109,10 +120,15 @@ export const ChangeEmail = () => {
             )}
           </FormControl>
         </Flex>
-        <Flex w={'full'} p={'30px'}>
+        <Flex
+          w={'full'}
+          p={'30px'}
+          px={size == '500px' ? '30px' : '200px'}
+          justify={'end'}
+        >
           <Button
             type="submit"
-            w={'full'}
+            w={size == '500px' ? 'full' : '15%'}
             bgColor={'colors.primary'}
             color={'white'}
             isDisabled={formik.values.newEmail == '' ? true : false}

@@ -36,7 +36,7 @@ import { ResizeButton } from '../../components/ResizeButton';
 import LogoGroceria from '../../assets/Groceria-no-Bg.png';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { useNavigate, Link, useParams } from 'react-router-dom';
+import { useNavigate, Link, useParams, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { ProductRelated } from './ProductRelated';
 import { IoStarOutline, IoStar } from 'react-icons/io5';
@@ -78,6 +78,7 @@ const Product = () => {
   const [mainSlider, setMainSlider] = useState(null);
   const [thumbnailSlider, setThumbnailSlider] = useState(null);
   const [mainSliderIndex, setMainSliderIndex] = useState();
+  const pageLocation = useLocation().pathname
 
   const mainSliderSettings = {
     dots: false,
@@ -176,18 +177,13 @@ const Product = () => {
         },
       );
 
-      if (response.status === 200) {
         console.log('Item added to cart successfully!');
         showToast('success', 'Item added to cart successfully!');
 
         setCartTotalQuantity(cartTotalQuantity + quantity);
-      } else {
-        console.error('Failed to add item to cart:', response.data);
-        showToast('error', 'Failed to add item to cart');
-      }
     } catch (err) {
-      console.error('Product not found. Please choose a valid product', err);
-      showToast('error', 'Product not found. Please choose a valid product');
+      console.error('Insufficient product stock. Please choose another product available in stock', err);
+      showToast('error', 'Insufficient product stock. Please choose another product available in stock');
     }
   };
 
@@ -333,7 +329,7 @@ const Product = () => {
   </Slider>
   </Box>
   </VStack>
-        <VStack width={size == '500px' ? '100%' : '50vw'}>
+        <VStack width={size == '500px' ? '100%' : '50vw'} pl='20px'>
         <Box mt='20px' width='97%' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
             <Text fontSize='x-large' fontWeight='bold' color='tomato'>{formatPriceToIDR(calculateDiscountPrice(data?.result?.Product?.price, data?.result?.Discounts))}</Text>
             {data?.result?.Discounts && data?.result?.Discounts.length > 0 && (
@@ -612,7 +608,7 @@ const Product = () => {
               <Text textAlign={'center'}>
                 Hanya satu langkah lagi! Silakan login untuk melanjutkan.
               </Text>
-              <Link to={'/login'}>
+              <Link to={`/login?fromPage=${pageLocation}`}>
                 <Button
                   variant="ghost"
                   bgColor="colors.primary"

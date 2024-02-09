@@ -113,6 +113,8 @@ export const loginService = async (emailOrUsername, password) => {
     const check = await getUserLoginQuery({ emailOrUsername });
     if (!check) throw new Error('Incorrect email or username');
 
+    if (check.status == 'Deactive') throw new Error('Your email is Inactive.');
+
     const checkPassword = await bcrypt.compare(password, check.password);
 
     if (!checkPassword) throw new Error('Password is incorrect');
@@ -121,7 +123,6 @@ export const loginService = async (emailOrUsername, password) => {
       throw new Error(
         'Your email is not verified, check your email to verify your account.',
       );
-    if (check.status == 'Deactive') throw new Error('Your email is Inactive.');
 
     const payload = {
       id: check.id,
@@ -328,19 +329,23 @@ export const changeEmailVerifyService = async (id, password) => {
 }
 export const changeEmailService = async (id, newEmail) => {
   try {
-    // const check = await getUserRegisterQuery({ id })
+    const check = await getUserRegisterQuery({ id })
+
+    if (check?.email == newEmail) throw new Error("Email sudah digunakan. Silakan gunakan email lain.")
+
     const secretKey = process.env.JWT_SECRET_KEY;
     if (!secretKey) {
       throw new Error('JWT_SECRET_KEY is not set in the environment');
     }
-    
-    const resetToken = jwt.sign({ newEmail }, secretKey, { expiresIn: '1hr' });
-    const setPasswordLink = `${process.env.WEB_BASE_URL}/password?resetToken=${resetToken}`;
-    
-    console.log('halo')
-    const template = 'changeEmailVerification.html'
 
-    sentMail(newEmail, template, setPasswordLink)
+    const resetToken = jwt.sign({ newEmail }, secretKey, { expiresIn: '1hr' });
+
+    console.log('halo')
+    const templateOld = 'emailTemplateOld.html'
+    const templateNew = 'emailTemplateNew.html'
+
+    sentMail(check?.email, templateOld)
+    sentMail(newEmail, templateNew)
 
     const res = await changeEmailQuery(id, newEmail, resetToken)
 

@@ -295,6 +295,7 @@ export const EditAddress = ({ selectedItem, setUpdate, isOpen, onClose }) => {
                         size="lg"
                         isChecked={isChecked}
                         onChange={handleSwitchChange}
+                        colorScheme="teal"
                       />
                     </Flex>
                   </Flex>
@@ -305,7 +306,7 @@ export const EditAddress = ({ selectedItem, setUpdate, isOpen, onClose }) => {
               <Button variant="outline" mr={3} onClick={onClose}>
                 Cancel
               </Button>
-              <Button colorScheme="blue" type="submit">
+              <Button bgColor={'colors.primary'} color={'white'} type="submit">
                 Save
               </Button>
             </DrawerFooter>
