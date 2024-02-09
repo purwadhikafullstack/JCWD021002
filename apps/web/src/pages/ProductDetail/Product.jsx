@@ -235,12 +235,11 @@ const Product = () => {
 
   return (
     <Box backgroundColor='#f5f5f5' p='0'
-    pb='110px'
+    pb={size == '500px' ? '70px' : '0px'}
     w={{ base: '100vw', md: size }}
     h={'fit-content'}
     transition="width 0.3s ease">
       <Flex
-
         position={'sticky'}
         top={0}
         bgGradient='linear(to-r, #f2ffed, #fcfdde)'
@@ -637,11 +636,19 @@ const Product = () => {
       )}
     <Box mt='10px'>
     <Text pl='20px' pb='10px' fontWeight='bold' >Produk kategori serupa</Text>
-    <Box w='100%' pt='5px' pb='5px' style={{ msOverflowStyle: 'none' }} css={{ scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none', }, }} overflowX='auto'>
+    <Box w='100%' pt='5px' pb='5px' mb='20px' style={{ msOverflowStyle: 'none' }} css={{ scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none', }, }} overflowX='auto'>
      <ProductRelated productId={Number(id)} category={data?.result?.Product?.ProductCategories[0]?.id} />
         </Box>
         </Box>
-        <Footer />
+        <Flex w={{base: '100vw', md: size}}
+      p={'20px'}
+      direction={'column'}
+      bgColor={'#F2F5E4FF'}
+      gap={5}
+      justify={'center'}
+      align={'center'} >
+        <Text fontSize="12px">© 2024 Groceria. All rights reserved.</Text>
+        </Flex>
     </Box>
   );
 }

@@ -7,7 +7,7 @@ const withRoleRestriction = (allowedRoles) => (WrappedComponent) => {
   const RoleRestrictedComponent = (props) => {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
-    const { user } = useSelector((state) => state.AuthReducer);
+    const { user, isLogin } = useSelector((state) => state.AuthReducer);
 
     useEffect(() => {
       const fetchData = async () => {
@@ -44,7 +44,7 @@ const withRoleRestriction = (allowedRoles) => (WrappedComponent) => {
       let redirectToPage = '';
       if (user.role_idrole == 3) {
         redirectToPage = '/';
-      } else if (user.role_idrole == 2 || user.role_idrole == 1) {
+      } else if (user.role_idrole == 2  && isLogin || user.role_idrole == 1  && isLogin) {
         redirectToPage = '/dashboard';
       } else {
         redirectToPage = '/';

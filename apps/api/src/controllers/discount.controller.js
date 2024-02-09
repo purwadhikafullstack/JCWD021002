@@ -61,8 +61,6 @@ const {
         
             return res.status(200).json(result);
             } catch (err) {
-                console.log(err);
-            console.error('Error in getPaginatedAndFilteredDiscountController:', err);
             return res.status(500).json({ error: 'Internal Server Error' });
             }
         };
@@ -112,8 +110,6 @@ const {
         
             return res.status(200).json(result);
             } catch (err) {
-                console.log(err);
-            console.error('Error in getPaginatedAndFilteredDiscountController:', err);
             return res.status(500).json({ error: 'Internal Server Error' });
             }
         };
@@ -126,7 +122,6 @@ const {
 
             return res.status(200).json(result);
             } catch (err) {
-                console.log(err);
             return res.status(500).json({ error: 'Internal Server Error' });
             }
         }
@@ -151,7 +146,21 @@ const {
                 distributionId,
              } = req.body;
 
-             console.log("ini di controller", usageRestrictionId);
+             console.log("ini di controller", type,
+             discountValue,
+             minimumPurchase,
+             startDate,
+             endDate,
+             productStock_idproductStock,
+             buy_quantity,
+             get_quantity,
+             discountAmount,
+             usageRestrictionId,
+             name,
+             description,
+             referralCode,
+             discountNom,
+             distributionId,);
 
 
              const result = await addDiscountService(
@@ -175,7 +184,6 @@ const {
 
             return res.status(201).json(result);
         } catch (err) {
-            console.log(err);
             return res.status(500).json({ error: 'Internal Server Error' });
         }
     }

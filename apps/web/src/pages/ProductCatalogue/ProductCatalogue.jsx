@@ -86,6 +86,7 @@ useEffect(() => {
   
   return (
     <Box overflowX='hidden' backgroundColor='#f5f5f5' w={{ base: '100vw', md: size }} height='100vh' maxHeight='fit-content'>
+                <Box position='sticky' top={0} zIndex={99}>
                 <Flex
                     position={'relative'}
                     px={'20px'}
@@ -99,7 +100,7 @@ useEffect(() => {
                 </Flex>
                     <Box>
                 <Flex bgGradient='linear(to-r, #f2ffed, #fcfdde)' dir='row' gap='10px' pb='10px'>
-                <IconButton height='30px' bgGradient='linear(to-r, #f2ffed, #fcfdde)' icon={<AiFillHome />} />
+                <IconButton height='30px' bgGradient='linear(to-r, #f2ffed, #fcfdde)' onClick={() => window.history.back()} icon={<IconChevronLeft />} />
                             <Box w='fit-content'>
                             <InputGroup >
                         <InputLeftElement height='30px' pointerEvents='none'>
@@ -117,7 +118,7 @@ useEffect(() => {
                 {dataCategory?.categories?.map((item, index) => (
                 <VStack cursor="pointer" onClick={() => item?.id && setCategoryId(item?.id)} width='60px'>
                     <Avatar border={categoryId == item?.id ? 'solid 3px green' : null} src={item?.imageUrl ? `${import.meta.env.VITE_API_IMAGE_URL}/categories/${item?.imageUrl}` : Logo} />
-                    <Text backgroundColor={categoryId == item?.id ? 'green' : null} pl='3px' pr='3px' borderRadius='10px' textColor={categoryId == item?.id ? 'white' : 'black'} textAlign='center' flexWrap='wrap' fontSize='xs'>{item?.category}</Text>
+                    <Text backgroundColor={categoryId == item?.id ? 'green' : null} pl='3px' pr='3px' borderRadius='10px' textColor={categoryId == item?.id ? 'white' : 'black'} textAlign='center' flexWrap='wrap' maxHeight='40px' fontSize='xs'>{item?.category}</Text>
                 </VStack>
                 ))}
             </Flex>
@@ -134,9 +135,10 @@ useEffect(() => {
                 </Button>
             </Flex>
             </Box>
+            </Box>
             <Box  p={size == '500px' ? 0 : 5} pt='5'>
-            {loading == true ? <VStack><CartLoading /></VStack> : <CardProductStock data={data} />}
-          <Box m='5'><PaginationControls 
+            <Flex flexWrap='wrap' justifyContent='center'> {loading ? ( <VStack> <CartLoading /> </VStack> ) : ( (productName || categoryId) && <CardProductStock data={data} /> )} </Flex>
+          <Box m='5'>{data?.products?.length != 0 ? <PaginationControls 
               page= {page}
               pageSize={pageSize}
               selectedPage={selectedPage}
@@ -144,7 +146,7 @@ useEffect(() => {
               setPageSize={setPageSize}
               setSelectedPage={setSelectedPage}
               data={data}
-            /></Box>
+            /> : null}</Box>
   <Drawer size='xs' placement='top' width='50vw' onClose={() => setIsDrawerOpen(false)} isOpen={isDrawerOpen}>
         <DrawerOverlay />
         <DrawerContent margin='auto' width={size == "500px" ? "500px" : "100vw"}>

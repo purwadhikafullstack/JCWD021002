@@ -82,7 +82,8 @@ useEffect(() => {
 }, []);
   
   return (
-    <Box overflowX='hidden' backgroundColor='#f5f5f5' w={{ base: '100vw', md: size }} height='fit-content'>
+    <Box overflowX='hidden' backgroundColor='#f5f5f5' w={{ base: '100vw', md: size }} height='100vh'>
+                <Box position='sticky' top={0} zIndex={99}>
                 <Flex
                     position={'relative'}
                     px={'20px'}
@@ -96,7 +97,7 @@ useEffect(() => {
                 </Flex>
                     <Box>
                 <Flex bgGradient='linear(to-r, #f2ffed, #fcfdde)' pl='2px' dir='row' gap='10px' pb='10px'>
-                <IconButton height='30px' bgGradient='linear(to-r, #f2ffed, #fcfdde)' icon={<AiFillHome />} />
+                <IconButton height='30px' bgGradient='linear(to-r, #f2ffed, #fcfdde)' onClick={() => navigate(-1)} icon={<IconChevronLeft />} />
                             <Box w='fit-content'>
                             <InputGroup >
                         <InputLeftElement height='30px' pointerEvents='none'>
@@ -114,10 +115,11 @@ useEffect(() => {
 
                 </Box>
                             </Flex>
+                            </Box>
                 
             </Box>
             <Box  p={size == '500px' ? 0 : 5} pt='5'>
-            {data?.products?.length > 0 ? null : (
+            { productName != '' || categoryId > 0 ? null : (
   <Flex gap='2' flexWrap='wrap' pl={10} pr={10}>
     {dataCategory?.categories?.slice(0, 5)?.map((item, index) => (
       <Button backgroundColor='white' border='solid 1px black' key={index} onClick={() => item?.id && setCategoryId(item?.id)}>
@@ -126,9 +128,8 @@ useEffect(() => {
     ))}
   </Flex>
 )} 
-            {loading == true ? <VStack><CartLoading /></VStack> : null}
-              <Flex flexWrap='wrap' justifyContent='center'>{loading == false ? <CardProductStock data={data} /> : null}</Flex>
-          <Box m='5'><PaginationControls 
+            <Flex flexWrap='wrap' justifyContent='center'> {loading ? ( <VStack> <CartLoading /> </VStack> ) : ( (productName || categoryId) && <CardProductStock data={data} /> )} </Flex>
+          <Box m='5'>{data?.products?.length != 0 ? <PaginationControls 
               page= {page}
               pageSize={pageSize}
               selectedPage={selectedPage}
@@ -136,7 +137,7 @@ useEffect(() => {
               setPageSize={setPageSize}
               setSelectedPage={setSelectedPage}
               data={data}
-            /></Box>
+            /> : null}</Box>
   <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
