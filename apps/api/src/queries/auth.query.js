@@ -79,8 +79,9 @@ export const changePasswordQuery = async (id, hashPassword) => {
     throw err
   }
 }
-export const updateProfileQuery = async ({ id = null, username = null, fullname = null, avatar = null }) => {
+export const updateProfileQuery = async ({ id = null, username = null, fullname = null, avatar }) => {
   try {
+    console.log('query avatar', {avatar})
     const res = await User.update({
       username,
       fullname,

@@ -28,6 +28,11 @@ export const createCartService = async (userId, cartDetails) => {
         throw new Error(`Invalid Product for id: ${item.productStockId}`);
       }
 
+      if (productStock.stock < item.quantity) {
+        throw new Error(`Insufficient stock for product id: ${item.productStockId}`);
+        // return res.status(400).json({ error: `Insufficient stock for product id: ${item.productStockId}`});
+      }
+
       const checkCartDetail = await findCartDetailQuery(
         cart.id,
         item.productStockId,

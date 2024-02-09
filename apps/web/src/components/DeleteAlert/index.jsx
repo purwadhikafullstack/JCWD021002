@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/no-unescaped-entities */
-import React from 'react'
+import React from 'react';
 import {
   AlertDialog,
   AlertDialogBody,
@@ -9,17 +9,30 @@ import {
   AlertDialogContent,
   AlertDialogOverlay,
   useDisclosure,
-  Button
-} from '@chakra-ui/react'
+  Button,
+} from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 
-function DeleteAlert({btnValue, titleValue, mainValue, deleteAction, style, buttonActionValue}) {
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const cancelRef = React.useRef()
+function DeleteAlert({
+  btnValue,
+  titleValue,
+  mainValue,
+  deleteAction,
+  style,
+  buttonActionValue,
+  navigateTo,
+}) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = React.useRef();
+  const navigate = useNavigate();
 
   const handleDelete = () => {
-    onClose()
-    deleteAction()
-  }
+    onClose();
+    if (deleteAction) {
+      deleteAction();
+    }
+    navigate(navigateTo);
+  };
 
   return (
     <>
@@ -35,19 +48,17 @@ function DeleteAlert({btnValue, titleValue, mainValue, deleteAction, style, butt
       >
         <AlertDialogOverlay>
           <AlertDialogContent>
-            <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
               {titleValue}
             </AlertDialogHeader>
 
-            <AlertDialogBody>
-              {mainValue}
-            </AlertDialogBody>
+            <AlertDialogBody>{mainValue}</AlertDialogBody>
 
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onClose}>
                 Cancel
               </Button>
-              <Button colorScheme='red' onClick={handleDelete} ml={3}>
+              <Button colorScheme="red" onClick={handleDelete} ml={3}>
                 {buttonActionValue}
               </Button>
             </AlertDialogFooter>
@@ -55,7 +66,7 @@ function DeleteAlert({btnValue, titleValue, mainValue, deleteAction, style, butt
         </AlertDialogOverlay>
       </AlertDialog>
     </>
-  )
+  );
 }
 
-export default DeleteAlert
+export default DeleteAlert;

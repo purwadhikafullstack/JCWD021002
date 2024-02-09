@@ -15,6 +15,7 @@ import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { ResizeButton } from '../../../components/ResizeButton';
 import { useWebSize } from '../../../provider.websize';
+import bgImg from './../../../assets/imagebg.png';
 
 export const Register = () => {
   const navigate = useNavigate();
@@ -90,12 +91,16 @@ export const Register = () => {
 
   return (
     <Flex
-      direction={'column'}
-      w={{ base: '100vw', md: size }}
-      h={{ base: '100vh', lg: '100vh' }}
-      transition="width 0.3s ease"
-      bgSize={size == '500px' ? 'contain' : 'cover'}
-      bgColor={'white'}
+    direction={'column'}
+    w={{ base: '100vw', md: size }}
+    h={{ base: '100vh', lg: '100vh' }}
+    transition="width 0.3s ease"
+    bgSize={size == '500px' ? 'contain' : 'cover'}
+    // bgColor={'white'}
+    // bgImage={bgImg}
+    sx={size == '500px' ? {bgColor: 'white'} : {bgImage: bgImg}}
+    bgRepeat={'no-repeat'}
+    bgPosition={'center'}
     >
       <Flex
         position={'relative'}
@@ -104,6 +109,7 @@ export const Register = () => {
         h={'10vh'}
         justify={'space-between'}
         align={'center'}
+        bgColor={'rgba(255, 255, 255, .5)'}
       >
         <Link to={"/"}>
           <Image src={LogoGroceria} h={'30px'} />
@@ -115,12 +121,16 @@ export const Register = () => {
 
       <Flex flexDirection={size == '500px' ? 'column' : 'row'} h={'full'}>
         <Flex
-          w={size == '500px' ? { base: '100vw', md: '500px' } : '50%'}
-          h={'full'}
+          w={size == '500px' ? { base: '100vw', md: '500px' } : '40%'}
+          h={'95%'}
           p={'20px 30px'}
           direction={'column'}
           transition="width 0.3s ease"
           // mt={{ base: '-20px', lg: '-30px' }}
+          m={size == '500px' ? '0' : '10px 100px'}
+          // margin={size == '500px' ? '0' : '100px'}
+          bgColor={'transparent'}
+          borderRadius={'20px'}
         >
           <Center
             h={{ base: '30%',md: '40%', lg: '40%' }}

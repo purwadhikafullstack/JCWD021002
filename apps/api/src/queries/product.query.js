@@ -67,7 +67,7 @@ const getPaginatedAndFilteredProductsQuery = async (
       include: [
         {
           model: Store,
-              where: cityId ? { city_idcity: cityId } : {},
+          where: cityId ? { city_idcity: cityId } : {},
         },
       ],
       // Add any other conditions for ProductStock here
@@ -100,7 +100,7 @@ const getPaginatedAndFilteredProductsQuery = async (
         {
           model: ProductCategory,
           through: { attributes: [] },
-          where: {...whereConditionCategory},
+          where: { ...whereConditionCategory },
         },
         {
           model: ProductImage,
@@ -231,20 +231,20 @@ const getDetailProductRealQuery = async (id) => {
   try {
     const result = await Product.findOne({
       include: [
-          
-            {
-              model: ProductCategory,
-              through: { attributes: [] }, // This removes unnecessary attributes from the join table
-            },
-            {
-              model: ProductImage,
-            },
-            {
-              model: Mass,
-            },
-            {
-              model: Packaging,
-            },
+
+        {
+          model: ProductCategory,
+          through: { attributes: [] }, // This removes unnecessary attributes from the join table
+        },
+        {
+          model: ProductImage,
+        },
+        {
+          model: Mass,
+        },
+        {
+          model: Packaging,
+        },
       ],
       where: {
         id: id,
@@ -265,7 +265,7 @@ const getDetailProductRealQuery = async (id) => {
       raw: true,
     });
 
-    return {result, subquery};
+    return { result, subquery };
   } catch (err) {
     throw err;
   }
@@ -341,7 +341,7 @@ const getDetailProductQuery = async (id) => {
       raw: true,
     });
 
-    return {result, subquery};
+    return { result, subquery };
   } catch (err) {
     console.log('Error in query:', err);
     throw err;
@@ -395,21 +395,21 @@ const addImageProductQuery = async (imageUrl, product_idproduct) => {
   }
 };
 
-  const deleteProductImageQuery = async (imageUrl, productId) => {
-    try {
-      const res = await ProductImage.destroy({
-        where: {
-          imageUrl: imageUrl,
-          product_idproduct: productId,
-        }
-      })
+const deleteProductImageQuery = async (imageUrl, productId) => {
+  try {
+    const res = await ProductImage.destroy({
+      where: {
+        imageUrl: imageUrl,
+        product_idproduct: productId,
+      }
+    })
 
-      return res;
-    } catch (err) {
-      console.log(err);
-      throw err;
-    }
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
   }
+}
 
 const softDeleteProductQuery = async (id) => {
   try {
@@ -436,15 +436,15 @@ const updateProductQuery = async (
   mass_idmass,
   packaging_idpackaging,
 ) => {
-  console.log("ini di query", 
-  id,
-  name,
-  description,
-  price,
-  status,
-  massProduct,
-  mass_idmass,
-  packaging_idpackaging,)
+  console.log("ini di query",
+    id,
+    name,
+    description,
+    price,
+    status,
+    massProduct,
+    mass_idmass,
+    packaging_idpackaging,)
   try {
     // Create an object with non-null values
     const updatedValue = {

@@ -199,4 +199,3 @@ export const SubmitReview = ({userId, productId}) => {
   );
 }
 
-

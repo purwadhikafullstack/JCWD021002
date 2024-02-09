@@ -14,13 +14,11 @@ import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { ResizeButton } from '../../../components/ResizeButton';
-import {
-  keepLogin,
-  setUser,
-} from '../../../redux/reducer/authReducer';
+import { keepLogin, setUser } from '../../../redux/reducer/authReducer';
 import { useWebSize } from '../../../provider.websize';
 import { useState } from 'react';
 import Loader from '../../../components/Loader';
+import bgImg from './../../../assets/imagebg.png';
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -28,7 +26,7 @@ export const Login = () => {
   const { size } = useWebSize();
   const [displayLoader, setDisplayLoader] = useState('none');
   const location = useLocation();
-  const fromPage = new URLSearchParams(location.search).get('fromPage')
+  const fromPage = new URLSearchParams(location.search).get('fromPage');
 
   const onLoginWithGoogle = async () => {
     try {
@@ -118,7 +116,11 @@ export const Login = () => {
       h={{ base: '100vh', lg: '100vh' }}
       transition="width 0.3s ease"
       bgSize={size == '500px' ? 'contain' : 'cover'}
-      bgColor={'white'}
+      // bgColor={'white'}
+      // bgImage={bgImg}
+      sx={size == '500px' ? {bgColor: 'white'} : {bgImage: bgImg}}
+      bgRepeat={'no-repeat'}
+      bgPosition={'center'}
     >
       <Flex
         position={'relative'}
@@ -127,6 +129,7 @@ export const Login = () => {
         h={'10vh'}
         justify={'space-between'}
         align={'center'}
+        bgColor={'rgba(255, 255, 255, .5)'}
       >
         <Link to={'/'}>
           <Image src={LogoGroceria} h={'30px'} />
@@ -136,13 +139,16 @@ export const Login = () => {
 
       <Flex flexDirection={size == '500px' ? 'column' : 'row'} h={'full'}>
         <Flex
-          w={size == '500px' ? { base: '100vw', md: '500px' } : '50%'}
-          h={'full'}
+          w={size == '500px' ? { base: '100vw', md: '500px' } : '40%'}
+          h={'95%'}
           p={'20px 30px'}
           direction={'column'}
           transition="width 0.3s ease"
           // mt={{ base: '-20px', lg: '-30px' }}
-          ml={size == '500px' ? '0' : ''}
+          m={size == '500px' ? '0' : '10px 100px'}
+          // margin={size == '500px' ? '0' : '100px'}
+          bgColor={'transparent'}
+          borderRadius={'20px'}
         >
           <Center
             h={{ base: '30%', md: '40%', lg: '40%' }}
@@ -161,7 +167,7 @@ export const Login = () => {
             direction={'column'}
             h={'full'}
           >
-            <FormLogin fromPage={fromPage}/>
+            <FormLogin fromPage={fromPage} />
 
             <Flex
               direction={'column'}
