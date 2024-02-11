@@ -3,12 +3,7 @@ import {
   GoogleAuthProvider,
   getAuth,
   signInWithPopup,
-  FacebookAuthProvider,
-  // signInWithEmailAndPassword,
-  // createUserWithEmailAndPassword,
-  // sendPasswordResetEmail,
   signOut,
-  TwitterAuthProvider,
 } from 'firebase/auth';
 import {
   getFirestore,
@@ -90,117 +85,6 @@ const signUpWithGoogle = async () => {
   }
 };
 
-
-// Facebook
-const facebookProvider = new FacebookAuthProvider();
-const signUpWithFeacebook = async (dispatch) => {
-  try {
-    const res = await signInWithPopup(auth, facebookProvider);
-    const user = res.user;
-    const q = query(collection(db, 'users'), where('uid', '==', user.uid));
-    const docs = await getDocs(q);
-    if (docs.docs.length === 0) {
-      await addDoc(collection(db, 'users'), {
-        uid: user.uid,
-        name: user.displayName,
-        authProvider: 'facebook',
-        email: user.email,
-      });
-    }
-    const payload = {
-      username: user.displayName,
-      email: user.email,
-    }
-    dispatch(setUser(payload))
-    return {user: user, message: 'signup with facebook success'};
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-const signInWithFacebook = async (dispatch) => {
-  try {
-    const res = await signInWithPopup(auth, facebookProvider);
-    const user = res.user;
-    const q = query(collection(db, 'users'), where('uid', '==', user.uid));
-    const docs = await getDocs(q);
-    if (docs.docs.length === 0) {
-      await addDoc(collection(db, 'users'), {
-        uid: user.uid,
-        name: user.displayName,
-        authProvider: 'google',
-        email: user.email,
-      });
-    }
-
-    const payload = {
-      username: user.displayName,
-      email: user.email,
-      fullname: user.fullname,
-      avatar: user.avatar
-    }
-    dispatch(setUser(payload))
-    return {user: user, message: 'signin with facebook success'};
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-// Twitter
-const twitterProvider = new TwitterAuthProvider();
-const signUpWithTwitter = async (dispatch) => {
-  try {
-    const res = await signInWithPopup(auth, twitterProvider);
-    console.log(res)
-    const user = res.user;
-    const q = query(collection(db, 'users'), where('uid', '==', user.uid));
-    const docs = await getDocs(q);
-    if (docs.docs.length === 0) {
-      await addDoc(collection(db, 'users'), {
-        uid: user.uid,
-        name: user.displayName,
-        authProvider: 'facebook',
-        email: user.email,
-      });
-    }
-    const payload = {
-      username: user.displayName,
-      email: user.email,
-    }
-    dispatch(setUser(payload))
-    return {user: user, message: 'signup with twitter success'};
-  } catch (err) {
-    console.error(err);
-  }
-};
-const signInWithTwitter = async (dispatch) => {
-  try {
-    const res = await signInWithPopup(auth, twitterProvider);
-    const user = res.user;
-    const q = query(collection(db, 'users'), where('uid', '==', user.uid));
-    const docs = await getDocs(q);
-    if (docs.docs.length === 0) {
-      await addDoc(collection(db, 'users'), {
-        uid: user.uid,
-        name: user.displayName,
-        authProvider: 'google',
-        email: user.email,
-      });
-    }
-
-    const payload = {
-      username: user.displayName,
-      email: user.email,
-      fullname: user.fullname,
-      avatar: user.avatar
-    }
-    dispatch(setUser(payload))
-    return {user: user, message: 'signin with twitter success'};
-  } catch (err) {
-    console.error(err);
-  }
-};
-
 // Log out
 const logout = () => {
   signOut(auth);
@@ -213,9 +97,5 @@ export {
   db,
   signInWithGoogle,
   signUpWithGoogle,
-  signUpWithFeacebook,
-  signUpWithTwitter,
-  signInWithFacebook,
-  signInWithTwitter,
   logout
 };

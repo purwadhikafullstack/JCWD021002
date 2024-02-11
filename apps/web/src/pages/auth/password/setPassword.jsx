@@ -19,6 +19,7 @@ import { useEffect, useState } from 'react';
 import { BiHide, BiShow } from 'react-icons/bi';
 import toast from 'react-hot-toast';
 import { ModalReverify } from '../modalReverify';
+import { useWebSize } from '../../../provider.websize';
 
 const validationSchema = Yup.object().shape({
   password: Yup.string()
@@ -39,6 +40,7 @@ export const SetPassword = () => {
   const [resetToken, setResetToken] = useState();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const location = useLocation();
+  const { size } = useWebSize();
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -86,7 +88,10 @@ export const SetPassword = () => {
     },
   });
   return (
-    <Flex p={'30px'}>
+    <Flex
+      py={'30px'}
+      px={size == '500px' ? '30px' : { base: 0, lg: '200px', xl: '500px' }}
+    >
       <form onSubmit={formik.handleSubmit}>
         <Flex direction={'column'} gap={'40px'}>
           <Flex direction={'column'} gap={3}>

@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { setAddress } from './addressReducer';
+// import { setAddress } from './addressReducer';
 
 const initialState = {
   user: {
@@ -93,13 +93,13 @@ export const register = createAsyncThunk("auth/register", async (userData) => {
       password: userData.password,
       fullname: userData.username,
     });
-
     return res?.data?.message;
   } catch (err) {
     if (err && axios.isAxiosError(err)) {
       const axiosError = err;
       if (axiosError.response) {
         console.log(err.response);
+        toast.error(err?.response?.data)
         throw err?.response?.data
       }
     } else {
@@ -124,7 +124,7 @@ export const keepLogin = () => {
         );
         dispatch(setUser(res?.data?.data));
         dispatch(keepLoginSuccess());
-      } else if(!token){
+      } else if (!token) {
         localStorage.removeItem('persist:root');
       }
     } catch (err) {

@@ -101,7 +101,6 @@ export const registerService = async (username, email, password, fullname) => {
       verification_status,
       googleLogin
     );
-
     return res;
   } catch (err) {
     throw err;
