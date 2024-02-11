@@ -42,7 +42,14 @@ export const Detail = () => {
   const roleId = useSelector((state) => state.AuthReducer?.user?.role_idrole);
 
   return (
-    <Flex direction={'column'} w={'full'} h={'77%'} align={'center'} gap={2}>
+    <Flex
+      direction={'column'}
+      w={'full'}
+      h={'77%'}
+      align={'center'}
+      gap={2}
+      pb={'50px'}
+    >
       <Flex
         w={'full'}
         onClick={() => {
@@ -117,7 +124,9 @@ export const Detail = () => {
               'Anda akan kehilangan akun anda. Yakin ingin melanjutkan?'
             }
             buttonActionValue={'lanjutkan'}
-            navigateTo={`/profile/detail/account/email-verification?fromPage=${encodeURIComponent('/detail')}`}
+            navigateTo={`/profile/detail/account/email-verification?fromPage=${encodeURIComponent(
+              '/detail',
+            )}`}
           />
         </Flex>
       </Flex>

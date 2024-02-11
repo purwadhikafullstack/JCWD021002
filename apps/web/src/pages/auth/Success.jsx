@@ -3,21 +3,23 @@ import { Flex, Text, Image } from '@chakra-ui/react';
 import LogoEncrypt from '../../assets/encrypted.png';
 import { MyButton } from '../../components/Button';
 import { Link, useLocation } from 'react-router-dom';
+import { useWebSize } from '../../provider.websize';
 
 export const Success = () => {
   const location = useLocation();
-
+  const { size } = useWebSize();
   const { title, description } = location.state || {};
 
   return (
     <Flex
       direction={'column'}
       h={'100vh'}
-      p={'30px'}
+      py={'30px'}
       transition="width 0.3s ease"
       justify={'space-between'}
       align={'center'}
       gap={'50px'}
+      px={size == '500px' ? '30px' : { base: 0, lg: '200px', xl: '500px' }}
     >
       <Flex
         direction={'column'}
@@ -43,7 +45,9 @@ export const Success = () => {
           align={'center'}
           textAlign={'center'}
         >
-          <Text fontSize={'24px'} fontWeight={700}>{title}</Text>
+          <Text fontSize={'24px'} fontWeight={700}>
+            {title}
+          </Text>
           <Flex p={'10px 10px'}>
             <Text textAlign={'center'}>{description}</Text>
           </Flex>
