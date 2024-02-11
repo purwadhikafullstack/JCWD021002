@@ -48,7 +48,6 @@ export const DrawerShippingMethode = ({
     fetchOrder(userId)
     onClose();
   };
-
   return (
     <Flex>
       <Drawer placement="bottom" onClose={onClose} isOpen={isOpen} size="md">
