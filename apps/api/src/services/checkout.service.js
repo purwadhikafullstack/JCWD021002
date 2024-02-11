@@ -15,6 +15,7 @@ import {
   addTotalShippingQuery,
   getOrderCustomerQuery,
   updateOrderStatusQuery,
+  checkOrderDiscountShippingQuery
 } from '../queries/checkout.query';
 import {getUserRoleQuery, getDetailUserQuery} from '../queries/user.query';
 import { calculateDiscountPrice } from '../utils/calculateDiscountPrice';
@@ -217,7 +218,11 @@ export const shippingCostService = async (
 
 export const addTotalShippingService = async (shippingCost, orderId) => {
   try {
-    return await addTotalShippingQuery(shippingCost, orderId);
+    const res = await checkOrderDiscountShippingQuery(orderId);
+    if(res) {
+      const newShipping = (shippingCost - res?.totalShippingDiscount);
+      return await addTotalShippingQuery(newShipping, orderId);
+    } else { return await addTotalShippingQuery(shippingCost, orderId); }
   } catch (err) {
     console.log(err);
     throw err;

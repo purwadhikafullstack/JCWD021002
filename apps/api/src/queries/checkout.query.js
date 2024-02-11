@@ -47,7 +47,7 @@ export const findNewOrderQuery = async (userId) => {
 };
 
 export const updateOrderTotalAmountQuery = async (orderId, totalAmount) => {
-  return await Order.update({ totalAmount }, { where: { id: orderId } });
+  return await Order.update({ totalAmount, totalShipping: 0 }, { where: { id: orderId } });
 };
 
 export const updateOrderDetailsQuery = async (orderId, cartItems) => {
@@ -324,4 +324,10 @@ export const addTotalShippingQuery = async (shippingCost, orderId) => {
   }
 }
 
-// export const 
+export const checkOrderDiscountShippingQuery = async (orderId) => {
+  try {
+    return await Order.findOne({where: {id : orderId}});
+  } catch (err) {
+    throw err;
+  }
+}

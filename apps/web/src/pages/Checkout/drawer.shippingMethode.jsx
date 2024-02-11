@@ -45,7 +45,7 @@ export const DrawerShippingMethode = ({
   const handleSelectShipping = (item) => {
     setSelectedshipping(item);
     addTotalShipping(item?.cost[0]?.value, orderId, token)
-    fetchOrder(userId)
+    fetchOrder(userId);
     onClose();
   };
 

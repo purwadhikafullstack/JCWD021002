@@ -263,7 +263,7 @@ export const Checkout = () => {
                   </Text>
                   <Text fontSize="sm">
                     {order?.totalShipping
-                      ? angkaRupiahJs(order?.totalShipping, { formal: false })
+                      ? angkaRupiahJs(order?.totalShipping, { formal: false } )
                       : angkaRupiahJs(0, { formal: false })}
                   </Text>
                   <Text fontSize="sm">
