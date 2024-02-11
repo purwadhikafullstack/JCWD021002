@@ -3,12 +3,8 @@ import axios from 'axios';
 import Slider from 'react-slick';
 import reactLogo from '../../assets/react.svg';
 import viteLogo from '/vite.svg';
-import { Text, Box, HStack, Image, Flex, Button, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useDisclosure, Select, Stack, Card, Divider, Grid, ButtonGroup, useColorModeValue, CardBody, Heading, InputGroup, InputLeftElement, Spacer, IconButton } from '@chakra-ui/react';
-import { IconChevronLeft, IconCircleXFilled, IconCirclePlus, IconTrashXFilled, IconSquareRoundedPlusFilled, IconPlus, IconProgressCheck } from '@tabler/icons-react';
-import { IconSearch, IconAdjustmentsHorizontal, IconChevronRight, IconEditCircle, IconTrashX, IconInfoCircle, IconLayoutGrid, IconList, IconSortAscending2, IconSortDescending2, IconAbc, IconTags, IconCircleCheckFilled} from '@tabler/icons-react'
-import star from '../ProductDetail/star-svgrepo-com.svg';
-import { ResizeButton } from '../../components/ResizeButton';
-import LogoGroceria from '../../assets/Groceria-no-Bg.png';
+import { Text, Box, HStack, VStack, Flex, Button, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useDisclosure, Select, Stack, Card, Divider, Grid, ButtonGroup, useColorModeValue, CardBody, Heading, InputGroup, InputLeftElement, Spacer, IconButton } from '@chakra-ui/react';
+import { IconSearch, IconAdjustmentsHorizontal, IconPlus, IconEditCircle, IconTrashX, IconInfoCircle, IconLayoutGrid, IconList, IconSortAscending2, IconSortDescending2, IconAbc, IconTags, IconCircleCheckFilled} from '@tabler/icons-react'
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -20,6 +16,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import { PaginationControls } from '../../components/PaginationControls/PaginationControls';
 import { handleActivateProduct } from './services/serviceActivateProduct';
 import { handleDeleteProduct } from './services/serviceDeleteProduct';
+import CartLoading from '../../components/Loaders/CartLoading';
+import { CardProduct } from './CardProduct';
+import { fetchStore } from './services/serviceStore';
+import { fetchCategory } from './services/serviceCategory';
 
 function ProductLists() {
 
@@ -42,23 +42,15 @@ function ProductLists() {
   const navigate = useNavigate();
   const [selectedPage, setSelectedPage] = useState(page);
   const [searchParams, setSearchParams] = useSearchParams({ page, pageSize });
-
+  const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState(1);
-
   const [selectedProduct, setSelectedProduct] = useState([]);
   const [selectedStore, setSelectedStore] = useState(userStore);
   const [stockAmount, setStockAmount] = useState(1);
   const token = localStorage.getItem("token");
 
-  console.log('ini categoryId',categoryId);
-  console.log("data suer :", user);
-  console.log("ini data storeId user", selectedStore, user.store_idstore)
-
-
-
   const handleAddToStock = async () => {
     try {
-      // You can replace this URL with your actual API endpoint for adding stock
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/stocks/add-product-stock`,
         {
@@ -72,34 +64,28 @@ function ProductLists() {
       );
       // Handle the response as needed
       console.log(response);
-      setAddToStockModalIsOpen(false); // Close the modal after successful addition
+      setAddToStockModalIsOpen(false); 
+      toast.success("Added to stock")
     } catch (error) {
       console.error(error);
-      if(selectedStore || user.store_idstore == null || undefined) { toast.warning("Please fill all input"); } else { toast.error("Product already in stock"); }
-      // Handle error as needed
+      if(selectedStore > 0 || user.store_idstore > 0 ) { toast.error("Product already in stock"); } else { toast.warning("Please fill all input"); }
     }
   };
 
-  console.log("ini selected store", selectedStore);
-
   const fetchData = async () => {
-    try {
+    try { setLoading(true);
         const response = await axios.get(
           `${import.meta.env.VITE_API_URL}/products/product-lists-v2?page=${page}&pageSize=${pageSize}&sortField=${sortField}&sortOrder=${sortOrder}&categoryId=${categoryId}&productName=${productName}&status=${status}`
         );
         setData(response?.data);
-      
-      
   } catch (err) {
       console.log(err);
+  } finally {setLoading(false);}
   }
-  }
-
 
   useEffect(() => {
     setSearchParams({ page, pageSize, productName, categoryId });
   }, [page, pageSize, productName, categoryId]);
-  
 
   useEffect(() => {
     const pageFromUrl = parseInt(searchParams.get('page')) || 1;
@@ -117,93 +103,30 @@ function ProductLists() {
     fetchData();
   }, [page, pageSize, sortField, sortOrder, categoryId, productName, status]);
 
-  console.log(data);
-
-  const handleSortOrder = (order) => {
-    setSortOrder(order);
-    // onClose();
-  };
-
-  const handleSortField = (order) => {
-    setSortField(order);
-    // onClose();
-  };
-  console.log(data)
-
-  const handleProductName = (value) => {
-    setProductName(value);
-    setPage(1);
-  };
-
-  const fetchCategory = async () => {
-    try {
-        const response = await axios.get(
-            `${import.meta.env.VITE_API_URL}/category/category-lists`
-        );
-        console.log(response?.data);
-        setDataCategory(response?.data);
-    } catch (err) {
-        console.log(err);
-    }
-};
-
-console.log('ini category',dataCategory);
-
-
 useEffect(() => {
-    fetchCategory();
-}, []);
-
-console.log(data);
-
-function formatPriceToIDR(price) {
-    // Use Intl.NumberFormat to format the number as IDR currency
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-    }).format(price);
-  }
-  
-  const fetchStore = async () => {
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}user/store-lists`
-      );
-
-      setDataStore(response?.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-      console.log("ini data store id",user.store_idstore);
-
-  useEffect(() => {
-    fetchStore();
+    fetchCategory(setDataCategory);
+    fetchStore(setDataStore);
   }, []);
 
   return (
     <Box w={{ base: '100vw', md: size }} overflowX='hidden'>
       <ToastContainer position="top-center" closeOnClick pauseOnFocusLoss draggable pauseOnHover theme="colored" />
           <SideBar size={size} handleWebSize={handleWebSize}/>
-    <Box backgroundColor='#f5f5f5'  w={{ base: '100vw', md: size }} p={size == '500px' ? 0 : 5} height='fit-content'>
+    <Box backgroundColor='#f5f5f5'  w={{ base: '100vw', md: size }} p={size == '500px' ? 0 : 5} height='full' >
     <HStack mb='10px' p={0}>
     </HStack>
     <Box p={size == '500px' ? 0 : 5} pl={size == '500px' ? '0px' : '150px' } mt='80px' >
     <Flex dir='row' gap='10px' p={size == '500px' ? 6 : 0} mb='20px' flexWrap='wrap'>
-    {/* <Button backgroundColor='#f5f5f5' leftIcon={<IconChevronLeft />}></Button> */}
-
                 <Box w={size == '500px' ? '60%' : '70%'}>
                 <InputGroup >
             <InputLeftElement pointerEvents='none'>
               <IconSearch color='black' />
             </InputLeftElement>
-            <Input type='text' backgroundColor='white' placeholder='Search in Groceria' width='50vw' value={productName} borderRadius='10px' borderColor='solid grey 1px' onChange={(e) => handleProductName(e.target.value)} />
+            <Input type='text' backgroundColor='white' placeholder='Search in Groceria' width='50vw' value={productName} borderRadius='10px' borderColor='solid grey 1px' onChange={(e) => {setProductName(e.target.value); setPage(1);}} />
           </InputGroup>
                 </Box>
                 <Box>
     <Button leftIcon={<IconAdjustmentsHorizontal />} borderRadius='full' border='solid 1px black' onClick={onOpen}>Filter</Button>
-
                 </Box>
                 </Flex>
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -213,9 +136,9 @@ function formatPriceToIDR(price) {
           <ModalCloseButton />
           <ModalBody>
             <Text>Sort Order</Text>
-            <HStack><Button leftIcon={<IconSortAscending2 />} border='solid black 1px' borderRadius='full' onClick={() => handleSortOrder("asc")} isDisabled={sortOrder == "asc" ? true : false}>Ascending</Button><Button leftIcon={<IconSortDescending2 />} border='solid black 1px' borderRadius='full' onClick={() => handleSortOrder("desc")} isDisabled={sortOrder == "desc" ? true : false}>Descending</Button></HStack>
+            <HStack><Button leftIcon={<IconSortAscending2 />} border='solid black 1px' borderRadius='full' onClick={() => setSortOrder("asc")} isDisabled={sortOrder == "asc" ? true : false}>Ascending</Button><Button leftIcon={<IconSortDescending2 />} border='solid black 1px' borderRadius='full' onClick={() => setSortOrder("desc")} isDisabled={sortOrder == "desc" ? true : false}>Descending</Button></HStack>
             <Text>Sort Field</Text>
-            <HStack><Button leftIcon={<IconAbc />} border='solid black 1px' borderRadius='full' onClick={() => handleSortField("name")} isDisabled={sortField == "name" ? true : false}>Name</Button><Button leftIcon={<IconTags />} border='solid black 1px' borderRadius='full' onClick={() => handleSortField("price")} isDisabled={sortField == "price" ? true : false}>Price</Button></HStack>
+            <HStack><Button leftIcon={<IconAbc />} border='solid black 1px' borderRadius='full' onClick={() => setSortField("name")} isDisabled={sortField == "name" ? true : false}>Name</Button><Button leftIcon={<IconTags />} border='solid black 1px' borderRadius='full' onClick={() => setSortField("price")} isDisabled={sortField == "price" ? true : false}>Price</Button></HStack>
             <Text>Category</Text>
             <Select placeholder="Select option" value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
             {dataCategory?.categories?.map((category) => ( 
@@ -240,86 +163,17 @@ function formatPriceToIDR(price) {
       <Flex flexDir='row' flexWrap='wrap' mb='10px'>
             <Button ml={size == '500px' ? '20px' : '0px'} leftIcon={<IconPlus />} backgroundColor='#286043' textColor='white' border='solid 1px #286043' isDisabled={user?.role_idrole == 1 ? false : true} onClick={() => navigate('/add-product')}>Add Product</Button>
             <Spacer />
-            
             </Flex>
-
-      
-
-      <Stack spacing='4' direction='row' flexWrap='wrap' p='10px' justifyContent={size == '500px' ? 'center' : 'flex-start'}>
-      <Grid
-        templateColumns={size == '500px' ? 'repeat(2, 1fr)' : 'repeat(5, 1fr)'}
-        w={'fit-content'}
-        gap={5}
-      >
-            {data?.products &&
-              data?.products.map((item, index) => (
-                <>
-                
-                <Card key={item.id} bg={useColorModeValue('white', 'gray.800')}
-            boxShadow='0px 1px 5px gray' border={item?.status == 1 ? 'solid 2px green' : 'solid 2px red'} onClick={() => navigate(`/product-detail-admin/${item?.id}`)} _hover={{ cursor: 'pointer' }}>
-              <Image
-                      key={item?.ProductImages[0]?.imageUrl}
-                      src={`http://localhost:8000/uploads/products/${item?.ProductImages[0]?.imageUrl}`}
-                      alt={item.name}
-                      objectFit='cover'
-                      width='100%'
-                      height='200px'
-                      borderRadius='3px 3px 10px 10px'
-                      justifySelf='center'
-                    />
-                  <CardBody>
-                    <Stack mt='-3' spacing='0'>
-                    <Heading size='sm' width='180px' flexWrap='wrap' >{item.name}</Heading>
-                        <Flex dir='row' gap='1' flexWrap='wrap'>
-                        <Text fontSize='xs' mt='5px'>{item?.massProduct} {item?.Mass?.name}/{item.Packaging?.name} </Text>
-                        </Flex>
-                        <Flex dir='row' mt='5px'>
-                        <Image boxSize='17px' src={star} />
-                        <Text fontSize='xs' fontWeight='bold'>{item?.averageRating?.toFixed(1) || 0.0}/5.0 ({item?.totalReviews})</Text>
-                        </Flex>
-                   
-                        <Text fontWeight='bold' color='orangered' mb='10px'>
-                        {formatPriceToIDR(item.price)}
-                      </Text>
-                      <Flex flexWrap='wrap' column='row' justifyContent='center'>
-                            <IconButton  icon={<IconSquareRoundedPlusFilled />} isDisabled={item?.status == 0 ? true : false} variant='ghost' colorScheme='green' onClick={(event) => { setSelectedProduct(item); setAddToStockModalIsOpen(true); event.stopPropagation(); }} />
-                            {user?.role_idrole == 1 ? <IconButton  icon={<IconEditCircle />} variant='ghost' colorScheme='blue' onClick={(event) => { navigate(`/edit-product/${item?.id}`); event.stopPropagation(); }} /> : (null) }
-                            {user?.role_idrole == 1 ? (item?.status == 1 ? 
-                        <IconButton  icon={<IconTrashXFilled />} variant='ghost' colorScheme='red' onClick={(event) => { setSelectedProduct(item); setDeleteModalOpen(true); event.stopPropagation(); }} /> : 
-                      <IconButton
-                            icon={<IconProgressCheck />}
-                            variant="ghost"
-                            colorScheme="blue"
-                            onClick={(event) => {
-                              setSelectedProduct(item);
-                              setActivateModalOpen(true);
-                              event.stopPropagation();}} />) : (null) }
-                      </Flex>
-                      <Flex justifyContent='center' flexDirection='row' flexWrap='wrap'>
-                          <Text  color={item?.status == 1 ? "green" : "red"}>{item?.status == 1 ? (<IconCircleCheckFilled />) : (<IconCircleXFilled />)}</Text>
-                          <Text color={item?.status == 1 ? 'green' : 'red'} fontWeight='bold'>
-                          {item?.status == 1 ? 'Active' : 'Deactive'}
-                          </Text>
-                          {/* <IconButton  icon={<IconInfoCircle />} variant='ghost' colorScheme='blue' onClick={() => navigate(`/product-detail-admin/${item?.id}`)} /> */}
-                      </Flex>
-                    </Stack>
-                  </CardBody>
-                  {/* <CardFooter>
-                      
-                  </CardFooter> */}
-                </Card>
-                </>
-              ))}
-              </Grid>
-          </Stack>
-          <Box pl='10px' pr='10px'><PaginationControls 
+            <Flex flexWrap='wrap' justifyContent='center'> {loading ? ( <VStack> <CartLoading /> </VStack> ) : ( (loading == false) && <CardProduct data={data} setSelectedProduct={setSelectedProduct} setAddToStockModalIsOpen={setAddToStockModalIsOpen} setDeleteModalOpen={setDeleteModalOpen} setActivateModalOpen={setActivateModalOpen} /> )} </Flex>
+          <Box m='5'>{data?.products?.length != 0 ? <PaginationControls 
               page= {page}
               pageSize={pageSize}
               selectedPage={selectedPage}
               setPage={setPage}
               setPageSize={setPageSize}
               setSelectedPage={setSelectedPage}
-              data={data} /></Box>
+              data={data}
+            /> : null}</Box>
     
   <Modal isOpen={addToStockModalIsOpen} onClose={() => setAddToStockModalIsOpen(false)}>
         {/* ... (other modal content) */}

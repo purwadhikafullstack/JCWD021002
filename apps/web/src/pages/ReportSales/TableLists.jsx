@@ -7,7 +7,7 @@ import {
   Flex,
   Avatar,
   Icon,
-  Table, Thead, Tbody, Tr, Th, Td, TableContainer
+  Table, Thead, Tbody, Tr, Th, Td, TableContainer, VStack
 } from '@chakra-ui/react';
 import {
     IconCircleCheckFilled,
@@ -21,26 +21,27 @@ import { useWebSize } from '../../provider.websize';
 
 
 
-export const TableLists = ({ data, handleDeleteOrder, navigate }) => {
+export const TableLists = ({ data }) => {
     const { size, handleWebSize } = useWebSize();
   
     return (
       <>
+      {data?.data && data?.data.length > 0 ? (
         <Box overflowX='auto'>
-          <TableContainer borderRadius='10px' border='solid black 1px'>
-            <Table size='sm' border='solid 1px black' variant='striped' colorScheme='gray'>
-              <Thead>
-                <Tr bgColor='gray'>
-                  <Th textColor='white'>Code Transaction</Th>
-                  <Th textColor='white'>Quantity</Th>
-                  <Th textColor='white'>Subtotal</Th>
-                  <Th textColor='white'>Product Name</Th>
-                  <Th textColor='white'>Order Date</Th>
-                  <Th textColor='white'>Status</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {data?.data?.map((orderDetail, index) => (
+        <TableContainer borderRadius='10px' border='solid black 1px'>
+          <Table size='sm' border='solid 1px black' variant='striped' colorScheme='gray'>
+            <Thead>
+              <Tr bgColor='gray'>
+                <Th textColor='white'>Payment Code</Th>
+                <Th textColor='white'>Quantity</Th>
+                <Th textColor='white'>Subtotal</Th>
+                <Th textColor='white'>Product Name</Th>
+                <Th textColor='white'>Order Date</Th>
+                <Th textColor='white'>Status</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+            {data?.data?.map((orderDetail, index) => (
                   <Tr key={index}>
                     <Td>{orderDetail.Order?.paymentCode}</Td>
                     <Td>{orderDetail.quantity}</Td>
@@ -69,10 +70,16 @@ export const TableLists = ({ data, handleDeleteOrder, navigate }) => {
                     </Td>
                   </Tr>
                 ))}
-              </Tbody>
+          </Tbody>
             </Table>
           </TableContainer>
         </Box>
+      ) : (
+      <VStack>
+        <Text fontSize='6xl'>404</Text>
+        <Text>Data Not Found</Text>
+      </VStack>
+    )}
       </>
     );
   };

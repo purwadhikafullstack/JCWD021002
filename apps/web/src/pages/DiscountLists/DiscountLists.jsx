@@ -173,7 +173,7 @@ console.log(dataFilter);
   return (
       <Box w={{ base: '100vw', md: size }}>
           <SideBar size={size} handleWebSize={handleWebSize}/>
-    <Box backgroundColor='#f5f5f5'  w={{ base: '100vw', md: size }} p='6' height='fit-content'>
+    <Box backgroundColor='#f5f5f5'  w={{ base: '100vw', md: size }} p='6' height='full'>
     <Box p={size == '500px' ? 0 : 5} pl={size == '500px' ? '0px' : '150px' } mt='80px' >
     <Flex dir='row' gap='10px' mb='20px' flexWrap='wrap'>
     <Button backgroundColor='#f5f5f5' leftIcon={<IconChevronLeft />}></Button>
@@ -251,7 +251,7 @@ console.log(dataFilter);
             boxShadow='0px 1px 5px gray' border={item?.status == 1 ? 'solid 2px green' : 'solid 2px red'} onClick={() => navigate(`/discount-detail/${item?.id}`)} _hover={{ cursor: 'pointer' }}>
               <Image
                       key={item?.banner}
-                      src={item?.banner ? `http://localhost:8000/uploads/discounts/${item?.banner}` : (LogoGroceria)}
+                      src={item?.banner ? `${import.meta.env.VITE_API_IMAGE_URL}/discounts/${item?.banner}` : (LogoGroceria)}
                       alt={item.name}
                       objectFit='cover'
                       width='100%'

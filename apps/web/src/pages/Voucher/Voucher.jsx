@@ -283,7 +283,7 @@ console.log(data);
             boxShadow='0px 1px 5px gray' border={item?.status == 1 ? 'solid 2px green' : 'solid 2px red'} _hover={{ cursor: 'pointer' }}>
               <Image
                       key={item?.banner}
-                      src={item?.banner ? `http://localhost:8000/uploads/discounts/${item?.banner}` : (LogoGroceria)}
+                      src={item?.banner ? `${import.meta.env.VITE_API_IMAGE_URL}/discounts/${item?.banner}` : (LogoGroceria)}
                       alt={item.name}
                       objectFit='cover'
                       width='100%'
@@ -383,7 +383,7 @@ console.log(data);
             boxShadow='0px 1px 5px gray' border={item?.Discount?.status == 1 ? 'solid 2px green' : 'solid 2px red'} _hover={{ cursor: 'pointer' }}>
               <Image
                       key={item?.Discount?.banner}
-                      src={item?.Discount?.banner ? `http://localhost:8000/uploads/discounts/${item?.Discount?.banner}` : (LogoGroceria)}
+                      src={item?.Discount?.banner ? `${import.meta.env.VITE_API_IMAGE_URL}/discounts/${item?.Discount?.banner}` : (LogoGroceria)}
                       alt={item.name}
                       objectFit='cover'
                       width='100%'

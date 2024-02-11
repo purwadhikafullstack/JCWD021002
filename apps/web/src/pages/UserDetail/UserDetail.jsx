@@ -34,7 +34,7 @@ const UserDetail = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/user/user-detail/${id}`,
+        `${import.meta.env.VITE_API_URL}/user/user-detail/${id}`,
       );
 
       setData(response?.data?.result);

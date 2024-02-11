@@ -57,6 +57,7 @@ import { calculateDiscountPrice } from '../../utils/calculateDiscountPrice';
 import { useWebSize } from '../../provider.websize';
 import { BottomBar } from '../../components/BottomBar';
 import { Footer } from '../home/home.footer';
+import { CartIcon } from '../../components/Cart/Cart.CartIcon';
 
 
 function truncateDescription(description, maxLength) {
@@ -257,7 +258,9 @@ const Product = () => {
                     </InputGroup>
                             </Box>
                             <Box>
-                                <IconButton height='30px' icon={<IconShoppingCartFilled />} backgroundColor='#fcfdde' onClick={() => {isLogin ? navigate('/cart') : navigate('/login')}} />
+                                {/* <IconButton height='30px' icon={<IconShoppingCartFilled />} backgroundColor='#fcfdde' onClick={() => {isLogin ? navigate('/cart') : navigate('/login')}} /> */}
+                                <Box mt='3px' cursor='pointer' onClick={() => {isLogin ? navigate('/cart') : navigate('/login')}}><CartIcon /></Box>
+
                             </Box>
 
                             </Flex>

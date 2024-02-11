@@ -46,7 +46,7 @@ export const EditModalCategory = ({
                     alt="Selected Image"
                     boxSize="150px"
                     objectFit="cover"
-                    borderRadius="50%"/> : <Image src={selectedCategory?.imageUrl ? `${import.meta.env.VITE_API_IMAGE_URL}/categories/${selectedCategory?.imageUrl}` : LogoGroceria} />}
+                    borderRadius="50%"/> : <Image boxSize='150px' objectFit='cover' borderRadius='full' src={selectedCategory?.imageUrl ? `${import.meta.env.VITE_API_IMAGE_URL}/categories/${selectedCategory?.imageUrl}` : LogoGroceria} />}
                           <Box mt='-50px' mr='-90px'>
                     <Input display="none" id="fileInput" 
                             type="file"

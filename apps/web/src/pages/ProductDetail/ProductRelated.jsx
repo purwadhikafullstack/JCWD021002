@@ -115,7 +115,7 @@ function formatPriceToIDR(price) {
             boxShadow='0px 1px 5px gray'>
               <Image
                       key={item?.ProductImages[0]?.imageUrl}
-                      src={`http://localhost:8000/uploads/products/${item?.ProductImages[0]?.imageUrl}`}
+                      src={`${import.meta.env.VITE_API_IMAGE_URL}/products/${item?.ProductImages[0]?.imageUrl}`}
                       alt={item.name}
                       objectFit='cover'
                       width='100%'

@@ -40,9 +40,7 @@ const createSalesReportController = async (req, res) => {
     const productId = req.query.productId || null;
     const storeId = req.query.storeId || null;
 
-
-
-    const salesReport = await createSalesReportService(String(startDate), String(endDate), page, pageSize, sortOrder, categoryId, productId, storeId);
+    const salesReport = await createSalesReportService(String(startDate), String(endDate), page, Number(pageSize), sortOrder, categoryId, productId, storeId);
 
     return res.status(200).json(salesReport);
   } catch (error) {
