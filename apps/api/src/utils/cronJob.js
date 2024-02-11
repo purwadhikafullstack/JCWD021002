@@ -18,7 +18,6 @@ export async function finishUnconfirmedOrders() {
       if (minutesDifference >= 1) {
         // Automatically confirm the order
         await updateOrderStatusQuery(order.id, 'done');
-        console.log(`Order ${order.id} confirmed automatically after 1 minute.`);
       }
 
     //   const hoursDifference = Math.floor((currentDate - deliveryDate) / (1000 * 60 * 60));
@@ -26,10 +25,8 @@ export async function finishUnconfirmedOrders() {
     //   if (hoursDifference >= 48) {
     //     // Automatically confirm the order
     //     await updateOrderStatusQuery(order.id, 'confirmed');
-    //     console.log(`Order ${order.id} confirmed automatically after 48 hours.`);
     //   }
     });
   } catch (error) {
-    console.error('Error finishing unconfirmed orders:', error);
   }
 }

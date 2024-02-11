@@ -31,7 +31,7 @@ const MassLists = () => {
   const addNewMass = async () => {
     try {
       const result = await axios.post(
-        `http://localhost:8000/api/mass/add-mass`, {
+        `${import.meta.env.VITE_API_URL}/mass/add-mass`, {
           mass: newMass
         },
       );
@@ -49,7 +49,7 @@ const MassLists = () => {
   const confirmEditMass = async () => {
     try {
       await axios.patch(
-        `http://localhost:8000/api/mass/change-mass`, {
+        `${import.meta.env.VITE_API_URL}/mass/change-mass`, {
           massId: selectedMass?.id,
           massNew: editMass
         });
@@ -67,7 +67,7 @@ const MassLists = () => {
   const confirmDeleteMass = async () => {
     try {
       await axios.delete(
-        `http://localhost:8000/api/mass/remove-mass/${selectedMass.id}`
+        `${import.meta.env.VITE_API_URL}/mass/remove-mass/${selectedMass.id}`
       );
 
       toast.success("Delete mass successful");
@@ -82,7 +82,7 @@ const MassLists = () => {
   const fetchMass = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/mass/mass-lists?page=${page}&pageSize=${pageSize}&sortOrder=${sortOrder}`
+        `${import.meta.env.VITE_API_URL}/mass/mass-lists?page=${page}&pageSize=${pageSize}&sortOrder=${sortOrder}`
       );
 
       setDataMass(response?.data);

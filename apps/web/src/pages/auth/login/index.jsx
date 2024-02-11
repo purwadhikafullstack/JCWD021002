@@ -2,14 +2,10 @@
 /* eslint-disable react/prop-types */
 import { Center, Flex, Text, Button, Image } from '@chakra-ui/react';
 import { FormLogin } from './formLogin';
-import { FaGoogle, FaFacebook, FaTwitter } from 'react-icons/fa';
+import { FcGoogle } from 'react-icons/fc';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import LogoGroceria from '../../../assets/Groceria-no-Bg.png';
-import {
-  signInWithFacebook,
-  signInWithGoogle,
-  signInWithTwitter,
-} from '../../../config/firebase-config';
+import { signInWithGoogle } from '../../../config/firebase-config';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -58,56 +54,10 @@ export const Login = () => {
     }
   };
 
-  const onLoginWithFacebook = async () => {
-    try {
-      const result = await signInWithFacebook(dispatch);
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/auth/loginsocial`,
-        {
-          email: result.user.email,
-        },
-      );
-      if (!res) throw new Error('Email has not been registered');
-      toast.success('Sign in Success');
-      if (result.message == 'signin with facebook success') {
-        setDisplayLoader('none');
-        navigate(fromPage);
-      }
-    } catch (err) {
-      console.log(err);
-      toast.error(err.response.data);
-    }
-  };
-  const onLoginWithTwitter = async () => {
-    try {
-      const result = await signInWithTwitter(dispatch);
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/auth/loginsocial`,
-        {
-          email: result.user.email,
-        },
-      );
-      if (!res) throw new Error('Email has not been registered');
-      toast.success('Sign in Success');
-      if (result.message == 'signin with twitter success') {
-        navigate(fromPage);
-      }
-    } catch (err) {
-      console.log(err);
-      toast.error(err.response.data);
-    }
-  };
-
   const handleClickLogin = () => {
     // setDisplayLoader('flex');
     onLoginWithGoogle();
   };
-
-  const socialButtons = [
-    { icon: <FaGoogle />, bgColor: 'red', click: handleClickLogin },
-    { icon: <FaFacebook />, bgColor: '#4267B2FF', click: onLoginWithFacebook },
-    { icon: <FaTwitter />, bgColor: 'blue.200', click: onLoginWithTwitter },
-  ];
 
   return (
     <Flex
@@ -118,7 +68,7 @@ export const Login = () => {
       bgSize={size == '500px' ? 'contain' : 'cover'}
       // bgColor={'white'}
       // bgImage={bgImg}
-      sx={size == '500px' ? {bgColor: 'white'} : {bgImage: bgImg}}
+      sx={size == '500px' ? { bgColor: 'white' } : { bgImage: bgImg }}
       bgRepeat={'no-repeat'}
       bgPosition={'center'}
     >
@@ -174,31 +124,25 @@ export const Login = () => {
               w={'full'}
               justify={'center'}
               align={'center'}
-              gap={5}
+              gap={4}
             >
               <Text color={'#6F7787FF'} fontSize={'12px'} fontWeight={400}>
                 OR
               </Text>
-              <Flex gap={5} align={'center'} justify={'center'}>
-                {socialButtons?.map((social, index) => {
-                  return (
-                    <Button
-                      key={index}
-                      color={'white'}
-                      _hover={{ transform: 'scale(1.1)' }}
-                      _active={{ transform: 'scale(.9)' }}
-                      size={'lg'}
-                      p={'10px'}
-                      borderRadius={'50%'}
-                      bgColor={social.bgColor}
-                      fontSize={'20px'}
-                      onClick={social.click}
-                    >
-                      {social.icon}
-                    </Button>
-                  );
-                })}
-              </Flex>
+              <Button
+                size={'md'}
+                p={'5px 15px'}
+                borderRadius={'5px'}
+                bgColor={'white'}
+                fontSize={'16px'}
+                fontWeight={400}
+                onClick={handleClickLogin}
+                gap={2}
+                boxShadow={'sm'}
+              >
+                <FcGoogle size={'20px'} />
+                <Text>Sign in with Google</Text>
+              </Button>
 
               <Flex
                 display={displayLoader}

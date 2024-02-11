@@ -10,7 +10,6 @@ export const getStoreQuery = async () => {
       where: { status: 'active' }
     });
 
-    console.log(res);
     return res;
   } catch (err) {
     throw err;
@@ -47,7 +46,6 @@ export const changeStoreQuery = async (storeId, name, cityId, latitude, longitud
 
     return res;
   } catch (err) {
-    console.log(err)
     throw err;
   }
 };
@@ -62,7 +60,6 @@ export const deleteStoreQuery = async (storeId) => {
 
     return res;
   } catch (err) {
-    console.log(err)
     throw err;
   }
 };

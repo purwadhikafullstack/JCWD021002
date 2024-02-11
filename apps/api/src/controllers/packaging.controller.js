@@ -21,8 +21,6 @@ const getPaginatedAndFilteredPackagingController = async (req, res) => {
         packagingName,
       );
   
-  
-      console.log("controller result:", result);
       return res.status(200).json(result);
     } catch (err) {
       console.error('Error in getPaginatedAndFilteredProductsController:', err);
@@ -39,7 +37,6 @@ const getPaginatedAndFilteredPackagingController = async (req, res) => {
     
         res.status(201).json({result})
       } catch (err) {
-        console.log(err);
         res.status(500).json({error: "internal server error"})
       }
     }
@@ -64,7 +61,6 @@ const getPaginatedAndFilteredPackagingController = async (req, res) => {
     
         res.status(201).json({message: 'Packaging deleted successfully'})
       } catch (err) {
-        console.log(err);
         res.status(500).json({error: "internal server error"})
       }
     }

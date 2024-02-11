@@ -36,7 +36,6 @@ const ReportStock = () => {
   const [dataProduct, setDataProduct] = useState([]);
   const [dataStore, setDataStore] = useState([]);
 
-
   useEffect(() => {
     fetchCategory(setDataCategory);
     fetchStore(setDataStore);
@@ -51,7 +50,7 @@ const ReportStock = () => {
 
   useEffect(() => {
     setSearchParams({ page, pageSize, storeId, productId, startDate, endDate, });
-  }, [page, pageSize, storeId, productId ]);
+  }, [page, pageSize, storeId, productId, startDate, endDate ]);
 
   useEffect(() => {
     const pageFromUrl = parseInt(searchParams.get('page')) || 1;
@@ -76,7 +75,7 @@ const ReportStock = () => {
   return (
     <Box w={{ base: '100vw', md: size }} overflowX='hidden'>
           <SideBar size={size} handleWebSize={handleWebSize}/>
-      <Box w={{ base: '100vw', md: size }} height='fit-content' backgroundColor='#fbfaf9' >
+      <Box w={{ base: '100vw', md: size }} height='full' backgroundColor='#fbfaf9' >
       <Box p='20px'>
         <Box pl={size == '500px' ? '0px' : '150px' } mt='80px' >
         <Tabs>
@@ -86,15 +85,8 @@ const ReportStock = () => {
                   borderBottom: '2px solid #286043',
                   fontWeight: 'bold',
                   position: 'relative',
-                  _after: {
-                    content: '""',
-                    position: 'absolute',
-                    bottom: '-2px',
-                    left: 0,
-                    right: 0,
-                    height: '4px',
-                    borderRadius: '4px 4px 0 0',
-                    background: '#286043',
+                  _after: { content: '""', position: 'absolute', bottom: '-2px',
+                    left: 0, right: 0, height: '4px', borderRadius: '4px 4px 0 0', background: '#286043',
                   },
                 }} width='100%' >
                 <Text>Report Per-Product</Text>
@@ -104,15 +96,8 @@ const ReportStock = () => {
                   borderBottom: '2px solid #286043',
                   fontWeight: 'bold',
                   position: 'relative',
-                  _after: {
-                    content: '""',
-                    position: 'absolute',
-                    bottom: '-2px',
-                    left: 0,
-                    right: 0,
-                    height: '4px',
-                    borderRadius: '4px 4px 0 0',
-                    background: '#286043',
+                  _after: { content: '""', position: 'absolute', bottom: '-2px',
+                    left: 0, right: 0, height: '4px', borderRadius: '4px 4px 0 0', background: '#286043',
                   },
                 }}
                 width='100%'
@@ -166,9 +151,9 @@ const ReportStock = () => {
             </Modal>
                 </Box>
                       </Flex>
-                <Flex flexDir='row' flexWrap='wrap' mb='10px'>
+                <Flex flexDir='row' flexWrap='wrap' mt='10px' mb='10px' >
                 <Input value={startDate} onChange={(e) => setStartDate(e.target.value)} width='fit-content' type='date' />
-              <Text>-</Text>
+              <Text pl='10px' pr='10px'>_</Text>
             <Input value={endDate} onChange={(e) => setEndDate(e.target.value)} width='fit-content' type='date' />
                   <Spacer />
                   <Button borderRadius="full" backgroundColor="#286043" textColor="white" border="solid 1px #286043" onClick={() => exportToExcel(data, startDate, endDate)}>Export to Excel</Button>

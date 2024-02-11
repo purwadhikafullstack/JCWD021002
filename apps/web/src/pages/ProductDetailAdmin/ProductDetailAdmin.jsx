@@ -4,7 +4,19 @@ import axios from 'axios';
 import Slider from 'react-slick';
 import reactLogo from '../../assets/react.svg';
 import viteLogo from '/vite.svg';
-import { Text, Box, HStack, Image, Flex, Button, Spacer, VStack, Stack, Textarea, IconButton } from '@chakra-ui/react';
+import {
+  Text,
+  Box,
+  HStack,
+  Image,
+  Flex,
+  Button,
+  Spacer,
+  VStack,
+  Stack,
+  Textarea,
+  IconButton,
+} from '@chakra-ui/react';
 import { IconChevronLeft, IconLink, IconStarFilled } from '@tabler/icons-react';
 import star from './star-svgrepo-com.svg';
 // import './Home.css';
@@ -30,7 +42,7 @@ import {
 import { useSelector } from 'react-redux';
 import { calculateDiscountPrice } from '../../utils/calculateDiscountPrice';
 import { useWebSize } from '../../provider.websize';
-import toRupiah from '@develoka/angka-rupiah-js'
+import toRupiah from '@develoka/angka-rupiah-js';
 import SideBar from '../../components/SideBar/SideBar';
 
 function truncateDescription(description, maxLength) {
@@ -41,12 +53,12 @@ function truncateDescription(description, maxLength) {
 }
 
 const Product = () => {
-  const {size, handleWebSize } = useWebSize();
+  const { size, handleWebSize } = useWebSize();
   const navigate = useNavigate();
-    const {id} = useParams();
+  const { id } = useParams();
   const { user, isLogin } = useSelector((state) => state.AuthReducer);
-    const [rating, setRating] = useState(0);
-    const [reviewText, setReviewText] = useState('');
+  const [rating, setRating] = useState(0);
+  const [reviewText, setReviewText] = useState('');
   const [sampleData, setSampleData] = useState([]);
   const [data, setData] = useState([]);
   const [showFullDescription, setShowFullDescription] = useState(false);
@@ -87,7 +99,7 @@ const Product = () => {
         },
       },
     ],
-    centerPadding: '50px'
+    centerPadding: '50px',
   };
 
   const handleIncrement = () => {
@@ -100,139 +112,234 @@ const Product = () => {
     }
   };
 
-  console.log("ini id", id);
   const fetchData = async (id) => {
     try {
-        console.log("ini id the fetchdata", id);
-        const response = await axios.get(
-            `${import.meta.env.VITE_API_URL}/products/product-detail-v2/${id}`
-        );
-        setData(response?.data);
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/products/product-detail-v2/${id}`,
+      );
+      setData(response?.data);
     } catch (err) {
-        console.log(err);
+      console.log(err);
     }
-};
+  };
 
-useEffect(() => {
+  useEffect(() => {
     fetchData(id);
-}, []);
+  }, []);
 
-console.log(data);
-
-
-  
-
-  console.log(size);
-  console.log("ini data now", data);
   return (
     <Box w={{ base: '100vw', md: size }}>
-          <SideBar size={size} handleWebSize={handleWebSize}/>
-    <Box backgroundColor='#f5f5f5' p='0'
-    pb='110px'
-    pt='90px'
-    pl={size == '500px' ? 0 : '165px'}
-    w={{ base: '100vw', md: size }}
-    h={'fit-content'}
-    transition="width 0.3s ease">
-      
-        <Button backgroundColor='#f5f5f5' onClick={() => navigate(-1)} leftIcon={<IconChevronLeft />}>Kembali</Button>
-    <Flex gap='10' alignItems="flex-start" pl={size == '500px' ? '0px' : '20px'} pr={size == '500px' ? '0px' : '20px'}  flexDirection={size == '500px' ? 'column' : 'row'} h={"full"}>
-      <VStack mt='20px' width={size == '500px' ? '100%' : '30vw'} position={size == '500px' ? 'relative' : 'sticky'} top={size == '500px' ? '0px' : '110px'} >
-    <Box width={size == '500px' ? '80%' : '30vw'} justifyContent='center'>
-    {data?.result?.ProductImages && (
-  <>
-    <link rel="preload" as="image" href={`${import.meta.env.VITE_API_IMAGE_URL}/products/${data?.result?.ProductImages[0]?.imageUrl}`} />
-    <Slider {...mainSliderSettings} asNavFor={thumbnailSlider} ref={(slider) => setMainSlider(slider)}>
-      {data?.result?.ProductImages?.map((image, index) => (
-        <Image
-          key={index?.toString()}
-          backgroundColor='white'
-          src={`${import.meta.env.VITE_API_IMAGE_URL}/products/${image?.imageUrl}`}
-          objectFit='contain'
-          height='35vh'
-          borderRadius='10px'
-        />
-      ))}
-    </Slider>
-  </>
-)}
-        </Box>
-          <Box width={size == '500px' ? '80%' : '30vw'}>
-  <Slider
-    {...thumbnailSliderSettings}
-    asNavFor={mainSlider}
-    ref={(slider) => setThumbnailSlider(slider)}
-  >
-    {data?.result?.ProductImages?.map((image, index) => {
-      return (
-        <Box key={index} p='1px' borderRadius='10px'> {/* Add margin to create gap between thumbnails */}
-          <Image
-          border={`solid 3px ${index === mainSliderIndex ? 'blue' : 'transparent'}`}
-          backgroundColor='white'
-          boxSize='50px'
-          objectFit='cover'
-          borderRadius='10px'
-          mr='2px'
-          onClick={() => setMainSliderIndex(index)}
-          src={`${import.meta.env.VITE_API_IMAGE_URL}/products/${image?.imageUrl}`}
-          alt={`Thumbnail ${index + 1}`}
-          />
-        </Box>
-    );
-    })}
-  </Slider>
-  </Box>
-  </VStack>
-        <VStack width={size == '500px' ? '100%' : '50vw'}>
-        <Box mt='20px' width='97%' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
-            <Text fontSize='x-large' fontWeight='bold' color='tomato'>{data?.result?.price ? toRupiah(data?.result?.price) : null}</Text>
-      <Text color='grey' fontSize='xs' fontWeight='bold'>
-</Text>
-
-            <Text fontWeight='bold'>{data?.result?.name}</Text>
-            <Text >{data?.result?.massProduct} {data?.result?.Mass?.name} / {data?.result?.Packaging?.name} </Text>
-        </Box>
-        <Box justifyContent='center' mt='10px' width='97%' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
-            <Text fontSize='larger' fontWeight='bold'>Deskripsi</Text>
-            <Box w='100%' pl='20px' pr='20px'>
-            {showFullDescription ? (
-    <div dangerouslySetInnerHTML={{ __html: data?.result?.description }} style={{ wordWrap: 'break-word' }} />
-  ) : (
-    <>
-      <div dangerouslySetInnerHTML={{ __html: truncateDescription(data?.result?.description, 200) }} style={{ wordWrap: 'break-word' }} />
-      {truncateDescription(data?.result?.description, 200) !== data?.result?.description &&
-        <Text textColor="teal" cursor='pointer' onClick={() => setShowFullDescription(true)}>
-          Baca Selengkapnya
-        </Text>}
-    </>
-  )}
+      <SideBar size={size} handleWebSize={handleWebSize} />
+      <Box
+        backgroundColor="#f5f5f5"
+        p="0"
+        pb="110px"
+        pt="90px"
+        pl={size == '500px' ? 0 : '165px'}
+        w={{ base: '100vw', md: size }}
+        h={'fit-content'}
+        transition="width 0.3s ease"
+      >
+        <Button
+          backgroundColor="#f5f5f5"
+          onClick={() => navigate(-1)}
+          leftIcon={<IconChevronLeft />}
+        >
+          Kembali
+        </Button>
+        <Flex
+          gap="10"
+          alignItems="flex-start"
+          pl={size == '500px' ? '0px' : '20px'}
+          pr={size == '500px' ? '0px' : '20px'}
+          flexDirection={size == '500px' ? 'column' : 'row'}
+          h={'full'}
+        >
+          <VStack
+            mt="20px"
+            width={size == '500px' ? '100%' : '30vw'}
+            position={size == '500px' ? 'relative' : 'sticky'}
+            top={size == '500px' ? '0px' : '110px'}
+          >
+            <Box
+              width={size == '500px' ? '80%' : '30vw'}
+              justifyContent="center"
+            >
+              {data?.result?.ProductImages && (
+                <>
+                  <link
+                    rel="preload"
+                    as="image"
+                    href={`${import.meta.env.VITE_API_IMAGE_URL}/products/${
+                      data?.result?.ProductImages[0]?.imageUrl
+                    }`}
+                  />
+                  <Slider
+                    {...mainSliderSettings}
+                    asNavFor={thumbnailSlider}
+                    ref={(slider) => setMainSlider(slider)}
+                  >
+                    {data?.result?.ProductImages?.map((image, index) => (
+                      <Image
+                        key={index?.toString()}
+                        backgroundColor="white"
+                        src={`${import.meta.env.VITE_API_IMAGE_URL}/products/${
+                          image?.imageUrl
+                        }`}
+                        objectFit="contain"
+                        height="35vh"
+                        borderRadius="10px"
+                      />
+                    ))}
+                  </Slider>
+                </>
+              )}
             </Box>
-            <Text fontSize='larger' fontWeight='bold'>Kategori</Text>
-            <Flex flexWrap="wrap" columnGap='5px'>
-        {data?.result?.ProductCategories?.map((item) => (
-          <Box key={item?.category?.id} borderRadius="full" mb='5px' pl="10px" pr='10px' pt='5px' pb='5px' border="solid #1B4332FF 1px" bgColor='#F3FBF8FF'>
-              <Text color='green'>{item?.category}</Text>
-          </Box>
-        ))}
+            <Box width={size == '500px' ? '80%' : '30vw'}>
+              <Slider
+                {...thumbnailSliderSettings}
+                asNavFor={mainSlider}
+                ref={(slider) => setThumbnailSlider(slider)}
+              >
+                {data?.result?.ProductImages?.map((image, index) => {
+                  return (
+                    <Box key={index} p="1px" borderRadius="10px">
+                      {' '}
+                      {/* Add margin to create gap between thumbnails */}
+                      <Image
+                        border={`solid 3px ${
+                          index === mainSliderIndex ? 'blue' : 'transparent'
+                        }`}
+                        backgroundColor="white"
+                        boxSize="50px"
+                        objectFit="cover"
+                        borderRadius="10px"
+                        mr="2px"
+                        onClick={() => setMainSliderIndex(index)}
+                        src={`${import.meta.env.VITE_API_IMAGE_URL}/products/${
+                          image?.imageUrl
+                        }`}
+                        alt={`Thumbnail ${index + 1}`}
+                      />
+                    </Box>
+                  );
+                })}
+              </Slider>
+            </Box>
+          </VStack>
+          <VStack width={size == '500px' ? '100%' : '50vw'}>
+            <Box
+              mt="20px"
+              width="97%"
+              bg="#FFFEF7"
+              textAlign="left"
+              p={4}
+              rounded="lg"
+              boxShadow="0px 1px 5px gray"
+            >
+              <Text fontSize="x-large" fontWeight="bold" color="tomato">
+                {data?.result?.price ? toRupiah(data?.result?.price) : null}
+              </Text>
+              <Text color="grey" fontSize="xs" fontWeight="bold"></Text>
+
+              <Text fontWeight="bold">{data?.result?.name}</Text>
+              <Text>
+                {data?.result?.massProduct} {data?.result?.Mass?.name} /{' '}
+                {data?.result?.Packaging?.name}{' '}
+              </Text>
+            </Box>
+            <Box
+              justifyContent="center"
+              mt="10px"
+              width="97%"
+              bg="#FFFEF7"
+              textAlign="left"
+              p={4}
+              rounded="lg"
+              boxShadow="0px 1px 5px gray"
+            >
+              <Text fontSize="larger" fontWeight="bold">
+                Deskripsi
+              </Text>
+              <Box w="100%" pl="20px" pr="20px">
+                {showFullDescription ? (
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: data?.result?.description,
+                    }}
+                    style={{ wordWrap: 'break-word' }}
+                  />
+                ) : (
+                  <>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: truncateDescription(
+                          data?.result?.description,
+                          200,
+                        ),
+                      }}
+                      style={{ wordWrap: 'break-word' }}
+                    />
+                    {truncateDescription(data?.result?.description, 200) !==
+                      data?.result?.description && (
+                      <Text
+                        textColor="teal"
+                        cursor="pointer"
+                        onClick={() => setShowFullDescription(true)}
+                      >
+                        Baca Selengkapnya
+                      </Text>
+                    )}
+                  </>
+                )}
+              </Box>
+              <Text fontSize="larger" fontWeight="bold">
+                Kategori
+              </Text>
+              <Flex flexWrap="wrap" columnGap="5px">
+                {data?.result?.ProductCategories?.map((item) => (
+                  <Box
+                    key={item?.category?.id}
+                    borderRadius="full"
+                    mb="5px"
+                    pl="10px"
+                    pr="10px"
+                    pt="5px"
+                    pb="5px"
+                    border="solid #1B4332FF 1px"
+                    bgColor="#F3FBF8FF"
+                  >
+                    <Text color="green">{item?.category}</Text>
+                  </Box>
+                ))}
+              </Flex>
+            </Box>
+            <Box
+              mt="10px"
+              width="97%"
+              bg="#FFFEF7"
+              textAlign="left"
+              p={4}
+              rounded="lg"
+              boxShadow="0px 1px 5px gray"
+            >
+              <Text fontSize="larger" fontWeight="bold">
+                Penilaian & Ulasan
+              </Text>
+              <Flex mb="10px" flexDirection="row" gap="5px">
+                <Image boxSize="25px" src={star} />
+                <Text fontWeight="bold">
+                  {data?.subquery?.averageRating?.toFixed(1)}/5.0
+                </Text>
+                <Text>({data?.subquery?.totalReviews})</Text>
+              </Flex>
+              <ProductRating productId={data?.result?.id} />
+            </Box>
+          </VStack>
         </Flex>
-        </Box>
-        <Box mt='10px' width='97%' bg='#FFFEF7' textAlign='left'p={4} rounded='lg' boxShadow="0px 1px 5px gray">
-            <Text fontSize='larger' fontWeight='bold'>Penilaian & Ulasan</Text>
-            <Flex mb='10px' flexDirection='row' gap='5px'>
-            <Image boxSize='25px' src={star} />
-            <Text fontWeight='bold'>{data?.subquery?.averageRating?.toFixed(1)}/5.0</Text>
-            <Text >({data?.subquery?.totalReviews})</Text>
-            </Flex>
-            <ProductRating productId={data?.result?.id} />
-        </Box>
-        </VStack>
-        
-    </Flex>
-    
+      </Box>
     </Box>
-    </Box>
-    
   );
-}
+};
 
 export default Product;

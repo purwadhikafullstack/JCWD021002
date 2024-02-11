@@ -76,8 +76,6 @@ const EditDiscount = () => {
     }
   };
 
-      console.log("ini data store",productId2, productId);
-
   useEffect(() => {
     fetchStore();
   }, []);
@@ -153,9 +151,6 @@ const EditDiscount = () => {
     fetchDiscountDetails(id);
   }, [id]);
 
-  console.log("ini edit data", editData);
-  console.log("ini product stock id", productId);
-
   const addProduct = async () => {
     try {
       let formData = new FormData();
@@ -192,8 +187,6 @@ const EditDiscount = () => {
     }
   };
 
-  console.log(fieldImage);
-
   const handleImageChange = (event) => {
     const selectedFile = event.currentTarget.files[0];
 
@@ -213,8 +206,6 @@ const EditDiscount = () => {
   };
 
   const handleReset = () => {
-    console.log("Before reset:", { type, discValue, percent, nominal, minNom, buy, get });
-
   setType(0);
   setDiscValue(0);
   setPercent(0);
@@ -225,10 +216,7 @@ const EditDiscount = () => {
   setBuy(undefined);
   setMax(undefined);
   setReferral(undefined);
-  console.log("After reset:", { type, discValue, percent, nominal, minNom, buy, get });
   }
-
-  console.log("usageType", (typeof usageType),  (typeof type), discValue, percent, nominal, minNom, buy, get);
 
   return (
     <>

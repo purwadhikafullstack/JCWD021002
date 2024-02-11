@@ -1,5 +1,5 @@
 import { Box, Button, HStack, Icon, Input, InputGroup, InputLeftAddon, InputLeftElement, Spacer, Text, Image, IconButton, Card, CardBody, Stack, Heading, Divider, CardFooter, ButtonGroup, useDisclosure, Modal, ModalOverlay, ModalHeader, ModalContent, ModalCloseButton, ModalBody, ModalFooter, VStack, useColorModeValue, Select, FormLabel, Flex } from "@chakra-ui/react"
-import { IconGraphFilled,IconBuildingStore, IconBox, } from '@tabler/icons-react'
+import { IconGraphFilled,IconBuildingStore, IconBox, IconCircleCheckFilled, IconCircleXFilled, } from '@tabler/icons-react'
 import { useEffect, useState } from "react"
 import axios from 'axios'
 import { useNavigate } from "react-router-dom"
@@ -8,6 +8,8 @@ import { Line } from 'react-chartjs-2';
 import { useWebSize } from '../../provider.websize';
 import SideBar from '../../components/SideBar/SideBar';
 import { useSelector } from "react-redux"
+import { FaStore } from "react-icons/fa"
+import CalendarApp from "../../components/CalendarApp/CalendarApp"
 
 function formatPriceToIDR(price) {return new Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR',}).format(price);}
 
@@ -23,8 +25,7 @@ const [salesData, setSalesData] = useState([]);
   const [pageSize, setPageSize] = useState(10)
   const [totalPage, setTotalPage] = useState(0)
   const [storeId, setStoreId] = useState(user?.store_idstore ? user?.store_idstore : null);
-  const [productId, setProductId] = useState(null);
-  const [productName, setProductName] = useState("");
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -46,16 +47,11 @@ function formatDate(date) {
   return `${year}-${month}-${day}`;
 }
 
-console.log('Today:', formattedToday);
-console.log('Yesterday:', formattedYesterday);
-
-  
-
   const fetchDataToday = async () => {
     try {
 
       const response = await axios.get(
-          `http://localhost:8000/api/report/sales-by-date?startDate=${formattedToday}&endDate=${formattedToday}&storeId=&&productId`
+          `${import.meta.env.VITE_API_URL}/report/sales-by-date?startDate=${formattedToday}&endDate=${formattedToday}&storeId=&&productId`
       );
       setSalesData(response?.data);
       
@@ -69,7 +65,7 @@ console.log('Yesterday:', formattedYesterday);
     try {
 
       const response = await axios.get(
-          `http://localhost:8000/api/report/sales-by-date?startDate=${formattedYesterday}&endDate=${formattedYesterday}&storeId=${storeId}&categoryId=&productId`
+          `${import.meta.env.VITE_API_URL}/report/sales-by-date?startDate=${formattedYesterday}&endDate=${formattedYesterday}&storeId=${storeId}&categoryId=&productId`
       );
       setSalesData1(response?.data);
       
@@ -84,35 +80,34 @@ console.log('Yesterday:', formattedYesterday);
     fetchDataYesterday();
   }, []);
 
-  console.log("ini data", salesData);
-  console.log("ini data1", salesData1);
 
   let percentageTotalSales;
   let percentageTotalQuantity;
   let percentageTotalTransactions;
 
-  if (salesData) {
+  if (salesData[0]?.totalSales > 0) {
     // salesData?.sort((a, b) => new Date(a.saleDate) - new Date(b.saleDate));
-
-// Calculate percentage change for each metric
-const percentageChanges = {
-  totalSales: calculatePercentageChange(salesData[0]?.totalSales, salesData1[0]?.totalSales),
-  totalQuantity: calculatePercentageChange(salesData[0]?.totalQuantity, salesData1[0]?.totalQuantity),
-  totalTransactions: calculatePercentageChange(salesData[0]?.totalTransactions, salesData1[0]?.totalTransactions)
-};
-
-function calculatePercentageChange(currentValue, previousValue) {
-  return ((currentValue - previousValue) / Math.abs(previousValue)) * 100;
-}
-
-console.log('Percentage Change in Total Sales:', percentageChanges.totalSales.toFixed(2) + '%');
-percentageTotalSales = percentageChanges.totalSales.toFixed(2) + '%';
-console.log('Percentage Change in Total Quantity:', percentageChanges.totalQuantity.toFixed(2) + '%');
-percentageTotalQuantity = percentageChanges.totalQuantity.toFixed(2) + '%'
-console.log('Percentage Change in Total Transactions:', percentageChanges.totalTransactions.toFixed(2) + '%');
-percentageTotalTransactions = percentageChanges.totalTransactions.toFixed(2) + '%'
+  
+    // Calculate percentage change for each metric
+    const percentageChanges = {
+      totalSales: calculatePercentageChange(salesData[0]?.totalSales, salesData1[0]?.totalSales),
+      totalQuantity: calculatePercentageChange(salesData[0]?.totalQuantity, salesData1[0]?.totalQuantity),
+      totalTransactions: calculatePercentageChange(salesData[0]?.totalTransactions, salesData1[0]?.totalTransactions)
+    };
+  
+    function calculatePercentageChange(currentValue, previousValue) {
+      return ((currentValue - previousValue) / Math.abs(previousValue)) * 100;
+    }
+  
+    percentageTotalSales = percentageChanges?.totalSales?.toFixed(2) || 0 + '%';
+    percentageTotalQuantity = percentageChanges?.totalQuantity?.toFixed(2) || 0 + '%';
+    percentageTotalTransactions = percentageChanges?.totalTransactions?.toFixed(2) || 0 + '%';
+  } else {
+    // Display 0% if no data
+    percentageTotalSales = '0%';
+    percentageTotalQuantity = '0%';
+    percentageTotalTransactions = '0%';
   }
-
   return (
       <>
         <Box w={{ base: '100vw', md: size }}>
@@ -121,7 +116,7 @@ percentageTotalTransactions = percentageChanges.totalTransactions.toFixed(2) + '
       <Box w={{ base: '98.7vw', md: size }} overflowX='hidden' height='100vh' backgroundColor='#fbfaf9' p='20px'>
       
       <Box pl={size == '500px' ? '0px' : '150px' } pr={size == '500px' ? '0px' : '20px'} pt='20px' pb='20px' mt='70px' >
-      <Text>Sale Today ({formattedToday})</Text>
+      <Text fontWeight='bold'>Sales Today ({formattedToday})</Text>
       <Flex flexDirection={size == '500px' ? 'column' : 'row'} mt='10px' p='10px' rowGap='10px' columnGap='10px'>
         <Box width={size == '500px' ? '100%' : '40%'} bgColor='#3da5f4'  p="20px" boxShadow='0px 1px 5px gray'  borderRadius='10px'>
             <FormLabel textColor='white'>Revenue</FormLabel>
@@ -155,13 +150,13 @@ percentageTotalTransactions = percentageChanges.totalTransactions.toFixed(2) + '
         <Text fontSize='larger' fontWeight='bold' mb='5px'>{salesData[0]?.allProduct}</Text>
         <Box zIndex={2} mt='-80px' right={0} position='absolute'><IconBox opacity='0.5' size='100px' /></Box>
     </Box>
-        <Box width={size == '500px' ? '100%' : '30%'} bgColor='#00c689' textColor='white' p="20px" boxShadow='0px 1px 5px gray' borderRadius='10px'>
+        <Box width={size == '500px' ? '100%' : '30%'} position='relative' bgColor='#00c689' textColor='white' p="20px" boxShadow='0px 1px 5px gray' borderRadius='10px'>
         <FormLabel>Active Products</FormLabel>
-        <Text fontSize='larger' fontWeight='bold' mb='5px'>{salesData[0]?.allProductActive}</Text>
+        <Text fontSize='larger' fontWeight='bold' mb='5px'>{salesData[0]?.allProductActive}</Text><Box zIndex={2} mt='-80px' right={0} position='absolute'><IconCircleCheckFilled opacity='0.5' size='100px' /></Box>
         </Box>
-        <Box width={size == '500px' ? '100%' : '30%'} bgColor='#f1536e' textColor='white' p="20px" boxShadow='0px 1px 5px gray' borderRadius='10px'>
+        <Box width={size == '500px' ? '100%' : '30%'} position='relative' bgColor='#f1536e' textColor='white' p="20px" boxShadow='0px 1px 5px gray' borderRadius='10px'>
         <FormLabel>Deactive Products</FormLabel>
-        <Text fontSize='larger' fontWeight='bold' mb='5px'>{salesData[0]?.allProductDeactive}</Text>
+        <Text fontSize='larger' fontWeight='bold' mb='5px'>{salesData[0]?.allProductDeactive}</Text><Box zIndex={2} mt='-80px' right={0} position='absolute'><IconCircleXFilled opacity='0.5' size='100px' /></Box>
         </Box>
     </Flex>
     <FormLabel mt='5px'>Stores</FormLabel>
@@ -170,17 +165,20 @@ percentageTotalTransactions = percentageChanges.totalTransactions.toFixed(2) + '
         
             <FormLabel>All Stores</FormLabel>
             <Text fontSize='larger' fontWeight='bold' mb='5px'>{salesData[0]?.allStore}</Text>
-            <Box zIndex={2} mt='-80px' right={0} position='absolute'><IconBuildingStore opacity='0.5' size='100px' /></Box>
+            <Box zIndex={2} mt='-80px' right={0} position='absolute'><FaStore opacity='0.5' size='100px' /></Box>
         </Box>
-        <Box width={size == '500px' ? '100%' : '30%'} bgColor='#00c689' textColor='white' p="20px" boxShadow='0px 1px 5px gray' borderRadius='10px'>
+        <Box width={size == '500px' ? '100%' : '30%'} position='relative' bgColor='#00c689' textColor='white' p="20px" boxShadow='0px 1px 5px gray' borderRadius='10px'>
         <FormLabel>Active Stores</FormLabel>
-        <Text fontSize='larger' fontWeight='bold' mb='5px'>{salesData[0]?.allStoreActive}</Text>
+        <Text fontSize='larger' fontWeight='bold' mb='5px'>{salesData[0]?.allStoreActive}</Text><Box zIndex={2} mt='-80px' right={0} position='absolute'><IconCircleCheckFilled opacity='0.5' size='100px' /></Box>
         </Box>
-        <Box width={size == '500px' ? '100%' : '30%'} bgColor='#f1536e' textColor='white' p="20px" boxShadow='0px 1px 5px gray' borderRadius='10px'>
+        <Box width={size == '500px' ? '100%' : '30%'} position='relative' bgColor='#f1536e' textColor='white' p="20px" boxShadow='0px 1px 5px gray' borderRadius='10px'>
         <FormLabel>Deactive Stores</FormLabel>
-        <Text fontSize='larger' fontWeight='bold' mb='5px'>{salesData[0]?.allStoreDeactive}</Text>
+        <Text fontSize='larger' fontWeight='bold' mb='5px'>{salesData[0]?.allStoreDeactive}</Text><Box zIndex={2} mt='-80px' right={0} position='absolute'><IconCircleXFilled opacity='0.5' size='100px' /></Box>
         </Box>
     </Flex>
+    <Box mt='10px' justifyContent='center'>
+    <CalendarApp />
+    </Box>
         </Box>
       </Box>
       </Box>

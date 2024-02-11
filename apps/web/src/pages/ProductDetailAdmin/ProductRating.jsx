@@ -33,7 +33,6 @@ export const ProductRating = ({productId}) => {
   const navigate = useNavigate();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  console.log('ini productId', productId);
   const fetchData = async (productId) => {
     try {
         const response = await axios.get(
@@ -47,8 +46,6 @@ export const ProductRating = ({productId}) => {
   }
   }
 
-  console.log("ini rating", data);
-  console.log("ini rating", data?.totalPages);
 
 
 

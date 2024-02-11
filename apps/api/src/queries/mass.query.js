@@ -10,9 +10,7 @@ const getPaginatedAndFilteredMassQuery = async (
     sortOrder,
     massName,
   ) => {
-    console.log(sortField, sortOrder);
     try {
-  
       const offset = (page - 1) * (pageSize || 0);
   
       const whereCondition = {};
@@ -68,7 +66,6 @@ const getPaginatedAndFilteredMassQuery = async (
 
 const addMassQuery = async (mass) => {
     try {
-      console.log(mass);
         const res = await Mass.create({ name: mass, status: 'Active' });
         return res;
     } catch (err) {
@@ -80,7 +77,6 @@ const addMassQuery = async (mass) => {
    
 const editMassQuery = async (massId, massNew, status) => {
     try {
-      console.log("ini di query",massId, massNew, status);
         const updatedMass = await Mass.update(
           {
             name: massNew,

@@ -34,10 +34,8 @@ const withRoleRestriction = (allowedRoles) => (WrappedComponent) => {
     }
 
     if (user && allowedRoles.includes(user.role_idrole)) {
-      console.log('Role allowed. Rendering component.');
       return <WrappedComponent {...props} />;
     } else {
-      console.log('Role not allowed. Redirecting to "/"');
       // Redirect to a different route if the role is not allowed
       // Navigate to your login page or another appropriate route
       // Example: <Navigate to="/login" />;

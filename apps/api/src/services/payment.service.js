@@ -64,8 +64,6 @@ export const updateOrderService = async (orderId) => {
     if (!order) throw new Error(`Order not found by orderId: ${orderId}`);
 
     const transactionMidtrans = await getMidtransTransactionStatus(orderId);
-    console.log('Transaction Midtrans:', transactionMidtrans);
-
     const vaNumbers = transactionMidtrans?.va_numbers || [];
     const paymentMethod =
       transactionMidtrans?.payment_type === 'bank_transfer'
@@ -73,10 +71,6 @@ export const updateOrderService = async (orderId) => {
         : transactionMidtrans?.payment_type;
     const paymentCode = vaNumbers[0]?.va_number;
     const paymentStatus = transactionMidtrans?.transaction_status;
-
-    console.log('Payment Method:', paymentMethod);
-    console.log('Payment Code:', paymentCode);
-    console.log('Payment Status:', paymentStatus);
 
     if (paymentStatus === 'settlement') {
     //   await updateOrderStatusQuery(order.id, 'new_order');

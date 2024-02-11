@@ -87,24 +87,26 @@ export const Profile = () => {
             gap={2}
           >
             <Text>{user.fullname}</Text>
-            <Flex
-              align={'center'}
-              cursor={'pointer'}
-              onClick={() => copyTextToClipboard(user.referralCode)}
-            >
-              <Input
-                fontSize={'14px'}
-                ref={textRef}
-                readOnly
-                variant={'unstyled'}
-                size={'xs'}
-                w={'80px'}
-                textAlign={'center'}
+            <Flex>
+              <Flex
+                align={'center'}
                 cursor={'pointer'}
-                value={user.referralCode}
-              />
-              <IoMdCopy />
-              { user?.referralBy_iduser ? null : <RedeemReferral /> }
+                onClick={() => copyTextToClipboard(user.referralCode)}
+              >
+                <Input
+                  fontSize={'14px'}
+                  ref={textRef}
+                  readOnly
+                  variant={'unstyled'}
+                  size={'xs'}
+                  w={'80px'}
+                  textAlign={'center'}
+                  cursor={'pointer'}
+                  value={user.referralCode}
+                />
+                <IoMdCopy />
+              </Flex>
+              {user?.referralBy_iduser ? null : <RedeemReferral />}
             </Flex>
           </Flex>
         </Center>

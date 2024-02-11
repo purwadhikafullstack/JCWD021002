@@ -11,7 +11,6 @@ export const useVoucherService = async (order, voucher, userId) => {
         let totalAmountOrder;
 
         for (const orderDetail of orderDetails) {
-            console.log("ini di voucher", orderDetail.productStock_idproductStock, voucher.productStock_idproductStock);
             // Check if the current OrderDetail has the same productStock_idproductStock as res1
             if (orderDetail.productStock_idproductStock === voucher.productStock_idproductStock) {
                 // If there is a match, calculate totalAmount
@@ -52,7 +51,6 @@ export const useVoucherService = async (order, voucher, userId) => {
         // Now you can proceed with your logic using totalAmount and totalAmountOrder
 
     } catch (err) {
-        console.log(err);
         throw err;
     }
 }
@@ -60,7 +58,6 @@ export const useVoucherService = async (order, voucher, userId) => {
 export const useShippingVoucherService = async (order, voucher, userId) => {
     try {
 
-        console.log("ini shipping voucher service", order, voucher);
 
         // Assuming you have an array of OrderDetail items in order.OrderDetails
         const arrayOfObjects = await [voucher];
@@ -85,7 +82,6 @@ export const useShippingVoucherService = async (order, voucher, userId) => {
         // Now you can proceed with your logic using totalAmount and totalAmountOrder
 
     } catch (err) {
-        console.log(err);
         throw err;
     }
 }
@@ -98,8 +94,6 @@ export const redeemReferralService = async ( idSelf, referral, ) => {
             const res2 = await findVoucherReferralQuery();
             if(res2?.length > 0) {
                 for (let i = 0; i < res2?.length; i++) {
-                //   console.log("ini di service",res.id);
-                //   console.log("ini di service",category[i]?.id);
       
                   await giveVoucherQuery(res2[i]?.id, res1?.id);
                   await giveVoucherQuery(res2[i]?.id, idSelf);

@@ -87,7 +87,6 @@ export const changeStoreController = async (req, res) => {
       data: result,
     });
   } catch (err) {
-    console.log(err)
     res.status(500).send(err.message);
   }
 };
@@ -101,7 +100,6 @@ export const deleteStoreController = async (req, res) => {
       data: result,
     });
   } catch (err) {
-    console.log(err)
     res.status(500).send(err.message);
   }
 };

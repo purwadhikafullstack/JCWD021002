@@ -56,8 +56,6 @@ export const createCartService = async (userId, cartDetails) => {
 
     await updateCartTotalsQuery(cart);
 
-    console.log(`cartId: ${cart.id}, cartDetails: ${cartDetailsArray}`);
-
     return { cart, cartDetails: cartDetailsArray };
   } catch (err) {
     console.error(err.message);

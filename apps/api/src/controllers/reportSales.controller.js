@@ -8,7 +8,6 @@ const getSalesByDateController = async (req, res) => {
 
     return res.status(200).json(salesByDate);
   } catch (error) {
-    console.log(error);
 
     return res.status(500).json({ error: 'Internal Server Error' });
   }
@@ -17,13 +16,11 @@ const getSalesByDateController = async (req, res) => {
 const getProductsByTransactionController = async (req, res) => {
   try {
     const { transactionId } = req.params;
-    console.log(transactionId);
 
     const productsByTransaction = await getProductsByTransactionService(Number(transactionId));
 
     return res.status(200).json(productsByTransaction);
   } catch (error) {
-    console.log(error);
 
     return res.status(500).json({ error: 'Internal Server Error' });
   }
@@ -40,13 +37,10 @@ const createSalesReportController = async (req, res) => {
     const productId = req.query.productId || null;
     const storeId = req.query.storeId || null;
 
-
-
-    const salesReport = await createSalesReportService(String(startDate), String(endDate), page, pageSize, sortOrder, categoryId, productId, storeId);
+    const salesReport = await createSalesReportService(String(startDate), String(endDate), page, Number(pageSize), sortOrder, categoryId, productId, storeId);
 
     return res.status(200).json(salesReport);
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 };

@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Icon, Text } from '@chakra-ui/react';
-import { HiOutlineShoppingCart, HiShoppingCart } from 'react-icons/hi2';
+import { HiOutlineShoppingCart } from 'react-icons/hi2';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 
 const calculateTotalQuantity = (carts) => {
   return carts.reduce((total, cartItem) => total + cartItem.totalQuantity, 0);
@@ -11,9 +10,8 @@ const calculateTotalQuantity = (carts) => {
 
 export const CartIcon = () => {
   const user = useSelector((state) => state.AuthReducer.user);
-  const token = localStorage.getItem('token');
+  // const token = localStorage.getItem('token');
   const [carts, setCarts] = useState([]);
-  const navigate = useNavigate();
   const fetchCarts = async (userId) => {
     try {
       const response = await axios.get(

@@ -29,7 +29,7 @@ const PackagingLists = () => {
   const addNewPackaging = async () => {
     try {
       const result = await axios.post(
-        `http://localhost:8000/api/packaging/add-packaging`, {
+        `${import.meta.env.VITE_API_URL}/packaging/add-packaging`, {
           packaging: newPackaging
         }, );
         
@@ -46,7 +46,7 @@ const PackagingLists = () => {
   const confirmEditPackaging = async () => {
     try {
       await axios.patch(
-        `http://localhost:8000/api/packaging/change-packaging`, {
+        `${import.meta.env.VITE_API_URL}/packaging/change-packaging`, {
           packagingId: selectedPackaging?.id,
           packagingNew: editPackaging
         });
@@ -64,7 +64,7 @@ const PackagingLists = () => {
   const confirmDeletePackaging = async () => {
     try {
       await axios.delete(
-        `http://localhost:8000/api/packaging/remove-packaging/${selectedPackaging.id}`
+        `${import.meta.env.VITE_API_URL}/packaging/remove-packaging/${selectedPackaging.id}`
       );
 
       toast.success("Delete packaging successful");
@@ -80,7 +80,7 @@ const PackagingLists = () => {
   const fetchPackaging = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/packaging/packaging-lists?page=${page}&pageSize=${pageSize}&sortOrder=${sortOrder}`
+        `${import.meta.env.VITE_API_URL}/packaging/packaging-lists?page=${page}&pageSize=${pageSize}&sortOrder=${sortOrder}`
       );
 
       setDataPackaging(response?.data);

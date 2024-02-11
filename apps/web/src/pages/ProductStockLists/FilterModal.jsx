@@ -87,7 +87,7 @@ export const FilterModal = ({ isOpen, onClose, setSortField, setSortOrder, dataC
                     </option>
                   ))}
                 </Select>
-                <Text fontWeight="bold">Store</Text>
+                <Text>Store</Text>
                 <Select
                   placeholder="Select store"
                   value={storeId}

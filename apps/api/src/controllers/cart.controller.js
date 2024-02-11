@@ -8,7 +8,6 @@ import {
 export const createCartController = async (req, res) => {
   try {
     const { userId, cartDetails } = req.body;
-    console.log(userId, cartDetails);
     const result = await createCartService(userId, cartDetails);
     return res.status(200).json({
       success: true,
@@ -16,7 +15,6 @@ export const createCartController = async (req, res) => {
       data: result,
     });
   } catch (err) {
-    console.log('error');
     return res.status(500).json({
       message: err.message,
     });
@@ -26,7 +24,6 @@ export const createCartController = async (req, res) => {
 export const updateItemCartQtyController = async (req, res) => {
   try {
     const { userId, productId, newQuantity } = req.params;
-    console.log(userId, productId, newQuantity);
     const result = await updateCartItemQtyService(
       userId,
       productId,
@@ -38,7 +35,6 @@ export const updateItemCartQtyController = async (req, res) => {
       data: result,
     });
   } catch (err) {
-    console.log('error');
     return res.status(500).json({
       message: err.message,
     });
@@ -57,7 +53,6 @@ export const deleteCartItemController = async (req, res) => {
       data: result,
     });
   } catch (err) {
-    console.error(err.message);
     return res.status(500).json({
       message: err.message,
     });
@@ -74,7 +69,6 @@ export const getCartController = async (req, res) => {
       data: result,
     });
   } catch (err) {
-    console.error(err.message);
     return res.status(500).json({
       message: err.message,
     });

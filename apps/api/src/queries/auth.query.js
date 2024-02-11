@@ -81,7 +81,6 @@ export const changePasswordQuery = async (id, hashPassword) => {
 }
 export const updateProfileQuery = async ({ id = null, username = null, fullname = null, avatar }) => {
   try {
-    console.log('query avatar', {avatar})
     const res = await User.update({
       username,
       fullname,
@@ -119,7 +118,6 @@ export const verifyQuery = async (userId, resetToken) => {
 
 export const checkTokenQuery = async (resetToken) => {
   try {
-    console.log(new Date())
     const res = await User.findOne({
       attributes: ['id', 'resetTokenUsed'],
       where: {
@@ -136,7 +134,6 @@ export const checkTokenQuery = async (resetToken) => {
 
 export const changeEmailQuery = async (id, newEmail, resetToken) => {
   try {
-    console.log('query',id, newEmail, resetToken)
     const res = await User.update({
       email: newEmail,
       resetToken: resetToken,

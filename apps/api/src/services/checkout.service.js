@@ -15,6 +15,7 @@ import {
   addTotalShippingQuery,
   getOrderCustomerQuery,
   updateOrderStatusQuery,
+  checkOrderDiscountShippingQuery
 } from '../queries/checkout.query';
 import {getUserRoleQuery, getDetailUserQuery} from '../queries/user.query';
 import { calculateDiscountPrice } from '../utils/calculateDiscountPrice';
@@ -23,7 +24,6 @@ import { getOrderDetailsQuery } from '../queries/orderManagement.query';
 export const getOrderCustomerService = async (userId, status, paymentStatus, startDate, endDate) => {
   try {
     const user = await getUserRoleQuery(userId);
-    console.log(user);
 
     if (!user || user?.role_idrole !== 3) {
       throw new Error('Access Denied. The user is not customer.');
@@ -37,7 +37,6 @@ export const getOrderCustomerService = async (userId, status, paymentStatus, sta
 };
 
 export const preCheckoutService = async (userId) => {
-  console.log('userId: ',userId);
   try {
     const order = await findNewOrderQuery(userId)
     if (!order) throw new Error('Order not found');
@@ -76,7 +75,6 @@ export const checkoutService = async (userId, selectedItems) => {
       //   ) *
       //     orderItem.quantity
       // );
-        console.log('orderItem: ', orderItem?.price);
       return total + (calculateDiscountPrice(orderItem?.price, (orderItem?.ProductStock?.Discounts || []), orderItem.quantity)) * orderItem.quantity;
     }, 0);
 
@@ -128,7 +126,6 @@ export const checkoutService = async (userId, selectedItems) => {
 };
 
 export const updatePaymentStatusService = async (orderId, paymentProof) => {
-  console.log(orderId, paymentProof);
   const order = await findOrderQuery(orderId);
 
   if (!order) {
@@ -145,7 +142,6 @@ export const cancelOrderCustomerService = async (userId, orderId) => {
   if(!user || user.role_idrole !== 3) throw new Error('User not found')
 
   const order = await findOrderQuery(orderId);
-  console.log(order);
   if(!order) throw new Error('Order not found');
 
   if(order.status === 'new_order' && order.paymentStatus === 'settlement') {
@@ -217,9 +213,12 @@ export const shippingCostService = async (
 
 export const addTotalShippingService = async (shippingCost, orderId) => {
   try {
-    return await addTotalShippingQuery(shippingCost, orderId);
+    const res = await checkOrderDiscountShippingQuery(orderId);
+    if(res) {
+      const newShipping = (shippingCost - res?.totalShippingDiscount);
+      return await addTotalShippingQuery(newShipping, orderId);
+    } else { return await addTotalShippingQuery(shippingCost, orderId); }
   } catch (err) {
-    console.log(err);
     throw err;
   }
 }

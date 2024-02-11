@@ -284,7 +284,7 @@ const createSalesReportQuery = async (
         ],
         order: [['id', sortOrder]],
         offset: offset,
-        limit: pageSize ? parseInt(pageSize) : undefined,
+        limit: pageSize ? pageSize : undefined,
     });
 
     const totalPages = Math.ceil(res.count / (pageSize || res.count));

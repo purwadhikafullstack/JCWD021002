@@ -32,7 +32,6 @@ import { useWebSize } from '../../provider.websize';
 
 export const TableLists = ({ dataUser, handleDeleteUser, navigate }) => {
   const {size, handleWebSize } = useWebSize();
-  console.log(dataUser);
     
     return (
         <>

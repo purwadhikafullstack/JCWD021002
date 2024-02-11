@@ -21,7 +21,6 @@ export const getOrderbyAdminQuery = async (adminStoreId, status, paymentStatus) 
       [Op.like]: `%${paymentStatus}%`, 
     };
   }
-  console.log(whereCondition);
 
   return Order.findAll({
     // where: whereCondition,
@@ -112,7 +111,6 @@ export const updateStockQtyQuery = async (
   newStock,
 ) => {
   const t = await ProductStock.sequelize.transaction();
-  console.log(newStock);
   try {
     await ProductStock.update(
       {

@@ -45,10 +45,9 @@ export const DrawerShippingMethode = ({
   const handleSelectShipping = (item) => {
     setSelectedshipping(item);
     addTotalShipping(item?.cost[0]?.value, orderId, token)
-    fetchOrder(userId)
+    fetchOrder(userId);
     onClose();
   };
-
   return (
     <Flex>
       <Drawer placement="bottom" onClose={onClose} isOpen={isOpen} size="md">
@@ -75,7 +74,6 @@ export const DrawerShippingMethode = ({
             >
               <Flex alignItems="center" gap={1}>
                 <Icon as={LiaBoxSolid} boxSize={5} />
-                {/* {console.log(Object.keys(orderDetail).length)} */}
                 <Text flexWrap="wrap">
                   {orderDetail &&
                     `Dikirim dari ${

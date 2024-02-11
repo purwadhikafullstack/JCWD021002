@@ -79,10 +79,6 @@ export const createCartDetailQuery = async (cart, item, productStockId) => {
 };
 
 export const updateItemCartQtyQuery = async (cart, productId, newQuantity) => {
-  console.log(
-    `cartId: ${cart.id}, productStockId: ${productId}, quantity: ${newQuantity}`,
-  );
-
   const result = await CartDetail.update(
     {
       quantity: newQuantity,

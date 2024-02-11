@@ -20,7 +20,6 @@ const getUserController = async (req, res) => {
 
         return res.status(200).json(result);
     } catch (err) {
-        console.log(err);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 
@@ -33,7 +32,6 @@ const updateUserController = async (req, res) => {
         await updateUserService(id, username, email, fullname, req.file?.filename, role_idrole, status, store_idstore);
         return res.status(201).json({ message: 'User updated successfully' })
     } catch (err) {
-        console.log(err);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 }
@@ -41,12 +39,10 @@ const updateUserController = async (req, res) => {
 const getUserDetailController = async (req, res) => {
     try {
         const { id } = req.params;
-        console.log(id);
         const result = await getDetailUserService(id);
 
         res.status(201).json({ result });
     } catch (err) {
-        console.log(err);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 }
@@ -58,7 +54,6 @@ const addUserController = async (req, res) => {
         const result = await addUserService(username, email, fullname, password, req.file?.filename, role_idrole, store_idstore);
         res.status(201).json({ message: 'User added successfully', result })
     } catch (err) {
-        console.log(err);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 }
@@ -70,7 +65,6 @@ const getStoreController = async (req, res) => {
 
         return res.status(200).json(result);
     } catch (err) {
-        console.log(err);
         return res.status(500).json({ error: 'Internal Server Error' })
     }
 }

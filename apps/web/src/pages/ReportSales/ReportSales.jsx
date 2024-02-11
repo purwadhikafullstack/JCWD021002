@@ -9,7 +9,7 @@ import {
   Modal,
   ModalOverlay,
   ModalHeader,
-  ModalContent, ModalCloseButton, ModalBody, ModalFooter, Input, Flex, Select,
+  ModalContent, ModalCloseButton, ModalBody, ModalFooter, Input, Flex, Select, VStack,
 } from '@chakra-ui/react';
 import {
   IconAdjustmentsHorizontal,
@@ -21,6 +21,7 @@ import { useWebSize } from '../../provider.websize';
 import { exportToExcel } from './exportToExcel';
 import { useSelector } from 'react-redux';
 import { PaginationControls } from '../../components/PaginationControls/PaginationControls';
+import CartLoading from '../../components/Loaders/CartLoading';
 
 const ReportSales = () => {
   const {size, handleWebSize } = useWebSize();
@@ -31,7 +32,7 @@ const ReportSales = () => {
   const [pageSize, setPageSize] = useState();
   const [totalPage, setTotalPage] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [selectedPage, setSelectedPage] = useState(page);
   const [roleId, setRoleId] = useState('');
   const [username, setUsername] = useState();
@@ -70,7 +71,7 @@ const ReportSales = () => {
   const fetchCategory = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/category/category-lists`
+        `${import.meta.env.VITE_API_URL}/category/category-lists`
       );
 
       setDataCategory(response?.data);
@@ -100,31 +101,36 @@ const ReportSales = () => {
   }, [productName, categoryId]);
 
   const fetchReportSales = async () => {
-    try {
+    try { setLoading(true);
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/report/sales-report?startDate=${startDate}&endDate=${endDate}&page=${page}&pageSize=${pageSize}&categoryId=${categoryId}&productId=${productId}&sortOrder=&storeId=${storeId}`,
       );
 
-      console.log('API Request URL:', response.config.url);
       setData(response?.data);
     } catch (err) {
       console.log(err);
-    }
+    } finally { setLoading(false); }
   };
 
   useEffect(() => {
-    setSearchParams({ page, pageSize, username, roleId });
-  }, [page, pageSize, username, roleId, ]);
+    setSearchParams({ page, pageSize, startDate, endDate, categoryId, storeId, productId, });
+  }, [page, pageSize, startDate, endDate, categoryId, storeId, productId, ]);
 
   useEffect(() => {
     const pageFromUrl = parseInt(searchParams.get('page')) || 1;
     const pageSizeFromUrl = parseInt(searchParams.get('pageSize')) || 10;
-    const usernameFromUrl = searchParams.get('username') || '';
-    const roleIdFromUrl = searchParams.get('roleId') || '';
+    const startDateFromUrl = searchParams.get('startDate') || '';
+    const endDateFromUrl = searchParams.get('endDate') || '';
+    const categoryIdFromUrl = searchParams.get('categoryId') || '';
+    const storeIdFromUrl = searchParams.get('storeId') || '';
+    const productIdFromUrl = searchParams.get('productId') || '';
     setPage(pageFromUrl);
     setPageSize(pageSizeFromUrl);
-    setUsername(usernameFromUrl);
-    setRoleId(roleIdFromUrl);
+    setStartDate(startDateFromUrl);
+    setEndDate(endDateFromUrl);
+    setCategoryId(categoryIdFromUrl);
+    setStoreId(storeIdFromUrl);
+    setProductId(productIdFromUrl);
     setSelectedPage(pageFromUrl);
   }, []); // This useEffect runs only once when the component mounts
 
@@ -135,7 +141,7 @@ const ReportSales = () => {
   return (
     <Box w={{ base: '100vw', md: size }} overflowX='hidden'>
           <SideBar size={size} handleWebSize={handleWebSize}/>
-      <Box w={{ base: '100vw', md: size }} height='fit-content' backgroundColor='#fbfaf9' >
+      <Box w={{ base: '100vw', md: size }} height='full' backgroundColor='#fbfaf9' >
       <Box p='20px'>
         <Box pl={size == '500px' ? '0px' : '150px' } mt='80px' >
                 <Flex dir='row' gap='10px'>
@@ -180,15 +186,15 @@ const ReportSales = () => {
       </Modal>
           </Box>
                 </Flex>
-          <Flex flexDir='row' flexWrap='wrap' mb='10px'>
+          <Flex flexDir='row' flexWrap='wrap' mt='10px' mb='10px' >
           <Input value={startDate} onChange={(e) => setStartDate(e.target.value)} width='fit-content' type='date' />
-        <Text>-</Text>
+        <Text pl='10px' pr='10px'>_</Text>
       <Input value={endDate} onChange={(e) => setEndDate(e.target.value)} width='fit-content' type='date' />
             <Spacer />
             <Button borderRadius="full" backgroundColor="#286043" textColor="white" border="solid 1px #286043" onClick={() => exportToExcel(data, startDate, endDate)} >Export to Excel</Button>
             </Flex>
-          <TableLists data={data}/>
-            <PaginationControls  page= {page} pageSize={pageSize} selectedPage={selectedPage} setPage={setPage} setPageSize={setPageSize} setSelectedPage={setSelectedPage} data={data} />
+          {startDate?.length > 0 && endDate?.length > 0 && loading == false ? <TableLists data={data}/> : (loading == true) ? <VStack><CartLoading /></VStack> : <Text>Please fill all date, first</Text>} 
+            {data?.data?.length == 0 || data?.length == 0 ? null : <PaginationControls  page= {page} pageSize={pageSize} selectedPage={selectedPage} setPage={setPage} setPageSize={setPageSize} setSelectedPage={setSelectedPage} data={data} />}
           </Box>
         </Box>
       </Box>
