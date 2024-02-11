@@ -60,7 +60,6 @@ function DiscountLists() {
         }}
       );
       // Handle the response as needed
-      console.log(response);
       setDeleteModalOpen(false);
       fetchData(); // Close the modal after successful addition
     } catch (error) {
@@ -69,7 +68,6 @@ function DiscountLists() {
     }
   };
 
-  console.log("ini selected store", selectedStore);
 
   const fetchData = async () => {
     try {
@@ -84,7 +82,6 @@ function DiscountLists() {
   }
   }
 
-  console.log("ini data", data);
 
 
   useEffect(() => {
@@ -112,7 +109,6 @@ function DiscountLists() {
     fetchData();
   }, [page, pageSize, sortField, sortOrder, categoryId, discountName, status, restrictionId, typeId, distributionId]);
 
-  console.log(data);
 
   const handleSortOrder = (order) => {
     setSortOrder(order);
@@ -128,30 +124,22 @@ function DiscountLists() {
     setDiscountName(value);
     setPage(1);
   };
-  console.log("ini disocunt name", discountName)
 
   const fetchFilter = async () => {
     try {
         const response = await axios.get(
             `${import.meta.env.VITE_API_URL}/discount/discount-filter`
         );
-        console.log(response?.data);
         setDataFilter(response?.data);
     } catch (err) {
         console.log(err);
     }
 };
 
-console.log('ini category',dataCategory);
-
-
 useEffect(() => {
     fetchFilter();
 }, []);
 
-console.log(dataFilter);
-
-  
   const fetchStore = async () => {
     try {
       const response = await axios.get(
@@ -164,7 +152,6 @@ console.log(dataFilter);
     }
   };
 
-      console.log("ini data store id",user.store_idstore);
 
   useEffect(() => {
     fetchStore();

@@ -30,20 +30,6 @@ const {
             const status = req.query.status || null;
             const distributionId = req.query.distributionId || null;
 
-            console.log(
-                'controller',
-                    page,
-                    pageSize,
-                    sortField,
-                    sortOrder,
-                    discountName,
-                    typeId,
-                    usageRestrictionId,
-                    productName,
-                    status,
-                    storeId,
-              );
-        
             const result = await getPaginatedAndFilteredDiscountService(
                 page,
                 pageSize,
@@ -79,20 +65,6 @@ const {
             const storeId = req.query.storeId || null;
             const productStockId = req.query.productStockId || null;
 
-            console.log(
-                'controller',
-                    page,
-                    pageSize,
-                    sortField,
-                    sortOrder,
-                    discountName,
-                    typeId,
-                    usageRestrictionId,
-                    productName,
-                    status,
-                    storeId,
-              );
-        
             const result = await getPaginatedAndFilteredVoucherService(
                 page,
                 pageSize,
@@ -145,23 +117,6 @@ const {
                 discountNom,
                 distributionId,
              } = req.body;
-
-             console.log("ini di controller", type,
-             discountValue,
-             minimumPurchase,
-             startDate,
-             endDate,
-             productStock_idproductStock,
-             buy_quantity,
-             get_quantity,
-             discountAmount,
-             usageRestrictionId,
-             name,
-             description,
-             referralCode,
-             discountNom,
-             distributionId,);
-
 
              const result = await addDiscountService(
                 type,
@@ -234,7 +189,6 @@ const {
 
             return res.status(201).json(result);
         } catch (err) {
-            console.log(err);
             return res.status(500).json({ error: 'Internal Server Error' });
         }
     }

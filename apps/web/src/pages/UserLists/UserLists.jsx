@@ -75,7 +75,6 @@ const UserLists = () => {
         `${import.meta.env.VITE_API_URL}/user/user-lists?page=${page}&pageSize=${pageSize}&roleId=${roleId}&username=${username}&sortOrder=${sortOrder}`,
       );
 
-      console.log('API Request URL:', response.config.url);
       setDataUser(response?.data);
     } catch (err) {
       console.log(err);

@@ -41,7 +41,6 @@ const WebSizeProvider = ({ children }) => {
     }
   }, []);
 
-  console.log(window.innerWidth)
 
   return (
     <WebSizeContext.Provider value={{ size, handleWebSize }}>

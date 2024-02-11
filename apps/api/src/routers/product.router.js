@@ -51,12 +51,7 @@ productRouter.patch('/product-soft-delete/:id', async (req, res) => {
 
 
 
-productRouter.post('/add-product',
-
-// (req, res, next) => {
-//   console.log('Request Body:', req.body);
-//   next();
-// }, 
+productRouter.post('/add-product', 
 verifyToken,
 uploadProductFile, async (req, res) => {
   const result = await addProductController(req, res);

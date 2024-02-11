@@ -31,7 +31,6 @@ export const EditModalCategory = ({
   selectedImage,
   selectedCategory,
 }) => {
-    console.log(editModalOpen);
   return (
     <>
             <Modal isOpen={editModalOpen} onClose={() => setEditModalOpen(false)}>

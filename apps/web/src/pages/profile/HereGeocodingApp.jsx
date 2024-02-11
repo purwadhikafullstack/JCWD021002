@@ -46,9 +46,6 @@ const HereGeocodingApp = ({ setUserAddress, value }) => {
           const coordinates = response.data.items[0].position;
           setUserPosition({ lat: coordinates.lat, lng: coordinates.lng });
           setUserAddress({ lat: coordinates.lat, lng: coordinates.lng });
-          // console.log(
-          //   `Coordinates for ${value}: ${coordinates.lat}, ${coordinates.lng}`,
-          // );
         } else {
           console.log(`No results found for ${value}`);
         }

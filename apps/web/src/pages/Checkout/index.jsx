@@ -47,10 +47,8 @@ import { CheckoutAddress } from '../../components/Checkout/Checkout.Address';
 export const Checkout = () => {
   const [selectedItem, setSelectedItem] = useState();
   const user = useSelector((state) => state.AuthReducer.user);
-  console.log('User:', user); // Add this line to check the user object
   const [userAddress, setUserAddress] = useState();
   const userId = user?.id; // Use optional chaining to avoid errors if user is undefined
-  console.log('UserID:', userId); // Ad
   const [heading, setHeading] = useState(null);
   const [order, setOrder] = useState([]);
   const [orderDetail, setOrderDetail] = useState([]);
@@ -75,35 +73,12 @@ export const Checkout = () => {
 
   const fetchOrder = async (userId) => {
     try {
-      //   if (!userId) {
-      //     console.warn('User ID not available. Skipping cart fetch.');
-      //     return;
-      //   }
-      console.log(
-        `${import.meta.env.VITE_API_URL}/checkout/pre-checkout/${userId}`,
-      );
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/checkout/pre-checkout/${userId}`,
       );
-
-      // console.log(
-      //   'Cart API Response:',
-      //   response?.data?.data?.OrderDetails || [],
-      // );
-
-      //   console.log(response);
-
       setOrder(response?.data?.data);
-      console.log('order: ', response?.data?.data);
-      // const groupedProduct = groupBy(
-      //     response?.data?.data[0]?.OrderDetails || [],
-      //     'Store.id',
-      //   );
-      // setOrderDetail(groupedProduct);
       setOrderDetail(response?.data?.data?.OrderDetails);
-      // console.log('orderDetail: ', response?.data?.data?.OrderDetails);
     } catch (err) {
-      //   console.warn('Cart not found for user:', userId);
       console.error('Error fetching cart:', err);
     }
   };
@@ -122,8 +97,6 @@ export const Checkout = () => {
     fetchOrder(userId);
     getAddress(userId);
   }, [user, userId]);
-
-  console.log('order', order);
 
   return (
     <Box
@@ -172,8 +145,6 @@ export const Checkout = () => {
               selectedAddres={selectedAddres}
               setSelectedAddress={setSelectedAddress}
             />
-            {/* {console.log({ selectedItem })} */}
-            {console.log({ selectedShipping })}
             <ListProductOrder
               order={order}
               orderDetail={orderDetail}
@@ -242,7 +213,7 @@ export const Checkout = () => {
                       : angkaRupiahJs(0, { formal: false })}
                   </Text>
                   <Text fontSize="sm">
-                    {order?.totalShipping
+                    {selectedShipping
                       ? angkaRupiahJs(
                           Number(selectedShipping?.cost[0]?.value) || 0,
                           {

@@ -57,7 +57,6 @@ export const FormRegister = () => {
           password: values.password,
         }),
       );
-      console.log(res);
       if (res?.payload == 'Register Success') {
         setDisplayLoader('none');
         const state = { email: res?.meta?.arg?.email, isNew: false };

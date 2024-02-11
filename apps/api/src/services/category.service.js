@@ -50,7 +50,6 @@ const getPaginatedAndFilteredCategoryService = async (page, pageSize, sortField,
       const res = await editCategoryQuery(category_id, categoryNew, imageUrl)
       return res;
     } catch (err) {
-      console.log(err);
       throw err;
     }
   }
@@ -58,7 +57,6 @@ const getPaginatedAndFilteredCategoryService = async (page, pageSize, sortField,
   const deleteCategoryService = async (category_id) => {
     try {
       const res1 = await getCategoryForProductQuery(category_id)
-      console.log("ini res1",res1);
       if(res1.length > 1) {
         return "The Category Used in Another Product"
       }

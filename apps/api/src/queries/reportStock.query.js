@@ -23,8 +23,6 @@ const getStockByDateQuery = async (startDate, endDate, productId, storeId, sortO
       where: storeId ? { store_idstore: storeId } : {},
     });
 
-    console.log(productStockQuery);
-
     const productStockIds = productStockQuery.map((product) => product.id);
 
     const whereConditions = {
@@ -150,8 +148,6 @@ const createStockReportQuery = async (
             ],
             where: storeId ? { store_idstore: storeId } : {},
       })
-  
-      console.log(productStockQuery);
   
       const productStockIds = productStockQuery.map((product) => product.id);
 

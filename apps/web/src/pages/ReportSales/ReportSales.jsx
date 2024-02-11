@@ -106,7 +106,6 @@ const ReportSales = () => {
         `${import.meta.env.VITE_API_URL}/report/sales-report?startDate=${startDate}&endDate=${endDate}&page=${page}&pageSize=${pageSize}&categoryId=${categoryId}&productId=${productId}&sortOrder=&storeId=${storeId}`,
       );
 
-      console.log('API Request URL:', response.config.url);
       setData(response?.data);
     } catch (err) {
       console.log(err);

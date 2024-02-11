@@ -16,7 +16,7 @@ export const SentMailSuccess = () => {
 
   const handleReVerify = async (email, isNew) => {
     try {
-      const res = await axios.post(`http://localhost:8000/api/auth/reverify`, {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/reverify`, {
         email,
         isNew,
       });

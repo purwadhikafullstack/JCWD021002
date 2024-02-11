@@ -84,7 +84,6 @@ function ProductStockLists() {
     fetchCategory(setDataCategory);
     fetchStore(setDataStore);
   }, []);
-  console.log(data)
   return (
     <Box w={{ base: '100vw', md: size }} overflowX="hidden">
       <SideBar size={size} handleWebSize={handleWebSize} />

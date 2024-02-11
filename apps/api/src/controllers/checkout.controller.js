@@ -78,9 +78,7 @@ export const beliSekarangController = async (req, res) => {
 export const uploadPaymentProofController = async (req, res) => {
   try {
     const orderId = req.params.id;
-    console.log('orderId: ', orderId);
     const paymentProof = req?.file?.filename;
-    console.log(paymentProof);
 
     if (!paymentProof) {
       throw new Error('No payment proof file provided.');
@@ -123,7 +121,6 @@ export const shippingCostController = async (req, res) => {
   try {
     // res.status(200).json({message: 'success'});
     const { key, origin, destination, weight, courier } = req.body
-    console.log(`${key}, ${origin}, ${destination}, ${weight}, ${courier}`);
 
     const result = await shippingCostService(key, origin, destination, weight, courier)
     res.status(200).json({

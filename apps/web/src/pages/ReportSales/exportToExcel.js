@@ -2,7 +2,6 @@ import ExcelJS from 'exceljs';
 
 export const exportToExcel = async (data, startDate, endDate) => {
   const exportData = data?.data || [];
-  console.log(data);
   // Group order details by order ID
   const groupedData = {};
   exportData.forEach((orderDetail) => {

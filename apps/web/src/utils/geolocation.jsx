@@ -15,7 +15,6 @@ export const Location = ({ children }) => {
         navigator.geolocation.getCurrentPosition(
           async (position) => {
             const { latitude, longitude } = position.coords;
-            // console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
             let city;
             try {
               // Use reverse geocoding to get city

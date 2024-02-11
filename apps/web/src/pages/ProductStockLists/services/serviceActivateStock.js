@@ -16,7 +16,6 @@ export const handleActivateProductStock = async (selectedProductStock, token) =>
         },
       );
       // Handle the response as needed
-      console.log(response);
     //   setDeleteModalOpen;
     } catch (error) {
       console.error(error);

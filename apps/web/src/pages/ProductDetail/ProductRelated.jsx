@@ -31,8 +31,6 @@ export const ProductRelated = ({category, productId}) => {
   const [productName, setProductName] = useState()
   const navigate = useNavigate();
   const coordinat = useSelector((state) => state.addressReducer?.address);
-console.log("ini category id di product related", category, productId);
-console.log("ini data di pr", data);
 
   const fetchData = async (category) => {
     try {
@@ -46,16 +44,9 @@ console.log("ini data di pr", data);
   }
   }
 
-  // console.log("ini di product related", storeId);
-
-
-
-
   useEffect(() => {
     fetchData(category);
   }, [page, pageSize, sortField, sortOrder, categoryId, category, productName, coordinat]);
-
-  console.log("ini store id di product related", category);
 
   const handleSortOrder = (order) => {
     setSortOrder(order);
@@ -77,21 +68,15 @@ console.log("ini data di pr", data);
         const response = await axios.get(
             `${import.meta.env.VITE_API_URL}/category/category-lists`
         );
-        console.log(response?.data);
         setDataCategory(response?.data);
     } catch (err) {
         console.log(err);
     }
 };
 
-console.log('ini category',dataCategory);
-
-
 useEffect(() => {
     fetchCategory();
 }, []);
-
-console.log(data);
 
 function formatPriceToIDR(price) {
     // Use Intl.NumberFormat to format the number as IDR currency

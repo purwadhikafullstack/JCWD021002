@@ -79,7 +79,6 @@ const getCategoryForProductQuery = async (categoryId) => {
 
 const addCategoryQuery = async (category, imageUrl) => {
     try {
-        console.log('ini di query', imageUrl);
         const res = await ProductCategory.create({ category, imageUrl });
         return res;
     } catch (err) {
@@ -98,7 +97,6 @@ const editCategoryQuery = async (category_id, categoryNew, imageUrl) => {
 
         return updatedCategory;
     } catch (err) {
-        console.log(err);
         throw err;
     }
 };
@@ -118,8 +116,6 @@ const deleteCategoryQuery = async (category_id) => {
 
 const addCategoryForProductQuery = async (category_id, product_id) => {
     try {
-        console.log("ini di query", category_id);
-
         const res = await ProductCategory_has_Product.create({
             productCategory_idproductCategory : category_id,
             product_idproduct : product_id

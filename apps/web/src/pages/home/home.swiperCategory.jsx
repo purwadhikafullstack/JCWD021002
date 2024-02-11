@@ -20,7 +20,7 @@ export const SwiperCategory = ({ size }) => {
   const category = async () => {
     try {
       const res = await axios.get(
-        'http://localhost:8000/api/category/category-lists',
+        `${import.meta.env.VITE_API_URL}/category/category-lists`,
       );
       setCategories(res.data.categories);
     } catch (err) {

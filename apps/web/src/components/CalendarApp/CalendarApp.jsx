@@ -9,7 +9,6 @@ const CalendarApp = () => {
   const [currYear, setCurrYear] = useState(new Date().getFullYear());
 
   useEffect(() => {
-    console.log('Dark mode state:', darkMode);
     const backgroundContainer = document.getElementById('background-container');
   if (backgroundContainer) {
     backgroundContainer.classList.toggle('light', !darkMode);
@@ -84,7 +83,6 @@ const CalendarApp = () => {
   useEffect(() => {
     if (dark_mode_toggle) {
       dark_mode_toggle.onclick = () => {
-        console.log('Dark mode toggled');
         setDarkMode((prevDarkMode) => !prevDarkMode);
       };
     }

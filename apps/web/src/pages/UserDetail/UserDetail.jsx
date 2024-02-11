@@ -47,8 +47,6 @@ const UserDetail = () => {
     fetchData();
   }, []);
 
-  console.log(data);
-
   return (
       <>
         {/* <SidebarWithHeader /> */}

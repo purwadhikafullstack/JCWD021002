@@ -31,7 +31,6 @@ import { useState } from 'react';
 
 export const CheckoutAddress = ({ address, selectedAddres, setSelectedAddress }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  console.log({ address });
   return (
     <Stack
       roundedTopLeft={10}

@@ -70,7 +70,6 @@ const deleteUserService = async (id, password) => {
     try {
         const check = await getDetailUserQuery(id)
 
-        console.log(check.password)
         const checkPassword = await bcrypt.compare(password, check.password)
 
         if (!checkPassword) throw new Error("Password anda salah")

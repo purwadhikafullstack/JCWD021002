@@ -23,8 +23,6 @@ export const ProductList = () => {
           import.meta.env.VITE_API_URL
         }/store?&page=1&pageSize=&latitude=${latitude}&longitude=${longitude}&statusStock=1&statusProduct=1`,
       );
-      console.log({ longitude });
-      console.log({ latitude });
       setProduct(res?.data?.data?.products);
     } catch (err) {
       console.log(err);
@@ -33,7 +31,6 @@ export const ProductList = () => {
 
   useEffect(() => {
     getProductList(coordinat?.latitude, coordinat?.longitude);
-    console.log('coor', coordinat);
   }, [coordinat]);
 
   return (

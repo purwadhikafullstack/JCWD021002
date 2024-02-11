@@ -49,8 +49,6 @@ export const SubmitReview = ({userId, productId}) => {
     fetchData();
   }, [ productId, userId]);
 
-  console.log(data);
-
   const handleSortOrder = (order) => {
     setSortOrder(order);
     // onClose();
@@ -85,8 +83,6 @@ export const SubmitReview = ({userId, productId}) => {
       console.error('Error submitting review:', error);
     }
   };
-
-  console.log("ini data di submit review", data);
 
   function formatWIBDate(utcTimestamp) {
     const orderDate = new Date(utcTimestamp);

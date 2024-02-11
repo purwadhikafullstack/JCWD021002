@@ -20,8 +20,6 @@ import City from '../models/city.model';
 
     const editStockQuery = async (stockProduct, productStockId, status) => {
         try {
-            console.log("ini di controller", stockProduct, productStockId, status);
-
             const result = await ProductStock.update({
                 stock: stockProduct,
                 status: status,

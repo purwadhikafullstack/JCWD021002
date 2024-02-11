@@ -40,11 +40,8 @@ const getPaginatedAndFilteredProductsController = async (req, res) => {
       statusStock,
     );
 
-    console.log("controller", page, pageSize, sortField, sortOrder, categoryId, productName, cityId, storeId, statusProduct, statusStock);
-
     return res.status(200).json(result);
   } catch (err) {
-    console.error('Error in getPaginatedAndFilteredProductsController:', err);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
@@ -72,7 +69,6 @@ const getPaginatedAndFilteredProductsRealController = async (req, res) => {
 
     return res.status(200).json(result);
   } catch (err) {
-    console.error('Error in getPaginatedAndFilteredProductsController:', err);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
@@ -85,7 +81,6 @@ const getDetailProductRealController = async (req, res) => {
 
     return res.status(200).json(result);
   } catch (err) {
-    console.log(err);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 }  
@@ -98,7 +93,6 @@ const getDetailProductController = async (req, res) => {
 
     return res.status(200).json(result);
   } catch (err) {
-    console.log(err);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 }  
@@ -107,15 +101,12 @@ const getDetailProductController = async (req, res) => {
     try {
         const {name, price, description, category, massProduct, massId, packagingId} = req.body;
         const fileNames = req.files.map(file => file.filename);
-    console.log("ini di controller", name, price, description, category);
         const { id } = req.user;
-
 
         const serviceResponse = await addProductService(name, price, description, id, category, fileNames, massProduct, massId, packagingId)
 
         res.status(201).json({ message: 'Product added successfully', data: serviceResponse });
     } catch (err) {
-        console.log(err);
         res.status(500).json({error: "internal server error"})
     }
   }
@@ -124,12 +115,9 @@ const getDetailProductController = async (req, res) => {
     try {
         const {id, name, description, price, status, category, massProduct, massId, packagingId} = req.body;
         const fileNames = req?.files?.map(file => file.filename);
-        console.log("Uploaded Files:", fileNames);
-        console.log("ini di controller",id, name, description, price, status, category, massProduct, massId, packagingId);
         await updateProductService(id, name, description, price, status, category, fileNames, massProduct, massId, packagingId)
         res.status(201).json({message: 'Product updated successfully'})
     } catch (err) {
-        console.log(err);
         res.status(500).json({error: "internal server error"})
     }
 }

@@ -256,7 +256,6 @@ export const OrderManagement = () => {
   };
 
   const fetchOrder = async (userId, newStatus, paymentStatus) => {
-    console.log('cekk', selectedStoreId);
     try {
       if (!userId) {
         console.warn('User ID not available. Skipping order fetch.');
@@ -285,7 +284,6 @@ export const OrderManagement = () => {
         `${import.meta.env.VITE_API_URL}/order-management/all-store`,
       );
       setStore(response?.data?.data);
-      console.log('cek ', response?.data?.data);
     } catch (err) {
       console.err(err);
     }
@@ -314,7 +312,6 @@ export const OrderManagement = () => {
     setSelectedStoreId(selectedStore);
 
     // Fetch orders based on the selected storeId
-    console.log('cik', selectedStoreId);
     await fetchOrder(userId, newStatus, paymentStatus, selectedStoreId);
 
     // Fetch payment data if drawer is open and orderId is available
@@ -360,7 +357,6 @@ export const OrderManagement = () => {
   const handleAcceptOrder = async (orderId) => {
     try {
       setOrderId(orderId);
-      console.log('cel', orderId);
       const result = await axios.patch(
         `${
           import.meta.env.VITE_API_URL

@@ -29,7 +29,6 @@ export const createAddressService = async (
   longitude
 ) => {
   try {
-    console.log(isMain);
     if (isMain == 1) {
       await setMainAddress(userId);
     }
@@ -49,7 +48,6 @@ export const createAddressService = async (
     );
     return res;
   } catch (err) {
-    console.log(err);
     throw err;
   }
 };
@@ -84,7 +82,6 @@ export const changeAddressService = async (
     );
     return res;
   } catch (err) {
-    console.log(err);
     throw err;
   }
 };
@@ -106,7 +103,6 @@ export const deleteAddressService = async (id) => {
 
     return res
   } catch (err) {
-    console.log(err);
     throw err;
   }
 };

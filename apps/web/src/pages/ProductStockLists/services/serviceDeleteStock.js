@@ -16,7 +16,6 @@ import axios from "axios";
         },
       );
       // Handle the response as needed
-      console.log(response);
     //   setDeleteModalOpen;
     } catch (error) {
       console.error(error);

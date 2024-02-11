@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 export const CardProductStock = ({data}) => {
   const navigate = useNavigate();
     const { size, handleWebSize } = useWebSize();
-    console.log("ini di card", data);
 
     return (
         <>

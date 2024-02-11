@@ -56,7 +56,6 @@ const EditUser = () => {
     }
   };
 
-  console.log('ini data store', dataStore);
 
   useEffect(() => {
     fetchStore();

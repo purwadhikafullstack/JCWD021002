@@ -27,7 +27,6 @@ const {
 
             res.status(201).json({message: 'Product Stock Updated Successfully'})
         } catch (err) {
-            console.log(err);
             return res.status(500).json({ error: 'Internal Server Error' });
         }
     }

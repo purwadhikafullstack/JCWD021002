@@ -48,8 +48,6 @@ export const Cart = () => {
         `${import.meta.env.VITE_API_URL}/cart/${userId}`,
       );
 
-      console.log('Cart API Response:', response);
-
       const updatedCart = response?.data?.data[0]?.CartDetails || [];
       const updatedQuantities = updatedCart.reduce(
         (q, item) => ({
@@ -120,7 +118,6 @@ export const Cart = () => {
   };
 
   const deleteCartProduct = async (productStockId) => {
-    console.log(productStockId);
     try {
       const response = await axios.delete(
         `${import.meta.env.VITE_API_URL}/cart/delete-product/${userId}`,

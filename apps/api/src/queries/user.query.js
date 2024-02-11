@@ -32,7 +32,6 @@ const getUserRegisterQuery = async ({
 const getUserQuery = async (page, pageSize, roleId, username, sortOrder) => {
   try {
     const offset = (page - 1) * (pageSize || 0);
-    console.log("ini sortOrder", sortOrder);
 
     const whereConditions = {};
 
@@ -193,7 +192,6 @@ const addUserQuery = async (
 
     return result;
   } catch (err) {
-    console.log(err);
     throw err;
   }
 };

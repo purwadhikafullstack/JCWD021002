@@ -29,7 +29,6 @@ export const CheckoutSidebar = ({ size, order, selectedShipping }) => {
           products: dataPayment.products,
         },
       );
-      console.log('midtransToken', response.data.data);
       // alert("payment created")
       return response.data.data;
     } catch (err) {
@@ -38,7 +37,6 @@ export const CheckoutSidebar = ({ size, order, selectedShipping }) => {
   };
 
   const updatePaymentOrder = async (orderId) => {
-    console.log('cek', orderId);
     try {
       await axios.patch(`${import.meta.env.VITE_API_URL}/payment/${orderId}`);
       alert('Add payment data to order');
@@ -51,13 +49,9 @@ export const CheckoutSidebar = ({ size, order, selectedShipping }) => {
   //  updatePaymentOrder()
   // }, [control]);
 
-  // console.log(order)
-  console.log('shipping cost', selectedShipping?.cost[0]?.value);
 
   const handlePayment = async (order, selectedShipping) => {
     try {
-      console.log('footer checkout: ', order);
-      console.log('cek', order?.user_iduser);
       const dataPayment = {
         userId: order?.user_iduser,
         orderId: order?.id,
@@ -69,7 +63,6 @@ export const CheckoutSidebar = ({ size, order, selectedShipping }) => {
           price: parseFloat(product?.ProductStock?.Product?.price),
         })),
       };
-      console.log('data payment: ', dataPayment);
 
       const midtransToken = await paymentGateway(dataPayment);
       // setMidtransToken(token)
@@ -91,7 +84,6 @@ export const CheckoutSidebar = ({ size, order, selectedShipping }) => {
                   duration: 3000,
                   isClosable: true,
                 });
-                console.log(result);
                 updatePaymentOrder(order.id);
                 navigate('/');
               },
@@ -104,7 +96,6 @@ export const CheckoutSidebar = ({ size, order, selectedShipping }) => {
                 });
                 updatePaymentOrder(order.id);
                 navigate('/');
-                console.log(result);
               },
               onError: function (result) {
                 toast({
@@ -114,7 +105,6 @@ export const CheckoutSidebar = ({ size, order, selectedShipping }) => {
                   isClosable: true,
                 });
                 navigate('/');
-                console.log(result);
               },
               onClose: function () {
                 toast({
@@ -129,10 +119,8 @@ export const CheckoutSidebar = ({ size, order, selectedShipping }) => {
         };
         document.body.appendChild(script);
       } else {
-        console.error('Failed to get Midtrans token');
       }
     } catch (err) {
-      console.error('Failed to Payment', err);
     }
   };
 
