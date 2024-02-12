@@ -39,7 +39,7 @@ export const CheckoutSidebar = ({ size, order, selectedShipping }) => {
   const updatePaymentOrder = async (orderId) => {
     try {
       await axios.patch(`${import.meta.env.VITE_API_URL}/payment/${orderId}`);
-      alert('Add payment data to order');
+      // alert('Add payment data to order');
     } catch (err) {
       alert('Error occurred');
     }

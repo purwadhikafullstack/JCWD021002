@@ -1,7 +1,15 @@
-import { Flex, Heading } from '@chakra-ui/react';
+import { Flex, Heading, IconButton } from '@chakra-ui/react';
 import { ResizeButton } from '../../components/ResizeButton';
+import { IconChevronLeft } from '@tabler/icons-react';
+import { useNavigate } from 'react-router-dom';
 
 export const TransactionHeader = ({ handleWebSize, size }) => {
+  const navigate = useNavigate();
+
+  const handleGoBack = () => {
+    // navigate(-1);
+    navigate('/');
+  };
   return (
     <Flex
       position="sticky"
@@ -18,7 +26,15 @@ export const TransactionHeader = ({ handleWebSize, size }) => {
       boxShadow="0px 4px 4px -2px rgba(0, 0, 0, 0.1)"
     >
       {/* <Sidebar size={size} handleWebSize={handleWebSize}/> */}
-      <Heading size="sm">Pesanan Saya</Heading>
+      <Heading hidden={size === '500px'? false : true} size="sm">Pesanan Saya</Heading>
+      <IconButton
+          hidden={size == '500px' ? true : false}
+          variant='ghost'
+          icon={<IconChevronLeft />}
+          onClick={handleGoBack}
+          _hover={{ color: 'gray.600', opacity: 0.9 }}
+            transition='color 0.3s ease-in-out, opacity 0.3s ease-in-out'
+        />
       <ResizeButton
         webSize={size}
         handleWebSize={handleWebSize}

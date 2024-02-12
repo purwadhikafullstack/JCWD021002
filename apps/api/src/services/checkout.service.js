@@ -84,7 +84,7 @@ export const checkoutService = async (userId, selectedItems) => {
     const newOrder = await findNewOrderQuery(userId);
 
     if (newOrder) {
-      await updateOrderDetailsQuery(newOrder.id, selectedCartItem);
+      await updateOrderDetailsQuery(newOrder.id, selectedCartItem[0]?.ProductStock.store_idstore, selectedCartItem);
       await updateOrderTotalAmountQuery(newOrder.id, subTotalProduct);
 
       // Clear the cart after successful payment and get the updated cart

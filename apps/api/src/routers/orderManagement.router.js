@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { acceptOrderController, cancelOrderController, getAllOrderController, getAllStoreController, getOrderbyAdminController, mutateStockController, sendUserOrderController } from '../controllers/orderManagement.controller';
+import { acceptOrderController, cancelOrderController, cancelPaymentController, getAllOrderController, getAllStoreController, getOrderbyAdminController, mutateStockController, sendUserOrderController } from '../controllers/orderManagement.controller';
 
 export const orderManagementRouter = Router();
 
@@ -24,6 +24,10 @@ orderManagementRouter.patch('/accept/:adminStoreId/:orderId', async (req, res) =
 
 orderManagementRouter.patch('/cancel-order/:adminStoreId/:orderId', async (req, res) => {
   await cancelOrderController(req, res);
+});
+
+orderManagementRouter.patch('/cancel-payment/:adminStoreId/:orderId', async (req, res) => {
+  await cancelPaymentController(req, res);
 });
 
 orderManagementRouter.patch('/mutate-stock', async (req, res) => {
