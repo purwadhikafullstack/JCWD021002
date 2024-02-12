@@ -12,14 +12,42 @@ const getUserRegisterQuery = async ({
   referralCode = null,
 }) => {
   try {
+    let whereCondition = {}
+
+    if (username && email) {
+      whereCondition = {
+        username: username,
+        email: email,
+      }
+    }
+
+    if (email) {
+      whereCondition = {
+        email: email
+      }
+    }
+
+    if (username) {
+      whereCondition = {
+        username: username
+      }
+    }
+
+    if (id) {
+      whereCondition = {
+        id: id
+      }
+    }
+
+    if (referralCode) {
+      whereCondition = {
+        referralCode: referralCode
+      }
+    }
+
     const res = await User.findOne({
       where: {
-        [Op.or]: {
-          id: id,
-          username: username,
-          email: email,
-          referralCode,
-        },
+        [Op.or]: whereCondition,
         status: 'Active'
       },
     });
@@ -255,8 +283,8 @@ const getStoreQuery = async (cityId) => {
 const getUserRoleQuery = async (userId) => {
   try {
     const user = await User.findOne({
-      where: {id: userId},
-      include: [{model: Role}],
+      where: { id: userId },
+      include: [{ model: Role }],
       attributes: ['id', 'role_idrole'],
     })
     return user;
