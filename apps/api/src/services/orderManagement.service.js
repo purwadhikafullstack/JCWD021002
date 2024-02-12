@@ -284,11 +284,21 @@ export const mutateStockService = async (
   
   export const cancelOrderService = async (adminStoreId, orderId) => {
     try {
+      const user = await getUserRoleQuery(adminStoreId);
+
+      if (!user || user.role_idrole !== 2) {
+        throw new Error('Access Denied. The user does not have the Admin Store role.');
+      }
+  
       const order = await findOrderQuery(orderId);
   
-    //   if (order.status === 'pending') {
-    //     await cancelPendingOrder(order);
-    //   } else if (order.status === 'payment_accepted') {
+      if (!order) {
+        throw new Error('Order not found. Please check the order ID again.');
+      }
+  
+      if (!(order.status === 'payment_accepted' && order.paymentStatus === 'settlement')) {
+        throw new Error('Failed to cancel order. Order must be in "payment_accepted" status and "settlement" payment status.');
+      }
         await cancelAcceptedOrder(order);
     //   } else {
     //     throw new Error('Error cancelling order');
@@ -301,8 +311,30 @@ export const mutateStockService = async (
     }
   };
   
-  const cancelPendingOrder = async (order) => {
-    await updateOrderStatusQuery(order.id, 'cancelled');
+  export const cancelPaymentService = async (adminStoreId, orderId) => {
+   try {
+    const user = await getUserRoleQuery(adminStoreId);
+
+    if (!user || user.role_idrole !== 2) {
+      throw new Error('Access Denied. The user does not have the Admin Store role.');
+    }
+
+    const order = await findOrderQuery(orderId);
+
+    if (!order) {
+      throw new Error('Order not found. Please check the order ID again.');
+    }
+
+    if (!(order.status === 'new_order' && order.paymentStatus === 'settlement')) {
+      throw new Error('Failed to cancel order. Order must be in "new_order" status and "settlement" payment status.');
+    }
+
+    await updateOrderStatusQuery(order.id, 'cancel');
+    return {order};
+   } catch(err) {
+    throw err;
+   }
+
   };
   
   const cancelAcceptedOrder = async (order) => {

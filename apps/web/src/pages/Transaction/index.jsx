@@ -137,7 +137,7 @@ export const Transaction = () => {
       backgroundColor="#f5f5f5"
       display="flex"
     >
-      <TransactionHeader />
+      <TransactionHeader size={size} />
       <Stack
         bg="white"
         w="full"

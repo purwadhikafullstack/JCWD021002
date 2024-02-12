@@ -50,7 +50,7 @@ export const updateOrderTotalAmountQuery = async (orderId, totalAmount) => {
   return await Order.update({ totalAmount, totalShipping: 0 }, { where: { id: orderId } });
 };
 
-export const updateOrderDetailsQuery = async (orderId, cartItems) => {
+export const updateOrderDetailsQuery = async (orderId, storeId, cartItems) => {
   const t = await OrderDetail.sequelize.transaction();
 
   try {
@@ -81,6 +81,11 @@ export const updateOrderDetailsQuery = async (orderId, cartItems) => {
         { transaction: t },
       );
     }
+
+    await Order.update(
+      { store_idstore: storeId }, 
+      { where: { id: orderId }, transaction: t }
+    );
 
     await t.commit();
   } catch (err) {

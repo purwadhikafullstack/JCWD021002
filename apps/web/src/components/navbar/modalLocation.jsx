@@ -38,6 +38,7 @@ export const ModalLocatiom = ({ isOpen, onClose, address }) => {
   const handleClick = () => {
     onClose();
     dispatch(setAddress(selectedItem));
+    window.location.reload();
   };
   return (
     <>

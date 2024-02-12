@@ -55,6 +55,7 @@ const OrderItem = ({
   item,
   index,
   handleCancelOrder,
+  handleCancelPayment,
   handleAcceptOrder,
   handleSendOrder,
 }) => {
@@ -119,7 +120,7 @@ const OrderItem = ({
           <Text fontSize="11pt">Total Belanja</Text>
           <Text fontWeight="bold">{formatAmount(item.totalAmount)}</Text>
         </Box>
-        <Box>
+        <Flex gap={2}>
           <Button
             hidden={isOrderConfirmation(item) ? false : true}
             onClick={() => handleAcceptOrder(item.id)}
@@ -131,6 +132,18 @@ const OrderItem = ({
             fontWeight="bold"
           >
             Terima Pesanan
+          </Button>
+          <Button
+            hidden={isOrderConfirmation(item) ? false : true}
+            onClick={() => handleCancelPayment(item.id)}
+            size="sm"
+            background="red.600"
+            color="white"
+            _hover={{ background: 'red.900', opacity: 0.9 }}
+            transition="color 0.3s ease-in-out, opacity 0.3s ease-in-out"
+            fontWeight="bold"
+          >
+            Cancel Pesanan
           </Button>
           <Button
             hidden={isPaymentAccepted(item) ? false : true}
@@ -156,7 +169,7 @@ const OrderItem = ({
           >
             Batalkan Pesanan
           </Button>
-        </Box>
+        </Flex>
       </Flex>
     </Box>
   );
@@ -444,6 +457,36 @@ export const OrderManagement = () => {
       });
     }
   };
+ 
+  const handleCancelPayment = async (orderId) => {
+    try {
+      const result = await axios.patch(
+        `${
+          import.meta.env.VITE_API_URL
+        }/order-management/cancel-payment/${userId}/${orderId}`,
+      );
+
+      toast({
+        title: 'Order Cancel',
+        description: 'Order dibatalkan',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+
+      return result;
+    } catch (err) {
+      console.error('Error accepting order', err);
+
+      toast({
+        title: 'Error to cancel Order',
+        description: 'Terjadi kesalahan saat pesanan dibatalkan.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
 
   return (
     <Box
@@ -515,6 +558,7 @@ export const OrderManagement = () => {
                       handleAcceptOrder={handleAcceptOrder}
                       handleSendOrder={handleSendOrder}
                       handleCancelOrder={handleCancelOrder}
+                      handleCancelPayment={handleCancelPayment}
                     />
                   ))}
                 </Stack>

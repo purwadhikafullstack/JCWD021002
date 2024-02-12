@@ -54,6 +54,7 @@ const addUserController = async (req, res) => {
         const result = await addUserService(username, email, fullname, password, req.file?.filename, role_idrole, store_idstore);
         res.status(201).json({ message: 'User added successfully', result })
     } catch (err) {
+        console.log(err);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 }

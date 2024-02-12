@@ -28,7 +28,7 @@ cartRouter.delete('/delete-product/:userId', async (req, res) => {
 });
 
 // GET
-cartRouter.get('/:userId', async (req, res) => {
+cartRouter.get('/:userId/:cityId', async (req, res) => {
   await getCartController(req, res);
 });
 
