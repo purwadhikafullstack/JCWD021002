@@ -15,7 +15,7 @@
     "@develoka/angka-rupiah-js": "^1.0.3",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@here/maps-api-for-javascript": "^1.49.1",
+    "@here/maps-api-for-javascript": "^1.50.0",
     "@reduxjs/toolkit": "^2.0.1",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@tabler/icons-react": "^2.44.0",
