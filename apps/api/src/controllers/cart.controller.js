@@ -61,8 +61,8 @@ export const deleteCartItemController = async (req, res) => {
 
 export const getCartController = async (req, res) => {
   try {
-    const { userId } = req.params;
-    const result = await getCartService(userId);
+    const { userId, cityId } = req.params;
+    const result = await getCartService(userId, cityId);
     return res.status(200).json({
       success: true,
       message: 'Get Cart Successfully',

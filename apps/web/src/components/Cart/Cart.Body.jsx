@@ -48,8 +48,8 @@ export const CartBody = ({
 
   const isStoreAllSelected = (storeId) => {
     const storeProductIds = carts
-      .filter((item) => item.ProductStock.Store.id === storeId)
-      .map((item) => item.productStock_idproductStock);
+      .filter((item) => item?.ProductStock?.Store?.id === storeId)
+      .map((item) => item?.productStock_idproductStock);
 
     return (
       storeProductIds.length > 0 &&
@@ -102,13 +102,13 @@ export const CartBody = ({
                   isChecked={isStoreAllSelected(storeId)}
                   onChange={() => handleCheckboxStoreChange(storeId)}
                   >
-                  {carts.find((item) => item.ProductStock.Store.id === storeId)
-                    ?.ProductStock.Store.name || 'Loading...'}
+                  {carts.find((item) => item?.ProductStock?.Store.id === storeId)
+                    ?.ProductStock?.Store?.name || 'Loading...'}
                 </Checkbox>
               </Box>
               <Flex flexDirection='column' px={4} gap={2}>
                 {carts
-                  .filter((item) => item.ProductStock.Store.id === storeId)
+                  .filter((item) => item?.ProductStock?.Store?.id === storeId)
                   .map((item) => (
                     <CartItemList
                     size={size}

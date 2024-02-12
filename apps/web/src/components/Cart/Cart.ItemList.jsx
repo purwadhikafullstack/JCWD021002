@@ -98,15 +98,15 @@ export const CartItemList = ({
         height='15vh'
         backgroundColor='white'
         src={`${import.meta.env.VITE_API_IMAGE_URL}/products/${
-          item.ProductStock?.Product?.ProductImages[0]?.imageUrl
+          item?.ProductStock?.Product?.ProductImages[0]?.imageUrl
         }`}
-        alt={item.ProductStock.Product.name}
+        alt={item?.ProductStock?.Product?.name}
         objectFit='contain'
         borderRadius='10px'
       />
       <Flex flexDirection={size === '500px' ? 'column' : 'row'} justifyContent='space-between' gap={0} w='full'>
 
-        <Text>{item.ProductStock.Product.name}</Text>
+        <Text>{item?.ProductStock?.Product?.name}</Text>
         {/* <Text hidden={size === '500px' ? true : false} >{item.ProductStock.Product.name}</Text> */}
       <Stack flexDirection='column'>
         <Text fontSize='md' fontWeight='bold' color='tomato'>

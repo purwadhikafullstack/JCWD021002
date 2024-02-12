@@ -1,4 +1,4 @@
-import { acceptOrderService, cancelOrderService, getAllOrderService, getAllStoreService, getOrderbyAdminService, mutateStockService, sendUserOrderService } from "../services/orderManagement.service";
+import { acceptOrderService, cancelOrderService, cancelPaymentService, getAllOrderService, getAllStoreService, getOrderbyAdminService, mutateStockService, sendUserOrderService } from "../services/orderManagement.service";
 
 export const getOrderbyAdminController = async (req, res) => {
   try {
@@ -81,6 +81,26 @@ export const cancelOrderController = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: 'Cancel Order is Successfully',
+      data: result,
+    });
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
+};
+
+export const cancelPaymentController = async (req, res) => {
+  try {
+    const { adminStoreId, orderId } = req.params;
+
+    // Call the cancel order service
+    const result = await cancelPaymentService(adminStoreId, orderId);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Cancel Payment is Successfully',
       data: result,
     });
   } catch (err) {
