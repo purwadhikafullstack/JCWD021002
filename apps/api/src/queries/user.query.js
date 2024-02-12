@@ -188,6 +188,9 @@ const addUserQuery = async (
       store_idstore: store_idstore ? store_idstore : null,
       registrationDate: new Date(),
       verification_status: 'Verified',
+      resetTokenUsed: 1,
+      resetTokenExpires: new Date(new Date().getTime() + 3600000),
+      googleLogin: 0,
     });
 
     return result;
