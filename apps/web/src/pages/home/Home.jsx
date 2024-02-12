@@ -1,38 +1,59 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import reactLogo from '../../assets/react.svg';
-import viteLogo from '/vite.svg';
-import './Home.css';
+/* eslint-disable react/prop-types */
 
-function Home() {
-  const [sampleData, setSampleData] = useState([]);
+import { Header } from '../../components/navbar/header';
+import { Collections } from './home.collections';
+import { MySwiper } from './home.swiper';
+import { ProductList } from './home.productList';
+import { BottomBar } from '../../components/BottomBar';
+import { SwiperCategory } from './home.swiperCategory';
 
-  useEffect(() => {
-    (async () => {
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_API_URL}/sample`,
-      );
-      setSampleData(data);
-    })();
-  }, []);
+import { Flex, Text } from '@chakra-ui/react';
+import { PiGift } from 'react-icons/pi';
+import { IoIosArrowForward } from 'react-icons/io';
+import { useWebSize } from '../../provider.websize';
+import { Footer } from './home.footer';
+
+export const Home = () => {
+  const { size } = useWebSize();
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Purwadhika Final Project Template using Vite + React</h1>
-      <h3>Test Data</h3>
-      {sampleData.map((data, idx) => (
-        <div key={idx.toString()}>{data.name}</div>
-      ))}
-    </>
-  );
-}
+    <Flex
+      w={{ base: '100vw', lg: size }}
+      direction={'column'}
+      bgColor={'#F2F3F3'}
+      transition={'all .3s ease-in-out'}
+      // gap={size == '500px' ? '0' : '100px'}
+    >
+      <Header />
+      <Flex>
+        <MySwiper size={size} />
+      </Flex>
 
-export default Home;
+      <SwiperCategory size={size} />
+
+      <Flex
+        direction={'column'}
+        gap={2}
+        w={{ base: 'full', lg: size }}
+        overflowX={'hidden'}
+        mb={size == '500px' && '60px'}
+        mt={size == '500px' && '10px'}
+      >
+        <Collections size={size} />
+
+        <ProductList />
+
+        <Footer />
+      </Flex>
+      {/* <Flex
+        position={'fixed'}
+        bottom={0}
+        w={{ base: 'full', md: size }}
+        display={size == '500px' ? 'flex' : 'none'}
+        zIndex={10}
+      > */}
+        <BottomBar />
+      {/* </Flex> */}
+    </Flex>
+  );
+};
