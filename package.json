@@ -28,5 +28,10 @@
     "hooks": {
       "pre-commit": "npx lint-staged"
     }
+  },
+  "dependencies": {
+    "@here/maps-api-for-javascript": "^1.50.0",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "rollup": "^4.10.0"
   }
 }

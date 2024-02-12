@@ -128,14 +128,11 @@ const Product = () => {
     }
   };
 
-  console.log('ini id', id);
   const fetchData = async (id) => {
     try {
-      console.log('ini id the fetchdata', id);
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/products/product-detail/${id}`,
       );
-      console.log(response?.data);
       setData(response?.data);
     } catch (err) {
       console.log(err);
@@ -161,14 +158,12 @@ const Product = () => {
     }
   };
 
-  console.log(data);
 
   function formatPriceToIDR(price) {return new Intl.NumberFormat('id-ID', {style: 'currency',currency: 'IDR',}).format(price);}
 
   const toast = useToast();
 
   const handleAddToCart = async () => {
-    console.log("ini data id di cart", id, quantity);
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/cart`,
@@ -178,7 +173,6 @@ const Product = () => {
         },
       );
 
-        console.log('Item added to cart successfully!');
         showToast('success', 'Item added to cart successfully!');
 
         setCartTotalQuantity(cartTotalQuantity + quantity);
@@ -217,8 +211,6 @@ const Product = () => {
       isClosable: true,
     });
   };
-
-  console.log(data);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 

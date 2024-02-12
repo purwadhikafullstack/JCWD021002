@@ -63,7 +63,6 @@ function ProductLists() {
         }}
       );
       // Handle the response as needed
-      console.log(response);
       setAddToStockModalIsOpen(false); 
       toast.success("Added to stock")
     } catch (error) {

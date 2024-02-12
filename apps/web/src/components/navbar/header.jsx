@@ -46,7 +46,6 @@ export const Header = () => {
       navigate('/');
     }
   };
-  console.log({ isLogin });
   return (
     <Flex
       // bgColor={size == '500px' ? 'colors.primary' : 'colors.secondary'}

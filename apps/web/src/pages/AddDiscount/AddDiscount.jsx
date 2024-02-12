@@ -73,8 +73,6 @@ const AddDiscount = () => {
     }
   };
 
-      console.log("ini data store",dataStore);
-
   useEffect(() => {
     fetchStore();
     if (user?.store_idstore) {
@@ -121,8 +119,6 @@ const AddDiscount = () => {
     }
   };
 
-  console.log(fieldImage);
-
   const handleImageChange = (event) => {
     const selectedFile = event.currentTarget.files[0];
 
@@ -142,7 +138,6 @@ const AddDiscount = () => {
   };
 
   const handleReset = () => {
-    console.log("Before reset:", { type, discValue, percent, nominal, minNom, buy, get });
 
   setType(0);
   setDiscValue(0);
@@ -155,12 +150,9 @@ const AddDiscount = () => {
   setMax(undefined);
   setReferral(0);
   
-  console.log("After reset:", { type, discValue, percent, nominal, minNom, buy, get });
 
   }
 
-  console.log(data);
-  console.log("ini referral", referral, usageType);
 
   return (
     <>

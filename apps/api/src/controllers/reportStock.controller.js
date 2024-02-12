@@ -16,7 +16,6 @@ const getStockByDateController = async (req, res) => {
 
     return res.status(200).json(stockReport);
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
@@ -37,7 +36,6 @@ const createStockReportController = async (req, res) => {
   
       return res.status(200).json(stockReport);
     } catch (error) {
-      console.log(error);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
   };

@@ -2,7 +2,6 @@ import axios from 'axios';
 
 export const addTotalShipping = async (selectedShippingCost, orderId, token) => {
     try {
-        console.log("orderid di add total", orderId)
         const result = await axios.patch(
             `${import.meta.env.VITE_API_URL}checkout/add-total-shipping-cost`,
             {

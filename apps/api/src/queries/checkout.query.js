@@ -90,8 +90,6 @@ export const updateOrderDetailsQuery = async (orderId, cartItems) => {
 };
 
 export const getSelectedCartItemsQuery = async (cartId, selectedItems) => {
-  console.log('cartId: ', cartId);
-  console.log('selectedItems: ', selectedItems);
   return CartDetail.findAll({
     where: {
       cart_idcart: cartId,
@@ -244,7 +242,6 @@ export const createOrderQuery = async (
     return order;
   } catch (err) {
     await t.rollback();
-    console.log(err);
     throw err;
   }
 };

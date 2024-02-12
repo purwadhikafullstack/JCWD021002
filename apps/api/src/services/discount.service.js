@@ -45,7 +45,6 @@ const {
 
                     return result;
         } catch (err) {
-            console.error('Error in getPaginatedAndFilteredDiscountService:', err);
 
             throw err;
         }
@@ -81,7 +80,6 @@ const {
 
                     return result;
         } catch (err) {
-            console.error('Error in getPaginatedAndFilteredDiscountService:', err);
 
             throw err;
         }
@@ -137,7 +135,6 @@ const {
 
                     return result;
         } catch (err) {
-            console.log("ini error", err);
             throw err;
         }
     }
@@ -186,7 +183,6 @@ const {
 
                     return result;
         } catch (err) {
-            console.log(err)
             throw err;
         }
     }

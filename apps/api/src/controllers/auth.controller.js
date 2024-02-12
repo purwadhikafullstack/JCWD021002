@@ -171,7 +171,6 @@ export const updateProfileController = async (req, res) => {
 
 export const verifyController = async (req, res) => {
   try {
-    console.log('==. cont', req.body)
     const { email, isNew } = req.body
     const result = await verifyService(email, isNew)
 

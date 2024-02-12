@@ -22,20 +22,6 @@ const moment = require('moment');
         distributionId,
       ) => {
         try {
-          console.log(
-            'query',
-                page,
-                pageSize,
-                sortField,
-                sortOrder,
-                discountName,
-                typeId,
-                usageRestrictionId,
-                productName,
-                status,
-                storeId,
-                distributionId,
-          );
 
           const offset = (page - 1) * (pageSize || 0);
 
@@ -52,7 +38,6 @@ const moment = require('moment');
               [Op.eq]: `${status}`,
             };
           }
-          console.log("ini data di query", discountName)
 
           if (usageRestrictionId > 0) {
             whereCondition.usageRestrictionId = usageRestrictionId
@@ -328,26 +313,6 @@ const moment = require('moment');
         status,
     ) => {
         try {
-          console.log("ini di query", 
-          id,
-        type,
-        discountValue,
-        minimumPurchase,
-        startDate,
-        endDate,
-        productStock_idproductStock,
-        buy_quantity,
-        get_quantity,
-        discountAmount,
-        usageRestrictionId,
-        referralCode,
-        banner,
-        discountNom,
-        distributionId,
-        name,
-        description,
-        status,
-          );
 
             const updatedValue = {
                 type,

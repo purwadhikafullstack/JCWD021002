@@ -22,7 +22,6 @@ export const getOrderbyAdminController = async (req, res) => {
 export const sendUserOrderController = async (req, res) => {
   try {
     const { orderId } = req.params;
-    console.log('jalan', orderId);
     const result = await sendUserOrderService(orderId);
     return res.status(200).json({
       success: true,

@@ -21,7 +21,7 @@ export const Register = () => {
   const onRegisterWithGoogle = async () => {
     try {
       const result = await signUpWithGoogle(dispatch);
-      await axios.post('http://localhost:8000/api/auth/registersocial', {
+      await axios.post(`${import.meta.env.VITE_API_URL}/auth/registersocial`, {
         username: result.user.displayName,
         email: result.user.email,
         fullname: result.user.displayName,

@@ -9,7 +9,6 @@ export const getProvinceController = async (req, res) => {
       data: result
     })
   } catch (err) {
-    console.log(err)
     res.status(500).send(err.message)
   }
 }
@@ -45,7 +44,6 @@ export const createAddressController = async (req, res) => {
       data: result
     })
   } catch (err) {
-    console.log(err)
     res.status(500).send(err.message)
   }
 }
@@ -78,7 +76,6 @@ export const changeAddressController = async (req, res) => {
       data: result
     })
   } catch (err) {
-    console.log(err)
     res.status(500).send(err.message)
   }
 }
@@ -93,7 +90,6 @@ export const getAddressController = async (req, res) => {
       data: result
     })
   } catch (err) {
-    console.log(err)
     res.status(500).send(err.message)
   }
 }

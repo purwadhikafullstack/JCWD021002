@@ -12,8 +12,6 @@ const getPaginatedAndFilteredMassService = async (page, pageSize, sortField, sor
     try {
       const result = await getPaginatedAndFilteredMassQuery(page, pageSize, sortField, sortOrder, massName);
   
-      console.log("service result:", result);
-  
       return result;
     } catch (err) {
       console.error('Error in getPaginatedAndFilteredProductsService:', err);
@@ -56,7 +54,6 @@ const getPaginatedAndFilteredMassService = async (page, pageSize, sortField, sor
   const deleteMassService = async (massId) => {
     try {
       const res1 = await getMassForProductQuery(massId)
-      console.log("ini res1",res1);
       if(res1.length > 1) {
         return "The Mass Used in Another Product"
       }

@@ -22,7 +22,6 @@ const {
             throw new Error("Already in stock")
 
         } catch (err) {
-            console.log(err);
             throw err;
         }
     }
@@ -52,7 +51,6 @@ const {
     
             return updatedStock; // Return the result of updating the stock
         } catch (err) {
-            console.log(err);
             throw err;
         }
     };

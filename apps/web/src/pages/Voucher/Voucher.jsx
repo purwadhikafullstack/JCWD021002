@@ -82,13 +82,11 @@ export const VoucherPage = ({ order, setDiscountVoucher, fetchOrder, }) => {
   }
   }
 
-  console.log("ini voucher user", voucherUser);
 
   useEffect(() => {
     setSearchParams({ page, pageSize, });
   }, [page, pageSize, ]);
   
-  console.log("ini data", data);
 
   useEffect(() => {
     const pageFromUrl = parseInt(searchParams.get('page')) || 1;
@@ -102,8 +100,6 @@ export const VoucherPage = ({ order, setDiscountVoucher, fetchOrder, }) => {
     fetchData();
     fetchVoucherUser();
   }, [page, pageSize, sortField, sortOrder, status]);
-
-  console.log(data);
 
   const handleSortOrder = (order) => {
     setSortOrder(order);
@@ -134,7 +130,6 @@ export const VoucherPage = ({ order, setDiscountVoucher, fetchOrder, }) => {
       }}
       )
 
-      console.log("ini response voucher", response?.data?.data);
       await fetchOrder(userId);
       setDiscountVoucher(response?.data?.data);
       toast.success('Voucher used');
@@ -156,7 +151,6 @@ export const VoucherPage = ({ order, setDiscountVoucher, fetchOrder, }) => {
       }}
       )
 
-      console.log("ini response voucher", response?.data?.data);
       await fetchOrder(userId);
       setDiscountVoucher(response?.data?.data);
       toast.success('Voucher used');
@@ -171,22 +165,16 @@ export const VoucherPage = ({ order, setDiscountVoucher, fetchOrder, }) => {
         const response = await axios.get(
             `${import.meta.env.VITE_API_URL}/category/category-lists`
         );
-        console.log(response?.data);
         setDataCategory(response?.data);
     } catch (err) {
         console.log(err);
     }
 };
 
-console.log('ini category',dataCategory);
-
-
 useEffect(() => {
     fetchCategory();
 }, []);
 
-console.log(data);
-  
   const fetchStore = async () => {
     try {
       const response = await axios.get(
@@ -198,8 +186,6 @@ console.log(data);
       console.log(err);
     }
   };
-
-      console.log("ini data di voucher", order);
 
   useEffect(() => {
     fetchStore();

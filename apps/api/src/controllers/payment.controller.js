@@ -37,7 +37,6 @@ export const paymentGatewayController = async (req, res) => {
 export const updateOrderController = async (req, res) => {
   try {
     const {orderId} = req.params;
-    console.log('cek', orderId);
     const result = await updateOrderService(orderId)
     return res.status(200).json({
       success: true,

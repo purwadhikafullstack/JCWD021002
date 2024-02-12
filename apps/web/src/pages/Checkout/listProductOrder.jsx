@@ -56,8 +56,6 @@ export const ListProductOrder = ({
     shippingCost(origin, destination);
     onOpen();
   };
-  console.log({ selectedAddres });
-  console.log({ shipping });
   useEffect(() => {
     if (address) {
       shippingCost(storeId, address?.city_idcity);

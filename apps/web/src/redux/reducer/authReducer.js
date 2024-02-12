@@ -75,7 +75,6 @@ export const login = (emailOrUsername, password) => {
       if (err && axios.isAxiosError(err)) {
         const axiosError = err;
         if (axiosError.response) {
-          console.log(axiosError.response)
           toast.error(axiosError?.response?.data);
         }
       } else {
@@ -98,7 +97,6 @@ export const register = createAsyncThunk("auth/register", async (userData) => {
     if (err && axios.isAxiosError(err)) {
       const axiosError = err;
       if (axiosError.response) {
-        console.log(err.response);
         toast.error(err?.response?.data)
         throw err?.response?.data
       }
@@ -130,7 +128,6 @@ export const keepLogin = () => {
     } catch (err) {
       localStorage.removeItem('token');
       localStorage.removeItem('persist:root');
-      console.log(err);
       toast(err?.response?.data);
     }
   };

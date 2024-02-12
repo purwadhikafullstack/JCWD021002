@@ -17,12 +17,8 @@ import {addJournalQuery} from '../queries/journal.query';
 
 export const getOrderbyAdminService = async (userId, storeId, status, paymentStatus) => {
   try {
-    console.log('cek', userId);
     const user = await getDetailUserQuery(userId);
-    console.log('User details: ', user.role_idrole);
-    console.log('User details: ', user.store_idstore);
     const userRoleId = parseInt(user.role_idrole)
-    console.log('User Role Id: ', userRoleId);
 
     if (!user || user.role_idrole === 3) {
       throw new Error('Access Denied. The user does not have the Super Admin or Admin Store role.');
@@ -46,7 +42,6 @@ export const sendUserOrderService = async (orderId) => {
   try {
     // Get order details with product stock information
     const orderDetails = await getOrderDetailsQuery(orderId);
-    console.log('cek orderDetails: ', orderDetails);
 
     // Check if there is sufficient stock available before proceeding with shipment
     const isStockAvailable = await Promise.all(
@@ -58,7 +53,6 @@ export const sendUserOrderService = async (orderId) => {
       }),
     );
 
-    console.log('cekk', isStockAvailable);
 
     if (!isStockAvailable.every((available) => available)) {
       throw new Error(
@@ -78,7 +72,6 @@ export const sendUserOrderService = async (orderId) => {
 export const acceptOrderService = async (adminStoreId, orderId) => {
   try {
     const user = await getUserRoleQuery(adminStoreId);
-    console.log('User details: ', user);
 
     if (!user || user.role_idrole !== 2) {
       throw new Error('Access Denied. The user does not have the Admin Store role.');
@@ -104,7 +97,6 @@ export const acceptOrderService = async (adminStoreId, orderId) => {
       })
     );
 
-    console.log('Is stock available?', isStockAvailable);
 
     if (!isStockAvailable.every((available) => available)) {
       const unavailableProductStocks = orderDetails
@@ -137,7 +129,6 @@ export const acceptOrderService = async (adminStoreId, orderId) => {
 
           // Revert stock quantity
           const newStock = productStock.stock - detail.quantity;
-          console.log('Updated stock:', newStock);
           await updateStockQtyQuery(
             productStock.product_idproduct,
             order.store_idstore,
@@ -277,7 +268,6 @@ export const mutateStockService = async (
             productId,
             storeId,
           );
-         console.log(productStock);
          await Promise.all([
         addJournalQuery(storeId, mutationQuantity, initialStockCurrentStore.stock, newStockCurrentStore.stock, 1, productStock.id),
         addJournalQuery(nearestStoreId, -mutationQuantity, initialStockNearestStore.stock, newStockNearestStore.stock, 1, productStock.id),
@@ -331,9 +321,6 @@ export const mutateStockService = async (
   
           // Revert stock quantity
           const newStock = productStock.stock + detail.quantity;
-          console.log('check');
-          console.log(productStock.product_idproduct);
-          console.log(order.store_idstore,);
 
           await updateStockQtyQuery(
             productStock.product_idproduct,

@@ -25,7 +25,6 @@ const getPaginatedAndFilteredMassController = async (req, res) => {
 
       return res.status(200).json(result);
     } catch (err) {
-      console.error('Error in getPaginatedAndFilteredProductsController:', err);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
   };
@@ -39,7 +38,6 @@ const getPaginatedAndFilteredMassController = async (req, res) => {
     
         res.status(201).json({result})
       } catch (err) {
-      console.log(err);
 
         res.status(500).json({error: "internal server error"})
       }
@@ -50,12 +48,9 @@ const getPaginatedAndFilteredMassController = async (req, res) => {
         const { massId, massNew, status } = req.body;
     
         const result = await editMassService(massId, massNew, status);
-      console.log("ini di controller",massId, massNew, status);
-
     
         res.status(201).json({result})
       } catch (err) {
-        console.log(err);
         res.status(500).json({error: "internal server error"})
       }
     }
@@ -68,7 +63,6 @@ const getPaginatedAndFilteredMassController = async (req, res) => {
     
         res.status(201).json({message: 'Mass deleted successfully'})
       } catch (err) {
-        console.log(err);
         res.status(500).json({error: "internal server error"})
       }
     }

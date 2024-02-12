@@ -80,8 +80,6 @@ function formatDate(date) {
     fetchDataYesterday();
   }, []);
 
-  console.log("ini data", salesData);
-  console.log("ini data1", salesData1);
 
   let percentageTotalSales;
   let percentageTotalQuantity;
@@ -101,11 +99,8 @@ function formatDate(date) {
       return ((currentValue - previousValue) / Math.abs(previousValue)) * 100;
     }
   
-    console.log('Percentage Change in Total Sales:', percentageChanges.totalSales.toFixed(2) + '%');
     percentageTotalSales = percentageChanges?.totalSales?.toFixed(2) || 0 + '%';
-    console.log('Percentage Change in Total Quantity:', percentageChanges.totalQuantity.toFixed(2) + '%');
     percentageTotalQuantity = percentageChanges?.totalQuantity?.toFixed(2) || 0 + '%';
-    console.log('Percentage Change in Total Transactions:', percentageChanges.totalTransactions.toFixed(2) + '%');
     percentageTotalTransactions = percentageChanges?.totalTransactions?.toFixed(2) || 0 + '%';
   } else {
     // Display 0% if no data

@@ -74,7 +74,6 @@ export const DrawerShippingMethode = ({
             >
               <Flex alignItems="center" gap={1}>
                 <Icon as={LiaBoxSolid} boxSize={5} />
-                {/* {console.log(Object.keys(orderDetail).length)} */}
                 <Text flexWrap="wrap">
                   {orderDetail &&
                     `Dikirim dari ${

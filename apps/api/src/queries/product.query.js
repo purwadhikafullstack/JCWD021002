@@ -27,20 +27,6 @@ const getPaginatedAndFilteredProductsQuery = async (
   statusStock,
 ) => {
   try {
-    console.log(
-      'query',
-      page,
-      pageSize,
-      sortField,
-      sortOrder,
-      categoryId,
-      productName,
-      cityId,
-      storeId,
-      statusProduct,
-      statusStock,
-    );
-
     const offset = (page - 1) * (pageSize || 0);
 
     const whereCondition = {};
@@ -55,8 +41,6 @@ const getPaginatedAndFilteredProductsQuery = async (
     if (categoryId !== null && categoryId.trim() !== '') {
       whereConditionCategory.id = categoryId;
     }
-
-    console.log(categoryId);
 
     const productStockQuery = {
       where: {
@@ -77,8 +61,6 @@ const getPaginatedAndFilteredProductsQuery = async (
 
     const productStockIds = productStocks.map((stock) => stock.id)
     const productIds = productStocks.map((stock) => stock.product_idproduct);
-    console.log("ini data di productStockIds", productStockIds);
-    console.log("ini data di productIds", productIds);
 
     const products = await Product.findAndCountAll({
       attributes: {
@@ -128,7 +110,6 @@ const getPaginatedAndFilteredProductsQuery = async (
       totalPages,
     };
   } catch (err) {
-    console.error('Error in getPaginatedAndFilteredProductsQuery:', err);
     throw err;
   }
 };
@@ -143,17 +124,6 @@ const getPaginatedAndFilteredProductsRealQuery = async (
   status
 ) => {
   try {
-    console.log(
-      'query',
-      page,
-      pageSize,
-      sortField,
-      sortOrder,
-      categoryId,
-      productName,
-      status,
-    );
-
     const offset = (page - 1) * (pageSize || 0);
 
     const whereCondition = {};
@@ -343,7 +313,6 @@ const getDetailProductQuery = async (id) => {
 
     return { result, subquery };
   } catch (err) {
-    console.log('Error in query:', err);
     throw err;
   }
 };
@@ -359,7 +328,6 @@ const addProductQuery = async (
   packagingId,
 ) => {
   try {
-    console.log('ini di query', name, price, description, createdBy);
     const res = await Product.create({
       name,
       price,
@@ -374,15 +342,12 @@ const addProductQuery = async (
 
     return res;
   } catch (err) {
-    // console.error('Error in addProductQuery:', err);
     throw err;
   }
 };
 
 const addImageProductQuery = async (imageUrl, product_idproduct) => {
   try {
-    console.log('ini di query', imageUrl, product_idproduct);
-    console.log(typeof product_productid);
     const res = await ProductImage.create({
       imageUrl,
       product_idproduct,
@@ -390,7 +355,6 @@ const addImageProductQuery = async (imageUrl, product_idproduct) => {
 
     return res;
   } catch (err) {
-    // console.error('Error in addProductQuery:', err);
     throw err;
   }
 };
@@ -406,7 +370,6 @@ const deleteProductImageQuery = async (imageUrl, productId) => {
 
     return res;
   } catch (err) {
-    console.log(err);
     throw err;
   }
 }
@@ -436,15 +399,6 @@ const updateProductQuery = async (
   mass_idmass,
   packaging_idpackaging,
 ) => {
-  console.log("ini di query",
-    id,
-    name,
-    description,
-    price,
-    status,
-    massProduct,
-    mass_idmass,
-    packaging_idpackaging,)
   try {
     // Create an object with non-null values
     const updatedValue = {
@@ -463,7 +417,6 @@ const updateProductQuery = async (
         delete updatedValue[key];
       }
     });
-    console.log(updatedValue);
 
     // Ensure that the values are valid before calling the update
     if (id) {
@@ -476,7 +429,6 @@ const updateProductQuery = async (
       // Handle invalid input values
     }
   } catch (err) {
-    console.log(err);
     throw err;
   }
 };
