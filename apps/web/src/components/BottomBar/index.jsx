@@ -1,20 +1,6 @@
-import {
-  Flex,
-  useDisclosure,
-  Avatar,
-  Text,
-  Tooltip,
-  Box,
-} from '@chakra-ui/react';
-import {
-  HiOutlineHome,
-  HiHome,
-  HiShoppingCart,
-} from 'react-icons/hi2';
-import { MdFavorite, MdFavoriteBorder } from 'react-icons/md';
-import { CgLoadbarDoc } from 'react-icons/cg';
+import { Flex, useDisclosure, Avatar, Tooltip, Box } from '@chakra-ui/react';
+import { HiOutlineHome, HiHome } from 'react-icons/hi2';
 import { MdArticle, MdOutlineArticle } from 'react-icons/md';
-import { CgNotes } from 'react-icons/cg';
 import { IoPersonCircleOutline, IoPersonCircleSharp } from 'react-icons/io5';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -22,7 +8,6 @@ import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useWebSize } from '../../provider.websize';
 import { LoginModal } from '../LoginModal';
-import axios from 'axios';
 import { CartIcon } from '../Cart/Cart.CartIcon';
 
 export const BottomBar = () => {
@@ -95,8 +80,9 @@ export const BottomBar = () => {
     },
     {
       text: 'Profile',
-      icon: (
-        <Tooltip label="Profile" fontSize="md" hasArrow placement="top">
+      icon:
+        token &&
+        (user.avatar ? (
           <Box
             display="inline-block"
             bg={active === '/profile' ? 'green.700' : 'transparent'}
@@ -104,14 +90,34 @@ export const BottomBar = () => {
             p={1}
             cursor="pointer"
           >
-            {active === '/profile' ? (
-              <IoPersonCircleSharp size={'26px'} color="white" />
-            ) : (
-              <IoPersonCircleOutline size={'26px'} color="green.700" />
-            )}
+            <Avatar
+              // size={'xs'}
+              width={'28px'}
+              height={'28px'}
+              bgColor="#DAF1E8FF"
+              color={'colors.primary'}
+              src={`${import.meta.env.VITE_API_IMAGE_URL}/avatar/${
+                user?.avatar
+              }`}
+            />
           </Box>
-        </Tooltip>
-      ),
+        ) : (
+          <Tooltip label="Profile" fontSize="md" hasArrow placement="top">
+            <Box
+              display="inline-block"
+              bg={active === '/profile' ? 'green.700' : 'transparent'}
+              borderRadius="full"
+              p={1}
+              cursor="pointer"
+            >
+              {active === '/profile' ? (
+                <IoPersonCircleSharp size={'26px'} color="white" />
+              ) : (
+                <IoPersonCircleOutline size={'26px'} color="green.700" />
+              )}
+            </Box>
+          </Tooltip>
+        )),
       link: '/profile',
     },
   ];
@@ -155,6 +161,11 @@ export const BottomBar = () => {
                 item.link == '/profile' ? (isLogin ? null : onOpen) : null
               }
               key={index}
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
             >
               <Flex
                 display={'flex'}
@@ -162,22 +173,7 @@ export const BottomBar = () => {
                 alignItems={'center'}
                 justifyContent={'center'}
               >
-                {item.link == '/profile' && token ? (
-                  user.avatar ? (
-                    <Avatar
-                      size={'xs'}
-                      bgColor="#DAF1E8FF"
-                      color={'colors.primary'}
-                      src={`${import.meta.env.VITE_API_IMAGE_URL}/avatar/${
-                        user?.avatar
-                      }`}
-                    />
-                  ) : (
-                    item.icon
-                  )
-                ) : (
-                  item.icon
-                )}
+                {item.icon}
               </Flex>
             </Link>
           );

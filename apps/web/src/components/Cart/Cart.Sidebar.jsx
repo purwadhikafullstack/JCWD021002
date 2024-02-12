@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Button, Checkbox, Flex, Heading, Text, useToast } from '@chakra-ui/react';
 import angkaRupiahJs from '@develoka/angka-rupiah-js';
 import axios from 'axios';

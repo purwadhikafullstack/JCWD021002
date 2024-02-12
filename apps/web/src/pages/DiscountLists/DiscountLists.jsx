@@ -60,7 +60,6 @@ function DiscountLists() {
         }}
       );
       // Handle the response as needed
-      console.log(response);
       setDeleteModalOpen(false);
       fetchData(); // Close the modal after successful addition
     } catch (error) {
@@ -69,7 +68,6 @@ function DiscountLists() {
     }
   };
 
-  console.log("ini selected store", selectedStore);
 
   const fetchData = async () => {
     try {
@@ -84,7 +82,6 @@ function DiscountLists() {
   }
   }
 
-  console.log("ini data", data);
 
 
   useEffect(() => {
@@ -112,7 +109,6 @@ function DiscountLists() {
     fetchData();
   }, [page, pageSize, sortField, sortOrder, categoryId, discountName, status, restrictionId, typeId, distributionId]);
 
-  console.log(data);
 
   const handleSortOrder = (order) => {
     setSortOrder(order);
@@ -128,30 +124,22 @@ function DiscountLists() {
     setDiscountName(value);
     setPage(1);
   };
-  console.log("ini disocunt name", discountName)
 
   const fetchFilter = async () => {
     try {
         const response = await axios.get(
             `${import.meta.env.VITE_API_URL}/discount/discount-filter`
         );
-        console.log(response?.data);
         setDataFilter(response?.data);
     } catch (err) {
         console.log(err);
     }
 };
 
-console.log('ini category',dataCategory);
-
-
 useEffect(() => {
     fetchFilter();
 }, []);
 
-console.log(dataFilter);
-
-  
   const fetchStore = async () => {
     try {
       const response = await axios.get(
@@ -164,7 +152,6 @@ console.log(dataFilter);
     }
   };
 
-      console.log("ini data store id",user.store_idstore);
 
   useEffect(() => {
     fetchStore();
@@ -173,7 +160,7 @@ console.log(dataFilter);
   return (
       <Box w={{ base: '100vw', md: size }}>
           <SideBar size={size} handleWebSize={handleWebSize}/>
-    <Box backgroundColor='#f5f5f5'  w={{ base: '100vw', md: size }} p='6' height='fit-content'>
+    <Box backgroundColor='#f5f5f5'  w={{ base: '100vw', md: size }} p='6' height='full'>
     <Box p={size == '500px' ? 0 : 5} pl={size == '500px' ? '0px' : '150px' } mt='80px' >
     <Flex dir='row' gap='10px' mb='20px' flexWrap='wrap'>
     <Button backgroundColor='#f5f5f5' leftIcon={<IconChevronLeft />}></Button>
@@ -251,7 +238,7 @@ console.log(dataFilter);
             boxShadow='0px 1px 5px gray' border={item?.status == 1 ? 'solid 2px green' : 'solid 2px red'} onClick={() => navigate(`/discount-detail/${item?.id}`)} _hover={{ cursor: 'pointer' }}>
               <Image
                       key={item?.banner}
-                      src={item?.banner ? `http://localhost:8000/uploads/discounts/${item?.banner}` : (LogoGroceria)}
+                      src={item?.banner ? `${import.meta.env.VITE_API_IMAGE_URL}/discounts/${item?.banner}` : (LogoGroceria)}
                       alt={item.name}
                       objectFit='cover'
                       width='100%'
@@ -261,7 +248,7 @@ console.log(dataFilter);
                     />
                   <CardBody>
                     <Stack mt='-3' spacing='0'>
-                    <Flex justifyContent='center' flexDirection='row' zIndex='2' bgColor='white' w='fit-content' pl='2px' pr='5px' ml='-20px' borderRadius='10px' mt='-30px' flexWrap='wrap'>
+                    <Flex justifyContent='center' flexDirection='row' bgColor='white' w='fit-content' pl='2px' pr='5px' ml='-20px' borderRadius='10px' mt='-30px' flexWrap='wrap'>
                           <Text  color={item?.status == 1 ? "green" : "red"}>{item?.status == 1 ? (<IconCircleCheckFilled />) : (<IconCircleXFilled />)}</Text>
                           <Text color={item?.status == 1 ? 'green' : 'red'} fontWeight='bold'>{item?.status == 1 ? 'Active' : 'Deactive'}</Text><Text fontWeight='bold'> | {item?.DiscountDistribution?.type}</Text>
                       </Flex>

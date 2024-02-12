@@ -72,10 +72,9 @@ const UserLists = () => {
   const fetchUser = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/user/user-lists?page=${page}&pageSize=${pageSize}&roleId=${roleId}&username=${username}&sortOrder=${sortOrder}`,
+        `${import.meta.env.VITE_API_URL}/user/user-lists?page=${page}&pageSize=${pageSize}&roleId=${roleId}&username=${username}&sortOrder=${sortOrder}`,
       );
 
-      console.log('API Request URL:', response.config.url);
       setDataUser(response?.data);
     } catch (err) {
       console.log(err);
@@ -106,7 +105,7 @@ const UserLists = () => {
     <Box w={{ base: '100vw', md: size }} overflowX='hidden'>
       <ToastContainer position="top-center" closeOnClick pauseOnFocusLoss draggable pauseOnHover theme="colored" />
           <SideBar size={size} handleWebSize={handleWebSize}/>
-      <Box w={{ base: '100vw', md: size }} height='fit-content' backgroundColor='#fbfaf9' >
+      <Box w={{ base: '100vw', md: size }} height='full' backgroundColor='#fbfaf9' >
       <Box p='20px'>
         <Box pl={size == '500px' ? '0px' : '150px' } mt='80px' >
                 <Flex flexWrap='wrap' dir='row' gap='10px'>
@@ -187,7 +186,6 @@ const UserLists = () => {
               setSelectedPage={setSelectedPage}
               dataUser={dataUser}
             />
-            
           </Box>
         </Box>
       </Box>

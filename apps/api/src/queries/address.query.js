@@ -46,7 +46,6 @@ export const createAddressQuery = async (
 
     return res;
   } catch (err) {
-    console.log(err)
     throw err;
   }
 };
@@ -77,7 +76,6 @@ export const changeAddressQuery = async (
 
     return res;
   } catch (err) {
-    console.log(err)
     throw err;
   }
 };

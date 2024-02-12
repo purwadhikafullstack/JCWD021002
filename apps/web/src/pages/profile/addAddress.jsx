@@ -54,7 +54,7 @@ export const AddAddress = ({setUpdate}) => {
   const getProvince = async () => {
     try {
       const res = await axios.get(
-        'http://localhost:8000/api/address/getProvince',
+        `${import.meta.env.VITE_API_URL}/address/getProvince`,
       );
       setProvince(res?.data?.data);
     } catch (err) {
@@ -64,7 +64,7 @@ export const AddAddress = ({setUpdate}) => {
   const getCity = async (provinceId) => {
     try {
       const res = await axios.get(
-        `http://localhost:8000/api/city/getCity?provinceId=${provinceId}`,
+        `${import.meta.env.VITE_API_URL}/city/getCity?provinceId=${provinceId}`,
       );
       setCities(res?.data?.data);
     } catch (err) {
@@ -91,7 +91,7 @@ export const AddAddress = ({setUpdate}) => {
   ) => {
     try {
       await axios.post(
-        `http://localhost:8000/api/address/createAddress?userId=${userId}&cityId=${cityId}&isMain=${
+        `${import.meta.env.VITE_API_URL}/address/createAddress?userId=${userId}&cityId=${cityId}&isMain=${
           isChecked ? 1 : 0
         }`,
         {

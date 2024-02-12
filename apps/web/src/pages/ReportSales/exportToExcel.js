@@ -2,7 +2,6 @@ import ExcelJS from 'exceljs';
 
 export const exportToExcel = async (data, startDate, endDate) => {
   const exportData = data?.data || [];
-  console.log(data);
   // Group order details by order ID
   const groupedData = {};
   exportData.forEach((orderDetail) => {
@@ -34,7 +33,7 @@ export const exportToExcel = async (data, startDate, endDate) => {
         'Total Discount': index === 0 ? order.totalDiscount : '', 
         'Total Shipping': index === 0 ? order.totalShipping : '', 
         'Total Shipping Discount': index === 0 ? order.totalShippingDiscount : '', 
-        'Code Transaction': index === 0 ? order.codeTransaction : '', 
+        'Payment Code': index === 0 ? order.paymentCode : '', 
         'Payment Method': index === 0 ? order.paymentMethod : '', 
         'Payment Status': index === 0 ? order?.paymentStatus : '', 
         'Username Buyer': index === 0 ? order?.User?.username : '', 

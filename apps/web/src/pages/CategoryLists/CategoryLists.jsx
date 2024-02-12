@@ -42,12 +42,14 @@ const CategoryLists = () => {
 
   const addNewCategory = async () => {
     try {
+      if(newCategory == '' || newCategory == ' '){return toast.warning("Fill category name")}
+      if(!fieldImage){ return toast.warning("Select photo category")}
       let formData = new FormData();
       formData.append("category", newCategory);
       formData.append("category", fieldImage);
 
       const result = await axios.post(
-        `http://localhost:8000/api/category/add-category`, 
+        `${import.meta.env.VITE_API_URL}/category/add-category`, 
         formData
       );
 
@@ -69,12 +71,10 @@ const CategoryLists = () => {
       formData.append("category_id", selectedCategory?.id);
       {editCategory == selectedCategory?.category ? null : formData.append("category", editCategory);}
       {fieldImage ? formData.append("category", fieldImage) : null }
-
       await axios.patch(
-        `http://localhost:8000/api/category/change-category`, 
+        `${import.meta.env.VITE_API_URL}/category/change-category`, 
         formData
         );
-
       onClose();
       fetchCategory();
       setEditCategory("");
@@ -90,9 +90,8 @@ const CategoryLists = () => {
   const confirmDeleteCategory = async () => {
     try {
       await axios.delete(
-        `http://localhost:8000/api/category/remove-category/${selectedCategory.id}`
+        `${import.meta.env.VITE_API_URL}/category/remove-category/${selectedCategory.id}`
       );
-
       toast.success("Delete category successful");
       onClose();
       setDeleteModalOpen(false);
@@ -105,9 +104,8 @@ const CategoryLists = () => {
   const fetchCategory = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/category/category-lists?page=${page}&pageSize=${pageSize}&sortOrder=${sortOrder}`
+        `${import.meta.env.VITE_API_URL}/category/category-lists?page=${page}&pageSize=${pageSize}&sortOrder=${sortOrder}`
       );
-
       setDataCategory(response?.data);
     } catch (err) {
       console.log(err);

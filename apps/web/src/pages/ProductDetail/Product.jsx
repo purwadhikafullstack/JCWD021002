@@ -57,6 +57,7 @@ import { calculateDiscountPrice } from '../../utils/calculateDiscountPrice';
 import { useWebSize } from '../../provider.websize';
 import { BottomBar } from '../../components/BottomBar';
 import { Footer } from '../home/home.footer';
+import { CartIcon } from '../../components/Cart/Cart.CartIcon';
 
 
 function truncateDescription(description, maxLength) {
@@ -127,14 +128,11 @@ const Product = () => {
     }
   };
 
-  console.log('ini id', id);
   const fetchData = async (id) => {
     try {
-      console.log('ini id the fetchdata', id);
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/products/product-detail/${id}`,
       );
-      console.log(response?.data);
       setData(response?.data);
     } catch (err) {
       console.log(err);
@@ -160,14 +158,12 @@ const Product = () => {
     }
   };
 
-  console.log(data);
 
   function formatPriceToIDR(price) {return new Intl.NumberFormat('id-ID', {style: 'currency',currency: 'IDR',}).format(price);}
 
   const toast = useToast();
 
   const handleAddToCart = async () => {
-    console.log("ini data id di cart", id, quantity);
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/cart`,
@@ -177,7 +173,6 @@ const Product = () => {
         },
       );
 
-        console.log('Item added to cart successfully!');
         showToast('success', 'Item added to cart successfully!');
 
         setCartTotalQuantity(cartTotalQuantity + quantity);
@@ -217,8 +212,6 @@ const Product = () => {
     });
   };
 
-  console.log(data);
-
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
@@ -257,7 +250,9 @@ const Product = () => {
                     </InputGroup>
                             </Box>
                             <Box>
-                                <IconButton height='30px' icon={<IconShoppingCartFilled />} backgroundColor='#fcfdde' onClick={() => {isLogin ? navigate('/cart') : navigate('/login')}} />
+                                {/* <IconButton height='30px' icon={<IconShoppingCartFilled />} backgroundColor='#fcfdde' onClick={() => {isLogin ? navigate('/cart') : navigate('/login')}} /> */}
+                                <Box mt='3px' cursor='pointer' onClick={() => {isLogin ? navigate('/cart') : navigate('/login')}}><CartIcon /></Box>
+
                             </Box>
 
                             </Flex>

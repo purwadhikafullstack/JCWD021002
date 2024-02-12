@@ -41,7 +41,6 @@ export const getStoreService = async (
 
     // Mengambil store terdekat dengan user
     for (const store of stores) {
-      console.log('store query', store.dataValues)
 
       const storeCoords = {
         latitude: store.dataValues.latitude,
@@ -61,7 +60,6 @@ export const getStoreService = async (
       }
     }
 
-    console.log("ini di store id", storeId);
     // Mengambil produk dengan paginasi dan filter untuk toko terdekat
     const result = await getPaginatedAndFilteredProductsQuery(
       page,
@@ -76,7 +74,6 @@ export const getStoreService = async (
       statusStock,
     );
 
-    console.log({result})
     return result;
   } catch (err) {
     throw err;

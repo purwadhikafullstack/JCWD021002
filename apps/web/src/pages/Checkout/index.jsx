@@ -46,23 +46,18 @@ import { CheckoutAddress } from '../../components/Checkout/Checkout.Address';
 
 export const Checkout = () => {
   const [selectedItem, setSelectedItem] = useState();
-  const [active, setActive] = useState();
   const user = useSelector((state) => state.AuthReducer.user);
-  console.log('User:', user); // Add this line to check the user object
   const [userAddress, setUserAddress] = useState();
   const userId = user?.id; // Use optional chaining to avoid errors if user is undefined
-  console.log('UserID:', userId); // Ad
   const [heading, setHeading] = useState(null);
   const [order, setOrder] = useState([]);
-  console.log('order', order);
   const [orderDetail, setOrderDetail] = useState([]);
   const { size, handleWebSize } = useWebSize();
   const [discountVoucher, setDiscountVoucher] = useState(0);
   const address = useSelector((state) => state.addressReducer?.address);
   const dispatch = useDispatch();
   const [selectedShipping, setSelectedshipping] = useState();
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [selectedAddres, setSelectedAddress] = useState();
 
   const location = useLocation();
   const isCartShipment = location.pathname === '/cart/shipment';
@@ -76,49 +71,17 @@ export const Checkout = () => {
     }
   }, [isCartShipment, isBeliSekarang]);
 
-  const {
-    isOpen: addressDrawerIsOpen,
-    onOpen: onOpenAddressDrawer,
-    onClose: onCloseAddressDrawer,
-  } = useDisclosure();
-
-  // console.log(`${import.meta.env.VITE_API_URL}/checkout/${userId}`);
   const fetchOrder = async (userId) => {
     try {
-      //   if (!userId) {
-      //     console.warn('User ID not available. Skipping cart fetch.');
-      //     return;
-      //   }
-      console.log(
-        `${import.meta.env.VITE_API_URL}/checkout/pre-checkout/${userId}`,
-      );
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/checkout/pre-checkout/${userId}`,
       );
-
-      // console.log(
-      //   'Cart API Response:',
-      //   response?.data?.data?.OrderDetails || [],
-      // );
-
-      //   console.log(response);
-
       setOrder(response?.data?.data);
-      console.log('order: ', response?.data?.data);
-      // const groupedProduct = groupBy(
-      //     response?.data?.data[0]?.OrderDetails || [],
-      //     'Store.id',
-      //   );
-      // setOrderDetail(groupedProduct);
       setOrderDetail(response?.data?.data?.OrderDetails);
-      // console.log('orderDetail: ', response?.data?.data?.OrderDetails);
     } catch (err) {
-      //   console.warn('Cart not found for user:', userId);
       console.error('Error fetching cart:', err);
     }
   };
-
-  // console.log('cek data order: ', order);
 
   const getAddress = async (userId) => {
     try {
@@ -134,11 +97,6 @@ export const Checkout = () => {
     fetchOrder(userId);
     getAddress(userId);
   }, [user, userId]);
-
-  const handleSelectAddress = (selectedItem) => {
-    onCloseAddressDrawer();
-    dispatch(setAddress(selectedItem));
-  };
 
   return (
     <Box
@@ -183,23 +141,17 @@ export const Checkout = () => {
             {/* <VStack w='full' spacing={3} > */}
 
             <CheckoutAddress
-              address={address}
-              // onOpenAddressDrawer={onOpenAddressDrawer}
+              address={userAddress}
+              selectedAddres={selectedAddres}
+              setSelectedAddress={setSelectedAddress}
             />
-            {/* {order?.Store?.name} */}
-            {/* {order.map((item, index) => (
-          <Box key={index}>
-            {item.id}
-          </Box>
-        ) )} */}
-
             <ListProductOrder
               order={order}
               orderDetail={orderDetail}
-              selectedItem={selectedItem}
+              selectedAddres={selectedAddres}
               selectedShipping={selectedShipping}
               setSelectedshipping={setSelectedshipping}
-              address={address}
+              fetchOrder={fetchOrder}
             />
             {/* </VStack> */}
           </Stack>
@@ -261,14 +213,13 @@ export const Checkout = () => {
                       : angkaRupiahJs(0, { formal: false })}
                   </Text>
                   <Text fontSize="sm">
-                    {selectedShipping &&
-                      angkaRupiahJs(selectedShipping?.cost[0]?.value, {
-                        formal: false,
-                      })}
-                  </Text>
-                  <Text fontSize="sm">
-                    {order?.totalShipping
-                      ? angkaRupiahJs(order?.totalShipping, { formal: false })
+                    {selectedShipping
+                      ? angkaRupiahJs(
+                          Number(selectedShipping?.cost[0]?.value) || 0,
+                          {
+                            formal: false,
+                          },
+                        )
                       : angkaRupiahJs(0, { formal: false })}
                   </Text>
                   <Text fontSize="sm">

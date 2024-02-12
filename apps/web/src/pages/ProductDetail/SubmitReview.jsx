@@ -49,8 +49,6 @@ export const SubmitReview = ({userId, productId}) => {
     fetchData();
   }, [ productId, userId]);
 
-  console.log(data);
-
   const handleSortOrder = (order) => {
     setSortOrder(order);
     // onClose();
@@ -86,8 +84,6 @@ export const SubmitReview = ({userId, productId}) => {
     }
   };
 
-  console.log("ini data di submit review", data);
-
   function formatWIBDate(utcTimestamp) {
     const orderDate = new Date(utcTimestamp);
   
@@ -122,7 +118,7 @@ export const SubmitReview = ({userId, productId}) => {
                                 </Flex>
                                 <Text fontSize='xs'>Tanggal ulasan {formatWIBDate(data?.result?.reviewDate)} WIB</Text>
                                 <Text fontSize='xs'>Tanggal order {formatWIBDate(data?.result?.Order?.orderDate)} WIB</Text>
-                                <Text fontSize='xs' fontWeight='bold'>Kode Transaksi {data?.result?.Order?.codeTransaction}</Text>
+                                <Text fontSize='xs' fontWeight='bold'>Kode Transaksi {data?.result?.Order?.paymentCode}</Text>
                                 <Text>{data?.result?.reviewText}</Text>
                                 <Button mt="2" colorScheme="teal" onClick={() => setIsEditModalOpen(true)}>
                                     Ganti Ulasan
@@ -142,7 +138,7 @@ export const SubmitReview = ({userId, productId}) => {
                                 </Flex>
                                 <Select border='solid gray 1px' borderRadius='full' placeholder="Select option" value={orderId} onChange={(e) => setOrderId(e.target.value)}>
                                   {data?.orderResults?.map((item) => (
-                                    <option key={item?.Order?.id} value={item?.Order?.id}>{item?.Order?.codeTransaction} - {formatWIBDate(item?.Order?.orderDate)}</option>
+                                    <option key={item?.Order?.id} value={item?.Order?.id}>{item?.Order?.paymentCode} - {formatWIBDate(item?.Order?.orderDate)}</option>
                                   ))}
                                 </Select>
                                 <Textarea
@@ -181,7 +177,7 @@ export const SubmitReview = ({userId, productId}) => {
             <Text mt='10px'>Select your transaction :</Text>
             <Select border='solid gray 1px' borderRadius='full' placeholder="Select option" value={orderId} onChange={(e) => setOrderId(e.target.value)}>
                             {data?.orderResults?.map((item) => ( 
-                            <option key={item?.Order?.id} value={item?.Order?.id}>{item?.Order?.codeTransaction} - {formatWIBDate(item?.Order?.orderDate)}</option>
+                            <option key={item?.Order?.id} value={item?.Order?.id}>{item?.Order?.paymentCode} - {formatWIBDate(item?.Order?.orderDate)}</option>
                             ))}
                         </Select>
             <Textarea mt="10px" value={reviewText} onChange={(e) => setReviewText(e.target.value)} placeholder="Edit your review..." resize="none" />

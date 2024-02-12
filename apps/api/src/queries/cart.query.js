@@ -79,10 +79,6 @@ export const createCartDetailQuery = async (cart, item, productStockId) => {
 };
 
 export const updateItemCartQtyQuery = async (cart, productId, newQuantity) => {
-  console.log(
-    `cartId: ${cart.id}, productStockId: ${productId}, quantity: ${newQuantity}`,
-  );
-
   const result = await CartDetail.update(
     {
       quantity: newQuantity,
@@ -153,15 +149,27 @@ export const deleteCartItemQuery = async (cart, productId) => {
   }
 };
 
-export const getAllCartQuery = async (userId) => {
+export const findStoreQuery = async (userCityId) => {
+  try {
+    const store = await Store.findOne({
+      where: { city_idcity: userCityId },
+      attributes: ["id"]})
+    return store;
+  } catch(err) {
+    throw err;
+  }
+}
+
+export const getAllCartQuery = async (userId, storeId) => {
   return await Cart.findAll({
-    where: { user_iduser: userId },
+    where: { user_iduser: userId,  },
     include: [
       {
         model: CartDetail,
         include: [
           {
             model: ProductStock,
+            where: { store_idstore: storeId},
             include: [
               { model: Product, include: [ProductImage] },
               { model: Store },

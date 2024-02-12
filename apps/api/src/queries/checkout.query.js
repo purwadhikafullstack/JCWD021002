@@ -47,10 +47,10 @@ export const findNewOrderQuery = async (userId) => {
 };
 
 export const updateOrderTotalAmountQuery = async (orderId, totalAmount) => {
-  return await Order.update({ totalAmount }, { where: { id: orderId } });
+  return await Order.update({ totalAmount, totalShipping: 0 }, { where: { id: orderId } });
 };
 
-export const updateOrderDetailsQuery = async (orderId, cartItems) => {
+export const updateOrderDetailsQuery = async (orderId, storeId, cartItems) => {
   const t = await OrderDetail.sequelize.transaction();
 
   try {
@@ -82,6 +82,11 @@ export const updateOrderDetailsQuery = async (orderId, cartItems) => {
       );
     }
 
+    await Order.update(
+      { store_idstore: storeId }, 
+      { where: { id: orderId }, transaction: t }
+    );
+
     await t.commit();
   } catch (err) {
     await t.rollback();
@@ -90,8 +95,6 @@ export const updateOrderDetailsQuery = async (orderId, cartItems) => {
 };
 
 export const getSelectedCartItemsQuery = async (cartId, selectedItems) => {
-  console.log('cartId: ', cartId);
-  console.log('selectedItems: ', selectedItems);
   return CartDetail.findAll({
     where: {
       cart_idcart: cartId,
@@ -244,7 +247,6 @@ export const createOrderQuery = async (
     return order;
   } catch (err) {
     await t.rollback();
-    console.log(err);
     throw err;
   }
 };
@@ -309,3 +311,25 @@ export const cancelOrder = async (order) => {
     throw err;
   }
 };
+
+export const addTotalShippingQuery = async (shippingCost, orderId) => {
+  try {
+    return await Order.update({
+      totalShipping: shippingCost
+    }, {
+      where: {
+        id: orderId
+      }
+    })
+  } catch (err) {
+    throw err;
+  }
+}
+
+export const checkOrderDiscountShippingQuery = async (orderId) => {
+  try {
+    return await Order.findOne({where: {id : orderId}});
+  } catch (err) {
+    throw err;
+  }
+}

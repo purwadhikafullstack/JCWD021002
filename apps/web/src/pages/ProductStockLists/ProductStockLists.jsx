@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import {  Text,  Box,  HStack,  Flex,  Button,  Input,  Modal,  ModalOverlay,  ModalContent, ModalHeader,  ModalCloseButton,  ModalBody,  ModalFooter,  useDisclosure,  InputGroup,  InputLeftElement, IconButton, } from '@chakra-ui/react';
+import {  Text,  Box,  HStack,  Flex,  Button,  Input,  Modal,  ModalOverlay,  ModalContent, ModalHeader,  ModalCloseButton,  ModalBody,  ModalFooter,  useDisclosure,  InputGroup,  InputLeftElement, IconButton, VStack, } from '@chakra-ui/react';
 import { IconChevronLeft, } from '@tabler/icons-react';
 import { IconSearch, IconAdjustmentsHorizontal, } from '@tabler/icons-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -15,6 +15,7 @@ import { FilterModal } from './FilterModal';
 import { EditModal } from './EditModal';
 import { handleActivateProductStock } from './services/serviceActivateStock';
 import { useWebSize } from '../../provider.websize';
+import CartLoading from '../../components/Loaders/CartLoading';
 
 function ProductStockLists() {
   const { user, isLogin } = useSelector((state) => state.AuthReducer);
@@ -41,9 +42,9 @@ function ProductStockLists() {
   const [selectedStore, setSelectedStore] = useState(userStore);
   const [stockAmount, setStockAmount] = useState(1);
   const token = localStorage.getItem('token');
-
+  const [loading, setLoading] = useState(false)
   const fetchData = async () => {
-    try {
+    try { setLoading(true);
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/products/product-lists?page=${page}&pageSize=${pageSize}
         &sortField=${sortField}&sortOrder=${sortOrder}&categoryId=${categoryId}
@@ -53,7 +54,7 @@ function ProductStockLists() {
       setData(response?.data);
     } catch (err) {
       console.log(err);
-    }
+    } finally { setLoading(false); }
   };
 
   useEffect(() => {
@@ -83,11 +84,10 @@ function ProductStockLists() {
     fetchCategory(setDataCategory);
     fetchStore(setDataStore);
   }, []);
-  console.log(data)
   return (
     <Box w={{ base: '100vw', md: size }} overflowX="hidden">
       <SideBar size={size} handleWebSize={handleWebSize} />
-      <Box backgroundColor="#f5f5f5" w={{ base: '100vw', md: size }} p={size == '500px' ? 0 : 5} height="fit-content" >
+      <Box backgroundColor="#f5f5f5" w={{ base: '100vw', md: size }} p={size == '500px' ? 0 : 5} height="full" >
         <HStack mb="10px" p={0}></HStack>
         <Box p={size == '500px' ? 0 : 5} pl={size == '500px' ? '0px' : '150px'} mt='80px' >
           <Flex dir="row" gap="10px" p={size == '500px' ? 6 : 0} mb="20px" flexWrap="wrap" >
@@ -114,8 +114,9 @@ function ProductStockLists() {
               </Button>
             </Box>
           </Flex>
-          <CardProductStock data={data} setSelectedProductStock={setSelectedProductStock} setStockAmount={setStockAmount} setEditToStockModalIsOpen={setEditToStockModalIsOpen} setDeleteModalOpen={setDeleteModalOpen} setActivateModalOpen={setActivateModalOpen} />
-          <PaginationControls 
+          {storeId > 0 || user?.store_idstore > 0 ? null : <Text>Please fill the selected store</Text>}
+          <Flex flexWrap='wrap' justifyContent='center'> {loading ? ( <VStack> <CartLoading /> </VStack> ) : ( (loading == false) && <CardProductStock data={data} setSelectedProductStock={setSelectedProductStock} setStockAmount={setStockAmount} setEditToStockModalIsOpen={setEditToStockModalIsOpen} setDeleteModalOpen={setDeleteModalOpen} setActivateModalOpen={setActivateModalOpen} /> )} </Flex>
+          <Box m='5'>{data?.products?.length != 0 ? <PaginationControls 
               page= {page}
               pageSize={pageSize}
               selectedPage={selectedPage}
@@ -123,7 +124,7 @@ function ProductStockLists() {
               setPageSize={setPageSize}
               setSelectedPage={setSelectedPage}
               data={data}
-            />
+            /> : null}</Box>
           <EditModal
         editToStockModalIsOpen={editToStockModalIsOpen}
         selectedProductStock={selectedProductStock}

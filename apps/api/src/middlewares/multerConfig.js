@@ -3,7 +3,6 @@ const multer = require("multer");
 
 const productStorage = multer.diskStorage({
   destination: (req, res, cb) => {
-    console.log("Multer Received Data:", req.body);
     cb(null, path.join(__dirname, "../public/images/products"));
   },
   filename: (req, file, cb) => {

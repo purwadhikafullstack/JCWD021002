@@ -9,6 +9,8 @@ import {
   deleteCartItemQuery,
   getAllCartQuery,
   findProductStockQuery,
+  getUserCityIdQuery,
+  findStoreQuery,
 } from '../queries/cart.query';
 
 export const createCartService = async (userId, cartDetails) => {
@@ -55,8 +57,6 @@ export const createCartService = async (userId, cartDetails) => {
     }
 
     await updateCartTotalsQuery(cart);
-
-    console.log(`cartId: ${cart.id}, cartDetails: ${cartDetailsArray}`);
 
     return { cart, cartDetails: cartDetailsArray };
   } catch (err) {
@@ -108,13 +108,17 @@ export const deleteCartItemService = async ({ userId, productStockId }) => {
   }
 };
 
-export const getCartService = async (userId) => {
+export const getCartService = async (userId, cityId) => {
   try {
-    const cart = await getAllCartQuery(userId);
+    const store = await findStoreQuery(cityId);
+    if (!store) throw new Error('Store not found');
+
+    const cart = await getAllCartQuery(userId, store.id);
 
     if (!cart) {
       throw new Error(`Cart item with product id ${productId} not found`);
     }
+
 
     return cart;
   } catch (error) {

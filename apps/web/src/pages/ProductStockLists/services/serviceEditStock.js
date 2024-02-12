@@ -16,7 +16,6 @@ import axios from "axios";
         },
       );
       // Handle the response as needed
-      console.log(response);
       setEditToStockModalIsOpen(false); // Close the modal after successful addition
     } catch (error) {
       console.error(error);

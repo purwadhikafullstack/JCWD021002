@@ -21,13 +21,11 @@ export const findVoucherQuery = async (id) => {
 }
 
 export const updateOrderTotalAmountVoucherQuery = async (orderId, totalAmount, totalDiscount) => {
-    console.log("ini di update order query", orderId, totalAmount);
     return await Order.update({ totalAmount, totalDiscount }, { where: { id: orderId } });
   };
   
   export const updateOrderDetailsVoucherQuery = async (orderId, orderDetailId, subTotalNew, subTotalOld, totalDiscount) => {
     try {
-        console.log("ini di voucher query", orderId, orderDetailId, subTotalNew, subTotalOld);
         const totalAmountOrder = (subTotalOld - subTotalNew)
         const res1 = await Order.update({ totalAmount: Sequelize.literal(`totalAmount - ${totalAmountOrder}`), totalDiscount: totalDiscount }, {where: {id: orderId}})
       const result = await OrderDetail.update(
@@ -44,7 +42,6 @@ export const updateOrderTotalAmountVoucherQuery = async (orderId, totalAmount, t
   };
 
   export const updateOrderTotalShippingVoucherQuery = async (orderId, totalShipping, totalShippingDiscount) => {
-    console.log("ini shipping voucher query", orderId, totalShipping, totalShippingDiscount);
     return await Order.update({ totalShipping, totalShippingDiscount }, { where: { id: orderId } });
   };
 
@@ -136,7 +133,6 @@ export const updateOrderTotalAmountVoucherQuery = async (orderId, totalAmount, t
 
   export const voucherUserListsQuery = async (userId, page, pageSize) => {
     try {
-        console.log("ini di voucher query", userId, page, pageSize);
         const offset = (page - 1) * (pageSize || 0);
 
         const res = await VoucherUser.findAndCountAll({

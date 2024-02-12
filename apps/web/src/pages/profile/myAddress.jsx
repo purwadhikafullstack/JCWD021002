@@ -28,7 +28,7 @@ export const MyAddress = () => {
   const getAddress = async (userId) => {
     try {
       const res = await axios.get(
-        `http://localhost:8000/api/address/getAddress/${userId}`,
+        `${import.meta.env.VITE_API_URL}/address/getAddress/${userId}`,
       );
       setAddress(res?.data?.data);
     } catch (err) {

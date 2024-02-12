@@ -1,23 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Icon, Text } from '@chakra-ui/react';
-import { HiOutlineShoppingCart, HiShoppingCart } from 'react-icons/hi2';
+import { HiOutlineShoppingCart } from 'react-icons/hi2';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 
-const calculateTotalQuantity = (carts) => {
-  return carts.reduce((total, cartItem) => total + cartItem.totalQuantity, 0);
+const calculateTotalQuantity = (cartDetails) => {
+  if (!Array.isArray(cartDetails) || cartDetails.length === 0) {
+    return 0;
+  }
+
+  const totalQuantity = cartDetails.reduce(
+    (total, cartItem) => total + (cartItem?.quantity || 0),
+    0
+  );
+
+  return totalQuantity;
 };
 
 export const CartIcon = () => {
   const user = useSelector((state) => state.AuthReducer.user);
-  const token = localStorage.getItem('token');
+  const location = useSelector((state) => state?.addressReducer?.address);
+  const userCityId =  location?.City?.id;
   const [carts, setCarts] = useState([]);
-  const navigate = useNavigate();
+  const cartDetail = carts[0]?.CartDetails;
+  // const token = localStorage.getItem('token');
+  console.log(carts[0]?.CartDetails[0]?.quantity);
+  console.log(cartDetail);
   const fetchCarts = async (userId) => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/cart/${userId}`,
+        `${import.meta.env.VITE_API_URL}/cart/${userId}/${userCityId}`,
       );
       setCarts(response?.data?.data);
     } catch (err) {
@@ -25,18 +37,19 @@ export const CartIcon = () => {
     }
   };
 
+  const totalQuantity = calculateTotalQuantity(cartDetail);
+  console.log(totalQuantity);
   useEffect(() => {
     if (user?.id) {
       fetchCarts(user.id);
     }
-  }, [user]);
+  }, [user, totalQuantity]);
 
-  const totalQuantity = calculateTotalQuantity(carts);
 
   return (
     <Box position="relative">
       <Icon as={HiOutlineShoppingCart} boxSize={6} />
-      {totalQuantity > 0 && (
+      {carts.length > 0 && (
         <Box
           position="absolute"
           top="-2"

@@ -6,6 +6,7 @@ import {
   getOrderService,
   beliSekarangService,
   shippingCostService,
+  addTotalShippingService,
   getOrderCustomerService,
   cancelOrderCustomerService,
   finishOrderCustomerService
@@ -77,9 +78,7 @@ export const beliSekarangController = async (req, res) => {
 export const uploadPaymentProofController = async (req, res) => {
   try {
     const orderId = req.params.id;
-    console.log('orderId: ', orderId);
     const paymentProof = req?.file?.filename;
-    console.log(paymentProof);
 
     if (!paymentProof) {
       throw new Error('No payment proof file provided.');
@@ -122,7 +121,6 @@ export const shippingCostController = async (req, res) => {
   try {
     // res.status(200).json({message: 'success'});
     const { key, origin, destination, weight, courier } = req.body
-    console.log(`${key}, ${origin}, ${destination}, ${weight}, ${courier}`);
 
     const result = await shippingCostService(key, origin, destination, weight, courier)
     res.status(200).json({
@@ -133,3 +131,12 @@ export const shippingCostController = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+export const addTotalShippingController = async (req, res) => {
+  try {
+    const { shippingCost, orderId } = req.body
+    const result = await addTotalShippingService( shippingCost, orderId );
+    res.status(200).json({ message: 'Order updated successfully.' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}

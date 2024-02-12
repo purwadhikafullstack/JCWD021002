@@ -11,7 +11,6 @@ import axios from "axios";
         }}
       );
       // Handle the response as needed
-      console.log(response);
     } catch (error) {
       console.error(error);
       // Handle error as needed

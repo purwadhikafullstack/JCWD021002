@@ -14,6 +14,7 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
+  Icon,
 } from '@chakra-ui/react';
 import { IoIosSearch } from 'react-icons/io';
 import { ResizeButton } from '../ResizeButton';
@@ -28,6 +29,7 @@ import { CartIcon } from '../Cart/Cart.CartIcon';
 import { logout } from '../../config/firebase-config';
 import toast from 'react-hot-toast';
 import DeleteAlert from '../DeleteAlert';
+import { MdArticle, MdOutlineArticle } from 'react-icons/md';
 
 export const Header = () => {
   const { size } = useWebSize();
@@ -46,7 +48,6 @@ export const Header = () => {
       navigate('/');
     }
   };
-  console.log({ isLogin });
   return (
     <Flex
       // bgColor={size == '500px' ? 'colors.primary' : 'colors.secondary'}
@@ -79,25 +80,53 @@ export const Header = () => {
           align={'center'}
         >
           <Flex
-            gap={'50px'}
+            gap={'20px'}
             align={'center'}
             display={size == '500px' ? 'none' : 'flex'}
           >
             <Link to={'/'}>
               <Image src={LogoGroceria} h={'30px'} />
             </Link>
-            <Flex gap={3}>
+            <Flex gap={3} fontWeight={600} fontSize={'14px'}>
               <Link to={'/'}>
-                <Text>Home</Text>
+                <Text
+                  color={'colors.primary'}
+                  p={'5px 15px'}
+                  letterSpacing={'1px'}
+                  borderRadius={'20px'}
+                >
+                  Home
+                </Text>
               </Link>
               <Link to={'/product-catalogue'}>
-                <Text>Product</Text>
+                <Text
+                  color={'colors.primary'}
+                  p={'5px 15px'}
+                  letterSpacing={'1px'}
+                  borderRadius={'20px'}
+                >
+                  Product
+                </Text>
               </Link>
               <Link to={'/about'}>
-                <Text>About</Text>
+                <Text
+                  color={'colors.primary'}
+                  p={'5px 15px'}
+                  letterSpacing={'1px'}
+                  borderRadius={'20px'}
+                >
+                  About
+                </Text>
               </Link>
               <Link to={'/contact'}>
-                <Text>Contact</Text>
+                <Text
+                  color={'colors.primary'}
+                  p={'5px 15px'}
+                  letterSpacing={'1px'}
+                  borderRadius={'20px'}
+                >
+                  Contact
+                </Text>
               </Link>
             </Flex>
           </Flex>
@@ -123,6 +152,12 @@ export const Header = () => {
               {/* <CartIcon transform={'translate(70%, 110%)'} /> */}
               <Link to={'/cart'}>
                 <CartIcon />
+              </Link>
+            </Flex>
+            <Flex display={size == '500px' ? 'none' : 'flex'} align={'center'}>
+              {/* <CartIcon transform={'translate(70%, 110%)'} /> */}
+              <Link to={'/transaction'}>
+              <Icon as={MdOutlineArticle} boxSize={6} />
               </Link>
             </Flex>
             <ResizeButton

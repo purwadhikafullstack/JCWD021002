@@ -50,7 +50,7 @@ export const ReportStockV2 = () => {
 
   useEffect(() => {
     setSearchParams({ page, pageSize, storeId, productId, startDate, endDate, });
-  }, [page, pageSize, storeId, productId ]);
+  }, [page, pageSize, storeId, productId, startDate, endDate ]);
 
   useEffect(() => {
     const pageFromUrl = parseInt(searchParams.get('page')) || 1;
@@ -116,9 +116,9 @@ export const ReportStockV2 = () => {
       </Modal>
           </Box>
                 </Flex>
-          <Flex flexDir='row' flexWrap='wrap' mb='10px'>
+          <Flex flexDir='row' flexWrap='wrap' mt='10px' mb='10px' >
           <Input value={startDate} onChange={(e) => setStartDate(e.target.value)} width='fit-content' type='date' />
-        <Text>-</Text>
+        <Text pl='10px' pr='10px'>_</Text>
       <Input value={endDate} onChange={(e) => setEndDate(e.target.value)} width='fit-content' type='date' />
             <Spacer />
             <Button borderRadius="full" backgroundColor="#286043" textColor="white" border="solid 1px #286043" onClick={() => { exportToExcel(data, startDate, endDate); }}>Export to Excel</Button>

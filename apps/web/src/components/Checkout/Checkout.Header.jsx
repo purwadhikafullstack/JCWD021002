@@ -8,7 +8,8 @@ export const CheckoutHeader = ({ heading, handleWebSize, size }) => {
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate(-1);
+    // navigate(-1);
+    navigate('/cart');
   };
 
   return (

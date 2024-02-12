@@ -16,9 +16,12 @@ import { CartBody } from '../../components/Cart/Cart.Body';
 import { useWebSize } from '../../provider.websize';
 import { CartSidebar } from '../../components/Cart/Cart.Sidebar';
 import EmptyCart from '../../assets/empty_cart.png';
+import { useNavigate } from 'react-router-dom';
 
 export const Cart = () => {
   const user = useSelector((state) => state.AuthReducer.user);
+  const location = useSelector((state) => state?.addressReducer?.address);
+  const userCityId =  location?.City?.id;
   const toast = useToast();
   const [carts, setCarts] = useState([]);
   const [quantities, setQuantities] = useState({});
@@ -45,10 +48,8 @@ export const Cart = () => {
       }
 
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/cart/${userId}`,
+        `${import.meta.env.VITE_API_URL}/cart/${userId}/${userCityId}`,
       );
-
-      console.log('Cart API Response:', response);
 
       const updatedCart = response?.data?.data[0]?.CartDetails || [];
       const updatedQuantities = updatedCart.reduce(
@@ -120,7 +121,6 @@ export const Cart = () => {
   };
 
   const deleteCartProduct = async (productStockId) => {
-    console.log(productStockId);
     try {
       const response = await axios.delete(
         `${import.meta.env.VITE_API_URL}/cart/delete-product/${userId}`,
@@ -139,6 +139,12 @@ export const Cart = () => {
       showToast('error', 'Error deleting item');
     }
   };
+
+  const navigate = useNavigate();
+
+  const handleShopping = () => {
+    navigate('/product-catalogue')
+  }
 
   return (
     <Box
@@ -176,7 +182,7 @@ export const Cart = () => {
               Yuk, telusuri promo menarik di Groceria!
             </Text>
           </VStack>
-          <Button colorScheme="teal" variant="outline">
+          <Button onClick={handleShopping} colorScheme="teal" variant="outline">
             Belanja Sekarang
           </Button>
         </Flex>
@@ -185,6 +191,8 @@ export const Cart = () => {
           <Heading hidden={size == '500px'} px={175} py={5} size="md">
             Keranjang
           </Heading>
+          {/* {location.length} */}
+          
 
           <Flex
             w={{ base: '100vw', md: size }}
@@ -201,7 +209,7 @@ export const Cart = () => {
               handleCheckboxAllChange={handleCheckboxAllChange}
               setIsScrolled={setIsScrolled}
               uniqueStoreIds={[
-                ...new Set(carts.map((item) => item.ProductStock.Store.id)),
+                ...new Set(carts.map((item) => item?.ProductStock?.Store?.id)),
               ]}
               carts={carts}
               fetchCart={fetchCart}

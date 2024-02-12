@@ -2,20 +2,14 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   Box,
-
   Text,
-
   IconButton,
-
   Flex,
-
   Avatar,
   Icon,
   Table, Thead, Tbody, Tr, Th, Td, TableContainer
-
 } from '@chakra-ui/react';
 import {
-
     IconCircleCheckFilled,
     IconCircleXFilled,
   IconEditCircle,

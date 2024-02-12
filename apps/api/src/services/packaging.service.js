@@ -12,7 +12,6 @@ const getPaginatedAndFilteredPackagingService = async (page, pageSize, sortField
     try {
       const result = await getPaginatedAndFilteredPackagingQuery(page, pageSize, sortField, sortOrder, packagingName);
   
-      console.log("service result:", result);
   
       return result;
     } catch (err) {
@@ -56,7 +55,6 @@ const getPaginatedAndFilteredPackagingService = async (page, pageSize, sortField
   const deletePackagingService = async (packagingId) => {
     try {
       const res1 = await getPackagingForProductQuery(packagingId)
-      console.log("ini res1",res1);
       if(res1.length > 1) {
         return "The Packaging Used in Another Product"
       }

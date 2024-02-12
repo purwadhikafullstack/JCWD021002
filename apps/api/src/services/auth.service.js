@@ -42,7 +42,6 @@ const sentMail = async (email, template, setPasswordLink) => {
       html: tempResult,
     });
   } catch (err) {
-    console.log(err)
     throw err
   }
 }
@@ -101,7 +100,6 @@ export const registerService = async (username, email, password, fullname) => {
       verification_status,
       googleLogin
     );
-
     return res;
   } catch (err) {
     throw err;
@@ -269,7 +267,6 @@ export const setPasswordService = async (resetToken, password) => {
       throw new Error('Token has expired');
     } else {
       // Kesalahan lain selain TokenExpiredError
-      console.log(err)
       throw err;
     }
   }
@@ -323,7 +320,6 @@ export const changeEmailVerifyService = async (id, password) => {
     return "Terverifikasi"
 
   } catch (err) {
-    console.log(err)
     throw err
   }
 }
@@ -340,7 +336,6 @@ export const changeEmailService = async (id, newEmail) => {
 
     const resetToken = jwt.sign({ newEmail }, secretKey, { expiresIn: '1hr' });
 
-    console.log('halo')
     const templateOld = 'emailTemplateOld.html'
     const templateNew = 'emailTemplateNew.html'
 
@@ -348,8 +343,6 @@ export const changeEmailService = async (id, newEmail) => {
     sentMail(newEmail, templateNew)
 
     const res = await changeEmailQuery(id, newEmail, resetToken)
-
-    console.log(res)
 
   } catch (err) {
     throw err
@@ -401,7 +394,6 @@ export const verifyService = async (email, isNew) => {
 
 export const reVerifyService = async (email, isNew) => {
   try {
-    console.log(email, isNew)
     const secretKey = process.env.JWT_SECRET_KEY;
     if (!secretKey) {
       throw new Error('JWT_SECRET_KEY is not set in the environment');

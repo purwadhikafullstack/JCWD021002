@@ -33,7 +33,6 @@ export const ProductRating = ({productId}) => {
   const navigate = useNavigate();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  console.log('ini productId', productId);
   const fetchData = async (productId) => {
     try {
         const response = await axios.get(
@@ -47,17 +46,9 @@ export const ProductRating = ({productId}) => {
   }
   }
 
-  console.log("ini rating", data);
-  console.log("ini rating", data?.totalPages);
-
-
-
-
-
   useEffect(() => {
     fetchData(productId);
   }, [page, pageSize, rating, sortOrder, productId]);
-
 
   return (
                
@@ -94,7 +85,7 @@ export const ProductRating = ({productId}) => {
               </VStack>
               <Drawer  placement="bottom" onClose={() => {setPageSize(1); setIsDrawerOpen(false);}} size='xs' isOpen={isDrawerOpen}>
     <DrawerOverlay />
-    <DrawerContent justifySelf='center' alignSelf='center' margin='auto' sx={size == '500px' ? {w : size} : {maxW : '35vw'}} maxH={size == '500px' ? '90vh' : 'full'}>
+    <DrawerContent justifySelf='center' alignSelf='center' margin='auto' w='500px' sx={size == '500px' ? {w : size} : {maxW : '35vw'}} maxH={size == '500px' ? '90vh' : 'full'}>
       <DrawerCloseButton />
       <DrawerHeader>Ulasan</DrawerHeader>
       <DrawerBody width='500px' alignSelf='center'>

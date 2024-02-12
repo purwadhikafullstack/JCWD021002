@@ -10,6 +10,7 @@ const useVoucherController = async (req, res) => {
         const result = await useVoucherService( order, voucher, id );
         return res.status(201).json({message: 'Order updated successfully', data: result})
     } catch (err) {
+
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 }
@@ -19,13 +20,9 @@ const useShippingVoucherController = async (req, res) => {
         const { order, voucher } = req.body;
         const { id } = req.user;
         
-        console.log("ini shipping voucher controller", order, voucher);
-
-
         const result = await useShippingVoucherService( order, voucher, id, );
         return res.status(201).json({message: 'Order updated successfully', data: result})
     } catch (err) {
-        console.log(err);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 }
@@ -38,7 +35,6 @@ const redeemReferralController = async (req, res) => {
         const result = await redeemReferralService(id, referral);
         return res.status(201).json({message: 'Redeem referral successfully', data: result})
     } catch (err) {
-        console.log(err);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 }
@@ -52,7 +48,6 @@ const voucherUserListsController = async (req, res) => {
         const result = await voucherUserListsService(id, page, pageSize);
         return res.status(201).json(result)
     } catch (err) {
-        console.log(err);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 }

@@ -23,6 +23,8 @@ export const ListProductOrder = ({
   selectedShipping,
   setSelectedshipping,
   address,
+  fetchOrder,
+  selectedAddres,
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [storeId, setStoreId] = useState();
@@ -51,7 +53,7 @@ export const ListProductOrder = ({
   const handleChoseShipping = (origin, destination) => {
     setStoreId(origin);
     setDestination(destination);
-    // shippingCost(origin, destination);
+    shippingCost(origin, destination);
     onOpen();
   };
   useEffect(() => {
@@ -60,7 +62,10 @@ export const ListProductOrder = ({
     } else {
       shippingCost(storeId, destination);
     }
-  }, [storeId, address, destination]);
+    if (selectedAddres) {
+      setSelectedshipping();
+    }
+  }, [storeId, address, destination, selectedAddres, setSelectedshipping]);
 
   const dateEstimate = (estimateString) => {
     const [normalDays, expressDays] = estimateString.split('-').map(Number);
@@ -84,39 +89,35 @@ export const ListProductOrder = ({
     return `${formattedNormal} - ${formattedExpress}`;
   };
 
-  console.log("ini order detail", orderDetail);
-
-
   return (
-    <Flex direction={'column'} w='full'>
+    <Flex direction={'column'} w="full">
       {/* {order.map((item, index) => ( */}
-        <Stack p={4} pl={5} pr={5} background="white">
+      <Stack p={4} pl={5} pr={5} background="white">
         <Text>{order?.Store?.name}</Text>
         {/* <Text>{item?.id}</Text> */}
         {orderDetail.map((item, index) => (
-
-            <Flex key={index} gap={2}>
-              <Image
-                w="4em"
-                h="4em"
-                backgroundColor="white"
-                src={`${import.meta.env.VITE_API_IMAGE_URL}/products/${
-                  item?.ProductStock?.Product?.ProductImages[0]?.imageUrl
-                }`}
-                alt={item?.ProductStock?.Product?.name}
-                objectFit="cover"
-                rounded={10}
-              />
-              <Box>
-                <Text>{item?.ProductStock?.Product?.name}</Text>
-                <Text fontWeight="semibold">
-                  {item?.quantity} x{' '}
-                  {angkaRupiahJs(item?.ProductStock?.Product?.price, {
-                    formal: false,
-                  })}
-                </Text>
-              </Box>
-            </Flex>
+          <Flex key={index} gap={2}>
+            <Image
+              w="4em"
+              h="4em"
+              backgroundColor="white"
+              src={`${import.meta.env.VITE_API_IMAGE_URL}/products/${
+                item?.ProductStock?.Product?.ProductImages[0]?.imageUrl
+              }`}
+              alt={item?.ProductStock?.Product?.name}
+              objectFit="cover"
+              rounded={10}
+            />
+            <Box>
+              <Text>{item?.ProductStock?.Product?.name}</Text>
+              <Text fontWeight="semibold">
+                {item?.quantity} x{' '}
+                {angkaRupiahJs(item?.ProductStock?.Product?.price, {
+                  formal: false,
+                })}
+              </Text>
+            </Box>
+          </Flex>
         ))}
         <Button
           rightIcon={<IoIosArrowForward color="gray.600" />}
@@ -128,7 +129,7 @@ export const ListProductOrder = ({
           onClick={() =>
             handleChoseShipping(
               order?.Store?.city_idcity,
-              selectedItem?.city_idcity,
+              selectedAddres?.city_idcity,
             )
           }
           h={'fit-content'}
@@ -145,9 +146,7 @@ export const ListProductOrder = ({
                   }
                 </Text>
                 <Text fontSize={'12px'} fontWeight={400}>
-                  Estimasi tiba {
-                    dateEstimate(selectedShipping.cost[0].etd)
-                  }
+                  Estimasi tiba {dateEstimate(selectedShipping.cost[0].etd)}
                 </Text>
               </Flex>
 
@@ -206,7 +205,7 @@ export const ListProductOrder = ({
               </Flex>
             </>
           ))} */}
-          {/* <Button
+      {/* <Button
             rightIcon={<IoIosArrowForward color="gray.600" />}
             variant="outline"
             // _hover={{ color: 'black', opacity: 0.9 }}
@@ -261,6 +260,8 @@ export const ListProductOrder = ({
         orderDetail={orderDetail}
         shipping={shipping}
         dateEstimate={dateEstimate}
+        orderId={orderDetail[0]?.order_idorder}
+        fetchOrder={fetchOrder}
       />
     </Flex>
   );
