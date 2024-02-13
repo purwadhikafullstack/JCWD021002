@@ -17,6 +17,7 @@ export const BottomBar = () => {
   const user = useSelector((state) => state.AuthReducer.user);
   const token = localStorage.getItem('token');
   const { size } = useWebSize();
+  const isLogin = useSelector((state) => state.AuthReducer.isLogin);
 
   const bar = [
     {
@@ -80,9 +81,8 @@ export const BottomBar = () => {
     },
     {
       text: 'Profile',
-      icon:
-        token &&
-        (user.avatar ? (
+      icon: token ? (
+        user.avatar ? (
           <Box
             display="inline-block"
             bg={active === '/profile' ? 'green.700' : 'transparent'}
@@ -117,12 +117,27 @@ export const BottomBar = () => {
               )}
             </Box>
           </Tooltip>
-        )),
+        )
+      ) : (
+        <Tooltip label="Profile" fontSize="md" hasArrow placement="top">
+          <Box
+            display="inline-block"
+            bg={active === '/profile' ? 'green.700' : 'transparent'}
+            borderRadius="full"
+            p={1}
+            cursor="pointer"
+          >
+            {active === '/profile' ? (
+              <IoPersonCircleSharp size={'26px'} color="white" />
+            ) : (
+              <IoPersonCircleOutline size={'26px'} color="green.700" />
+            )}
+          </Box>
+        </Tooltip>
+      ),
       link: '/profile',
     },
   ];
-
-  const isLogin = useSelector((state) => state.AuthReducer.isLogin);
 
   useEffect(() => {
     const pathName = path.pathname;
