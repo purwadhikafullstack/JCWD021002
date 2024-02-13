@@ -4,7 +4,8 @@ const {
     getDetailUserService,
     addUserService,
     getStoreService,
-    deleteUserService
+    deleteUserService,
+    getStoreListsService,
 } = require('../services/user.service');
 
 
@@ -66,6 +67,7 @@ const getStoreController = async (req, res) => {
 
         return res.status(200).json(result);
     } catch (err) {
+        console.log(err);
         return res.status(500).json({ error: 'Internal Server Error' })
     }
 }
@@ -85,6 +87,16 @@ const deleteUserController = async (req, res) => {
     }
 }
 
+const getStoreListsController = async (req, res) => {
+    try {
+        const result = await getStoreListsService();
+        return res.status(200).json(result);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err.message)
+    }
+}
+
 module.exports = {
     getUserController,
     updateUserController,
@@ -92,4 +104,5 @@ module.exports = {
     addUserController,
     getStoreController,
     deleteUserController,
+    getStoreListsController,
 }
