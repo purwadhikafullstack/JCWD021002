@@ -108,7 +108,7 @@ useEffect(() => {
   }, []);
 
   return (
-    <Box w={{ base: '100vw', md: size }} overflowX='hidden'>
+    <Box w={{ base: '100vw', md: size }} overflowX='hidden' height='full'>
       <ToastContainer position="top-center" closeOnClick pauseOnFocusLoss draggable pauseOnHover theme="colored" />
           <SideBar size={size} handleWebSize={handleWebSize}/>
     <Box backgroundColor='#f5f5f5'  w={{ base: '100vw', md: size }} p={size == '500px' ? 0 : 5} height='full' >
