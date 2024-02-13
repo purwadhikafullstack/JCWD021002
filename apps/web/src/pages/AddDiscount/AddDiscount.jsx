@@ -105,7 +105,7 @@ const AddDiscount = () => {
       formData.append("discount", fieldImage);
 
       await axios.post(
-        `${import.meta.env.VITE_API_URL}discount/add-discount`,
+        `${import.meta.env.VITE_API_URL}/discount/add-discount`,
         formData,
         {headers: {
           Authorization: `Bearer ${token}`,

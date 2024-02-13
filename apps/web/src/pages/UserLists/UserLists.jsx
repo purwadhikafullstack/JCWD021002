@@ -46,7 +46,7 @@ const UserLists = () => {
       let newStatus = selectedUser?.status === 'Active' ? 'Deactive' : 'Active';
   
       const result = await axios.patch(
-        `${import.meta.env.VITE_API_URL}user/update-user`,
+        `${import.meta.env.VITE_API_URL}/user/update-user`,
         {
           id: selectedUser?.id,
           status: newStatus,
