@@ -263,7 +263,7 @@ const Product = () => {
         <Link to="/">
     <Text color='#00c689' fontWeight='bold' >Home</Text>
   </Link>
-  {size === '500px' ? null : (
+  {size == '500px' ? null : (
   <>
     <IconChevronRight />
     {data?.result?.Product?.ProductCategories?.map((item, index) => (

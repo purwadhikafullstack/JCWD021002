@@ -13,7 +13,7 @@ const {
         try {
             const res2 = await findAlreadyStockQuery(productId, storeId);
 
-            if(res2?.length == 0) {
+            if(res2 == null) {
             const result = await addProductStockQuery(stockProduct, productId, storeId)
             const res1 = await addJournalQuery(storeId, stockProduct, 0, stockProduct, adminId, result.id)
             return result
