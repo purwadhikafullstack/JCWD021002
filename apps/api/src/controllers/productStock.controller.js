@@ -12,7 +12,7 @@ const {
 
             res.status(201).json({message: 'Product Stock Added Successfully', data: {result}})
         } catch (err) {
-            
+            console.log(err);
             return res.status(500).json({ error: 'Internal Server Error' });
         }
     }
