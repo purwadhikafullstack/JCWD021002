@@ -58,7 +58,7 @@ export const updateProduct = async (
 export const fetchCategory = async (setDataCategory) => {
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}category/category-lists`
+      `${import.meta.env.VITE_API_URL}/category/category-lists`
     );
     setDataCategory(response?.data?.categories);
     return response?.data;
@@ -71,7 +71,7 @@ export const fetchCategory = async (setDataCategory) => {
 export const fetchMass = async (setDataMass) => {
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}mass/mass-lists`
+      `${import.meta.env.VITE_API_URL}/mass/mass-lists`
     );
     setDataMass(response?.data?.mass);
     return response?.data;
@@ -84,7 +84,7 @@ export const fetchMass = async (setDataMass) => {
 export const fetchPackaging = async (setDataPackaging) => {
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}packaging/packaging-lists`
+      `${import.meta.env.VITE_API_URL}/packaging/packaging-lists`
     );
     setDataPackaging(response?.data?.packaging);
     return response?.data;
@@ -98,7 +98,7 @@ export const confirmDeleteImage = async (imageToDelete, closeDeleteImageModal) =
     try {
       const { imageUrl, productId } = imageToDelete;
   
-      await axios.delete(`${import.meta.env.VITE_API_URL}products/delete-product-image`,
+      await axios.delete(`${import.meta.env.VITE_API_URL}/products/delete-product-image`,
       {
           data: { imageUrl, productId },
       });
@@ -111,7 +111,7 @@ export const confirmDeleteImage = async (imageToDelete, closeDeleteImageModal) =
 export const removeCategoryFromProduct = async (categoryId, productId, toastSuccess, reloadPage) => {
   try {
     await axios.delete(
-      `${import.meta.env.VITE_API_URL}category/remove-category-product`,
+      `${import.meta.env.VITE_API_URL}/category/remove-category-product`,
       {
         data: { categoryId, productId },
       }

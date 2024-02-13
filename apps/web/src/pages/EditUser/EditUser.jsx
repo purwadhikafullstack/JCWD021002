@@ -88,7 +88,7 @@ const EditUser = () => {
       formData.append("avatar", fieldImage);
 
       await axios.patch(
-        `${import.meta.env.VITE_API_URL}user/update-user`,
+        `${import.meta.env.VITE_API_URL}/user/update-user`,
         formData,
       );
 
