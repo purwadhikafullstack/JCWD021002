@@ -5,7 +5,8 @@ const {
     addUserQuery,
     findUserQuery,
     getStoreQuery,
-    deleteUserQuery
+    deleteUserQuery,
+    getStoreListsQuery,
 } = require('../queries/user.query');
 const bcrypt = require("bcrypt");
 
@@ -82,11 +83,21 @@ const deleteUserService = async (id, password) => {
     }
 }
 
+const getStoreListsService = async () => {
+    try {
+        const result = await getStoreListsQuery();
+        return result;
+    } catch (err) {
+        throw err;
+    }
+}
+
 module.exports = {
     getUserService,
     updateUserService,
     getDetailUserService,
     addUserService,
     getStoreService,
-    deleteUserService
+    deleteUserService,
+    getStoreListsService,
 }

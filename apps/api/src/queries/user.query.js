@@ -326,6 +326,15 @@ const deleteUserQuery = async (id) => {
   }
 }
 
+const getStoreListsQuery = async () => {
+  try {
+    const result = await Store.findAll();
+    return result;
+  } catch (err) {
+    throw err;
+  }
+}
+
 module.exports = {
   getUserQuery,
   updateUserQuery,
@@ -338,4 +347,5 @@ module.exports = {
   getUserRoleQuery,
   resetPasswordQuery,
   deleteUserQuery,
+  getStoreListsQuery,
 };
