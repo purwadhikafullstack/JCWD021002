@@ -85,7 +85,7 @@ function ProductStockLists() {
     fetchStore(setDataStore);
   }, []);
   return (
-    <Box w={{ base: '100vw', md: size }} overflowX="hidden">
+    <Box w={{ base: '100vw', md: size }} overflowX="hidden" height='full'>
       <SideBar size={size} handleWebSize={handleWebSize} />
       <Box backgroundColor="#f5f5f5" w={{ base: '100vw', md: size }} p={size == '500px' ? 0 : 5} height="full" >
         <HStack mb="10px" p={0}></HStack>
