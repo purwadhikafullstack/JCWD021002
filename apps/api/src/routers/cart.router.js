@@ -6,6 +6,7 @@ import {
   deleteCartItemController,
   getCartController,
 } from '../controllers/cart.controller';
+import { verifyToken } from '../middlewares/auth';
 
 const cartRouter = Router();
 
@@ -15,7 +16,7 @@ cartRouter.post('/', async (req, res) => {
 });
 
 // PUT
-cartRouter.put('/update/:userId/:productId/:newQuantity', async (req, res) => {
+cartRouter.put('/update/:productId/:newQuantity', verifyToken, async (req, res) => {
   await updateItemCartQtyController(req, res);
 });
 

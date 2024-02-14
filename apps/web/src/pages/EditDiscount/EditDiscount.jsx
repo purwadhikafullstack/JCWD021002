@@ -171,6 +171,7 @@ const EditDiscount = () => {
       formData.append("productStock_idproductStock", productId);
       formData.append("status", status);
       formData.append("discount", fieldImage);
+      formData.append("storeId", storeId);
 
       await axios.patch(
         `${import.meta.env.VITE_API_URL}/discount/edit-discount`,

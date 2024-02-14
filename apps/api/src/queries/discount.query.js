@@ -255,6 +255,7 @@ const moment = require('moment');
         banner,
         discountNom,
         distributionId,
+        store_idstore,
     ) => {
         try {
             const addedValue = {
@@ -275,6 +276,7 @@ const moment = require('moment');
                 banner,
                 discountNom,
                 distributionId,
+                store_idstore,
               };
         
               // Remove properties with null values
@@ -311,6 +313,7 @@ const moment = require('moment');
         name,
         description,
         status,
+        store_idstore,
     ) => {
         try {
 
@@ -332,6 +335,7 @@ const moment = require('moment');
                 name,
                 description,
                 status,
+                store_idstore,
               };
         
               // Remove properties with null values
