@@ -24,8 +24,6 @@ export const CartIcon = () => {
   const [carts, setCarts] = useState([]);
   const cartDetail = carts[0]?.CartDetails;
   // const token = localStorage.getItem('token');
-  console.log(carts[0]?.CartDetails[0]?.quantity);
-  console.log(cartDetail);
   const fetchCarts = async (userId) => {
     try {
       const response = await axios.get(
@@ -38,7 +36,6 @@ export const CartIcon = () => {
   };
 
   const totalQuantity = calculateTotalQuantity(cartDetail);
-  console.log(totalQuantity);
   useEffect(() => {
     if (user?.id) {
       fetchCarts(user.id);

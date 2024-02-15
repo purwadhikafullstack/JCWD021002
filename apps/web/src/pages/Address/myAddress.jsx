@@ -11,6 +11,7 @@ export const MyAddress = () => {
   const fromPage = new URLSearchParams(location.search).get('fromPage');
   const navigate = useNavigate();
   const [update, setUpdate] = useState(false);
+  console.log(location.pathname);
   return (
     <Flex w={size} bgColor={'#F8F9FAFF'}>
       <Flex w={'full'} direction={'column'}>
@@ -27,7 +28,13 @@ export const MyAddress = () => {
           <Flex position={'absolute'}>
             <Button
               variant={'unstyled'}
-              onClick={fromPage ? () => navigate(fromPage) : () => navigate(-1)}
+              onClick={
+                fromPage
+                  ? () => navigate(fromPage)
+                  : location?.pathname == '/profile/detail/address/add'
+                    ? () => navigate('/profile/detail/address')
+                    : () => navigate('/profile/detail')
+              }
             >
               <MdArrowBackIos />
             </Button>
@@ -39,7 +46,7 @@ export const MyAddress = () => {
           </Flex>
         </Flex>
 
-        <Outlet context={[update, setUpdate]}/>
+        <Outlet context={[update, setUpdate]} />
       </Flex>
     </Flex>
   );

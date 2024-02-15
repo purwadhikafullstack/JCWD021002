@@ -1,26 +1,9 @@
-import {
-  Input,
-  Card,
-  Flex,
-  Text,
-  Grid,
-  Menu,
-  MenuButton,
-  MenuList,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
-  Button,
-  Box,
-} from '@chakra-ui/react';
+import { Input, Card, Flex, Text, Grid, Button } from '@chakra-ui/react';
 import { useWebSize } from '../../provider.websize';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { EditStore } from './editStore';
 import { AddStore } from './addStore';
-import { CiFilter } from 'react-icons/ci';
 import DeleteAlert from '../../components/DeleteAlert';
 
 export const StoreList = () => {
@@ -41,9 +24,10 @@ export const StoreList = () => {
       console.log(err);
     }
   };
-
+  
   useEffect(() => {
     getStore(inputValue);
+    setUpdateStore(false)
   }, [updateStore, inputValue]);
 
   const handleClick = (items) => {
@@ -63,7 +47,13 @@ export const StoreList = () => {
   };
 
   return (
-    <Flex direction={'column'} w={'full'} gap={size == '500px' ? 5 : '40px'} mt={'80px'} px={size == '100vw' && '30px'}>
+    <Flex
+      direction={'column'}
+      w={'full'}
+      gap={size == '500px' ? 5 : '40px'}
+      mt={'80px'}
+      px={size == '100vw' && '30px'}
+    >
       <Flex justify={'space-between'}>
         <Flex w={'40%'}>
           <Input
@@ -74,49 +64,6 @@ export const StoreList = () => {
           />
         </Flex>
         <Flex gap={2}>
-          <Menu>
-            <MenuButton as={Button} variant={'unstyled'}>
-              <CiFilter size={'28px'} />
-            </MenuButton>
-            <MenuList>
-              <Accordion allowToggle>
-                <AccordionItem>
-                  <h2>
-                    <AccordionButton>
-                      <Box as="span" flex="1" textAlign="left">
-                        Provinsi
-                      </Box>
-                      <AccordionIcon />
-                    </AccordionButton>
-                  </h2>
-                  <AccordionPanel pb={4}>
-                    <ul>
-                      {/* {province?.map((item) => (
-                        <li key={item.province}>{item?.province}</li>
-                      ))} */}
-                    </ul>
-                  </AccordionPanel>
-                </AccordionItem>
-
-                <AccordionItem>
-                  <h2>
-                    <AccordionButton>
-                      <Box as="span" flex="1" textAlign="left">
-                        Kota / Kabupaten
-                      </Box>
-                      <AccordionIcon />
-                    </AccordionButton>
-                  </h2>
-                  <AccordionPanel pb={4} maxW={'220px'}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                    do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                    ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                  </AccordionPanel>
-                </AccordionItem>
-              </Accordion>
-            </MenuList>
-          </Menu>
           <AddStore setUpdate={setUpdateStore} />
         </Flex>
       </Flex>
@@ -159,7 +106,11 @@ export const StoreList = () => {
                     titleValue={'Hapus Store'}
                     mainValue={`Apakah kamu yakin ingin menhapus ${item?.name}?`}
                     deleteAction={() => handleDelete(item?.id)}
-                    style={{ color: 'colors.tertiary', fontWeight: '400', size: 'xm'}}
+                    style={{
+                      color: 'colors.tertiary',
+                      fontWeight: '400',
+                      size: 'xm',
+                    }}
                     buttonActionValue={'Delete'}
                   />
                 </Flex>

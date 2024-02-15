@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { CiCirclePlus } from 'react-icons/ci';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { Link, useOutletContext } from 'react-router-dom';
 import DeleteAlert from '../../components/DeleteAlert';
 import toast from 'react-hot-toast';
 import { useWebSize } from '../../provider.websize';
@@ -16,7 +16,7 @@ export const AddressList = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [address, setAddress] = useState();
   const userId = useSelector((state) => state.AuthReducer?.user?.id);
-  const navigate = useNavigate();
+  // const [update, setUpdate] = useState();
   const [update, setUpdate] = useOutletContext();
   const { size } = useWebSize();
 
@@ -26,6 +26,7 @@ export const AddressList = () => {
         `${import.meta.env.VITE_API_URL}/address/getAddress/${userId}`,
       );
       setAddress(res?.data?.data);
+      setUpdate(false);
     } catch (err) {
       console.log(err);
     }
@@ -34,6 +35,10 @@ export const AddressList = () => {
   useEffect(() => {
     getAddress(userId);
   }, [update, userId]);
+
+  useEffect(() => {
+    getAddress(userId);
+  }, [userId]);
 
   const handleClick = (item) => {
     setSelectedItem(item);
@@ -142,19 +147,21 @@ export const AddressList = () => {
         onClose={onClose}
       />
 
-      <Button
-        w={'full'}
-        h={'50px'}
-        display={'flex'}
-        justifyContent={'space-between'}
-        bgColor={'colors.greenBg'}
-        color={'colors.primary'}
-        onClick={() => navigate('/profile/detail/address/add')}
-        my={'20px'}
-      >
-        Tambah Alamat
-        <CiCirclePlus size={'24px'} />
-      </Button>
+      <Link to={'/profile/detail/address/add'}>
+        <Button
+          w={'full'}
+          h={'50px'}
+          display={'flex'}
+          justifyContent={'space-between'}
+          bgColor={'colors.greenBg'}
+          color={'colors.primary'}
+          // onClick={handleNavigate}
+          my={'20px'}
+        >
+          Tambah Alamat
+          <CiCirclePlus size={'24px'} />
+        </Button>
+      </Link>
     </Flex>
   );
 };
