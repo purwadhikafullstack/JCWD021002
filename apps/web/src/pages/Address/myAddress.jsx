@@ -11,7 +11,6 @@ export const MyAddress = () => {
   const fromPage = new URLSearchParams(location.search).get('fromPage');
   const navigate = useNavigate();
   const [update, setUpdate] = useState(false);
-  console.log(location.pathname);
   return (
     <Flex w={size} bgColor={'#F8F9FAFF'}>
       <Flex w={'full'} direction={'column'}>
