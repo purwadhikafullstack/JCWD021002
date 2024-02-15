@@ -103,6 +103,7 @@ const AddDiscount = () => {
       formData.append("description", description);
       formData.append("productStock_idproductStock", productId);
       formData.append("discount", fieldImage);
+      formData.append("storeId", storeId);
 
       await axios.post(
         `${import.meta.env.VITE_API_URL}/discount/add-discount`,
@@ -185,7 +186,7 @@ const AddDiscount = () => {
               size="md"
               onChange={(event) => {
                 setFieldImage(event.currentTarget.files[0]);
-              handleImageChange}}
+              handleImageChange(event)}}
             />
       <IconButton
         onClick={() => document.getElementById('fileInput').click()}

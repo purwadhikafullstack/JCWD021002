@@ -33,13 +33,16 @@ export const CartItemList = ({
         : [...prevSelectedItems, cartDetailId],
     );
   };
+  const token = localStorage.getItem("token");
 
   const updateQuantities = async (productId, newQuantity) => {
     try {
       const response = await axios.put(
-        `${import.meta.env.VITE_API_URL}/cart/update/${
-          user.id
-        }/${productId}/${newQuantity}`,
+        `${import.meta.env.VITE_API_URL}/cart/update/${productId}/${newQuantity}`,
+        null,
+        {headers: {
+          Authorization: `Bearer ${token}`,
+        }}
       );
 
       if (response.status === 200)

@@ -79,7 +79,7 @@ function ProductStockLists() {
     fetchData();
   }, [ user, page, pageSize, sortField, sortOrder, categoryId, productName, statusStock, storeId,
   ]);
-
+console.log(data);
   useEffect(() => {
     fetchCategory(setDataCategory);
     fetchStore(setDataStore);

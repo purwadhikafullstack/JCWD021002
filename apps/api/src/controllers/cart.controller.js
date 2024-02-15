@@ -23,9 +23,11 @@ export const createCartController = async (req, res) => {
 
 export const updateItemCartQtyController = async (req, res) => {
   try {
-    const { userId, productId, newQuantity } = req.params;
+    const { id } = req.user;
+    const { productId, newQuantity } = req.params;
+    console.log("ini di controller", id, productId, newQuantity);
     const result = await updateCartItemQtyService(
-      userId,
+      id,
       productId,
       newQuantity,
     );
