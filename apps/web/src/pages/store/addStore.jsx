@@ -14,9 +14,6 @@ import {
   useDisclosure,
   FormControl,
   Input,
-  List,
-  ListItem,
-  Box,
 } from '@chakra-ui/react';
 import { useWebSize } from '../../provider.websize';
 import { useFormik } from 'formik';

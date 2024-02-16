@@ -1,13 +1,22 @@
 import Store from '../models/store.model';
 import City from '../models/city.model';
 import Province from '../models/province.model';
-import { where } from 'sequelize';
+const { Op } = require('sequelize');
 
-export const getStoreQuery = async () => {
+export const getStoreQuery = async ({ name = null }) => {
   try {
+    let whereCondition = {}
+    if (name) {
+      whereCondition.name = {
+        [Op.like]: `%${name}%`,
+      };
+    }
     const res = await Store.findAll({
       include: [{ model: City, include: [{ model: Province }] }],
-      where: { status: 'active' }
+      where: {
+        ...whereCondition,
+        status: 'active',
+      }
     });
 
     return res;
@@ -24,6 +33,7 @@ export const addStoreQuery = async (storeName, latitude, longitude, storeAddress
       latitude: latitude,
       longitude: longitude,
       storeAddress: storeAddress,
+      status: 'active'
     });
     return res;
   } catch (err) {

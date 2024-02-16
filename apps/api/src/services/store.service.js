@@ -11,7 +11,6 @@ export const getStoreListService = (name) => {
   try {
     const res = getStoreQuery({name})
 
-
     return res
   } catch (err) {
     throw err

@@ -27,7 +27,13 @@ export const MyAddress = () => {
           <Flex position={'absolute'}>
             <Button
               variant={'unstyled'}
-              onClick={fromPage ? () => navigate(fromPage) : () => navigate(-1)}
+              onClick={
+                fromPage
+                  ? () => navigate(fromPage)
+                  : location?.pathname == '/profile/detail/address/add'
+                    ? () => navigate('/profile/detail/address')
+                    : () => navigate('/profile/detail')
+              }
             >
               <MdArrowBackIos />
             </Button>
@@ -39,7 +45,7 @@ export const MyAddress = () => {
           </Flex>
         </Flex>
 
-        <Outlet context={[update, setUpdate]}/>
+        <Outlet context={[update, setUpdate]} />
       </Flex>
     </Flex>
   );
