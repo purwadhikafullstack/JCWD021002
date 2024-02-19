@@ -6,14 +6,8 @@ import {
   Text,
   Spacer, FormLabel,
   useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalHeader,
-  ModalContent, ModalCloseButton, ModalBody, ModalFooter, Input, Flex, Select, VStack,
-} from '@chakra-ui/react';
-import {
-  IconAdjustmentsHorizontal,
-} from '@tabler/icons-react';
+  Modal, ModalOverlay, ModalHeader, ModalContent, ModalCloseButton, ModalBody, ModalFooter, Input, Flex, Select, VStack, } from '@chakra-ui/react';
+import { IconAdjustmentsHorizontal, } from '@tabler/icons-react';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import SideBar from '../../components/SideBar/SideBar';
 import { TableLists } from './TableLists';
@@ -65,8 +59,6 @@ const ReportSales = () => {
       setStoreId(user?.store_idstore);
     }
   }, []);
-
-
 
   const fetchCategory = async () => {
     try {
