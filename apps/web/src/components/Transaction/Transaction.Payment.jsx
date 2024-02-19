@@ -23,13 +23,18 @@ export const PaymentDrawer = ({
   fetchOrder,
 }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const token = localStorage.getItem("token");
 
   const handleCancleOrder = async (orderId) => {
     try {
-      const result = await axios.patch(
-        `${
-          import.meta.env.VITE_API_URL
-        }/order-management/cancel-order/${userId}/${orderId}`,
+      const response = await axios.patch(
+        `${import.meta.env.VITE_API_URL}/checkout/cancel-order/${orderId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       toast({
@@ -43,7 +48,7 @@ export const PaymentDrawer = ({
       onClose();
       fetchOrder()
 
-      return result;
+      return response;
     } catch (err) {
       console.error('Error canceling order', err);
 

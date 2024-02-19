@@ -2,8 +2,9 @@ import { afterPaymentService, getPaymentCustomerService, paymentGatewayService, 
 
 export const getPaymentCustomerController = async (req, res) => {
   try {
-    const {userId, orderId} = req.params;
-    const result = await getPaymentCustomerService(userId, orderId);
+    const { id } = req.user;
+    const { orderId} = req.params;
+    const result = await getPaymentCustomerService(id, orderId);
     return res.status(200).json({
       success: true,
       message: 'Get Order Successfully',
@@ -19,8 +20,9 @@ export const getPaymentCustomerController = async (req, res) => {
 
 export const paymentGatewayController = async (req, res) => {
     try {
-        const { userId, orderId, totalPrice, shippingCost, products } = req.body
-        const result = await paymentGatewayService(userId, orderId, totalPrice, shippingCost, products);
+        const { id } = req.user;
+        const { orderId, totalPrice, shippingCost, products } = req.body
+        const result = await paymentGatewayService(id, orderId, totalPrice, shippingCost, products);
         return res.status(200).json({
             success: true,
             message: 'Get Token Midtrans Successfully',
@@ -41,7 +43,7 @@ export const updateOrderController = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: 'Get Token Midtrans Successfully',
-      data: result,
+      data: result, 
     });
   } catch (err) {
     console.error(err.message);

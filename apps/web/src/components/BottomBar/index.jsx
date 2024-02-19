@@ -77,7 +77,7 @@ export const BottomBar = () => {
           </Box>
         </Tooltip>
       ),
-      link: '/transaction?status=all_transaction',
+      link: isLogin ? '/transaction?status=all_transaction' : '/profile', 
     },
     {
       text: 'Profile',

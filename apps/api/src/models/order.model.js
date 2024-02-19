@@ -37,9 +37,11 @@ export const init = (sequelize) => {
       },
       paymentCode: {
         type: DataTypes.STRING(255),
+        allowNull: true,
       },
       paymentStatus: {
         type: DataTypes.STRING(255),
+        allowNull: true,
       },
       totalDiscount: {
         type: DataTypes.INTEGER,

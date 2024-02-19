@@ -71,15 +71,17 @@ const OrderItem = ({
             <Text fontSize="medium" fontWeight="bold">
               Pesanan Baru
             </Text>
-            <Text>{new Date(item.orderDate).toLocaleString('id-ID', {
-                                year: 'numeric',
-                                month: 'long', // 'long' for full month name, 'short' for abbreviated
-                                day: 'numeric',
-                                hour: 'numeric',
-                                minute: 'numeric',
-                                // second: 'numeric',
-                                timeZone: 'Asia/Jakarta', // Adjust the time zone to match Indonesia's time zone
-                            })}</Text>
+            <Text>
+              {new Date(item.orderDate).toLocaleString('id-ID', {
+                year: 'numeric',
+                month: 'long', // 'long' for full month name, 'short' for abbreviated
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                // second: 'numeric',
+                timeZone: 'Asia/Jakarta', // Adjust the time zone to match Indonesia's time zone
+              })}
+            </Text>
           </Box>
         </Flex>
         <Flex
@@ -215,6 +217,7 @@ const formatAmount = (amount) => {
 export const OrderManagement = () => {
   const user = useSelector((state) => state.AuthReducer.user);
   const userId = user?.id;
+  const token = localStorage.getItem('token');
   const [orderId, setOrderId] = useState('');
   const [selectedStoreId, setSelectedStoreId] = useState();
   const [store, setStore] = useState([]);
@@ -274,38 +277,52 @@ export const OrderManagement = () => {
         console.warn('User ID not available. Skipping order fetch.');
         return;
       }
-  
+
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/order-management/${userId}`,
+        `${import.meta.env.VITE_API_URL}/order-management/`,
         {
           storeId: selectedStoreId,
           status: newStatus,
           paymentStatus: paymentStatus,
         },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
       );
-  
+
       setOrder(response?.data?.data);
     } catch (err) {
       console.error('Error fetching order', err);
     }
   };
-  
 
   const fetchStore = async () => {
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/order-management/all-store`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
       );
       setStore(response?.data?.data);
     } catch (err) {
       console.err(err);
     }
-  }
+  };
 
   const fetchPaymentData = async (userId, orderId) => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/payment/${userId}/${orderId}`,
+        `${import.meta.env.VITE_API_URL}/payment/${orderId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
       );
       setPayment(response?.data?.data);
     } catch (err) {
@@ -321,7 +338,7 @@ export const OrderManagement = () => {
   //   }
   // }, [isDrawerOpen, userId, orderId]);
 
- const handleStoreChange = async (selectedStore) => {
+  const handleStoreChange = async (selectedStore) => {
     setSelectedStoreId(selectedStore);
 
     // Fetch orders based on the selected storeId
@@ -365,15 +382,26 @@ export const OrderManagement = () => {
     if (isDrawerOpen && orderId) {
       fetchPaymentData(userId, orderId);
     }
-  }, [userId, newStatus, paymentStatus, selectedStoreId, isDrawerOpen, orderId]);
+  }, [
+    userId,
+    newStatus,
+    paymentStatus,
+    selectedStoreId,
+    isDrawerOpen,
+    orderId,
+  ]);
 
   const handleAcceptOrder = async (orderId) => {
     try {
       setOrderId(orderId);
       const result = await axios.patch(
-        `${
-          import.meta.env.VITE_API_URL
-        }/order-management/accept/${userId}/${orderId}`,
+        `${import.meta.env.VITE_API_URL}/order-management/accept/${orderId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
       );
 
       toast({
@@ -404,6 +432,12 @@ export const OrderManagement = () => {
         `${
           import.meta.env.VITE_API_URL
         }/order-management/send-order/${orderId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
       );
 
       toast({
@@ -433,7 +467,13 @@ export const OrderManagement = () => {
       const result = await axios.patch(
         `${
           import.meta.env.VITE_API_URL
-        }/order-management/cancel-order/${userId}/${orderId}`,
+        }/order-management/cancel-order/${orderId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
       );
 
       toast({
@@ -457,13 +497,19 @@ export const OrderManagement = () => {
       });
     }
   };
- 
+
   const handleCancelPayment = async (orderId) => {
     try {
       const result = await axios.patch(
         `${
           import.meta.env.VITE_API_URL
-        }/order-management/cancel-payment/${userId}/${orderId}`,
+        }/order-management/cancel-payment/${orderId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
       );
 
       toast({
@@ -499,9 +545,15 @@ export const OrderManagement = () => {
       backgroundColor="#f5f5f5"
       display="flex"
     >
-    <SideBar size={size} handleWebSize={handleWebSize} />
+      <SideBar size={size} handleWebSize={handleWebSize} />
       {/* <TransactionHeader /> */}
-      <Box w={{ base: 'full', md: size }} pl={size === '500px' ? 0 : '170px'} pt={'100px'} h="100vh" background="white">
+      <Box
+        w={{ base: 'full', md: size }}
+        pl={size === '500px' ? 0 : '170px'}
+        pt={'100px'}
+        h="100vh"
+        background="white"
+      >
         {user.role_idrole === 1 && (
           <Select
             placeholder="Pilih Gudang"

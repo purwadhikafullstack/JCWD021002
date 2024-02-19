@@ -2,10 +2,10 @@ import { acceptOrderService, cancelOrderService, cancelPaymentService, getAllOrd
 
 export const getOrderbyAdminController = async (req, res) => {
   try {
-      const userId  = parseInt(req.params.userId);
+      const {id}  = req.user;
       const { storeId, status, paymentStatus } = req.body;
       // const status  = req.query.status || null;
-      const result = await getOrderbyAdminService(userId, storeId, status, paymentStatus);
+      const result = await getOrderbyAdminService(id, storeId, status, paymentStatus);
       return res.status(200).json({
         success: true,
         message: 'Get All Order Successfully',
@@ -38,9 +38,10 @@ export const sendUserOrderController = async (req, res) => {
 
 export const acceptOrderController = async (req, res) => {
   try {
-    const {adminStoreId, orderId} = req.params;
+    const { id } = req.user;
+    const { orderId} = req.params;
 
-    const result = await acceptOrderService (adminStoreId, orderId);
+    const result = await acceptOrderService (id, orderId);
     return res.status(200).json({
       success: true,
       message: 'Accept Order by Admin Store',
@@ -73,10 +74,11 @@ export const mutateStockController = async (req, res) => {
 
 export const cancelOrderController = async (req, res) => {
   try {
-    const { adminStoreId, orderId } = req.params;
+    const { id } = req.user;
+    const { orderId } = req.params;
 
     // Call the cancel order service
-    const result = await cancelOrderService(adminStoreId, orderId);
+    const result = await cancelOrderService(id, orderId);
 
     return res.status(200).json({
       success: true,
@@ -93,10 +95,11 @@ export const cancelOrderController = async (req, res) => {
 
 export const cancelPaymentController = async (req, res) => {
   try {
-    const { adminStoreId, orderId } = req.params;
+    const {id} = req.user;
+    const { orderId } = req.params;
 
     // Call the cancel order service
-    const result = await cancelPaymentService(adminStoreId, orderId);
+    const result = await cancelPaymentService(id, orderId);
 
     return res.status(200).json({
       success: true,

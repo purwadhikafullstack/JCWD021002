@@ -1,19 +1,20 @@
 import { Router } from 'express';
 import { afterPaymentController, getPaymentCustomerController, paymentGatewayController, updateOrderController } from '../controllers/payment.controller';
+import { verifyToken } from '../middlewares/auth';
 
 export const paymentRouter = Router();
 
 //GET
-paymentRouter.get('/:userId/:orderId', async (req, res) => {
+paymentRouter.get('/:orderId', verifyToken, async (req, res) => {
   await getPaymentCustomerController(req, res);
 });
-
+  
 //POST
-paymentRouter.post('/', async (req, res) => {
+paymentRouter.post('/', verifyToken, async (req, res) => {
   await paymentGatewayController(req, res);
 });
 
 //PATCH
-paymentRouter.patch('/:orderId', async (req, res) => {
+paymentRouter.patch('/:orderId', verifyToken, async (req, res) => {
   await updateOrderController(req, res);
 });

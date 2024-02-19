@@ -7,8 +7,9 @@ import {
 
 export const createCartController = async (req, res) => {
   try {
-    const { userId, cartDetails } = req.body;
-    const result = await createCartService(userId, cartDetails);
+    const { id } = req.user;
+    const { cartDetails } = req.body;
+    const result = await createCartService(id, cartDetails);
     return res.status(200).json({
       success: true,
       message: 'Add Product to Cart Successfully',
@@ -25,7 +26,6 @@ export const updateItemCartQtyController = async (req, res) => {
   try {
     const { id } = req.user;
     const { productId, newQuantity } = req.params;
-    console.log("ini di controller", id, productId, newQuantity);
     const result = await updateCartItemQtyService(
       id,
       productId,
@@ -45,10 +45,10 @@ export const updateItemCartQtyController = async (req, res) => {
 
 export const deleteCartItemController = async (req, res) => {
   try {
-    // const { userId, productId } = req.params;
-    const { userId } = req.params;
+    const { id } = req.user;
     const { productStockId } = req.body;
-    const result = await deleteCartItemService({ userId, productStockId });
+    console.log(productStockId);
+    const result = await deleteCartItemService( id, productStockId );
     return res.status(200).json({
       success: true,
       message: 'Delete Product from Cart Successfully',
@@ -63,8 +63,11 @@ export const deleteCartItemController = async (req, res) => {
 
 export const getCartController = async (req, res) => {
   try {
-    const { userId, cityId } = req.params;
-    const result = await getCartService(userId, cityId);
+    // const { userId } = req.body;
+    console.log('cek: ', req.user);
+    const { id } = req.user;
+    const { cityId } = req.params;
+    const result = await getCartService(id, cityId);
     return res.status(200).json({
       success: true,
       message: 'Get Cart Successfully',
