@@ -18,10 +18,11 @@ import City from '../models/city.model';
         }
     }
 
-    const editStockQuery = async (stockProduct, productStockId) => {
+    const editStockQuery = async (stockProduct, productStockId, status) => {
         try {
             const result = await ProductStock.update({
-                stock: stockProduct
+                stock: stockProduct,
+                status: status,
             }, {
                 where: {id: productStockId}
             })
@@ -44,9 +45,25 @@ import City from '../models/city.model';
         }
     }
 
+    const findAlreadyStockQuery = async (productId, storeId) => {
+        try {
+            const result = await ProductStock.findOne({
+                where: {
+                    product_idproduct : productId,
+                    store_idstore : storeId,
+                }
+            })
+
+            return result;
+        } catch (err) {
+            throw err;
+        }
+    }
+
 
     module.exports = {
         addProductStockQuery,
         editStockQuery,
         findOneStockQuery,
+        findAlreadyStockQuery,
     }

@@ -8,6 +8,8 @@ export const registerQuery = async (
   fullname,
   generateReferralCode,
   resetToken,
+  verification_status,
+  googleLogin
 ) => {
   try {
     const res = await User.create({
@@ -20,7 +22,10 @@ export const registerQuery = async (
       status: 'Active',
       referralCode: generateReferralCode,
       resetToken: resetToken,
-      verification_status: 'Unverified',
+      resetTokenUsed: 0,
+      resetTokenExpires: new Date(new Date().getTime() + 3600000),
+      verification_status: verification_status,
+      googleLogin: googleLogin
     });
 
     return res;
@@ -32,7 +37,7 @@ export const registerQuery = async (
 export const setPasswordQuery = async (email, password) => {
   try {
     const res = await User.update(
-      { password, verification_status: 'Verified' },
+      { password, verification_status: 'Verified', resetTokenUsed: 1 },
       {
         where: {
           email,
@@ -74,7 +79,7 @@ export const changePasswordQuery = async (id, hashPassword) => {
     throw err
   }
 }
-export const updateProfileQuery = async ({ id = null, username = null, fullname = null, avatar = null }) => {
+export const updateProfileQuery = async ({ id = null, username = null, fullname = null, avatar }) => {
   try {
     const res = await User.update({
       username,
@@ -87,7 +92,57 @@ export const updateProfileQuery = async ({ id = null, username = null, fullname 
         }
       })
 
-      console.log(username, fullname)
+    return res
+  } catch (err) {
+    throw err
+  }
+}
+
+export const verifyQuery = async (userId, resetToken) => {
+  try {
+    const res = await User.update({
+      resetToken: resetToken,
+      resetTokenUsed: 0,
+      resetTokenExpires: new Date(new Date().getTime() + 3600000),
+    }, {
+      where: {
+        id: userId
+      }
+    })
+
+    return res
+  } catch (err) {
+    throw err
+  }
+}
+
+export const checkTokenQuery = async (resetToken) => {
+  try {
+    const res = await User.findOne({
+      attributes: ['id', 'resetTokenUsed'],
+      where: {
+        resetToken: resetToken,
+        resetTokenUsed: 0,
+        resetTokenExpires: { [Op.gte]: new Date() }
+      },
+    })
+    return res
+  } catch (err) {
+    throw err
+  }
+}
+
+export const changeEmailQuery = async (id, newEmail, resetToken) => {
+  try {
+    const res = await User.update({
+      email: newEmail,
+      resetToken: resetToken,
+      resetTokenUsed: 0
+    }, {
+      where: {
+        id: id
+      }
+    })
     return res
   } catch (err) {
     throw err

@@ -16,15 +16,15 @@ export const SentMailSuccess = () => {
 
   const handleReVerify = async (email, isNew) => {
     try {
-      const res = await axios.post(`http://localhost:8000/api/auth/reverify`, {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/reverify`, {
         email,
-        isNew
-      })
-      toast.success(res?.data?.message)
+        isNew,
+      });
+      toast.success(res?.data?.message);
     } catch (err) {
-      console.log(err.response.data)
+      console.log(err.response.data);
     }
-  }
+  };
 
   return (
     <Flex
@@ -49,7 +49,13 @@ export const SentMailSuccess = () => {
         <ResizeButton color={'black'} />
       </Flex>
 
-      <Flex justify={'center'} align={'center'} direction={'column'} gap={5}>
+      <Flex
+        justify={'center'}
+        align={'center'}
+        direction={'column'}
+        gap={5}
+        px={size == '500px' ? '0' : { base: 0, lg: '200px', xl: '400px' }}
+      >
         <Flex
           w={'120px'}
           bgColor={'colors.secondary'}
@@ -73,7 +79,7 @@ export const SentMailSuccess = () => {
             </Text>
           </Flex>
         </Flex>
-        <Flex direction={'column'} w={'80%'}>
+        <Flex direction={'column'} w={size == '500px' ? '80%' : '30%'}>
           <a
             href="https://mail.google.com/mail/u/2"
             target="_blank"
@@ -95,10 +101,15 @@ export const SentMailSuccess = () => {
         <Text>
           Jika Anda tidak menerima email dalam beberapa menit, periksa folder
           spam atau{' '}
-            <Button variant={'link'} fontSize={'12px'} color={'blue'} onClick={() => handleReVerify(email, isNew)}>
-              kirim ulang email verifikasi{' '}
-            </Button>
-            .
+          <Button
+            variant={'link'}
+            fontSize={'12px'}
+            color={'blue'}
+            onClick={() => handleReVerify(email, isNew)}
+          >
+            kirim ulang email verifikasi{' '}
+          </Button>
+          .
         </Text>
       </Flex>
     </Flex>

@@ -1,5 +1,7 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useState } from 'react';
+import '../../scrollbar.css';
 import {
   IconButton,
   Avatar,
@@ -43,6 +45,7 @@ import {
   IconPackage,
   IconDiscount,
   IconPackages,
+  IconShoppingCartCog,
 } from '@tabler/icons-react';
 import LogoIcon from '../../assets/Groceria-no-Bg.png';
 // import { useAppSelector } from "../../redux/hook";
@@ -53,32 +56,33 @@ import { useLocation, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { ResizeButton } from '../../components/ResizeButton';
 import { useWebSize } from '../../provider.websize';
+import { FaStore } from 'react-icons/fa';
 
 const LinkItems = [
   {
     name: 'Dashboard',
     icon: IconLayoutDashboard,
-    to: '/dashboard-admin',
+    to: '/dashboard',
   },
-  { name: "Product", icon: IconBox, to: "/product-lists" },
-  { name: "Stock", icon: IconPackages, to: "/product-stock-lists" },
-  { name: "Sales Report", icon: IconReportMoney, to: "/sales-report" },
-  { name: "Stock Report", icon: IconReportAnalytics, to: "/stock-report" },
-  { name: "Category", icon: IconHierarchy2, to: "/category-lists" },
-  { name: "Mass Unit", icon: IconScaleOutline, to: "/mass-lists" },
-  { name: "Packaging", icon: IconPackage, to: "/packaging-lists" },
-  { name: "Discount", icon: IconDiscount, to: "/discount-lists" },
+  { name: 'Product', icon: IconBox, to: '/product-lists' },
+  { name: 'Stock', icon: IconPackages, to: '/product-stock-lists' },
+  { name: 'Order Management', icon: IconShoppingCartCog, to: '/order-management' },
+  { name: 'Sales Report', icon: IconReportMoney, to: '/sales-report' },
+  { name: 'Stock Report', icon: IconReportAnalytics, to: '/stock-report' },
+  { name: 'Category', icon: IconHierarchy2, to: '/category-lists' },
+  { name: 'Mass Unit', icon: IconScaleOutline, to: '/mass-lists' },
+  { name: 'Packaging', icon: IconPackage, to: '/packaging-lists' },
+  { name: 'Discount', icon: IconDiscount, to: '/discount-lists' },
 ];
 
 const SuperAdminLinkItems = [
-  { name: "Admin", icon: IconPasswordUser, to: "/user-lists" },
-  { name: 'Store', icon: IconPasswordUser, to: '/store' },
+  { name: 'Admin', icon: IconPasswordUser, to: '/user-lists' },
+  { name: 'Store', icon: FaStore, to: '/store' },
 ];
 
 const SidebarContent = ({ onClose, ...rest }) => {
   const { user } = useSelector((state) => state.AuthReducer);
   const { size } = useWebSize();
-  
   return (
     <Box
       transition="3s ease"
@@ -86,21 +90,20 @@ const SidebarContent = ({ onClose, ...rest }) => {
       borderRight="1px"
       borderRightColor={useColorModeValue('gray.200', 'gray.700')}
       w={{ base: 'full', md: 40 }}
-      pos="fixed"
+      pos={size == '500px' ? 'static' : 'fixed'}
       h="full"
       overflowY="scroll"
-      // scrollBehavior='smooth'
-      // overscrollY='auto'
       {...rest}
+      zIndex={10}
     >
-      <Flex justifyContent={'flex-end'}>
+      {/* <Flex justifyContent={'flex-end'}>
         <CloseButton
           // display={{ base: "flex", md: "none" }}
           display={size == '500px' ? 'flex' : 'none'}
           onClick={onClose}
           margin={'20px 20px'}
         />
-      </Flex>
+      </Flex> */}
 
       <Flex h="20" alignItems="center" justifyContent="space-between">
         <Image src={LogoIcon} margin={'auto'} width="130px" />
@@ -180,11 +183,22 @@ const NavItem = ({ icon, children, to, ...rest }) => {
   );
 };
 
-const MobileNav = ({ onOpen, ...rest }) => {
+const MobileNav = ({ onOpen, onClose, ...rest }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user, isLogin } = useSelector((state) => state.AuthReducer);
   const { size } = useWebSize();
+  const [isOpen, setIsOpen] = useState(false);
+  const handleClick = () => {
+    setIsOpen(!isOpen);
+    if (isOpen) {
+      onClose();
+    } else if (!isOpen) {
+      onOpen();
+    }
+  };
+  const location = useLocation()?.pathname;
+  const roleId = useSelector((state) => state.AuthReducer?.user?.role_idrole);
   return (
     <Flex
       className="mobile-nav-container"
@@ -195,38 +209,41 @@ const MobileNav = ({ onOpen, ...rest }) => {
       bg={useColorModeValue('white', 'gray.900')}
       borderBottomWidth="1px"
       borderBottomColor={useColorModeValue('gray.200', 'gray.700')}
-      justifyContent={{ base: 'space-between', md: 'flex-end' }}
+      // justifyContent={{ base: 'space-between', md: 'flex-end' }}
+      justifyContent={size == '500px' ? 'space-between' : 'end'}
+      zIndex={10}
+      w={size}
       {...rest}
     >
-      <IconButton
-        // display={{ base: "flex", md: "none" }}
-        display={size == '500px' ? 'flex' : 'none'}
-        onClick={onOpen}
-        variant="outline"
-        aria-label="open menu"
-        icon={<FiMenu />}
-      />
-      <Flex
-        alignItems={'center'}
-        gap={'10px'}
-        // display={{ base: "flex", md: "none" }}
-        display={size == '500px' ? 'flex' : 'none'}
-        flexDirection={'row'}
-      >
-        <Image src={LogoIcon} w="150px" />
+      <Flex gap={5}>
+        <IconButton
+          // display={{ base: "flex", md: "none" }}
+          display={size == '500px' ? 'flex' : 'none'}
+          onClick={handleClick}
+          variant="outline"
+          aria-label="open menu"
+          icon={<FiMenu />}
+        />
+        <Flex
+          alignItems={'center'}
+          gap={'10px'}
+          // display={{ base: "flex", md: "none" }}
+          display={size == '500px' ? 'flex' : 'none'}
+          flexDirection={'row'}
+        >
+          <Link to={'/'}>
+            <Image src={LogoIcon} w="150px" />
+          </Link>
+        </Flex>
       </Flex>
 
-      <HStack
-        className="navTop"
-        spacing={{ base: '0', md: '6' }}
-        marginRight={{ base: '0', md: '60px' }}
-      >
-        <IconButton
+      <HStack className="navTop" spacing={{ base: '0', md: '6' }}>
+        {/* <IconButton
           size="lg"
           variant="ghost"
           aria-label="open menu"
           icon={<FiBell />}
-        />
+        /> */}
         <ResizeButton />
         <Flex alignItems={'center'}>
           <Menu>
@@ -286,14 +303,37 @@ const MobileNav = ({ onOpen, ...rest }) => {
               bg={useColorModeValue('white', 'gray.900')}
               borderColor={useColorModeValue('gray.200', 'gray.700')}
             >
-              <MenuItem>Profile</MenuItem>
-              <MenuItem>Settings</MenuItem>
-              <MenuItem>Billing</MenuItem>
+              {roleId == 1 ? (
+                <>
+                  <MenuItem
+                    onClick={() =>
+                      navigate(
+                        `/`,
+                      )
+                    }
+                  >
+                    Home
+                  </MenuItem>
+                  <MenuDivider />
+                </>
+              ) : (
+                <></>
+              )}
+
+              <MenuItem
+                onClick={() =>
+                  navigate(
+                    `/profile/detail?fromPage=${encodeURIComponent(location)}`,
+                  )
+                }
+              >
+                Profile
+              </MenuItem>
               <MenuDivider />
               <MenuItem
                 onClick={() => {
                   dispatch(logoutSuccess());
-                  navigate('/');
+                  navigate('/login');
                 }}
               >
                 Sign out
@@ -306,36 +346,55 @@ const MobileNav = ({ onOpen, ...rest }) => {
   );
 };
 
-const SidebarWithHeader = ({ size, handleWebSize }) => {
+const SidebarWithHeader = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { size } = useWebSize();
 
   return (
     <>
-      <SidebarContent
-        onClose={onClose}
-        // display={{ base: "none", md: "block" }}
-        display={size == '500px' ? 'none' : 'block'}
-        size={size}
-        handleWebSize={handleWebSize}
-      />
+      <Flex className="customize-scrollbar">
+        <SidebarContent
+          onClose={onClose}
+          // display={{ base: "none", md: "block" }}
+          display={size == '500px' ? 'none' : 'block'}
+        />
+      </Flex>
+      {/* mobilenav */}
+      <Flex
+        w={'full'}
+        position={size == '500px' ? 'fixed' : 'fixed'}
+        zIndex={size == '500px' ? 10 : 5}
+      >
+        <MobileNav onOpen={onOpen} onClose={onClose} size={size} />
+      </Flex>
+
       <Drawer
         isOpen={isOpen}
-        placement="left"
+        placement="top"
         onClose={onClose}
         returnFocusOnClose={false}
         onOverlayClick={onClose}
-        size="xs"
+        size={'xm'}
       >
-        <DrawerContent>
-          <SidebarContent
-            onClose={onClose}
-            size={size}
-            handleWebSize={handleWebSize}
-          />
-        </DrawerContent>
+        <Flex
+          position={size == '500px' ? 'absolute' : 'static'}
+          zIndex={size == '500px' ? 0 : 10}
+          bgColor={'red'}
+          w={size}
+        >
+          <DrawerContent
+            w={size}
+            m={'auto'}
+            border={'none'}
+            position={'static'}
+            bgColor={'transparent'}
+            boxShadow={'none'}
+            className="customize-scrollbar"
+          >
+            <SidebarContent onClose={onClose} size={size} />
+          </DrawerContent>
+        </Flex>
       </Drawer>
-      {/* mobilenav */}
-      <MobileNav onOpen={onOpen} size={size} handleWebSize={handleWebSize} />
     </>
   );
 };

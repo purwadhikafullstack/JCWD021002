@@ -1,4 +1,7 @@
+/* eslint-disable react-refresh/only-export-components */
 import AddUser from "../pages/AddUser/AddUser";
+import DashboardAdmin from "../pages/DashboardAdmin/DashboardAdmin";
+import { OrderManagement } from "../pages/DashboardAdmin/OrderManagement";
 import EditUser from "../pages/EditUser/EditUser";
 import UserDetail from "../pages/UserDetail/UserDetail";
 import UserLists from "../pages/UserLists/UserLists";
@@ -21,8 +24,13 @@ const routeAdmin = [
   // { path: '/store-management', element: <AdminStoresWithRoleCheck /> },
   {
     path: '/store',
-    element: <Store />,
+    element: <AdminStoresWithRoleCheck />,
     children: [{ index: true, element: <StoreList /> }],
+  },
+  {
+    path: '/dashboard/order-management',
+    element: <OrderManagement />,
+    children: [{ index: true, element: <DashboardAdmin /> }],
   },
 ];
 

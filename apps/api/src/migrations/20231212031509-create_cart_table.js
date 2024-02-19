@@ -17,7 +17,7 @@ export async function up(queryInterface, Sequelize) {
       allowNull: false,
     },
     addedAt: {
-      type: Sequelize.INTEGER,
+      type: Sequelize.DATE,
       allowNull: false,
     },
     totalPrice: {

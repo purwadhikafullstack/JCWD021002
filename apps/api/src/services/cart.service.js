@@ -9,6 +9,8 @@ import {
   deleteCartItemQuery,
   getAllCartQuery,
   findProductStockQuery,
+  getUserCityIdQuery,
+  findStoreQuery,
 } from '../queries/cart.query';
 
 export const createCartService = async (userId, cartDetails) => {
@@ -26,6 +28,11 @@ export const createCartService = async (userId, cartDetails) => {
 
       if (!productStock) {
         throw new Error(`Invalid Product for id: ${item.productStockId}`);
+      }
+
+      if (productStock.stock < item.quantity) {
+        throw new Error(`Insufficient stock for product id: ${item.productStockId}`);
+        // return res.status(400).json({ error: `Insufficient stock for product id: ${item.productStockId}`});
       }
 
       const checkCartDetail = await findCartDetailQuery(
@@ -50,8 +57,6 @@ export const createCartService = async (userId, cartDetails) => {
     }
 
     await updateCartTotalsQuery(cart);
-
-    console.log(`cartId: ${cart.id}, cartDetails: ${cartDetailsArray}`);
 
     return { cart, cartDetails: cartDetailsArray };
   } catch (err) {
@@ -84,7 +89,7 @@ export const updateCartItemQtyService = async (
   }
 };
 
-export const deleteCartItemService = async ({ userId, productStockId }) => {
+export const deleteCartItemService = async ( userId, productStockId ) => {
   try {
     const cart = await findCartQuery(userId);
     const cartDetail = await findCartDetailQuery(cart.id, productStockId);
@@ -103,13 +108,17 @@ export const deleteCartItemService = async ({ userId, productStockId }) => {
   }
 };
 
-export const getCartService = async (userId) => {
+export const getCartService = async (userId, cityId) => {
   try {
-    const cart = await getAllCartQuery(userId);
+    const store = await findStoreQuery(cityId);
+    if (!store) throw new Error('Store not found');
+
+    const cart = await getAllCartQuery(userId, store.id);
 
     if (!cart) {
       throw new Error(`Cart item with product id ${productId} not found`);
     }
+
 
     return cart;
   } catch (error) {

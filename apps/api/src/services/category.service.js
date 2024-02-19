@@ -12,8 +12,6 @@ const getPaginatedAndFilteredCategoryService = async (page, pageSize, sortField,
     try {
       const result = await getPaginatedAndFilteredCategoryQuery(page, pageSize, sortField, sortOrder, categoryName);
   
-      console.log("service result:", result);
-  
       return result;
     } catch (err) {
       console.error('Error in getPaginatedAndFilteredProductsService:', err);
@@ -22,7 +20,7 @@ const getPaginatedAndFilteredCategoryService = async (page, pageSize, sortField,
   };
 
   
-  const addCategoryService = async (category) => {
+  const addCategoryService = async (category, imageUrl) => {
     try {
 
       if (!category || !category.trim()) {
@@ -33,20 +31,23 @@ const getPaginatedAndFilteredCategoryService = async (page, pageSize, sortField,
         if (check.length > 0) {
             return ('Category name already added')
         }
-      const res = await addCategoryQuery(category)
+      const res = await addCategoryQuery(category, imageUrl)
       return res;
     } catch (err) {
       throw err;
     }
   }
 
-  const editCategoryService = async (category_id, categoryNew) => {
+  const editCategoryService = async (category_id, categoryNew, imageUrl) => {
     try {
-      const check = await getCategoryQuery(categoryNew);
-        if (check.length > 0) {
+      if(categoryNew != undefined) {
+        const check = await getCategoryQuery(categoryNew);
+        if (check[0]?.category == categoryNew) {
             return ('Category name already added')
         }
-      const res = await editCategoryQuery(category_id, categoryNew)
+      }
+
+      const res = await editCategoryQuery(category_id, categoryNew, imageUrl)
       return res;
     } catch (err) {
       throw err;
@@ -56,7 +57,6 @@ const getPaginatedAndFilteredCategoryService = async (page, pageSize, sortField,
   const deleteCategoryService = async (category_id) => {
     try {
       const res1 = await getCategoryForProductQuery(category_id)
-      console.log("ini res1",res1);
       if(res1.length > 1) {
         return "The Category Used in Another Product"
       }

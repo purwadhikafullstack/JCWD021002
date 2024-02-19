@@ -1,3 +1,4 @@
+const { Op, Sequelize } = require('sequelize');
 import CartDetail from '../models/cartDetail.model';
 import ProductStock from '../models/productStock.model';
 import Order from '../models/order.model';
@@ -6,27 +7,50 @@ import Product from '../models/product.model';
 import ProductImage from '../models/productImage.model';
 import Store from '../models/store.model';
 import Cart from '../models/cart.model';
+import Discount from '../models/discount.model';
+import DiscountType from '../models/discountType.model';
+import DiscountDistribution from '../models/discountDistribution.model';
+import { calculateDiscountPrice } from '../utils/calculateDiscountPrice';
+import { calculateDiscountBOGO } from '../utils/calculateDiscountBOGO';
+import City from '../models/city.model'
+import UsageRestriction from '../models/usageRestriction.model';
 
-export const findPendingOrderQuery = async (userId) => {
+export const findNewOrderQuery = async (userId) => {
   try {
-    const pendingOrder = await Order.findOne({
+    const result = await Order.findOne({
       where: {
         user_iduser: userId,
-        status: 'pending',
+        status: 'new_order',
+        paymentStatus: null,
       },
+      include: [
+        {
+          model: OrderDetail,
+          include: [
+            {
+              model: ProductStock,
+              include: [
+                { model: Product, include: [ProductImage] },
+                { model: Discount },
+              ],
+            },
+          ],
+        },
+        { model: Store, include: [City] },
+      ],
     });
 
-    return pendingOrder;
+    return result;
   } catch (err) {
     throw err;
   }
 };
 
 export const updateOrderTotalAmountQuery = async (orderId, totalAmount) => {
-  return await Order.update({ totalAmount }, { where: { id: orderId } });
+  return await Order.update({ totalAmount, totalShipping: 0 }, { where: { id: orderId } });
 };
 
-export const updateOrderDetailsQuery = async (orderId, cartItems) => {
+export const updateOrderDetailsQuery = async (orderId, storeId, cartItems) => {
   const t = await OrderDetail.sequelize.transaction();
 
   try {
@@ -50,13 +74,18 @@ export const updateOrderDetailsQuery = async (orderId, cartItems) => {
       await OrderDetail.create(
         {
           order_idorder: orderId,
-          quantity: cartItem.quantity,
+          quantity: (calculateDiscountBOGO(cartItem.quantity, (cartItem.ProductStock.Discounts || []))),
           subtotal: cartItem.quantity * cartItem.price,
           productStock_idproductStock: cartItem.productStock_idproductStock,
         },
         { transaction: t },
       );
     }
+
+    await Order.update(
+      { store_idstore: storeId }, 
+      { where: { id: orderId }, transaction: t }
+    );
 
     await t.commit();
   } catch (err) {
@@ -66,13 +95,11 @@ export const updateOrderDetailsQuery = async (orderId, cartItems) => {
 };
 
 export const getSelectedCartItemsQuery = async (cartId, selectedItems) => {
-  console.log('cartId: ', cartId);
-  console.log('selectedItems: ', selectedItems);
   return CartDetail.findAll({
     where: {
       cart_idcart: cartId,
       productStock_idproductStock: selectedItems,
-        // productStock_idproductStock: selectedItems,
+      // productStock_idproductStock: selectedItems,
     },
     include: [
       {
@@ -80,6 +107,28 @@ export const getSelectedCartItemsQuery = async (cartId, selectedItems) => {
         include: [
           { model: Product, include: [ProductImage] },
           { model: Store },
+          {
+            separate: true,
+            model: Discount,
+            where: {
+              startDate: { [Sequelize.Op.lte]: new Date() }, // Include discounts with start date less than or equal to the current date
+              endDate: { [Sequelize.Op.gte]: new Date() },   // Include discounts with end date greater than or equal to the current date
+            },
+            include: [
+              {
+                model: UsageRestriction,
+              },
+              {
+                model: DiscountType,
+              },
+              {
+                model: DiscountDistribution,
+              },
+              {
+                model: Store,
+              },
+            ],
+          },
         ],
       },
     ],
@@ -90,30 +139,83 @@ export const getOrderQuery = async (userId) => {
   return Order.findAll({
     where: {
       user_iduser: userId,
-      status: 'pending',
+      status: 'new_order',
+      paymentStatus: '',
     },
     include: [
-        {
-          model: OrderDetail,
-          include: [
-            {
-              model: ProductStock,
-              include: [
-                { model: Product, include: [ProductImage] },
-                { model: Store },
-              ],
-            },
-          ],
-        },
-      ],
+      {
+        model: OrderDetail,
+        include: [
+          {
+            model: ProductStock,
+            include: [
+              { model: Product, include: [ProductImage] },
+              { model: Store, include: [City] },
+              {
+                separate: true,
+                model: Discount,
+                where: {
+                  startDate: { [Sequelize.Op.lte]: new Date() }, // Include discounts with start date less than or equal to the current date
+                  endDate: { [Sequelize.Op.gte]: new Date() },   // Include discounts with end date greater than or equal to the current date
+                },
+                include: [
+                  {
+                    model: UsageRestriction,
+                  },
+                  {
+                    model: DiscountType,
+                  },
+                  {
+                    model: DiscountDistribution,
+                  },
+                  {
+                    model: Store,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
   });
 };
+
+export const getOrderCustomerQuery = async (userId, status, paymentStatus, startDate, endDate) => {
+  return Order.findAll({
+    where: {
+      [Op.and]: [
+        { user_iduser: userId },
+        status ? { status: status } : {},
+        paymentStatus ? { paymentStatus: paymentStatus } : {},
+        startDate ? { orderDate: { [Op.gte]: new Date(`${startDate}T00:00:00.000Z`) } } : {},
+        endDate ? { orderDate: { [Op.lte]: new Date(`${endDate}T23:59:59.999Z`) } } : {},
+      ],
+    },
+    include: [
+      {
+        model: OrderDetail,
+        include: [
+          {
+            model: ProductStock,
+            include: [
+              { model: Product, include: [ProductImage] },
+              { model: Store, include: [City] },
+            ],
+          },
+        ],
+      },
+    ],
+  });
+};
+
+
 
 export const createOrderQuery = async (
   userId,
   storeId,
   totalAmount,
-  cartItems,
+  cartItems,  
 ) => {
   const t = await Order.sequelize.transaction();
 
@@ -122,11 +224,8 @@ export const createOrderQuery = async (
       {
         user_iduser: userId,
         store_idstore: storeId,
-        status: 'pending',
+        status: 'new_order',
         totalAmount,
-        orderDate: new Date(),
-        paymentMethod: 'credit card',
-        codeTransaction: '123ABC',
       },
       { transaction: t },
     );
@@ -135,8 +234,8 @@ export const createOrderQuery = async (
       await OrderDetail.create(
         {
           order_idorder: order.id,
-          quantity: cartItem.quantity,
-          subtotal: cartItem.quantity * cartItem.price,
+          quantity: (calculateDiscountBOGO(cartItem.quantity, (cartItem.ProductStock.Discounts || []))),
+          subtotal: cartItem.quantity * (calculateDiscountPrice(cartItem.price, (cartItem.ProductStock.Discounts || []))),
           productStock_idproductStock: cartItem.productStock_idproductStock,
         },
         { transaction: t },
@@ -151,18 +250,34 @@ export const createOrderQuery = async (
   }
 };
 
+export const findOrderCustomerQuery = async (userId, orderId) => {
+  try {
+    const order = await Order.findOne({
+      where: {
+        id: orderId,
+        user_iduser: userId,
+      },
+    });
+
+    return order;
+  } catch (err) {
+    throw err;
+  }
+}
+
 export const findOrderQuery = async (orderId) => {
   try {
-      const order = await Order.findByPk(orderId, {
-          include: [{
-              model: OrderDetail,
-              as: 'OrderDetails', // Use the correct alias defined in your association
-          }],
-      });
+    const order = await Order.findOne({
+      where: { id: orderId },
+      include: [{
+        model: OrderDetail,
+        as: 'OrderDetails',
+      }],
+    });
 
-      return order;
+    return order;
   } catch (err) {
-      throw err;
+    throw err;
   }
 };
 
@@ -196,3 +311,33 @@ export const cancelOrder = async (order) => {
     throw err;
   }
 };
+
+export const addTotalShippingQuery = async (shippingCost, orderId) => {
+  try {
+    return await Order.update({
+      totalShipping: shippingCost
+    }, {
+      where: {
+        id: orderId
+      }
+    })
+  } catch (err) {
+    throw err;
+  }
+}
+
+export const checkOrderDiscountShippingQuery = async (orderId) => {
+  try {
+    return await Order.findOne({where: {id : orderId}});
+  } catch (err) {
+    throw err;
+  }
+}
+
+export const findStoreByProductStockIdQuery = async(productStockId) => {
+  try {
+    return await ProductStock.findOne({where: {id: productStockId}, attributes: store_idstore})
+  } catch (err) {
+    throw err;
+  }
+}

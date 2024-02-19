@@ -23,11 +23,12 @@ const getPaginatedAndFilteredCategoryQuery = async (
 
     const categories = await ProductCategory.findAll({
       offset,
-      limit: pageSize || undefined,
+      limit: pageSize ? parseInt(pageSize) : undefined,
     //   order: [
     //       sortField,
     //       sortOrder,
     //   ],
+    order:[['category', sortOrder]],
       where: whereCondition,
     });
     
@@ -43,7 +44,7 @@ const getPaginatedAndFilteredCategoryQuery = async (
       totalPages,
     };
   } catch (err) {
-    console.error('Error in getPaginatedAndFilteredProductsQuery:', err);
+    console.error('Error in getPaginatedAndFilteredCategoryQuery:', err);
     throw err;
   }
 };
@@ -52,7 +53,7 @@ const getCategoryQuery = async (categoryName) => {
     try {
         const result = await ProductCategory.findAll({
             where: {
-                category: categoryName,
+                category: categoryName
             }
         })
 
@@ -76,25 +77,24 @@ const getCategoryForProductQuery = async (categoryId) => {
     }
 }
 
-const addCategoryQuery = async (category) => {
+const addCategoryQuery = async (category, imageUrl) => {
     try {
-        const res = await ProductCategory.create({ category });
+        const res = await ProductCategory.create({ category, imageUrl });
         return res;
     } catch (err) {
         throw err;
     }
 };
 
-const editCategoryQuery = async (category_id, categoryNew) => {
+const editCategoryQuery = async (category_id, categoryNew, imageUrl) => {
     try {
-        const updatedCategory = await ProductCategory.update(
-            { category: categoryNew },
-            {
-                where: {
-                    id: category_id,
-                },
-            }
-        );
+        const updatedCategory = await ProductCategory.update({
+            category: categoryNew,
+            imageUrl: imageUrl,
+            },
+            { where: { id: category_id },
+            });
+
         return updatedCategory;
     } catch (err) {
         throw err;
@@ -116,8 +116,6 @@ const deleteCategoryQuery = async (category_id) => {
 
 const addCategoryForProductQuery = async (category_id, product_id) => {
     try {
-        console.log("ini di query", category_id);
-
         const res = await ProductCategory_has_Product.create({
             productCategory_idproductCategory : category_id,
             product_idproduct : product_id
@@ -129,7 +127,7 @@ const addCategoryForProductQuery = async (category_id, product_id) => {
     }
 };
 
-const deleteCategoryForProductQuery = async (product_id, category_id) => {
+const deleteCategoryForProductQuery = async (category_id, product_id) => {
     try {
         await ProductCategory_has_Product.destroy({
             where: {

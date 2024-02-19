@@ -5,6 +5,8 @@ import {
   getUserController,
   updateUserController,
   getStoreController,
+  deleteUserController,
+  getStoreListsController,
 } from '../controllers/user.controller';
 import {
   uploadAvatarFile
@@ -40,5 +42,14 @@ userRouter.get('/store-lists', async (req, res) => {
   const result = await getStoreController(req, res);
   return result;
 });
+userRouter.patch('/delete/:id', async (req, res) => {
+  const result = await deleteUserController(req, res);
+  return result;
+});
+userRouter.get('/get-all-store', async (req, res) => {
+  const result = await getStoreListsController(req, res);
+  return result;
+});
+
 
 export { userRouter };

@@ -12,6 +12,7 @@ import { MyButton } from '../../../components/Button';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import toast from 'react-hot-toast';
+import { useWebSize } from '../../../provider.websize';
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -24,6 +25,7 @@ const validationSchema = Yup.object().shape({
 
 export const VerifyResetPassword = () => {
   const navigate = useNavigate();
+  const { size } = useWebSize();
 
   const verify = async (email) => {
     try {
@@ -37,7 +39,7 @@ export const VerifyResetPassword = () => {
         navigate('/sentMailSuccess');
       }
     } catch (err) {
-      toast.error(err.response.data)
+      toast.error(err.response.data);
       console.log(err);
     }
   };
@@ -52,7 +54,10 @@ export const VerifyResetPassword = () => {
     },
   });
   return (
-    <Flex p={'30px'}>
+    <Flex
+      py={'30px'}
+      px={size == '500px' ? '30px' : { base: 0, lg: '200px', xl: '500px' }}
+    >
       <form onSubmit={formik.handleSubmit}>
         <FormControl
           display={'flex'}
@@ -83,7 +88,14 @@ export const VerifyResetPassword = () => {
               autoComplete="off"
             />
             {formik.touched.email && formik.errors.email && (
-              <FormErrorMessage position={'absolute'} left={'5px'} bottom={'-18px'} fontSize={'12px'}>{formik.errors.email}</FormErrorMessage>
+              <FormErrorMessage
+                position={'absolute'}
+                left={'5px'}
+                bottom={'-18px'}
+                fontSize={'12px'}
+              >
+                {formik.errors.email}
+              </FormErrorMessage>
             )}
           </Flex>
         </FormControl>

@@ -8,6 +8,10 @@ export default class User extends Model {
     this.hasMany(models.DiscountUsage, { foreignKey: 'user_iduser' });
     this.hasMany(models.RatingsAndReviews, { foreignKey: 'user_iduser' });
     this.belongsTo(models.Store, { foreignKey: 'store_idstore' });
+    this.belongsToMany(models.Discount, {
+      through: 'VoucherUser',
+      foreignKey: 'user_iduser',
+    });
   }
 }
 
@@ -65,6 +69,18 @@ export const init = (sequelize) => {
       store_idstore: {
         type: DataTypes.INTEGER,
         allowNull: true,
+      },
+      resetTokenUsed: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      resetTokenExpires: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      googleLogin: {
+        type: DataTypes.TINYINT,
+        allowNull: false,
       }
     },
     {

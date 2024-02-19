@@ -1,9 +1,14 @@
+const { Op, Sequelize } = require('sequelize');
 import Cart from '../models/cart.model';
 import CartDetail from '../models/cartDetail.model';
 import ProductStock from '../models/productStock.model';
 import Product from '../models/product.model';
 import ProductImage from '../models/productImage.model';
 import Store from '../models/store.model';
+import Discount from '../models/discount.model';
+import DiscountType from '../models/discountType.model';
+import DiscountDistribution from '../models/discountDistribution.model';
+import UsageRestriction from '../models/usageRestriction.model';
 
 export const findCartQuery = async (userId) => {
   return Cart.findOne({
@@ -36,7 +41,7 @@ export const createCartQuery = async (userId) => {
 export const findProductStockQuery = async (productStockId) => {
   return ProductStock.findOne({
     where: { id: productStockId },
-    include: [{ model: Product, include: [ProductImage] }, { model: Store }],
+    include: [{ model: Product, include: [ProductImage] }, { model: Store }, ],
   });
 };
 
@@ -74,10 +79,6 @@ export const createCartDetailQuery = async (cart, item, productStockId) => {
 };
 
 export const updateItemCartQtyQuery = async (cart, productId, newQuantity) => {
-  console.log(
-    `cartId: ${cart.id}, productStockId: ${productId}, quantity: ${newQuantity}`,
-  );
-
   const result = await CartDetail.update(
     {
       quantity: newQuantity,
@@ -148,18 +149,52 @@ export const deleteCartItemQuery = async (cart, productId) => {
   }
 };
 
-export const getAllCartQuery = async (userId) => {
+export const findStoreQuery = async (userCityId) => {
+  try {
+    const store = await Store.findOne({
+      where: { city_idcity: userCityId },
+      attributes: ["id"]})
+    return store;
+  } catch(err) {
+    throw err;
+  }
+}
+
+export const getAllCartQuery = async (userId, storeId) => {
   return await Cart.findAll({
-    where: { user_iduser: userId },
+    where: { user_iduser: userId,  },
     include: [
       {
         model: CartDetail,
         include: [
           {
             model: ProductStock,
+            where: { store_idstore: storeId},
             include: [
               { model: Product, include: [ProductImage] },
               { model: Store },
+              {
+                separate: true,
+                model: Discount,
+                where: {
+                  startDate: { [Sequelize.Op.lte]: new Date() }, // Include discounts with start date less than or equal to the current date
+                  endDate: { [Sequelize.Op.gte]: new Date() },   // Include discounts with end date greater than or equal to the current date
+                },
+                include: [
+                  {
+                    model: UsageRestriction,
+                  },
+                  {
+                    model: DiscountType,
+                  },
+                  {
+                    model: DiscountDistribution,
+                  },
+                  {
+                    model: Store,
+                  },
+                ],
+              },
             ],
           },
         ],
@@ -183,7 +218,12 @@ export const clearCartQuery = async (cartId, productStockId) => {
       transaction: t,
     });
 
+    // Fetch and return the updated cart
+    const updatedCart = await Cart.findByPk(cartId, { transaction: t });
+
     await t.commit();
+
+    return updatedCart;
   } catch (err) {
     await t.rollback();
     throw err;

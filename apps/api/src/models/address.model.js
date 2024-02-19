@@ -46,12 +46,24 @@ export const init = (sequelize) => {
         type: DataTypes.BOOLEAN,
         allowNull: false,
       },
+      latitude: {
+        type: DataTypes.STRING(255),
+        allowNull: false,
+      },
+      longitude: {
+        type: DataTypes.STRING(255),
+        allowNull: false,
+      },
+      status: {
+        type: DataTypes.STRING(15),
+        allowNull: false,
+      },
     },
     {
       sequelize,
       timestamps: false,
       modelName: 'Address',
-      // tableName: 'user',
+      tableName: 'address',
     },
   );
 };

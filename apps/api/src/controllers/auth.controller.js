@@ -8,7 +8,9 @@ import {
   changePasswordService,
   changeEmailService,
   changeEmailVerifyService,
-  updateProfileService
+  updateProfileService,
+  verifyService,
+  reVerifyService
 } from '../services/auth.service';
 
 export const registerController = async (req, res) => {
@@ -71,8 +73,8 @@ export const setPasswordController = async (req, res) => {
   try {
     const { resetToken } = req.query;
     const { password } = req.body;
-    const result = await setPasswordService(resetToken, password)
-
+    const result = await setPasswordService(resetToken, password);
+  
     res.status(200).json({
       message: "Set password success",
       data: result,
@@ -107,9 +109,9 @@ export const keepLoginController = async (req, res) => {
 export const changePasswordController = async (req, res) => {
   try {
     const { id } = req.params;
-    const { password, newPassword } = req.body
+    const { password, newPassword, confirmPassword } = req.body
 
-    const result = await changePasswordService(id, password, newPassword)
+    const result = await changePasswordService(id, password, newPassword, confirmPassword)
 
     return res.status(200).json({
       message: 'Change Password Success',
@@ -142,7 +144,6 @@ export const changeEmailVerifyController = async (req, res) => {
     const { password } = req.body;
 
     const result = await changeEmailVerifyService(id, password)
-    console.log("con", result)
     return res.status(200).json({
       message: "Email Terverifikasi",
       data: result
@@ -157,13 +158,37 @@ export const updateProfileController = async (req, res) => {
     const { username, fullname } = req.body;
 
     const avatar = req.file?.filename;
-    console.log("controller", req.file)
-    console.log("controller", username)
-    console.log("controller", fullname)
 
     const result = await updateProfileService(id, username, fullname, avatar)
     return res.status(200).json({
       message: "Email Terverifikasi",
+      data: result
+    })
+  } catch (err) {
+    return res.status(500).send(err.message)
+  }
+}
+
+export const verifyController = async (req, res) => {
+  try {
+    const { email, isNew } = req.body
+    const result = await verifyService(email, isNew)
+
+    res.status(200).json({
+      message: 'Verify Success',
+      data: result
+    })
+  } catch (err) {
+    return res.status(500).send(err.message)
+  }
+}
+export const reVerifyController = async (req, res) => {
+  try {
+    const { email, isNew } = req.body;
+    const result = await reVerifyService(email, isNew)
+
+    res.status(200).json({
+      message: 'Verifikasi berhasil di kirim',
       data: result
     })
   } catch (err) {

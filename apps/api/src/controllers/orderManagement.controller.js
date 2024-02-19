@@ -1,10 +1,11 @@
-import { acceptOrderService, cancelOrderService, getAllOrderService, mutateStockService, sendUserOrderService } from "../services/orderManagement.service";
+import { acceptOrderService, cancelOrderService, cancelPaymentService, getAllOrderService, getAllStoreService, getOrderbyAdminService, mutateStockService, sendUserOrderService } from "../services/orderManagement.service";
 
-export const getAllOrderController = async (req, res) => {
-    const storeId  = req.query.storeId || null;
-
-    try {
-      const result = await getAllOrderService(storeId);
+export const getOrderbyAdminController = async (req, res) => {
+  try {
+      const {id}  = req.user;
+      const { storeId, status, paymentStatus } = req.body;
+      // const status  = req.query.status || null;
+      const result = await getOrderbyAdminService(id, storeId, status, paymentStatus);
       return res.status(200).json({
         success: true,
         message: 'Get All Order Successfully',
@@ -21,7 +22,6 @@ export const getAllOrderController = async (req, res) => {
 export const sendUserOrderController = async (req, res) => {
   try {
     const { orderId } = req.params;
-    console.log('jalan', orderId);
     const result = await sendUserOrderService(orderId);
     return res.status(200).json({
       success: true,
@@ -38,9 +38,10 @@ export const sendUserOrderController = async (req, res) => {
 
 export const acceptOrderController = async (req, res) => {
   try {
-    const {adminStoreId, orderId} = req.params;
+    const { id } = req.user;
+    const { orderId} = req.params;
 
-    const result = await acceptOrderService (adminStoreId, orderId);
+    const result = await acceptOrderService (id, orderId);
     return res.status(200).json({
       success: true,
       message: 'Accept Order by Admin Store',
@@ -73,10 +74,11 @@ export const mutateStockController = async (req, res) => {
 
 export const cancelOrderController = async (req, res) => {
   try {
-    const { adminStoreId, orderId } = req.params;
+    const { id } = req.user;
+    const { orderId } = req.params;
 
     // Call the cancel order service
-    const result = await cancelOrderService(adminStoreId, orderId);
+    const result = await cancelOrderService(id, orderId);
 
     return res.status(200).json({
       success: true,
@@ -90,3 +92,44 @@ export const cancelOrderController = async (req, res) => {
     });
   }
 };
+
+export const cancelPaymentController = async (req, res) => {
+  try {
+    const {id} = req.user;
+    const { orderId } = req.params;
+
+    // Call the cancel order service
+    const result = await cancelPaymentService(id, orderId);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Cancel Payment is Successfully',
+      data: result,
+    });
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
+};
+
+export const getAllStoreController = async (req, res) => {
+  try {
+
+    // Call the cancel order service
+    const result = await getAllStoreService();
+
+    return res.status(200).json({
+      success: true,
+      message: 'Get All Store is Successfully',
+      data: result,
+    });
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
+};
+

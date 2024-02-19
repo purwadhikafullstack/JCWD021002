@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { keepLogin } from '../redux/reducer/authReducer'; 
+import { keepLogin } from '../redux/reducer/authReducer';
 
 const withRoleRestriction = (allowedRoles) => (WrappedComponent) => {
   const RoleRestrictedComponent = (props) => {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
-    const { user } = useSelector((state) => state.AuthReducer);
+    const { user, isLogin } = useSelector((state) => state.AuthReducer);
 
     useEffect(() => {
       const fetchData = async () => {
@@ -34,14 +34,20 @@ const withRoleRestriction = (allowedRoles) => (WrappedComponent) => {
     }
 
     if (user && allowedRoles.includes(user.role_idrole)) {
-      console.log('Role allowed. Rendering component.');
       return <WrappedComponent {...props} />;
     } else {
-      console.log('Role not allowed. Redirecting to "/"');
       // Redirect to a different route if the role is not allowed
       // Navigate to your login page or another appropriate route
       // Example: <Navigate to="/login" />;
-      return <Navigate to="/" />;
+      let redirectToPage = '';
+      if (user.role_idrole == 3) {
+        redirectToPage = '/';
+      } else if (user.role_idrole == 2  && isLogin || user.role_idrole == 1  && isLogin) {
+        redirectToPage = '/dashboard';
+      } else {
+        redirectToPage = '/';
+      }
+      return <Navigate to={redirectToPage} />;
     }
   };
 
@@ -49,4 +55,3 @@ const withRoleRestriction = (allowedRoles) => (WrappedComponent) => {
 };
 
 export default withRoleRestriction;
-

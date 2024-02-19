@@ -1,13 +1,15 @@
-import { useNavigate } from 'react-router-dom';
-import { Flex, IconButton, Heading } from '@chakra-ui/react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Flex, IconButton, Heading, Image } from '@chakra-ui/react';
 import { IconChevronLeft } from '@tabler/icons-react';
 import { ResizeButton } from '../../components/ResizeButton';
+import LogoGroceria from '../../assets/Groceria-no-Bg.png';
 
 export const CheckoutHeader = ({ heading, handleWebSize, size }) => {
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate(-1);
+    // navigate(-1);
+    navigate('/cart');
   };
 
   return (
@@ -27,13 +29,17 @@ export const CheckoutHeader = ({ heading, handleWebSize, size }) => {
     >
       <Flex gap={0} alignItems='center' justifyContent='center'>
         <IconButton
+          hidden={size == '500px' ? false : true}
           variant='ghost'
           icon={<IconChevronLeft />}
           onClick={handleGoBack}
           _hover={{ color: 'gray.600', opacity: 0.9 }}
             transition='color 0.3s ease-in-out, opacity 0.3s ease-in-out'
         />
-        <Heading size='sm'>{heading}</Heading>
+         <Link hidden={size == '500px' ? true : false}  to={'/'}>
+              <Image src={LogoGroceria} h={'30px'} />
+            </Link>
+        <Heading hidden={size == '500px' ? false : true} size='sm'>{heading}</Heading>
       </Flex>
       <ResizeButton
         webSize={size}

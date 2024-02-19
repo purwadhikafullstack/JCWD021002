@@ -3,7 +3,7 @@ import Store from '../models/store.model';
 import City from '../models/city.model';
 import Province from '../models/province.model';
 import Role from '../models/role.model';
-import { Op } from 'sequelize';
+import { Op, Sequelize, where } from 'sequelize';
 
 const getUserRegisterQuery = async ({
   id = null,
@@ -12,14 +12,43 @@ const getUserRegisterQuery = async ({
   referralCode = null,
 }) => {
   try {
+    let whereCondition = {}
+
+    if (username && email) {
+      whereCondition = {
+        username: username,
+        email: email,
+      }
+    }
+
+    if (email) {
+      whereCondition = {
+        email: email
+      }
+    }
+
+    if (username) {
+      whereCondition = {
+        username: username
+      }
+    }
+
+    if (id) {
+      whereCondition = {
+        id: id
+      }
+    }
+
+    if (referralCode) {
+      whereCondition = {
+        referralCode: referralCode
+      }
+    }
+
     const res = await User.findOne({
       where: {
-        [Op.or]: {
-          id: id,
-          username: username,
-          email: email,
-          referralCode,
-        },
+        [Op.or]: whereCondition,
+        status: 'Active'
       },
     });
     return res;
@@ -28,26 +57,57 @@ const getUserRegisterQuery = async ({
   }
 };
 
-const getUserQuery = async (page, pageSize, roleId, username) => {
+const getUserQuery = async (page, pageSize, roleId, username, sortOrder) => {
   try {
     const offset = (page - 1) * (pageSize || 0);
 
     const whereConditions = {};
 
-    if (roleId) {
+    if (roleId > 1) {
       whereConditions.role_idrole = roleId;
+    } else {
+      whereConditions.role_idrole = {
+        [Op.notIn]: [1],
+      };
     }
 
     if (username) {
       whereConditions.username = { [Op.like]: `%${username}%` };
     }
 
-    console.log('ini di query', username);
-
     const allUsers = await User.findAll({
       offset: offset,
       limit: pageSize || undefined,
       where: whereConditions,
+      include: [
+        {
+          model: Store,
+          include: [
+            {
+              model: City,
+              include: [
+                {
+                  model: Province,
+                },
+              ],
+            },
+          ],
+          required: false,
+        },
+      ],
+      // order: [{ model: City }, 'name', 'asc'],
+      // order: sortOrder === 'asc'
+      // ? [['status', 'asc'], ['username', 'asc']]
+      // : [['status', 'asc'], ['username', 'desc']],
+
+      order: [
+        [
+          Sequelize.literal('(CASE WHEN "store_idstore" IS NOT NULL AND "role_idrole" = 2 THEN "Store.City.name" ELSE NULL END)'),
+          'ASC',
+        ],
+        ['status', 'ASC'],
+        ['username', sortOrder],
+      ],
     });
 
     const totalUsers = await User.count({
@@ -68,7 +128,7 @@ const getUserQuery = async (page, pageSize, roleId, username) => {
 const getDetailUserQuery = async (userId) => {
   try {
     const result = await User.findOne({
-      where: { id: userId },
+      where: { id: userId, status: 'Active' },
       include: [
         {
           model: Store,
@@ -110,14 +170,13 @@ const updateUserQuery = async (
       avatar,
       role_idrole,
       status,
+      store_idstore
     };
-
-    console.log(username);
-    console.log(email);
 
     Object.keys(updatedValue).forEach((key) => {
       if (
         updatedValue[key] == null ||
+        updatedValue[key] == 'null' ||
         updatedValue[key] == undefined ||
         updatedValue[key] == ' ' ||
         updatedValue[key] == ''
@@ -145,7 +204,6 @@ const addUserQuery = async (
   role_idrole,
   store_idstore,
 ) => {
-  console.log('ini di query', store_idstore);
   try {
     const result = await User.create({
       username,
@@ -157,6 +215,10 @@ const addUserQuery = async (
       status: 'Active',
       store_idstore: store_idstore ? store_idstore : null,
       registrationDate: new Date(),
+      verification_status: 'Verified',
+      resetTokenUsed: 1,
+      resetTokenExpires: new Date(new Date().getTime() + 3600000),
+      googleLogin: 0,
     });
 
     return result;
@@ -173,6 +235,7 @@ const getUserLoginQuery = async ({ emailOrUsername }) => {
           username: emailOrUsername,
           email: emailOrUsername,
         },
+        status: 'Active'
       },
     });
     return res;
@@ -189,6 +252,7 @@ const findUserQuery = async ({ email = null, username = null }) => {
           username: username,
           email: email,
         },
+        status: 'Active'
       },
     });
 
@@ -198,9 +262,17 @@ const findUserQuery = async ({ email = null, username = null }) => {
   }
 };
 
-const getStoreQuery = async () => {
+const getStoreQuery = async (cityId) => {
   try {
-    const result = await Store.findAll({});
+    let queryOptions = {};
+
+    if (cityId) {
+      queryOptions.where = {
+        city_idcity: cityId
+      };
+    }
+
+    const result = await Store.findAll(queryOptions);
 
     return result;
   } catch (err) {
@@ -211,11 +283,53 @@ const getStoreQuery = async () => {
 const getUserRoleQuery = async (userId) => {
   try {
     const user = await User.findOne({
-      where: {id: userId},
-      include: [{model: Role}],
+      where: { id: userId },
+      include: [{ model: Role }],
       attributes: ['id', 'role_idrole'],
     })
     return user;
+  } catch (err) {
+    throw err;
+  }
+}
+
+const resetPasswordQuery = async (userId, newPassword) => {
+  try {
+    const res = await User.update({
+      password: newPassword
+    }, {
+      where: {
+        id: userId
+      }
+    })
+    return res
+  } catch (err) {
+    throw err
+  }
+}
+
+const deleteUserQuery = async (id) => {
+  try {
+    const res = await User.update({
+      status: 'Deactive',
+    },
+      {
+        where: {
+          id: id
+        }
+      }
+    )
+
+    return res
+  } catch (err) {
+    throw err
+  }
+}
+
+const getStoreListsQuery = async () => {
+  try {
+    const result = await Store.findAll();
+    return result;
   } catch (err) {
     throw err;
   }
@@ -231,4 +345,7 @@ module.exports = {
   getUserRegisterQuery,
   getUserLoginQuery,
   getUserRoleQuery,
+  resetPasswordQuery,
+  deleteUserQuery,
+  getStoreListsQuery,
 };

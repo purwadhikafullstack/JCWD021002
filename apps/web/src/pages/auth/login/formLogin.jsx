@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import {
   Flex,
   Text,
@@ -38,12 +39,11 @@ const loginSchema = Yup.object().shape({
   password: Yup.string().required('password is required'),
 });
 
-export const FormLogin = () => {
+export const FormLogin = ({ fromPage }) => {
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [displayLoader, setDisplayLoader] = useState('none');
-
   const handleClickshow = () => setShow(!show);
 
   const formik = useFormik({
@@ -58,15 +58,17 @@ export const FormLogin = () => {
         let user;
         setTimeout(async () => {
           user = await dispatch(login(values.emailOrUsername, values.password));
-          if (user?.role_idrole === 3) {
-            setDisplayLoader('none');
-            navigate('/');
-          } else if (user?.role_idrole === 2) {
-            setDisplayLoader('none');
-            navigate('/dashboard-admin');
-          } else if (user?.role_idrole === 1) {
-            setDisplayLoader('none');
-            navigate('/dashboard-admin');
+          if (user) {
+            if (user?.role_idrole === 3) {
+              setDisplayLoader('none');
+              navigate(fromPage ? fromPage : '/');
+            } else if (user?.role_idrole === 1 || user?.role_idrole === 2) {
+              setDisplayLoader('none');
+              navigate('/dashboard');
+            } else {
+              setDisplayLoader('none');
+              navigate(fromPage ? fromPage : '/');
+            }
           } else {
             setDisplayLoader('none');
           }
@@ -99,7 +101,7 @@ export const FormLogin = () => {
               </InputLeftElement>
               <Input
                 placeholder="Enter email or username"
-                bgColor={'#F3F4F6FF'}
+                bgColor={'transparent'}
                 name="emailOrUsername"
                 value={formik.values.emailOrUsername}
                 onChange={formik.handleChange}
@@ -124,7 +126,7 @@ export const FormLogin = () => {
               <Input
                 placeholder="Enter password"
                 type={show ? 'text' : 'password'}
-                bgColor={'#F3F4F6FF'}
+                bgColor={'transparent'}
                 name="password"
                 value={formik.values.password}
                 onChange={formik.handleChange}
@@ -135,6 +137,11 @@ export const FormLogin = () => {
                 </Button>
               </InputRightElement>
             </InputGroup>
+            {formik.touched.password && formik.errors.password && (
+              <FormErrorMessage position={'absolute'}>
+                {formik.errors.password}
+              </FormErrorMessage>
+            )}
             <Flex justify={'end'} mt={'5px'}>
               <Button
                 variant={'link'}
@@ -145,11 +152,6 @@ export const FormLogin = () => {
                 Lupa password?
               </Button>
             </Flex>
-            {formik.touched.password && formik.errors.password && (
-              <FormErrorMessage position={'absolute'}>
-                {formik.errors.password}
-              </FormErrorMessage>
-            )}
           </FormControl>
         </Flex>
 

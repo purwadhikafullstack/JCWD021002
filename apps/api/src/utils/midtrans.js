@@ -18,20 +18,16 @@ export const generateMidtransToken = async (
   userEmail,
 ) => {
   try {
-    console.log(totalPrice);
-    console.log(shippingCost);
     const transaction_details = {
       order_id: orderId,
       gross_amount: totalPrice + shippingCost,
     };
 
-    console.log('cek transaksi detail: ', transaction_details);
 
     const productDetailsPromises = product.map(async (product) => {
       const productInfo = await Product.findOne({
         where: { id: product.productId },
       });
-      console.log('cek Produk Info: ', productInfo);
       return {
         id: product.productId,
         name: productInfo ? productInfo.name : 'Unknown Product',
@@ -41,7 +37,6 @@ export const generateMidtransToken = async (
       };
     });
 
-    console.log('cek produk detail promise: ', productDetailsPromises);
 
     const productDetails = await Promise.all(productDetailsPromises);
 

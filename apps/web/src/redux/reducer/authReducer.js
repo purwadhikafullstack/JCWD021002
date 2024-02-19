@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+// import { setAddress } from './addressReducer';
 
 const initialState = {
   user: {
@@ -10,9 +11,13 @@ const initialState = {
     fullname: '',
     avatar: '',
     role_idrole: '',
-    referralCode: ''
+    referralCode: '',
+    status: '',
+    verification_status: '',
+    store_idstore: '',
+    googleLogin: '',
+    referralBy_iduser: '',
   },
-  location: [],
   isLogin: false,
 };
 
@@ -21,7 +26,7 @@ const authReducer = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      const { id, username, email, fullname, avatar, role_idrole, referralCode } =
+      const { id, username, email, fullname, avatar, role_idrole, referralCode, store_idstore, googleLogin, referralBy_iduser } =
         action.payload;
 
       state.user = {
@@ -31,11 +36,11 @@ const authReducer = createSlice({
         fullname,
         role_idrole,
         username,
-        referralCode
+        referralCode,
+        store_idstore,
+        googleLogin,
+        referralBy_iduser,
       };
-    },
-    setLocation: (state, action) => {
-      state.location = action.payload;
     },
     loginSuccess: (state) => {
       state.isLogin = true;
@@ -43,6 +48,7 @@ const authReducer = createSlice({
     logoutSuccess: (state) => {
       state.isLogin = false;
       localStorage.removeItem('token');
+      localStorage.removeItem('persist:root');
     },
     keepLoginSuccess: (state) => {
       state.isLogin = true;
@@ -61,7 +67,6 @@ export const login = (emailOrUsername, password) => {
       const { data } = res.data;
 
       localStorage.setItem('token', data.token);
-      console.log('data login', data);
       dispatch(setUser(data.user));
       dispatch(loginSuccess());
       toast.success('login is successful');
@@ -70,7 +75,6 @@ export const login = (emailOrUsername, password) => {
       if (err && axios.isAxiosError(err)) {
         const axiosError = err;
         if (axiosError.response) {
-          console.log(axiosError.response)
           toast.error(axiosError?.response?.data);
         }
       } else {
@@ -88,13 +92,12 @@ export const register = createAsyncThunk("auth/register", async (userData) => {
       password: userData.password,
       fullname: userData.username,
     });
-
     return res?.data?.message;
   } catch (err) {
     if (err && axios.isAxiosError(err)) {
       const axiosError = err;
       if (axiosError.response) {
-        console.log(err.response);
+        toast.error(err?.response?.data)
         throw err?.response?.data
       }
     } else {
@@ -119,10 +122,12 @@ export const keepLogin = () => {
         );
         dispatch(setUser(res?.data?.data));
         dispatch(keepLoginSuccess());
+      } else if (!token) {
+        localStorage.removeItem('persist:root');
       }
     } catch (err) {
       localStorage.removeItem('token');
-      console.log(err);
+      localStorage.removeItem('persist:root');
       toast(err?.response?.data);
     }
   };
