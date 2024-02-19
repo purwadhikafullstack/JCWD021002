@@ -88,17 +88,6 @@ export const checkoutService = async (userId, selectedItems) => {
       await updateOrderDetailsQuery(newOrder.id, selectedCartItem[0]?.ProductStock.store_idstore, selectedCartItem);
       await updateOrderTotalAmountQuery(newOrder.id, subTotalProduct);
 
-      // // Clear the cart after successful payment and get the updated cart
-      // const updatedCart = await clearCartQuery(cart.id, selectedCartItem[0]?.productStock_idproductStock);
-
-      // // Update the total quantity in the cart
-      // if (updatedCart) {
-      //   selectedCartItem.forEach(item => {
-      //     updatedCart.totalQuantity -= item.quantity;
-      //   });
-      //   await updatedCart.save();
-      // }
-
       return { order: newOrder, selectedCartItem };
     } else {
       const order = await createOrderQuery(
@@ -107,17 +96,6 @@ export const checkoutService = async (userId, selectedItems) => {
         subTotalProduct,
         selectedCartItem,
       );
-
-      // // Clear the cart after successful payment and get the updated cart
-      // const updatedCart = await clearCartQuery(cart.id, selectedCartItem[0]?.productStock_idproductStock);
-
-      // // Update the total quantity in the cart
-      // if (updatedCart) {
-      //   selectedCartItem.forEach(item => {
-      //     updatedCart.totalQuantity -= item.quantity;
-      //   });
-      //   await updatedCart.save();
-      // }
 
       return { order };
     }

@@ -146,7 +146,6 @@ const Product = () => {
 
   const fetchCarts = async (token) => {
     try {
-      console.log('cekk', userCityId);
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/cart/${userCityId}`,
         {
@@ -188,12 +187,15 @@ const Product = () => {
     }
   };
 
-  const handleBeliSekarang = async () => {
-      try {
-        await axios.post(`${import.meta.env.VITE_API_URL}/checkout`, {
-          userId: user.id,
-          selectedItems: id,
-        });
+  const handleBeliSekarang = async (productStockId, token) => {
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/checkout`, 
+      {
+        selectedItems: productStockId,
+      },
+      {headers: {
+        Authorization: `Bearer ${token}`,
+      }});
 
         navigate('/beli-sekarang');
       } catch (error) {
@@ -580,7 +582,7 @@ const Product = () => {
             </DrawerBody>
             <DrawerFooter>
               <Button
-                onClick={handleBeliSekarang}
+                onClick={handleBeliSekarang(id, token)}
                 variant="ghost"
                 bgColor="colors.primary"
                 color={'white'}

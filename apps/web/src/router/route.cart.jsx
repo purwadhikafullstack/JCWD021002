@@ -1,5 +1,6 @@
 import { Cart } from '../pages/Cart';
 import { Checkout } from '../pages/Checkout';
+import { ProtectLoggedInUser, ProtectUserRoute } from './protection.route';
 
 const routeCart = [
   {
@@ -11,8 +12,12 @@ const routeCart = [
   },
   {
     path: '/cart/shipment',
-    element: <Checkout />,
-  },
+    element:(<ProtectLoggedInUser>
+      <ProtectUserRoute>
+        <Checkout />,
+      </ProtectUserRoute>
+    </ProtectLoggedInUser>
+    )},
 ];
 
 export default routeCart;
