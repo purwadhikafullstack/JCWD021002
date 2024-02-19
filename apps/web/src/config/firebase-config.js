@@ -13,7 +13,7 @@ import {
   where,
   addDoc,
 } from 'firebase/firestore';
-import { setUser, loginSuccess } from '../redux/reducer/authReducer';
+import { loginSuccess } from '../redux/reducer/authReducer';
 // import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 
 const firebaseConfig = {
@@ -45,18 +45,10 @@ const signInWithGoogle = async (dispatch) => {
         email: user.email,
       });
     }
-    
-    // const payload = {
-    //   username: user.displayName,
-    //   email: user.email,
-    //   fullname: user.fullname,
-    //   avatar: user.avatar
-    // }
-    // dispatch(setUser(payload))
     dispatch(loginSuccess());
-    return {user: user, message: 'signin with google success'};
+    return { user: user, message: 'signin with google success' };
   } catch (err) {
-    console.error("config",err);
+    console.error("config", err);
   }
 };
 
@@ -79,7 +71,7 @@ const signUpWithGoogle = async () => {
     //   email: user.email,
     // }
     // dispatch(setUser(payload))
-    return {user: user, message: 'signup with google success'};
+    return { user: user, message: 'signup with google success' };
   } catch (err) {
     console.error(err);
   }
