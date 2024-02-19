@@ -89,7 +89,7 @@ export const updateCartItemQtyService = async (
   }
 };
 
-export const deleteCartItemService = async ({ userId, productStockId }) => {
+export const deleteCartItemService = async ( userId, productStockId ) => {
   try {
     const cart = await findCartQuery(userId);
     const cartDetail = await findCartDetailQuery(cart.id, productStockId);

@@ -5,6 +5,7 @@ module.exports = {
       type: Sequelize.DATE(),
       allowNull: true,
     });
+    
     await queryInterface.changeColumn('order', 'paymentMethod', {
       type: Sequelize.STRING(45),
       allowNull: true,

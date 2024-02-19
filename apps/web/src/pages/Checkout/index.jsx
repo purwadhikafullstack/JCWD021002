@@ -47,6 +47,7 @@ import { CheckoutAddress } from '../../components/Checkout/Checkout.Address';
 export const Checkout = () => {
   const [selectedItem, setSelectedItem] = useState();
   const user = useSelector((state) => state.AuthReducer.user);
+  const token = localStorage.getItem("token");
   const [userAddress, setUserAddress] = useState();
   const userId = user?.id; // Use optional chaining to avoid errors if user is undefined
   const [heading, setHeading] = useState(null);
@@ -74,7 +75,10 @@ export const Checkout = () => {
   const fetchOrder = async (userId) => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/checkout/pre-checkout/${userId}`,
+        `${import.meta.env.VITE_API_URL}/checkout/pre-checkout`,
+        {headers: {
+          Authorization: `Bearer ${token}`,
+        }}, 
       );
       setOrder(response?.data?.data);
       setOrderDetail(response?.data?.data?.OrderDetails);

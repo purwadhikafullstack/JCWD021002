@@ -8,9 +8,11 @@ export const OrderItem = ({
   index,
   setOrderId,
   setIsDrawerOpen,
+  toast,
   //   handleBayarSekarang,
   //   handlePesananDiterima,
 }) => {
+  const token = localStorage.getItem("token");
   const orderDetails = item?.OrderDetails;
   const productStock = item?.OrderDetails[index]?.ProductStock;
 
@@ -39,10 +41,16 @@ export const OrderItem = ({
 
   const handlePesananDiterima = async (orderId) => {
     try {
-      const result = await axios.patch(
+      const response = await axios.patch(
         `${
           import.meta.env.VITE_API_URL
-        }/checkout/finish-order/${userId}/${orderId}`,
+        }/checkout/finish-order/${orderId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       toast({
@@ -53,7 +61,7 @@ export const OrderItem = ({
         isClosable: true,
       });
 
-      return result;
+      return response;
     } catch (err) {
       console.error('Error accepting order', err);
 

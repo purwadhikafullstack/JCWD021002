@@ -72,6 +72,7 @@ const Product = () => {
   const [cartTotalQuantity, setCartTotalQuantity] = useState(0);
     const {id} = useParams();
   const { user, isLogin } = useSelector((state) => state.AuthReducer);
+  const token = localStorage.getItem("token");
   const [data, setData] = useState([]);
   const [showFullDescription, setShowFullDescription] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -165,12 +166,15 @@ const Product = () => {
 
   const handleAddToCart = async () => {
     try {
-      const response = await axios.post(
+      await axios.post(
         `${import.meta.env.VITE_API_URL}/cart`,
         {
-          userId: user?.id,
+          // userId: user?.id,
           cartDetails: [{ productStockId: id, quantity }],
         },
+        {headers: {
+          Authorization: `Bearer ${token}`,
+        }},
       );
 
         showToast('success', 'Item added to cart successfully!');

@@ -268,7 +268,8 @@ export const findOrderCustomerQuery = async (userId, orderId) => {
 
 export const findOrderQuery = async (orderId) => {
   try {
-    const order = await Order.findByPk(orderId, {
+    const order = await Order.findOne({
+      where: { id: orderId },
       include: [{
         model: OrderDetail,
         as: 'OrderDetails',

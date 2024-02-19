@@ -20,6 +20,7 @@ import { useNavigate } from 'react-router-dom';
 
 export const Cart = () => {
   const user = useSelector((state) => state.AuthReducer.user);
+  const token = localStorage.getItem("token");
   const location = useSelector((state) => state?.addressReducer?.address);
   const userCityId =  location?.City?.id;
   const toast = useToast();
@@ -40,15 +41,19 @@ export const Cart = () => {
     });
   };
 
-  const fetchCart = async (userId) => {
+  const fetchCart = async (token) => {
     try {
-      if (!userId) {
-        console.warn('User ID not available. Skipping cart fetch.');
-        return;
-      }
+      // if (!userId) {
+      //   console.warn('User ID not available. Skipping cart fetch.');
+      //   return;
+      // }
 
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/cart/${userId}/${userCityId}`,
+        // `${import.meta.env.VITE_API_URL}/cart/${userId}/${userCityId}`,
+        `${import.meta.env.VITE_API_URL}/cart/${userCityId}`,
+        {headers: {
+          Authorization: `Bearer ${token}`,
+        }}
       );
 
       const updatedCart = response?.data?.data[0]?.CartDetails || [];
@@ -66,13 +71,13 @@ export const Cart = () => {
 
       return updatedCart;
     } catch (err) {
-      console.warn('Cart not found for user:', userId);
+      console.warn('Cart not found for user');
     }
   };
 
   useEffect(() => {
-    fetchCart(userId);
-  }, [user, userId]);
+    fetchCart(token);
+  }, [user]);
 
   const handleCheckboxAllChange = () => {
     setSelectedItems((prevSelectedItems) => {
@@ -123,8 +128,10 @@ export const Cart = () => {
   const deleteCartProduct = async (productStockId) => {
     try {
       const response = await axios.delete(
-        `${import.meta.env.VITE_API_URL}/cart/delete-product/${userId}`,
-        { data: { productStockId } },
+        `${import.meta.env.VITE_API_URL}/cart/delete-product/`,
+        {headers: {
+          Authorization: `Bearer ${token}`,
+        }, data:  {productStockId}},
       );
 
       if (response.status === 200) {
@@ -203,6 +210,7 @@ export const Cart = () => {
             h={'full'}
           >
             <CartBody
+              token={token}
               size={size}
               deleteCartProduct={deleteCartProduct}
               user={user}

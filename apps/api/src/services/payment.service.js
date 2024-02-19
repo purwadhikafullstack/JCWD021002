@@ -63,6 +63,8 @@ export const updateOrderService = async (orderId) => {
     const order = await findOrderQuery(orderId);
     if (!order) throw new Error(`Order not found by orderId: ${orderId}`);
 
+    const orderDetail = await getOrderDetailsQuery(order.id);
+
     const transactionMidtrans = await getMidtransTransactionStatus(orderId);
     const vaNumbers = transactionMidtrans?.va_numbers || [];
     const paymentMethod =
@@ -72,21 +74,25 @@ export const updateOrderService = async (orderId) => {
     const paymentCode = vaNumbers[0]?.va_number;
     const paymentStatus = transactionMidtrans?.transaction_status;
 
+    const currentDate = new Date();
+
     if (paymentStatus === 'settlement') {
-    //   await updateOrderStatusQuery(order.id, 'new_order');
       await updatePaymentOrderQuery(
         order.id,
         paymentMethod,
         paymentCode,
         paymentStatus,
+        orderDetail[0]?.ProductStock.store_idstore,
+        currentDate
       );
     } else if (['pending', 'expire'].includes(paymentStatus)) {
-    //   await updateOrderStatusQuery(order.id, paymentStatus);
       await updatePaymentOrderQuery(
         order.id,
         paymentMethod,
         paymentCode,
         paymentStatus,
+        orderDetail[0]?.ProductStock.store_idstore,
+        currentDate 
       );
     } else {
       throw new Error('Error updating payment');

@@ -7,23 +7,24 @@ import {
   uploadPaymentProofController,
   shippingCostController,
   addTotalShippingController,
-  getOrderCustomerController
+  getOrderCustomerController,
+  finishOrderCustomerController,
+  cancelOrderCustomerController
 } from '../controllers/checkout.controller';
-import { uploadPaymentFile } from '../middlewares/multerConfig';
 import { verifyToken } from '../middlewares/auth';
 
 export const checkoutRouter = Router();
 
 // GET
-checkoutRouter.get('/pre-checkout/:userId', async (req, res) => {
+checkoutRouter.get('/pre-checkout', verifyToken, async (req, res) => {
   await preCheckoutController(req, res);
 });
 
 //POST
-checkoutRouter.post('/get-order/:userId', async (req, res) => {
+checkoutRouter.post('/get-order', verifyToken, async (req, res) => {
   await getOrderCustomerController(req, res);
 });
-checkoutRouter.post('/', async (req, res) => {
+checkoutRouter.post('/', verifyToken, async (req, res) => {
   await checkoutController(req, res);
 });
 checkoutRouter.post('/shippingCost', async (req, res) => {
@@ -36,10 +37,15 @@ checkoutRouter.post('/beliSekarang', async (req, res) => {
 
 //PATCH
 checkoutRouter.patch(
-  '/upload-payment-proof/:id',
-  uploadPaymentFile,
+  '/cancel-order/:orderId', verifyToken, async (req, res) => {
+    await cancelOrderCustomerController(req, res);
+  },
+);
+
+checkoutRouter.patch(
+  '/finish-order/:orderId', verifyToken,
   async (req, res) => {
-    await uploadPaymentProofController(req, res);
+    await finishOrderCustomerController(req, res);
   },
 );
 

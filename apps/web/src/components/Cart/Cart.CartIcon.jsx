@@ -21,6 +21,7 @@ export const CartIcon = () => {
   const user = useSelector((state) => state.AuthReducer.user);
   const location = useSelector((state) => state?.addressReducer?.address);
   const userCityId =  location?.City?.id;
+  // console.log('cek', userCityId);
   const [carts, setCarts] = useState([]);
   const cartDetail = carts[0]?.CartDetails;
   // const token = localStorage.getItem('token');

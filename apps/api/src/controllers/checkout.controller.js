@@ -13,11 +13,12 @@ import {
 } from '../services/checkout.service';
 
 export const getOrderCustomerController = async (req, res) => {
-  const { userId } = req.params;
+  const { id } = req.user;
+  console.log('cek', id);
   const { status, paymentStatus, startDate, endDate } = req.body;
 
   try {
-    const result = await getOrderCustomerService(userId, status, paymentStatus, startDate, endDate);
+    const result = await getOrderCustomerService(id, status, paymentStatus, startDate, endDate);
     return res.status(200).json({
       success: true,
       message: 'Get Order Successfully',
@@ -33,8 +34,8 @@ export const getOrderCustomerController = async (req, res) => {
 
 export const preCheckoutController = async (req, res) => {
   try {
-    const { userId } = req.params;
-    const result = await preCheckoutService(userId);
+    const { id } = req.user;
+    const result = await preCheckoutService(id);
     return res.status(200).json({
       success: true,
       message: 'Get Data for Pre-Checkout Successfully',
@@ -50,8 +51,9 @@ export const preCheckoutController = async (req, res) => {
 
 export const checkoutController = async (req, res) => {
   try {
-    const { userId, selectedItems } = req.body;
-    const result = await checkoutService(userId, selectedItems);
+    const { id } = req.user;
+    const { selectedItems } = req.body;
+    const result = await checkoutService(id, selectedItems);
     return res.status(200).json({
       success: true,
       message: 'Create Order is Successfully',
@@ -75,30 +77,12 @@ export const beliSekarangController = async (req, res) => {
   }
 };
 
-export const uploadPaymentProofController = async (req, res) => {
-  try {
-    const orderId = req.params.id;
-    const paymentProof = req?.file?.filename;
-
-    if (!paymentProof) {
-      throw new Error('No payment proof file provided.');
-    }
-
-    const updatedOrder = await updatePaymentStatusService(
-      orderId,
-      paymentProof,
-    );
-
-    return res.status(200).json({ message: 'Payment proof uploaded successfully.' });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
 export const cancelOrderCustomerController = async (req, res) => {  
   try {
-    const {userId, orderId} = req.params;
-    await cancelOrderCustomerService(userId, orderId);
+    const {id} = req.user;
+    console.log('cekk',id);
+    const {orderId} = req.params;
+    await cancelOrderCustomerService(id, orderId);
     res.status(200).json({ message: 'Order canceled successfully.' });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -107,8 +91,9 @@ export const cancelOrderCustomerController = async (req, res) => {
 
 export const finishOrderCustomerController = async (req, res) => {  
   try {
-    const {userId, orderId} = req.params;
-    await finishOrderCustomerService(userId, orderId);
+    const {id} = req.user;
+    const {orderId} = req.params;
+    await finishOrderCustomerService(id, orderId);
     res.status(200).json({ message: 'Finish order successfully.' });
   } catch (error) {
     res.status(500).json({ error: error.message });
