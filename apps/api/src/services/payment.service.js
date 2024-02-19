@@ -1,7 +1,7 @@
 // services/payment.service.js
 
 import {
-    findOrderCustomerQuery,
+  findOrderCustomerQuery,
   findOrderQuery,
   getOrderQuery,
   updateOrderStatusQuery,
@@ -14,20 +14,28 @@ import {
   paymentGatewayQuery,
   updatePaymentOrderQuery,
 } from '../queries/payment.query';
-import { clearCartQuery, findProductStockQuery } from '../queries/cart.query';
+import {
+  clearCartDetailQuery,
+  clearCartQuery,
+  findCartDetailQuery,
+  findCartQuery,
+  findProductStockQuery,
+  updateCartTotalsQuery,
+  updateItemCartQtyQuery,
+} from '../queries/cart.query';
 import { getMidtransTransactionStatus } from '../utils/midtrans';
 import { updatePaymentStatusService } from './checkout.service';
 
 export const getPaymentCustomerService = async (userId, orderId) => {
-    try {
-        const order = await findOrderCustomerQuery(userId, orderId);
-        if(!order) throw new Error('Order not found');
+  try {
+    const order = await findOrderCustomerQuery(userId, orderId);
+    if (!order) throw new Error('Order not found');
 
-        return order
-    } catch {
-        throw new Error('Error getting order');
-    }
-}
+    return order;
+  } catch {
+    throw new Error('Error getting order');
+  }
+};
 
 export const paymentGatewayService = async (
   userId,
@@ -38,7 +46,7 @@ export const paymentGatewayService = async (
 ) => {
   try {
     // Fetch the order details
-    const order = await findOrderQuery(orderId);
+    const order = await findOrderCustomerQuery(userId, orderId);
     if (!order) {
       throw new Error('Not found order by orderId: ', orderId);
     }
@@ -58,9 +66,10 @@ export const paymentGatewayService = async (
   }
 };
 
-export const updateOrderService = async (orderId) => {
+export const updateOrderService = async (userId, orderId) => {
   try {
-    const order = await findOrderQuery(orderId);
+    const order = await findOrderCustomerQuery(userId, orderId);
+    console.log('cek ', order.OrderDetails);
     if (!order) throw new Error(`Order not found by orderId: ${orderId}`);
 
     const transactionMidtrans = await getMidtransTransactionStatus(orderId);
@@ -74,26 +83,37 @@ export const updateOrderService = async (orderId) => {
 
     const currentDate = new Date();
 
-    if (paymentStatus === 'settlement' || ['pending', 'expire'].includes(paymentStatus)) {
+    if (
+      paymentStatus === 'settlement' ||
+      ['pending', 'expire'].includes(paymentStatus)
+    ) {
       // Update the payment order
       await updatePaymentOrderQuery(
         order.id,
         paymentMethod,
         paymentCode,
         paymentStatus,
-        currentDate
+        currentDate,
       );
 
-      // Clear the cart after successful payment
-      const updatedCart = await clearCartQuery(cart.id, selectedCartItem[0]?.productStock_idproductStock);
+      const cart = await findCartQuery(userId);
 
-      // Update the total quantity in the cart
-      if (updatedCart) {
-        selectedCartItem.forEach(item => {
-          updatedCart.totalQuantity -= item.quantity;
-        });
-        await updatedCart.save();
+      if (!cart) {
+        throw new Error(`Cart not found for userId: ${userId}`);
       }
+
+      const selectedItemOrderDetail = order.OrderDetails.map((detail) => ({
+        productStockId: detail.productStock_idproductStock,
+      }));
+
+      // Clear the cart details
+      await clearCartDetailQuery(
+        cart.id,
+        selectedItemOrderDetail.map((item) => item.productStockId),
+      );
+
+      // Update totalQuantity and totalPrice for the entire cart
+      await updateCartTotalsQuery(cart);
 
       return 'Update Status and Clear Cart Successfully';
     } else {

@@ -13,6 +13,7 @@ import UsageRestriction from '../models/usageRestriction.model';
 export const findCartQuery = async (userId) => {
   return Cart.findOne({
     where: { user_iduser: userId },
+    include: [CartDetail],
   });
 };
 
@@ -206,7 +207,8 @@ export const getAllCartQuery = async (userId, storeId) => {
   });
 };
 
-export const clearCartQuery = async (cartId, productStockId) => {
+export const clearCartDetailQuery = async (cartId, productStockId) => {
+  console.log('cekk', productStockId);
   const t = await CartDetail.sequelize.transaction();
 
   try {
@@ -218,12 +220,7 @@ export const clearCartQuery = async (cartId, productStockId) => {
       transaction: t,
     });
 
-    // Fetch and return the updated cart
-    const updatedCart = await Cart.findByPk(cartId, { transaction: t });
-
     await t.commit();
-
-    return updatedCart;
   } catch (err) {
     await t.rollback();
     throw err;

@@ -88,10 +88,12 @@ const OrderItem = ({
           justifyContent="center"
           alignItems="center"
           w="7em"
-          h="2em"
+          h="fit-content"
+          p={1}
           bg="green.100"
+          rounded={3}
         >
-          <Text fontWeight="bold" color="green.700">
+          <Text fontWeight="bold" color="green.700" textAlign="center">
             {getStatusText(item.status, item.paymentStatus)}
           </Text>
         </Flex>

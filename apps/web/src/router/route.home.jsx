@@ -2,7 +2,7 @@ import { Cart } from "../pages/Cart";
 import { Checkout } from "../pages/Checkout";
 import ErrorPage from '../error.page';
 import { Home } from '../pages/home/Home';
-import { ProtectUserRoute } from './protection.route';
+import { ProtectLoggedInUser, ProtectUserRoute } from './protection.route';
 
 const routeHome = [
 
@@ -16,8 +16,12 @@ const routeHome = [
   },
   {
     path: '/beli-sekarang',
-    element: <Checkout />,
-  },
+    element: (<ProtectLoggedInUser>
+    <ProtectUserRoute>
+      <Checkout />,
+    </ProtectUserRoute>
+  </ProtectLoggedInUser>
+  )},
   {
     path: '*',
     element: <ErrorPage />,

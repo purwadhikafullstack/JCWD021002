@@ -6,7 +6,6 @@ import OrderDetail from '../models/orderDetail.model';
 import Product from '../models/product.model';
 import ProductImage from '../models/productImage.model';
 import Store from '../models/store.model';
-import Cart from '../models/cart.model';
 import Discount from '../models/discount.model';
 import DiscountType from '../models/discountType.model';
 import DiscountDistribution from '../models/discountDistribution.model';
@@ -257,6 +256,10 @@ export const findOrderCustomerQuery = async (userId, orderId) => {
         id: orderId,
         user_iduser: userId,
       },
+      include: [
+        {
+          model: OrderDetail,
+        }]
     });
 
     return order;
@@ -271,7 +274,6 @@ export const findOrderQuery = async (orderId) => {
       where: { id: orderId },
       include: [{
         model: OrderDetail,
-        as: 'OrderDetails',
       }],
     });
 

@@ -37,11 +37,6 @@ export const CartIcon = () => {
       );
 
       setCarts(response?.data?.data);
-      const totalQuantity = response?.data?.data.reduce(
-        (total, item) => total + item.totalQuantity,
-        0,
-      );
-      setCartTotalQuantity(totalQuantity);
     } catch (err) {
       console.error(err);
     }

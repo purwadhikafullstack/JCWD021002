@@ -35,15 +35,15 @@ export const CheckoutSidebar = ({ size, order, selectedShipping }) => {
       // alert("payment created")
       return response.data.data;
     } catch (err) {
-      alert('Error occurred1');
+      alert('Error occurred');
     }
   };
 
-  const updatePaymentOrder = async (orderId) => {
+  const updatePaymentOrder = async (orderId, token) => {
     try {
       await axios.patch(
         `${import.meta.env.VITE_API_URL}/payment/${orderId}`,
-        null,
+        {},
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -94,7 +94,7 @@ export const CheckoutSidebar = ({ size, order, selectedShipping }) => {
                   duration: 3000,
                   isClosable: true,
                 });
-                updatePaymentOrder(order.id);
+                updatePaymentOrder(order.id, token);
                 navigate('/');
               },
               onPending: function (result) {
@@ -104,7 +104,7 @@ export const CheckoutSidebar = ({ size, order, selectedShipping }) => {
                   duration: 3000,
                   isClosable: true,
                 });
-                updatePaymentOrder(order.id);
+                updatePaymentOrder(order.id, token);
                 navigate('/');
               },
               onError: function (result) {
