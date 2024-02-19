@@ -70,7 +70,9 @@ function truncateDescription(description, maxLength) {
 const Product = () => {
   const {size, handleWebSize } = useWebSize();
   const [cartTotalQuantity, setCartTotalQuantity] = useState(0);
-    const {id} = useParams();
+  const {id} = useParams();
+  const location = useSelector((state) => state?.addressReducer?.address);
+  const userCityId =  location?.City?.id;
   const { user, isLogin } = useSelector((state) => state.AuthReducer);
   const token = localStorage.getItem("token");
   const [data, setData] = useState([]);
@@ -142,23 +144,23 @@ const Product = () => {
 
   const [carts, setCarts] = useState([]);
 
-  const fetchCarts = async (user) => {
+  const fetchCarts = async (token) => {
     try {
+      console.log('cekk', userCityId);
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/cart/${user.id}`,
+        `${import.meta.env.VITE_API_URL}/cart/${userCityId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
-      setCarts(response?.data?.data);
 
-      const totalQuantity = response?.data?.data.reduce(
-        (total, item) => total + item.totalQuantity,
-        0,
-      );
-      setCartTotalQuantity(totalQuantity);
+      setCarts(response?.data?.data);
     } catch (err) {
       console.error(err);
     }
   };
-
 
   function formatPriceToIDR(price) {return new Intl.NumberFormat('id-ID', {style: 'currency',currency: 'IDR',}).format(price);}
 
@@ -179,7 +181,7 @@ const Product = () => {
 
         showToast('success', 'Item added to cart successfully!');
 
-        setCartTotalQuantity(cartTotalQuantity + quantity);
+        await fetchCarts(token)
     } catch (err) {
       console.error('Insufficient product stock. Please choose another product available in stock', err);
       showToast('error', 'Insufficient product stock. Please choose another product available in stock');
@@ -218,13 +220,15 @@ const Product = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  console.log('ceek', carts);
+
   useEffect(() => {
     if (isLogin) {
       onClose;
     }
-    fetchCarts(user);
+    fetchCarts(token);
     fetchData(id);
-  }, [isLogin, onClose, user, id]);
+  }, [isLogin, onClose, user, id, cartTotalQuantity]);
 
   return (
     <Box backgroundColor='#f5f5f5' p='0'
@@ -267,7 +271,7 @@ const Product = () => {
         <Link to="/">
     <Text color='#00c689' fontWeight='bold' >Home</Text>
   </Link>
-  {size === '500px' ? null : (
+  {size == '500px' ? null : (
   <>
     <IconChevronRight />
     {data?.result?.Product?.ProductCategories?.map((item, index) => (

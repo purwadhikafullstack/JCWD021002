@@ -43,13 +43,7 @@ export const Cart = () => {
 
   const fetchCart = async (token) => {
     try {
-      // if (!userId) {
-      //   console.warn('User ID not available. Skipping cart fetch.');
-      //   return;
-      // }
-
       const response = await axios.get(
-        // `${import.meta.env.VITE_API_URL}/cart/${userId}/${userCityId}`,
         `${import.meta.env.VITE_API_URL}/cart/${userCityId}`,
         {headers: {
           Authorization: `Bearer ${token}`,
@@ -127,20 +121,18 @@ export const Cart = () => {
 
   const deleteCartProduct = async (productStockId) => {
     try {
-      const response = await axios.delete(
-        `${import.meta.env.VITE_API_URL}/cart/delete-product/`,
-        {headers: {
-          Authorization: `Bearer ${token}`,
-        }, data:  {productStockId}},
+      await axios.delete(
+        `${import.meta.env.VITE_API_URL}/cart/delete-product`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          data: { productStockId },
+        }
       );
-
-      if (response.status === 200) {
-        showToast('success', 'Item quantity deleted successfully!');
-        await fetchCart(userId);
-      } else {
-        console.error('Failed to delete item:', response.data);
-        showToast('error', 'Failed to delete item');
-      }
+  
+      showToast('success', 'Item quantity deleted successfully!');
+      await fetchCart(token);
     } catch (err) {
       console.error('Error deleting item:', err);
       showToast('error', 'Error deleting item');

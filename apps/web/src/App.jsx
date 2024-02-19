@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 // import { Home } from './pages/home/Home';
 import { Toaster } from 'react-hot-toast';
-import { Provider, useSelector } from 'react-redux';
+import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import Theme from './theme';
 import { Location } from './utils/geolocation';

@@ -36,7 +36,7 @@ export const SubmitReview = ({userId, productId}) => {
     try {
         const response = await axios.get(
       
-      `${import.meta.env.VITE_API_URL}rating/rating-detail/?userId=${userId}&productId=${productId}`
+      `${import.meta.env.VITE_API_URL}/rating/rating-detail/?userId=${userId}&productId=${productId}`
         );
         setData(response?.data?.result);
       

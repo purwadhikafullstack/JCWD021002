@@ -21,9 +21,6 @@ cartRouter.put('/update/:productId/:newQuantity', verifyToken, async (req, res) 
 });
 
 // DELETE
-// cartRouter.delete('/delete-product/:userId/:productId', async (req, res) => {
-//   await deleteCartItemController(req, res);
-// });
 cartRouter.delete('/delete-product/', verifyToken, async (req, res) => {
   await deleteCartItemController(req, res);
 });

@@ -215,8 +215,7 @@ export const createOrderQuery = async (
   userId,
   storeId,
   totalAmount,
-  cartItems,
-  quantity,
+  cartItems,  
 ) => {
   const t = await Order.sequelize.transaction();
 
@@ -330,6 +329,14 @@ export const addTotalShippingQuery = async (shippingCost, orderId) => {
 export const checkOrderDiscountShippingQuery = async (orderId) => {
   try {
     return await Order.findOne({where: {id : orderId}});
+  } catch (err) {
+    throw err;
+  }
+}
+
+export const findStoreByProductStockIdQuery = async(productStockId) => {
+  try {
+    return await ProductStock.findOne({where: {id: productStockId}, attributes: store_idstore})
   } catch (err) {
     throw err;
   }

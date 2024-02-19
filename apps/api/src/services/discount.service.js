@@ -112,6 +112,7 @@ const {
         banner,
         discountNom,
         distributionId,
+        storeId,
     ) => {
         try {
             const result = await addDiscountQuery(
@@ -131,6 +132,7 @@ const {
                 banner,
                 discountNom,
                 distributionId,
+                storeId,
                     );
 
                     return result;
@@ -158,7 +160,8 @@ const {
         name,
         description,
         status,
-    ) => {
+        storeId,
+        ) => {
         try {
             const result = await updateDiscountQuery(
                 id,
@@ -179,6 +182,7 @@ const {
                 name,
                 description,
                 status,
+                storeId,
                     );
 
                     return result;

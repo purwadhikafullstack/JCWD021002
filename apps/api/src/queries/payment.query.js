@@ -20,9 +20,9 @@ export const paymentGatewayQuery = async (userId, orderId, totalPrice, shippingC
     }
   }
 
-  export const updatePaymentOrderQuery = async (orderId, paymentMethod, paymentCode, paymentStatus, storeId, currentDate) => {
+  export const updatePaymentOrderQuery = async (orderId, paymentMethod, paymentCode, paymentStatus, currentDate) => {
     return await Order.update(
-      { paymentMethod: paymentMethod, paymentCode: paymentCode, paymentStatus: paymentStatus, store_idstore : storeId, orderDate: currentDate },
+      { paymentMethod: paymentMethod, paymentCode: paymentCode, paymentStatus: paymentStatus, orderDate: currentDate },
       { where: { id: orderId } },
     );
   };

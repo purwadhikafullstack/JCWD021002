@@ -116,6 +116,7 @@ const {
                 referralCode,
                 discountNom,
                 distributionId,
+                storeId,
              } = req.body;
 
              const result = await addDiscountService(
@@ -135,6 +136,7 @@ const {
                 req.file?.filename,
                 discountNom,
                 distributionId,
+                storeId,
              );
 
             return res.status(201).json(result);
@@ -163,6 +165,7 @@ const {
                 name,
                 description,
                 status,
+                storeId,
              } = req.body;
 
 
@@ -185,6 +188,7 @@ const {
                 name,
                 description,
                 status,
+                storeId,
              );
 
             return res.status(201).json(result);

@@ -15,7 +15,8 @@ import {
   addTotalShippingQuery,
   getOrderCustomerQuery,
   updateOrderStatusQuery,
-  checkOrderDiscountShippingQuery
+  checkOrderDiscountShippingQuery,
+  findStoreByProductStockIdQuery
 } from '../queries/checkout.query';
 import {getUserRoleQuery, getDetailUserQuery} from '../queries/user.query';
 import { calculateDiscountPrice } from '../utils/calculateDiscountPrice';
@@ -127,25 +128,20 @@ export const checkoutService = async (userId, selectedItems) => {
 
 export const cancelOrderCustomerService = async (userId, orderId) => {
  try {
-  // Check if the user exists and has the correct role
  const user = await getDetailUserQuery(userId);
- console.log('User:', user);  // Log user information
 
  if (!user || user.role_idrole !== 3) {
    throw new Error('User not found or does not have the correct role.');
  }
 
-  // Check if the order exists
   const order = await findOrderQuery(orderId);
   if (!order) {
     throw new Error('Order not found.');
   }
 
-  // Check the conditions for cancelling the order
   if (order.status === 'new_order' && order.paymentStatus === 'settlement') {
     throw new Error(`Cannot cancel order with settled payment.`);
   } else if (order.status === 'new_order' && order.paymentStatus === 'pending') {
-    // Update order status to 'cancel'
     await updateOrderStatusQuery(order.id, 'cancel');
   } else {
     throw new Error('Error cancelling order.');

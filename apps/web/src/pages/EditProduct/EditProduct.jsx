@@ -162,7 +162,7 @@ const confirmDeleteProductCategory = async () => {
   try {
     const { categoryId, productId } = productCategoryToDelete;
 
-    await axios.delete(`${import.meta.env.VITE_API_URL}category/remove-category-product`,
+    await axios.delete(`${import.meta.env.VITE_API_URL}/category/remove-category-product`,
     {
         data: { categoryId, productId },
     });

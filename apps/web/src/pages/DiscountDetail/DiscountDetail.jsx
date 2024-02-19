@@ -99,7 +99,7 @@ const DiscountDetail = () => {
   const fetchDiscountDetails = async (id) => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}discount/discount-detail/${id}`
+        `${import.meta.env.VITE_API_URL}/discount/discount-detail/${id}`
       );
       setEditData(response?.data);
       setDistribution(response?.data?.distributionId);

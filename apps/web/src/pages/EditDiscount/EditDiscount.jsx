@@ -114,7 +114,7 @@ const EditDiscount = () => {
   const fetchDiscountDetails = async (id) => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}discount/discount-detail/${id}`
+        `${import.meta.env.VITE_API_URL}/discount/discount-detail/${id}`
       );
 
       setEditData(response?.data);
@@ -171,9 +171,10 @@ const EditDiscount = () => {
       formData.append("productStock_idproductStock", productId);
       formData.append("status", status);
       formData.append("discount", fieldImage);
+      formData.append("storeId", storeId);
 
       await axios.patch(
-        `${import.meta.env.VITE_API_URL}discount/edit-discount`,
+        `${import.meta.env.VITE_API_URL}/discount/edit-discount`,
         formData,
         {headers: {
             Authorization: `Bearer ${token}`,

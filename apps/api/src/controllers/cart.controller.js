@@ -24,7 +24,6 @@ export const createCartController = async (req, res) => {
 
 export const updateItemCartQtyController = async (req, res) => {
   try {
-    console.log(req.user);
     const { id } = req.user;
     const { productId, newQuantity } = req.params;
     const result = await updateCartItemQtyService(
@@ -46,8 +45,6 @@ export const updateItemCartQtyController = async (req, res) => {
 
 export const deleteCartItemController = async (req, res) => {
   try {
-    console.log('cek', req.user);
-    // const { userId, productId } = req.params;
     const { id } = req.user;
     const { productStockId } = req.body;
     console.log(productStockId);

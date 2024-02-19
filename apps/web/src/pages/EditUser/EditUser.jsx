@@ -30,10 +30,9 @@ const EditUser = () => {
   const fetchStore = async () => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/user/get-all-store`,
+        `${import.meta.env.VITE_API_URL}/store/list`,
       );
-
-      setDataStore(response?.data);
+      setDataStore(response?.data?.data);
     } catch (err) {
       console.log(err);
     }
@@ -56,7 +55,6 @@ const EditUser = () => {
     }
   };
 
-
   useEffect(() => {
     fetchStore();
     fetchData();
@@ -65,30 +63,30 @@ const EditUser = () => {
   const addProduct = async () => {
     try {
       const fields = [
-          { value: fullname.trim(), message: 'full name' },
-          { value: username.trim(), message: 'username' },
-          { value: email.trim(), message: 'email address' },
-        ];
+        { value: fullname.trim(), message: 'full name' },
+        { value: username.trim(), message: 'username' },
+        { value: email.trim(), message: 'email address' },
+      ];
 
-        for (const field of fields) {
-          if (!field.value) {
-            toast.warn(`Please enter ${field.message}`);
-            return;
-          }
+      for (const field of fields) {
+        if (!field.value) {
+          toast.warn(`Please enter ${field.message}`);
+          return;
         }
+      }
 
       let formData = new FormData();
-      formData.append("id", id);
-      formData.append("fullname", fullname);
-      formData.append("username", username);
-      formData.append("email", email);
-      formData.append("password", password);
-      formData.append("store_idstore", storeId);
-      formData.append("status", status);
-      formData.append("avatar", fieldImage);
+      formData.append('id', id);
+      formData.append('fullname', fullname);
+      formData.append('username', username);
+      formData.append('email', email);
+      formData.append('password', password);
+      formData.append('store_idstore', storeId);
+      formData.append('status', status);
+      formData.append('avatar', fieldImage);
 
       await axios.patch(
-        `${import.meta.env.VITE_API_URL}user/update-user`,
+        `${import.meta.env.VITE_API_URL}/user/update-user`,
         formData,
       );
 

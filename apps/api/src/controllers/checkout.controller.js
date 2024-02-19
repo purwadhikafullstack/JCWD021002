@@ -69,7 +69,8 @@ export const checkoutController = async (req, res) => {
 
 export const beliSekarangController = async (req, res) => {
   try {
-    const { userId, productStockId, quantity } = req.body;
+    const { id } = req.user;
+    const { productStockId, quantity } = req.body;
     const result = await beliSekarangService(userId, productStockId, quantity);
     res.status(200).json({ result });
   } catch (error) {

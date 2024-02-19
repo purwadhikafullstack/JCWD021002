@@ -9,12 +9,13 @@ import {
   Text,
   Switch,
   Select,
+  Button,
 } from '@chakra-ui/react';
 // import { useWebSize } from '../../provider.websize';
 import { useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
 import HereGeocodingApp from '../profile/HereGeocodingApp';
-import { useNavigate, useLocation, useOutletContext } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { AddressAutoComplate } from '../../components/AddressAutoComplate/addressAutoComplate';
 import { MyButton } from '../../components/Button';
 import { useWebSize } from '../../provider.websize';
@@ -31,11 +32,12 @@ export const AddAddress = () => {
   const [address, setAddress] = useState();
   const location = useLocation();
   const fromPage = new URLSearchParams(location.search).get('fromPage');
-  const [update, setUpdate] = useOutletContext();
   const [suggestedAddresses, setSuggestedAddresses] = useState([]);
   const [inputValue, setInputValue] = useState();
   const [visible, setVisible] = useState(false);
   const [userCoordinates, setUserCoordinates] = useState();
+  const [addressLabel, setAddressLabel] = useState();
+  const [active, setActive] = useState();
 
   const handleProvinceChange = (event) => {
     setProvinceId(event.target.value);
@@ -90,7 +92,9 @@ export const AddAddress = () => {
   ) => {
     try {
       await axios.post(
-        `${import.meta.env.VITE_API_URL}/address/createAddress?userId=${userId}&cityId=${cityId}&isMain=${
+        `${
+          import.meta.env.VITE_API_URL
+        }/address/createAddress?userId=${userId}&cityId=${cityId}&isMain=${
           isChecked ? 1 : 0
         }`,
         {
@@ -107,7 +111,7 @@ export const AddAddress = () => {
 
       formik.resetForm();
       setProvinceId();
-      setUpdate(true);
+      // setUpdate(true);
       toast.success('Alamat berhasil ditambahakan');
       if (fromPage) {
         navigate(fromPage);
@@ -133,7 +137,7 @@ export const AddAddress = () => {
         inputValue,
         values.recipientNames,
         values.recipientsMobileNumber,
-        values.addressLabel,
+        addressLabel,
         values.postalCode,
         values.addressDetails,
         userCoordinates?.lat,
@@ -294,17 +298,33 @@ export const AddAddress = () => {
                 p={'10px 20px'}
               />
             </Flex>
-            <Flex bgColor={'white'}>
-              <Input
-                placeholder="Label Alamat"
-                name="addressLabel"
-                value={formik.values.addressLabel}
-                onChange={formik.handleChange}
-                _placeholder={{ fontSize: '14px' }}
-                borderRadius={'20px'}
-                bgColor={'white'}
-                p={'10px 20px'}
-              />
+            <Flex display={'flex'} justify={'end'} gap={3} align={'center'}>
+              <Button
+                variant={'unstyled'}
+                size={'xs'}
+                p={'2px  8px'}
+                border={'1px solid '}
+                sx={active == 'kantor' ? { borderColor: 'red' } : null}
+                onClick={() => {
+                  setAddressLabel('kantor');
+                  setActive('kantor');
+                }}
+              >
+                Kantor
+              </Button>
+              <Button
+                onClick={() => {
+                  setAddressLabel('rumah');
+                  setActive('rumah');
+                }}
+                sx={active == 'rumah' ? { borderColor: 'red' } : null}
+                variant={'unstyled'}
+                size={'xs'}
+                p={'2px  8px'}
+                border={'1px solid '}
+              >
+                Rumah
+              </Button>
             </Flex>
             <Flex justify={'space-between'} p={'10px 10px'}>
               <Text>Atur sebagai Alamat Utama</Text>

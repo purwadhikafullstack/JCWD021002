@@ -31,7 +31,7 @@ checkoutRouter.post('/shippingCost', async (req, res) => {
   await shippingCostController(req, res);
 });
 
-checkoutRouter.post('/beliSekarang', async (req, res) => {
+checkoutRouter.post('/beliSekarang', verifyToken, async (req, res) => {
   await beliSekarangController(req, res);
 });
 
