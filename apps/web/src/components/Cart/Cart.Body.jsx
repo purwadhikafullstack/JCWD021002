@@ -17,6 +17,7 @@ import { CheckboxSelectedAll } from './Cart.CheckboxSelectedAll';
 
 export const CartBody = ({
   user,
+  token,
   uniqueStoreIds,
   carts,
   fetchCart,

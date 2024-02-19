@@ -17,34 +17,44 @@ import { useNavigate } from 'react-router-dom';
 export const CheckoutSidebar = ({ size, order, selectedShipping }) => {
   const toast = useToast();
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
   const paymentGateway = async (dataPayment) => {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/payment`,
         {
-          userId: dataPayment.userId,
           orderId: dataPayment.orderId,
           totalPrice: dataPayment.totalPrice,
           shippingCost: dataPayment.shippingCost,
           products: dataPayment.products,
         },
+        {headers: {
+          Authorization: `Bearer ${token}`,
+        }},
       );
       // alert("payment created")
       return response.data.data;
     } catch (err) {
-      alert('Error occurred');
+      alert('Error occurred1');
     }
   };
 
   const updatePaymentOrder = async (orderId) => {
     try {
-      await axios.patch(`${import.meta.env.VITE_API_URL}/payment/${orderId}`);
+      await axios.patch(
+        `${import.meta.env.VITE_API_URL}/payment/${orderId}`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       // alert('Add payment data to order');
     } catch (err) {
       alert('Error occurred');
     }
   };
-
   // useEffect(() => {
   //  updatePaymentOrder()
   // }, [control]);
@@ -113,7 +123,7 @@ export const CheckoutSidebar = ({ size, order, selectedShipping }) => {
                   duration: 3000,
                   isClosable: true,
                 });
-                navigate('/');
+                // navigate('/');
               },
           });
         };

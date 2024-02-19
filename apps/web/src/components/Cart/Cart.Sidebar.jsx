@@ -15,6 +15,7 @@ export const CartSidebar = ({
   quantities,
 }) => {
   const [totalPrice, setTotalPrice] = useState(0);
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     setTotalPrice(calculateTotalPrice());
@@ -54,10 +55,13 @@ export const CartSidebar = ({
       });
     } else {
       try {
-        await axios.post(`${import.meta.env.VITE_API_URL}/checkout`, {
-          userId,
+        await axios.post(`${import.meta.env.VITE_API_URL}/checkout`, 
+        {
           selectedItems,
-        });
+        },
+        {headers: {
+          Authorization: `Bearer ${token}`,
+        }});
 
         navigate('/cart/shipment');
       } catch (error) {

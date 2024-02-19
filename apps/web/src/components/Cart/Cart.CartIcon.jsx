@@ -19,17 +19,29 @@ const calculateTotalQuantity = (cartDetails) => {
 
 export const CartIcon = () => {
   const user = useSelector((state) => state.AuthReducer.user);
+  const token = localStorage.getItem("token");
   const location = useSelector((state) => state?.addressReducer?.address);
   const userCityId =  location?.City?.id;
+  // console.log('cek', userCityId);
   const [carts, setCarts] = useState([]);
   const cartDetail = carts[0]?.CartDetails;
+  
   // const token = localStorage.getItem('token');
-  const fetchCarts = async (userId) => {
+  const fetchCarts = async (token) => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/cart/${userId}/${userCityId}`,
+        `${import.meta.env.VITE_API_URL}/cart/${userCityId}`,
+        {headers: {
+          Authorization: `Bearer ${token}`,
+        }}
       );
+
       setCarts(response?.data?.data);
+      const totalQuantity = response?.data?.data.reduce(
+        (total, item) => total + item.totalQuantity,
+        0,
+      );
+      setCartTotalQuantity(totalQuantity);
     } catch (err) {
       console.error(err);
     }
@@ -37,9 +49,7 @@ export const CartIcon = () => {
 
   const totalQuantity = calculateTotalQuantity(cartDetail);
   useEffect(() => {
-    if (user?.id) {
-      fetchCarts(user.id);
-    }
+      fetchCarts(token);
   }, [user, totalQuantity]);
 
 

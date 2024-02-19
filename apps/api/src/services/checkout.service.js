@@ -15,7 +15,8 @@ import {
   addTotalShippingQuery,
   getOrderCustomerQuery,
   updateOrderStatusQuery,
-  checkOrderDiscountShippingQuery
+  checkOrderDiscountShippingQuery,
+  findStoreByProductStockIdQuery
 } from '../queries/checkout.query';
 import {getUserRoleQuery, getDetailUserQuery} from '../queries/user.query';
 import { calculateDiscountPrice } from '../utils/calculateDiscountPrice';
@@ -87,16 +88,16 @@ export const checkoutService = async (userId, selectedItems) => {
       await updateOrderDetailsQuery(newOrder.id, selectedCartItem[0]?.ProductStock.store_idstore, selectedCartItem);
       await updateOrderTotalAmountQuery(newOrder.id, subTotalProduct);
 
-      // Clear the cart after successful payment and get the updated cart
-      const updatedCart = await clearCartQuery(cart.id, selectedCartItem[0]?.productStock_idproductStock);
+      // // Clear the cart after successful payment and get the updated cart
+      // const updatedCart = await clearCartQuery(cart.id, selectedCartItem[0]?.productStock_idproductStock);
 
-      // Update the total quantity in the cart
-      if (updatedCart) {
-        selectedCartItem.forEach(item => {
-          updatedCart.totalQuantity -= item.quantity;
-        });
-        await updatedCart.save();
-      }
+      // // Update the total quantity in the cart
+      // if (updatedCart) {
+      //   selectedCartItem.forEach(item => {
+      //     updatedCart.totalQuantity -= item.quantity;
+      //   });
+      //   await updatedCart.save();
+      // }
 
       return { order: newOrder, selectedCartItem };
     } else {
@@ -107,16 +108,16 @@ export const checkoutService = async (userId, selectedItems) => {
         selectedCartItem,
       );
 
-      // Clear the cart after successful payment and get the updated cart
-      const updatedCart = await clearCartQuery(cart.id, selectedCartItem[0]?.productStock_idproductStock);
+      // // Clear the cart after successful payment and get the updated cart
+      // const updatedCart = await clearCartQuery(cart.id, selectedCartItem[0]?.productStock_idproductStock);
 
-      // Update the total quantity in the cart
-      if (updatedCart) {
-        selectedCartItem.forEach(item => {
-          updatedCart.totalQuantity -= item.quantity;
-        });
-        await updatedCart.save();
-      }
+      // // Update the total quantity in the cart
+      // if (updatedCart) {
+      //   selectedCartItem.forEach(item => {
+      //     updatedCart.totalQuantity -= item.quantity;
+      //   });
+      //   await updatedCart.save();
+      // }
 
       return { order };
     }
@@ -125,34 +126,31 @@ export const checkoutService = async (userId, selectedItems) => {
   }
 };
 
-export const updatePaymentStatusService = async (orderId, paymentProof) => {
-  const order = await findOrderQuery(orderId);
+export const cancelOrderCustomerService = async (userId, orderId) => {
+ try {
+ const user = await getDetailUserQuery(userId);
 
+ if (!user || user.role_idrole !== 3) {
+   throw new Error('User not found or does not have the correct role.');
+ }
+
+  const order = await findOrderQuery(orderId);
   if (!order) {
     throw new Error('Order not found.');
   }
 
-  const updatedOrder = await updatePaymentStatusQuery(orderId, paymentProof);
-
-  return updatedOrder;
-};
-
-export const cancelOrderCustomerService = async (userId, orderId) => {
-  const user = await getDetailUserQuery(userId);
-  if(!user || user.role_idrole !== 3) throw new Error('User not found')
-
-  const order = await findOrderQuery(orderId);
-  if(!order) throw new Error('Order not found');
-
-  if(order.status === 'new_order' && order.paymentStatus === 'settlement') {
-    throw new Error(`User can't to cancel order`);
-  } else if(order.status === 'new_order' && order.paymentStatus === 'pending') {
+  if (order.status === 'new_order' && order.paymentStatus === 'settlement') {
+    throw new Error(`Cannot cancel order with settled payment.`);
+  } else if (order.status === 'new_order' && order.paymentStatus === 'pending') {
     await updateOrderStatusQuery(order.id, 'cancel');
   } else {
-    throw new Error('Error cancel')
+    throw new Error('Error cancelling order.');
   }
 
   return { message: 'Order canceled successfully.' };
+ } catch (err) {
+  throw err;
+ }
 };
 
 export const finishOrderCustomerService = async (userId, orderId) => {

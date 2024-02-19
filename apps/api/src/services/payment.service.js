@@ -72,27 +72,33 @@ export const updateOrderService = async (orderId) => {
     const paymentCode = vaNumbers[0]?.va_number;
     const paymentStatus = transactionMidtrans?.transaction_status;
 
-    if (paymentStatus === 'settlement') {
-    //   await updateOrderStatusQuery(order.id, 'new_order');
+    const currentDate = new Date();
+
+    if (paymentStatus === 'settlement' || ['pending', 'expire'].includes(paymentStatus)) {
+      // Update the payment order
       await updatePaymentOrderQuery(
         order.id,
         paymentMethod,
         paymentCode,
         paymentStatus,
+        currentDate
       );
-    } else if (['pending', 'expire'].includes(paymentStatus)) {
-    //   await updateOrderStatusQuery(order.id, paymentStatus);
-      await updatePaymentOrderQuery(
-        order.id,
-        paymentMethod,
-        paymentCode,
-        paymentStatus,
-      );
+
+      // Clear the cart after successful payment
+      const updatedCart = await clearCartQuery(cart.id, selectedCartItem[0]?.productStock_idproductStock);
+
+      // Update the total quantity in the cart
+      if (updatedCart) {
+        selectedCartItem.forEach(item => {
+          updatedCart.totalQuantity -= item.quantity;
+        });
+        await updatedCart.save();
+      }
+
+      return 'Update Status and Clear Cart Successfully';
     } else {
       throw new Error('Error updating payment');
     }
-
-    return 'Update Status Successfully';
   } catch (err) {
     console.error('Error in updateOrderService:', err.message || err);
     throw err;

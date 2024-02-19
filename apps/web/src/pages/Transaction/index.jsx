@@ -29,6 +29,7 @@ import { statusList } from './statusList';
 export const Transaction = () => {
   const user = useSelector((state) => state.AuthReducer.user);
   const userId = user?.id;
+  const token = localStorage.getItem("token");
   const [orderId, setOrderId] = useState('');
   const [searchParams, setSearchParams] = useSearchParams();
   const [status, setStatus] = useState(() => searchParams.get('status') || '');
@@ -103,13 +104,16 @@ export const Transaction = () => {
       }
 
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/checkout/get-order/${userId}`,
+        `${import.meta.env.VITE_API_URL}/checkout/get-order/`,
         {
           status: newStatus,
           paymentStatus: paymentStatus,
           startDate: startDate,
           endDate: endDate,
         },
+        {headers: {
+          Authorization: `Bearer ${token}`,
+        }}
       );
 
       setOrder(response?.data?.data);
@@ -220,6 +224,7 @@ export const Transaction = () => {
                         index={index}
                         setOrderId={setOrderId}
                         setIsDrawerOpen={setIsDrawerOpen}
+                        toast={toast}
                         // handleBayarSekarang={handleBayarSekarang}
                         // handlePesananDiterima={handlePesananDiterima}
                       />
