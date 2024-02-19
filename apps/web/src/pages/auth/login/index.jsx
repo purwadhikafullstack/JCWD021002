@@ -33,12 +33,13 @@ export const Login = () => {
           email: result.user.email,
         },
       );
+      if (!res) throw new Error('Email has not been registered');
+
       localStorage.setItem('token', res?.data?.data?.token);
 
       dispatch(setUser(res.data.data));
       dispatch(keepLogin());
 
-      if (!res) throw new Error('Email has not been registered');
       toast.success('Sign in with google Success');
       if (result.message == 'signin with google success') {
         setDisplayLoader('flex');
@@ -46,6 +47,8 @@ export const Login = () => {
           setDisplayLoader('none');
           navigate(fromPage);
         }, 1500);
+      } else {
+        throw new Error('Email has not been registered');
       }
     } catch (err) {
       setDisplayLoader('none');

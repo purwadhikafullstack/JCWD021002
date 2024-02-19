@@ -21,14 +21,14 @@ export const ProductList = () => {
       const res = await axios.get(
         `${
           import.meta.env.VITE_API_URL
-        }/store?&page=1&pageSize=&latitude=${latitude}&longitude=${longitude}&statusStock=1&statusProduct=1`,
+        }/store?&latitude=${latitude}&longitude=${longitude}`,
       );
-      setProduct(res?.data?.data?.products);
+      console.log(res?.data?.data);
+      setProduct(res?.data?.data);
     } catch (err) {
       console.log(err);
     }
   };
-
   useEffect(() => {
     getProductList(coordinat?.latitude, coordinat?.longitude);
   }, [coordinat]);
@@ -67,9 +67,7 @@ export const ProductList = () => {
               bgColor={'white'}
               overflow={'hidden'}
               cursor={'pointer'}
-              onClick={() =>
-                navigate(`/product-detail/${item?.ProductStocks[0]?.id}`)
-              }
+              onClick={() => navigate(`/product-detail/${item?.id}`)}
             >
               <Flex w={'full'} h={'full'}>
                 <Image
@@ -77,19 +75,21 @@ export const ProductList = () => {
                   aspectRatio={1 / 1}
                   objectFit={'cover'}
                   src={`${import.meta.env.VITE_API_IMAGE_URL}/products/${
-                    item?.ProductImages[0]?.imageUrl ||
+                    item?.Product?.ProductImages[0]?.imageUrl ||
                     'Logo-Groceria-no-Bg.png'
                   }`}
                 />
               </Flex>
               <Flex p={'10px 20px'} direction={'column'} fontWeight={600}>
                 <Text fontSize={'14px'}>
-                  {capitalizeFirstLetter(item.name)}
+                  {capitalizeFirstLetter(item?.Product?.name)}
                 </Text>
                 <Text fontSize={'12px'} color={'gray'}>
-                  {item.massProduct} gram / pack
+                  {item?.Product?.massProduct} gram / pack
                 </Text>
-                <Text color={'colors.quaternary'}>{toRupiah(item.price)}</Text>
+                <Text color={'colors.quaternary'}>
+                  {toRupiah(item?.Product?.price)}
+                </Text>
               </Flex>
             </Card>
           );

@@ -4,12 +4,12 @@ import {
   changeStoreQuery,
   deleteStoreQuery
 } from '../queries/store.query';
-import { getPaginatedAndFilteredProductsQuery } from '../queries/product.query';
+import { getProductByStoreId } from '../queries/product.query';
 const haversine = require('haversine-distance');
 
 export const getStoreListService = (name) => {
   try {
-    const res = getStoreQuery({name})
+    const res = getStoreQuery({ name })
 
     return res
   } catch (err) {
@@ -18,15 +18,6 @@ export const getStoreListService = (name) => {
 }
 
 export const getStoreService = async (
-  page,
-  pageSize,
-  sortField,
-  sortOrder,
-  categoryId,
-  productName,
-  cityId,
-  statusProduct,
-  statusStock,
   latitude,
   longitude,
   name
@@ -60,19 +51,9 @@ export const getStoreService = async (
     }
 
     // Mengambil produk dengan paginasi dan filter untuk toko terdekat
-    const result = await getPaginatedAndFilteredProductsQuery(
-      page,
-      pageSize,
-      sortField,
-      sortOrder,
-      categoryId,
-      productName,
-      cityId,
+    const result = await getProductByStoreId(
       storeId,
-      statusProduct,
-      statusStock,
     );
-
     return result;
   } catch (err) {
     throw err;

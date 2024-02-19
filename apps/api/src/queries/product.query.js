@@ -439,6 +439,29 @@ const updateProductQuery = async (
 
 //   return result;
 // }
+const getProductByStoreId = async (storeId) => {
+  try {
+    const res = await ProductStock.findAll({
+      where: { store_idstore: storeId, status: 1 },
+      include: [
+        {
+          model: Store,
+        },
+        {
+          model: Product,
+          include: [
+            {
+              model: ProductImage,
+            },
+          ]
+        },
+      ],
+    })
+    return res
+  } catch (err) {
+    throw err
+  }
+}
 
 module.exports = {
   getPaginatedAndFilteredProductsQuery,
@@ -450,4 +473,5 @@ module.exports = {
   softDeleteProductQuery,
   updateProductQuery,
   deleteProductImageQuery,
+  getProductByStoreId
 };
