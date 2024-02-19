@@ -14,6 +14,7 @@ const AdminEditUsersWithRoleCheck = withRoleRestriction([1])(EditUser);
 const AdminAddUsersWithRoleCheck = withRoleRestriction([1])(AddUser);
 const AdminUserDetailsWithRoleCheck = withRoleRestriction([1])(UserDetail);
 const AdminStoresWithRoleCheck = withRoleRestriction([1])(Store);
+const AdminOrderManagementWithRoleCheck = withRoleRestriction([1, 2])(OrderManagement);
 
 
 const routeAdmin = [
@@ -27,11 +28,8 @@ const routeAdmin = [
     element: <AdminStoresWithRoleCheck />,
     children: [{ index: true, element: <StoreList /> }],
   },
-  {
-    path: '/dashboard/order-management',
-    element: <OrderManagement />,
-    children: [{ index: true, element: <DashboardAdmin /> }],
-  },
+  { path: '/order-management', element: <AdminOrderManagementWithRoleCheck /> },
+
 ];
 
 export default routeAdmin;
