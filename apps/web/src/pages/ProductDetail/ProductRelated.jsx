@@ -35,7 +35,7 @@ export const ProductRelated = ({category, productId}) => {
   const fetchData = async (category) => {
     try {
         const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}/store?page=1&pageSize=10&categoryId=${category}&statusProduct=1&statusStock=1&latitude=${coordinat?.latitude}&longitude=${coordinat?.longitude}`
+      `${import.meta.env.VITE_API_URL}/store/product-lists?page=1&pageSize=10&categoryId=${category}&statusProduct=1&statusStock=1&latitude=${coordinat?.latitude}&longitude=${coordinat?.longitude}`
         );
         setData(response?.data?.data);
       

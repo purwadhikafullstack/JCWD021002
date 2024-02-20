@@ -582,7 +582,7 @@ const Product = () => {
             </DrawerBody>
             <DrawerFooter>
               <Button
-                onClick={handleBeliSekarang(id, token)}
+                onClick={() => handleBeliSekarang(id, token)}
                 variant="ghost"
                 bgColor="colors.primary"
                 color={'white'}

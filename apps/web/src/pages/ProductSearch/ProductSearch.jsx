@@ -34,7 +34,7 @@ function ProductSearch() {
     try { setLoading(true);
       if ((productName.trim() !== '') || (categoryId !== undefined && String(categoryId).trim() !== '')) {
         const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}/store?page=${page}&pageSize=${pageSize}&sortField=${sortField}&sortOrder=${sortOrder}&categoryId=${categoryId}&productName=${productName}&statusProduct=1&statusStock=1&latitude=${coordinat?.latitude}&longitude=${coordinat?.longitude}`
+      `${import.meta.env.VITE_API_URL}/store/product-lists?page=${page}&pageSize=${pageSize}&sortField=${sortField}&sortOrder=${sortOrder}&categoryId=${categoryId}&productName=${productName}&statusProduct=1&statusStock=1&latitude=${coordinat?.latitude}&longitude=${coordinat?.longitude}`
         );
         setData(response?.data?.data);
       }
