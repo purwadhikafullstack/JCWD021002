@@ -4,7 +4,7 @@ import {
   changeStoreQuery,
   deleteStoreQuery
 } from '../queries/store.query';
-import { getProductByStoreId } from '../queries/product.query';
+import { getProductByStoreId, getPaginatedAndFilteredProductsQuery, } from '../queries/product.query';
 const haversine = require('haversine-distance');
 
 export const getStoreListService = (name) => {
@@ -95,6 +95,72 @@ export const deleteStoreService = async (storeId) => {
     const res = await deleteStoreQuery(storeId);
 
     return res;
+  } catch (err) {
+    throw err;
+  }
+};
+
+
+export const getStoreListsProductService = async (
+  page,
+  pageSize,
+  sortField,
+  sortOrder,
+  categoryId,
+  productName,
+  cityId,
+  statusProduct,
+  statusStock,
+  latitude,
+  longitude,
+  name
+) => {
+  try {
+    // Mengambil daftar toko dari query atau fungsi yang sesuai
+    const stores = await getStoreQuery({ name });
+    // Inisialisasi variabel untuk menyimpan ID toko terdekat
+    let storeId = 1;
+    let minDistance = Number.MAX_VALUE;
+
+    // Mengambil store terdekat dengan user
+    for (const store of stores) {
+      console.log('store query', store.dataValues)
+
+      const storeCoords = {
+        latitude: store.dataValues.latitude,
+        longitude: store.dataValues.longitude,
+      };
+
+      const userCoords = {
+        latitude: latitude,
+        longitude: longitude,
+      };
+
+      const distance = haversine(userCoords, storeCoords);
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        storeId = store.dataValues.id;
+      }
+    }
+
+    console.log("ini di store id", storeId);
+    // Mengambil produk dengan paginasi dan filter untuk toko terdekat
+    const result = await getPaginatedAndFilteredProductsQuery(
+      page,
+      pageSize,
+      sortField,
+      sortOrder,
+      categoryId,
+      productName,
+      cityId,
+      storeId,
+      statusProduct,
+      statusStock,
+    );
+
+    console.log({result})
+    return result;
   } catch (err) {
     throw err;
   }

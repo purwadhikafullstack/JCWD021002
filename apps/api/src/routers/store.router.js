@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getStoreListController, getStoreController, addStoreController, changeStoreController, deleteStoreController } from "../controllers/store.controller";
+import { getStoreListController, getStoreController, addStoreController, changeStoreController, deleteStoreController, getStoreListsProductController } from "../controllers/store.controller";
 const { check, validationResult } = require('express-validator');
 
 const validateSearchInput = [
@@ -33,6 +33,11 @@ storeRouter.patch("/change", async (req, res) => {
 })
 storeRouter.patch("/delete", async (req, res) => {
   const result = await deleteStoreController(req, res);
+  return result
+})
+
+storeRouter.get("/product-lists", async (req, res) => {
+  const result = await getStoreListsProductController(req, res);
   return result
 })
 

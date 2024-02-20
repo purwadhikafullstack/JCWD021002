@@ -3,7 +3,8 @@ import {
   getStoreService,
   addStoreService,
   changeStoreService,
-  deleteStoreService
+  deleteStoreService,
+  getStoreListsProductService,
 } from '../services/store.service';
 
 export const getStoreListController = async (req, res) => {
@@ -86,6 +87,44 @@ export const deleteStoreController = async (req, res) => {
     const { storeId } = req.query;
     const result = await deleteStoreService(storeId);
 
+    res.status(200).json({
+      message: 'get store success',
+      data: result,
+    });
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+};
+
+
+export const getStoreListsProductController = async (req, res) => {
+  try {
+    const page = req.query.page || 1;
+    const pageSize = parseInt(req.query.pageSize) || null;
+    const sortField = req.query.sortField || 'name';
+    const sortOrder = req.query.sortOrder || 'asc';
+    const categoryId = req.query.categoryId || null;
+    const productName = req.query.productName || null;
+    const cityId = req.query.cityId || null;
+    const statusProduct = req.query.statusProduct || null;
+    const statusStock = req.query.statusStock || null;
+    const latitude = req.query.latitude;
+    const longitude = req.query.longitude;
+    const { name } = req.query;
+    const result = await getStoreListsProductService(
+      page,
+      pageSize,
+      sortField,
+      sortOrder,
+      categoryId,
+      productName,
+      cityId,
+      statusProduct,
+      statusStock,
+      latitude,
+      longitude,
+      name
+    );
     res.status(200).json({
       message: 'get store success',
       data: result,
